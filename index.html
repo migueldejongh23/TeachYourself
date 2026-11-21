@@ -717,8 +717,8 @@
       <div id="dominio-list"></div>
     </div>
     <div class="prog-section">
-      <h2>Habilidades del grafo: fracciones y Análisis A</h2>
-      <p class="small faint">Las habilidades de fracciones (de la semana 2 de Pre-CBC) y las de Análisis Matemático A (del CBC), y cómo se relacionan: cada una puede estar pendiente, vista (viste la clase, sin practicar), practicada o dominada. Dominada sale solo de tus ejercicios con corrección objetiva: 12 o más intentos que cuentan (máximo 5 por cada generador registrado; en los exámenes el registro agrupa por semana, así que cuentan hasta 5 por semana de examen), 85% o más de aciertos, en 2 o más sesiones en días distintos, con 80% o más en tu sesión más reciente, en 3 o más tipos de ejercicio y con 4 o más intentos de dificultad 2 o más. Ver una clase nunca marca una habilidad como dominada. Si una habilidad está bloqueada, acá dice qué prerrequisito le falta.</p>
+      <h2>Habilidades del grafo: fracciones, Análisis A y Álgebra A</h2>
+      <p class="small faint">Las habilidades de fracciones (de la semana 2 de Pre-CBC), las de Análisis Matemático A y las de Álgebra A (del CBC), y cómo se relacionan: cada una puede estar pendiente, vista (viste la clase, sin practicar), practicada o dominada. Dominada sale solo de tus ejercicios con corrección objetiva: 12 o más intentos que cuentan (máximo 5 por cada generador registrado; en los exámenes el registro agrupa por semana, así que cuentan hasta 5 por semana de examen), 85% o más de aciertos, en 2 o más sesiones en días distintos, con 80% o más en tu sesión más reciente, en 3 o más tipos de ejercicio y con 4 o más intentos de dificultad 2 o más. Ver una clase nunca marca una habilidad como dominada. Si una habilidad está bloqueada, acá dice qué prerrequisito le falta.</p>
       <div id="graph-list"></div>
     </div>
     <div class="prog-section">
@@ -753,7 +753,7 @@
       </details>
       <details style="margin-top:14px;">
         <summary class="small" style="cursor:pointer;">Pruebas de la Fase B (grafo de habilidades)</summary>
-        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad (la declaración del generador en AN_GEN_META manda sobre la habilidad que traiga el intento; si el generador no se puede resolver, el intento no se atribuye a ninguna habilidad), y la dificultad declarada por cada generador. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
+        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad (la declaración del generador en AN_GEN_META manda sobre la habilidad que traiga el intento; si el generador no se puede resolver, el intento no se atribuye a ninguna habilidad), y la dificultad declarada por cada generador. Incluye también la etapa de Álgebra A: las 26 subhabilidades de las 6 clases, con la misma atribución autoritativa por generador (AL_GEN_META) y la misma dificultad declarada por generador. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
         <button class="btn" id="run-graph-tests">Correr las pruebas del grafo</button>
         <div class="small" id="graph-test-results" style="margin-top:10px;"></div>
       </details>
@@ -6493,7 +6493,84 @@ var SKILL_GRAPH = {
   "an-series-criterios": { name:"Criterios de convergencia de series", desc:"Término general, p-series, cociente, raíz y criterio integral.", lessons:["cbc-an2-series"], prereqs:["an-series-sumas", "an-impropias"], piloto:false, etapa:"analisis" },
   "an-series-alternadas": { name:"Series alternadas", desc:"El criterio de Leibniz y cuándo una alternada ni siquiera puede converger.", lessons:["cbc-an2-series"], prereqs:["an-series-criterios"], piloto:false, etapa:"analisis" },
   "an-series-absoluta": { name:"Convergencia absoluta y condicional", desc:"Si converge en valor absoluto, converge; la condicional es el caso más fino.", lessons:["cbc-an2-series"], prereqs:["an-series-criterios"], piloto:false, etapa:"analisis" },
-  "an-series-potencias": { name:"Series de potencias", desc:"Radio e intervalo de convergencia, con los extremos estudiados uno por uno.", lessons:["cbc-an2-series"], prereqs:["an-series-criterios"], piloto:false, etapa:"analisis" }
+  "an-series-potencias": { name:"Series de potencias", desc:"Radio e intervalo de convergencia, con los extremos estudiados uno por uno.", lessons:["cbc-an2-series"], prereqs:["an-series-criterios"], piloto:false, etapa:"analisis" },
+  /* ---- Expansión del grafo, etapa Álgebra A (semanas 16 y 17).
+     Decisiones de esta etapa:
+     - 26 nodos nuevos con prefijo al-, uno por bloque real de
+       contenido evaluable de las 6 clases CBC de Álgebra A (el
+       encargo hablaba de 8 clases; las que existen en el código son
+       6: conjuntos y complejos, polinomios, vectores, matrices,
+       transformaciones y cónicas). Desglose por clase: conjuntos y
+       complejos 5, polinomios 3, vectores 5, matrices 5,
+       transformaciones 3 y cónicas 5: 5 + 3 + 5 + 5 + 3 + 5 = 26
+       nodos al- en total. Los ids históricos de SKILLS, del piloto
+       y de la etapa de Análisis no se tocan.
+     - etapa:"algebra" distingue estos nodos sin cambiar ninguna
+       cuenta anterior: el piloto y Análisis siguen contando solo
+       los suyos (habilidadesPendientes e
+       habilidadesPendientesAnalisis no se tocan).
+     - lessons de un nodo = la clase que lo enseña; cada clase de
+       Álgebra es multihabilidad (ver AL_LESSON_SKILLS) y la
+       atribución de su evidencia es por generador, con AL_GEN_META
+       como fuente autoritativa, igual que en Análisis.
+     - Prerrequisitos: solo dependencias pedagógicas reales, entre
+       ellas las que dicta el contenido: la forma polar pide el
+       módulo (al-complejos-polar ← al-complejos-modulo-conjugado);
+       factorizar polinomios en C pide la división (teorema del
+       factor) y las parejas conjugadas (al-polinomios-factorizacion
+       ← al-polinomios-division y al-complejos-ecuaciones); las
+       distancias y proyecciones salen del producto escalar y de las
+       ecuaciones de rectas y planos
+       (al-vectores-distancias-proyecciones ←
+       al-vectores-producto-escalar y al-vectores-rectas-planos);
+       discutir un sistema con parámetro es Gauss más el
+       determinante que se anula (al-sistemas-parametro ←
+       al-sistemas-gauss y al-determinantes); la inversa 2×2 se
+       calcula con la fórmula del determinante y con Gauss-Jordan
+       (al-matrices-inversa ← al-determinantes y al-sistemas-gauss);
+       el núcleo de una transformación es el sistema homogéneo
+       asociado (al-transformaciones-nucleo-imagen ←
+       al-transformaciones-linealidad y al-sistemas-gauss); y leer
+       los elementos de una cónica corrida exige primero saber
+       leerlos en la canónica (al-conicas-desplazadas ←
+       al-conicas-elementos). No se agregaron otras relaciones: el
+       producto vectorial, por ejemplo, no depende del escalar.
+     - Limitación conocida de la etapa (la misma forma que en
+       Análisis con an-sucesiones-sumas): tres nodos terminales
+       tienen bancos chicos y, con el tope de 5 intentos por
+       generador, su evidencia de ronda no alcanza los 12 intentos
+       del criterio de dominio: al-matrices-operaciones (2
+       generadores, máximo 10), al-sistemas-parametro (2, máximo
+       10) y al-conicas-intersecciones (2, máximo 10). Ninguno de
+       los tres es prerrequisito de otro nodo, así que la limitación
+       no bloquea a nadie; no se inflaron dificultades ni se
+       movieron generadores de bloque para disimularla. */
+  "al-conjuntos": { name:"Operaciones de conjuntos", desc:"Unión, intersección y complemento: quién está en cada conjunto y la inclusión-exclusión para contar la unión.", lessons:["cbc-al1-conjuntos-complejos"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-complejos-operaciones": { name:"Operaciones con complejos en forma binómica", desc:"Sumar, multiplicar y rotar complejos como binomios con i² = −1, y las potencias de i en su ciclo de 4.", lessons:["cbc-al1-conjuntos-complejos"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-complejos-modulo-conjugado": { name:"Módulo y conjugado", desc:"El módulo como distancia al origen, el producto por el conjugado que da |z|² y la división pasando por el conjugado.", lessons:["cbc-al1-conjuntos-complejos"], prereqs:["al-complejos-operaciones"], piloto:false, etapa:"algebra" },
+  "al-complejos-polar": { name:"Forma polar y exponencial", desc:"Módulo y argumento: multiplicar es multiplicar módulos y sumar ángulos, y las raíces n-ésimas salen repartiendo la vuelta completa.", lessons:["cbc-al1-conjuntos-complejos"], prereqs:["al-complejos-modulo-conjugado"], piloto:false, etapa:"algebra" },
+  "al-complejos-ecuaciones": { name:"Ecuaciones y raíces en C", desc:"x² = −1 y sus ecuaciones hermanas, y las parejas conjugadas en que vienen las raíces no reales.", lessons:["cbc-al1-conjuntos-complejos"], prereqs:["al-complejos-modulo-conjugado"], piloto:false, etapa:"algebra" },
+  "al-polinomios-division": { name:"División de polinomios y Ruffini", desc:"El algoritmo de la división, el teorema del resto (el resto de dividir por (x − a) es P(a)) y la tabla de Ruffini completa.", lessons:["cbc-al1-polinomios"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-polinomios-factorizacion": { name:"Raíces y descomposición factorial", desc:"El teorema fundamental, raíces contadas con multiplicidad, raíz y factor, y la descomposición en factores lineales y cuadráticas irreducibles.", lessons:["cbc-al1-polinomios"], prereqs:["al-polinomios-division", "al-complejos-ecuaciones"], piloto:false, etapa:"algebra" },
+  "al-polinomios-coeficientes": { name:"De las raíces a los coeficientes", desc:"Construir el polinomio desde sus raíces, las relaciones de Vieta y el grado y el coeficiente principal del producto.", lessons:["cbc-al1-polinomios"], prereqs:["al-polinomios-factorizacion"], piloto:false, etapa:"algebra" },
+  "al-vectores-combinaciones": { name:"Combinaciones lineales y dependencia", desc:"Sumas de múltiplos de vectores, qué subespacio generan y cuándo un vector depende de los otros.", lessons:["cbc-al1-vectores"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-vectores-producto-escalar": { name:"Producto escalar, norma y ángulo", desc:"Componente a componente: el producto escalar, la norma por Pitágoras, la perpendicularidad como producto 0 y el ángulo por el coseno.", lessons:["cbc-al1-vectores"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-vectores-rectas-planos": { name:"Rectas y planos", desc:"La recta como punto más t por el director, el plano por su vector normal, y el corte entre una recta y un plano.", lessons:["cbc-al1-vectores"], prereqs:["al-vectores-combinaciones"], piloto:false, etapa:"algebra" },
+  "al-vectores-distancias-proyecciones": { name:"Distancias y proyecciones", desc:"La proyección como sombra sobre una dirección y la distancia de un punto a un plano dividiendo por la norma del normal.", lessons:["cbc-al1-vectores"], prereqs:["al-vectores-producto-escalar", "al-vectores-rectas-planos"], piloto:false, etapa:"algebra" },
+  "al-vectores-producto-vectorial": { name:"Producto vectorial", desc:"El vector perpendicular a los dos, su cálculo componente a componente y su módulo como área del paralelogramo.", lessons:["cbc-al1-vectores"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-matrices-operaciones": { name:"Operaciones con matrices", desc:"El producto fila por columna y por qué no conmuta: el orden de las transformaciones importa.", lessons:["cbc-al2-matrices"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-sistemas-gauss": { name:"Sistemas y Gauss-Jordan", desc:"Operaciones de fila, resolver y clasificar sistemas (SCD, SCI, SI), rango y pivotes, y el sistema homogéneo.", lessons:["cbc-al2-matrices"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-determinantes": { name:"Determinantes", desc:"El determinante 2×2 y el triangular por su diagonal, el cero que anula la solución única, el área que mide y el efecto de escalar la matriz.", lessons:["cbc-al2-matrices"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-sistemas-parametro": { name:"Sistemas con parámetro", desc:"Discutir un sistema: separar los valores del parámetro según el tipo de solución que producen.", lessons:["cbc-al2-matrices"], prereqs:["al-sistemas-gauss", "al-determinantes"], piloto:false, etapa:"algebra" },
+  "al-matrices-inversa": { name:"Matriz inversa", desc:"La inversa que deshace a la matriz: la fórmula 2×2 con el determinante, x = A⁻¹·b y por qué sin determinante no nulo no hay inversa.", lessons:["cbc-al2-matrices"], prereqs:["al-determinantes", "al-sistemas-gauss"], piloto:false, etapa:"algebra" },
+  "al-transformaciones-linealidad": { name:"Qué es una transformación lineal", desc:"Las dos propiedades (sumas y múltiplos), evaluar T en un vector, armar su matriz y decidir si una regla es lineal.", lessons:["cbc-al2-transformaciones"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-transformaciones-nucleo-imagen": { name:"Núcleo e imagen", desc:"Lo que T manda al cero y lo que alcanza: dimensiones, inyectividad y el teorema de las dimensiones.", lessons:["cbc-al2-transformaciones"], prereqs:["al-transformaciones-linealidad", "al-sistemas-gauss"], piloto:false, etapa:"algebra" },
+  "al-transformaciones-geometria": { name:"La matriz como movimiento", desc:"Las columnas como imágenes de los versores, el cuadrado unitario, el área como valor absoluto del determinante y la transformación inversa.", lessons:["cbc-al2-transformaciones"], prereqs:["al-transformaciones-linealidad", "al-determinantes"], piloto:false, etapa:"algebra" },
+  "al-conicas-elementos": { name:"Identificar cónicas y leer sus elementos", desc:"Elipse, hipérbola, parábola y circunferencia por su ecuación: semiejes, focos con c, asíntotas, excentricidad y las definiciones por distancias.", lessons:["cbc-al2-conicas"], prereqs:[], piloto:false, etapa:"algebra" },
+  "al-conicas-parabola": { name:"La parábola: foco y directriz", desc:"El parámetro p en x² = 4p·y, el foco y la directriz, y el vértice de la parábola corrida.", lessons:["cbc-al2-conicas"], prereqs:["al-conicas-elementos"], piloto:false, etapa:"algebra" },
+  "al-conicas-discriminante-rotacion": { name:"Clasificación por el discriminante y rotación", desc:"B² − 4AC decide el tipo de la cónica general y la rotación de ejes elimina el término xy.", lessons:["cbc-al2-conicas"], prereqs:["al-conicas-elementos"], piloto:false, etapa:"algebra" },
+  "al-conicas-desplazadas": { name:"Cónicas desplazadas: completar cuadrados", desc:"De la ecuación general a la canónica completando cuadrados, para leer centro, semiejes y radio.", lessons:["cbc-al2-conicas"], prereqs:["al-conicas-elementos"], piloto:false, etapa:"algebra" },
+  "al-conicas-intersecciones": { name:"Intersecciones de cónicas y rectas", desc:"Sustituir y decidir por el discriminante: dos puntos, tangencia o ninguno, y el corte entre dos cónicas.", lessons:["cbc-al2-conicas"], prereqs:["al-conicas-parabola"], piloto:false, etapa:"algebra" }
 };
 /* Clases del piloto: las 11 de la semana 2 (fracciones de Pre-CBC). */
 var PILOT_LESSONS = ["s2-fraccion", "s2-division-resto", "s2-tipos", "s2-primos-mcd-mcm", "s2-equivalentes", "s2-comparar", "s2-suma", "s2-mult", "s2-negativas", "s2-cantidad", "s2-combinadas"];
@@ -6525,6 +6602,22 @@ var AN_LESSON_SKILLS = {
   "cbc-an2-integrales": { principal:"an-integral-barrow", habilidades:["an-integrales-primitivas", "an-integral-barrow", "an-riemann", "an-integrales-metodos", "an-integrales-aplicaciones", "an-impropias"] },
   "cbc-an2-edo": { principal:"an-edo-directa", habilidades:["an-edo-directa", "an-edo-separables", "an-edo-modelos", "an-integrales-aplicaciones"] },
   "cbc-an2-series": { principal:"an-series-sumas", habilidades:["an-series-sumas", "an-series-criterios", "an-series-alternadas", "an-series-absoluta", "an-series-potencias"] }
+};
+/* Clases de la etapa de Álgebra A: las 6 de las semanas 16 y 17. */
+var AL_LESSONS = ["cbc-al1-conjuntos-complejos", "cbc-al1-polinomios", "cbc-al1-vectores", "cbc-al2-matrices", "cbc-al2-transformaciones", "cbc-al2-conicas"];
+/* Vinculación clase → habilidades de la etapa de Álgebra, con la
+   misma semántica que AN_LESSON_SKILLS: estas clases también son
+   multihabilidad, principal es un dato descriptivo que NO interviene
+   en la atribución, y la fuente autoritativa de la evidencia es la
+   tabla por generador (AL_GEN_META): si el generador no se puede
+   resolver, el intento no se atribuye a ninguna habilidad. */
+var AL_LESSON_SKILLS = {
+  "cbc-al1-conjuntos-complejos": { principal:"al-complejos-operaciones", habilidades:["al-conjuntos", "al-complejos-operaciones", "al-complejos-modulo-conjugado", "al-complejos-polar", "al-complejos-ecuaciones"] },
+  "cbc-al1-polinomios": { principal:"al-polinomios-factorizacion", habilidades:["al-polinomios-division", "al-polinomios-factorizacion", "al-polinomios-coeficientes"] },
+  "cbc-al1-vectores": { principal:"al-vectores-rectas-planos", habilidades:["al-vectores-combinaciones", "al-vectores-producto-escalar", "al-vectores-rectas-planos", "al-vectores-distancias-proyecciones", "al-vectores-producto-vectorial"] },
+  "cbc-al2-matrices": { principal:"al-sistemas-gauss", habilidades:["al-matrices-operaciones", "al-sistemas-gauss", "al-determinantes", "al-sistemas-parametro", "al-matrices-inversa"] },
+  "cbc-al2-transformaciones": { principal:"al-transformaciones-nucleo-imagen", habilidades:["al-transformaciones-linealidad", "al-transformaciones-nucleo-imagen", "al-transformaciones-geometria"] },
+  "cbc-al2-conicas": { principal:"al-conicas-elementos", habilidades:["al-conicas-elementos", "al-conicas-parabola", "al-conicas-discriminante-rotacion", "al-conicas-desplazadas", "al-conicas-intersecciones"] }
 };
 function graphNode(id){ return (typeof SKILL_GRAPH !== "undefined" && SKILL_GRAPH && SKILL_GRAPH[id]) || null; }
 function prereqsDe(id){ var n = graphNode(id); return n ? n.prereqs.slice() : []; }
@@ -6566,16 +6659,17 @@ function habilidadDeIntento(a){
      se le puede atribuir ninguna. Regla de atribución sin duplicación
      (cada intento cuenta una sola vez, para una sola habilidad):
      - Si el intento es de una clase multihabilidad de Análisis
-       (AN_LESSON_SKILLS): AN_GEN_META es la fuente autoritativa. Se
-       resuelve primero lesson + gen: el campo gen "clase#gN"
-       identifica el generador que lo sirvió y, si existe una entrada
-       válida para ese generador, el intento cuenta exactamente para
-       la habilidad que AN_GEN_META declara para él; a.skill NO
-       puede sobrescribir una habilidad distinta declarada por
-       AN_GEN_META (ni una válida de la misma clase ni una ajena).
-       Si el generador no existe, el índice está fuera del banco o
-       no hay entrada válida, el intento no se atribuye a ninguna
-       habilidad (null): NO se atribuye automáticamente a
+       (AN_LESSON_SKILLS) o de Álgebra (AL_LESSON_SKILLS): la tabla
+       por generador de su etapa (AN_GEN_META o AL_GEN_META) es la
+       fuente autoritativa. Se resuelve primero lesson + gen: el
+       campo gen "clase#gN" identifica el generador que lo sirvió y,
+       si existe una entrada válida para ese generador, el intento
+       cuenta exactamente para la habilidad que la tabla declara
+       para él; a.skill NO puede sobrescribir una habilidad distinta
+       declarada por la tabla (ni una válida de la misma clase ni
+       una ajena). Si el generador no existe, el índice está fuera
+       del banco o no hay entrada válida, el intento no se atribuye
+       a ninguna habilidad (null): NO se atribuye automáticamente a
        multi.principal. Así se atribuyen también los intentos
        históricos de estas clases, que traen skill null pero sí
        lesson y gen. El historial no se toca: la atribución se
@@ -6587,11 +6681,18 @@ function habilidadDeIntento(a){
        para la habilidad que el intento declara. */
   if(!a || typeof a !== "object") return null;
   if(a.lesson){
-    var multi = (typeof AN_LESSON_SKILLS !== "undefined" && AN_LESSON_SKILLS) ? AN_LESSON_SKILLS[a.lesson] : null;
+    var multi = null, tablaGen = null;
+    if(typeof AN_LESSON_SKILLS !== "undefined" && AN_LESSON_SKILLS && AN_LESSON_SKILLS[a.lesson]){
+      multi = AN_LESSON_SKILLS[a.lesson];
+      tablaGen = (typeof AN_GEN_META !== "undefined" && AN_GEN_META) ? AN_GEN_META[a.lesson] : null;
+    } else if(typeof AL_LESSON_SKILLS !== "undefined" && AL_LESSON_SKILLS && AL_LESSON_SKILLS[a.lesson]){
+      multi = AL_LESSON_SKILLS[a.lesson];
+      tablaGen = (typeof AL_GEN_META !== "undefined" && AL_GEN_META) ? AL_GEN_META[a.lesson] : null;
+    }
     if(multi){
       var gm = (typeof a.gen === "string") ? a.gen.match(/^(.+)#g(\d+)$/) : null;
-      if(gm && gm[1] === a.lesson && typeof AN_GEN_META !== "undefined" && AN_GEN_META && AN_GEN_META[a.lesson]){
-        var entrada = AN_GEN_META[a.lesson][+gm[2]];
+      if(gm && gm[1] === a.lesson && tablaGen){
+        var entrada = tablaGen[+gm[2]];
         if(entrada && typeof entrada[0] === "string" && entrada[0] && graphNode(entrada[0])) return entrada[0];
       }
       return null;
@@ -6700,6 +6801,11 @@ function habilidadesPendientesAnalisis(attempts, lessonsDone){
      saber qué falta y qué prerrequisito frena cada avance. */
   return pendientesDeGrupo(function(n){ return n.etapa === "analisis"; }, attempts, lessonsDone);
 }
+function habilidadesPendientesAlgebra(attempts, lessonsDone){
+  /* Las de la etapa de Álgebra A: pendientes con sus bloqueos, para
+     saber qué falta y qué prerrequisito frena cada avance. */
+  return pendientesDeGrupo(function(n){ return n.etapa === "algebra"; }, attempts, lessonsDone);
+}
 if(window.TutorData){
   window.TutorData.SKILL_GRAPH = SKILL_GRAPH;
   window.TutorData.PILOT_LESSONS = PILOT_LESSONS;
@@ -6714,9 +6820,12 @@ if(window.TutorData){
   window.TutorData.AN_LESSON_SKILLS = AN_LESSON_SKILLS;
   window.TutorData.habilidadDeIntento = habilidadDeIntento;
   window.TutorData.habilidadesPendientesAnalisis = habilidadesPendientesAnalisis;
+  window.TutorData.AL_LESSONS = AL_LESSONS;
+  window.TutorData.AL_LESSON_SKILLS = AL_LESSON_SKILLS;
+  window.TutorData.habilidadesPendientesAlgebra = habilidadesPendientesAlgebra;
 }
 
-/* ================= Pruebas de la Fase B (Skill Graph, piloto + Análisis A) =================
+/* ================= Pruebas de la Fase B (Skill Graph, piloto + Análisis A + Álgebra A) =================
    Batería separada de la Fase A y de la del motor: integridad del
    grafo (ids, prerrequisitos, orden topológico, sin ciclos),
    vinculación de clases y generadores del piloto, evaluabilidad de
@@ -7252,6 +7361,198 @@ function runSkillGraphTests(){
       if(!parsed.ok) return "el respaldo con habilidades an- no se pudo importar: " + parsed.error;
       var m = masteryDeHabilidad("an-limites-calculo", null, null);
       if(m.detalle.total !== 1) return "la evidencia histórica de límites debería atribuir 1 intento por su generador (g0 = cálculo de límites) y atribuyó " + m.detalle.total;
+      if(m.detalle.dificultadAlta !== 0) return "la dificultad null histórica contó como dificultad alta";
+      var histAntes = JSON.stringify(state.attempts);
+      var norm1 = normalizeState(state);
+      if(JSON.stringify(norm1.attempts) !== histAntes) return "normalizeState alteró el historial de intentos";
+      var norm2 = normalizeState(norm1);
+      if(JSON.stringify(norm2.attempts) !== histAntes) return "la segunda normalización alteró el historial";
+      if(JSON.stringify(norm2.skillAgg) !== JSON.stringify(norm1.skillAgg)) return "la segunda normalización no fue idempotente en skillAgg";
+      return true;
+    } finally { state = snapState; }
+  });
+  /* ---- Etapa de Álgebra A: grafo extendido, clases multihabilidad,
+     atribución autoritativa por generador y dificultad declarada ---- */
+  check("Álgebra: integridad de la etapa (26 nodos al-, ids válidos y las dependencias exigidas por la materia)", function(){
+    var alIds = Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id].etapa === "algebra"; });
+    if(alIds.length !== 26) return "la etapa debería tener 26 nodos y tiene " + alIds.length;
+    for(var i = 0; i < alIds.length; i++){
+      if(alIds[i].indexOf("al-") !== 0) return "el nodo de la etapa no tiene el prefijo al-: " + alIds[i];
+      if(!knownSkillId(alIds[i])) return "el nodo " + alIds[i] + " no es un id de habilidad válido";
+    }
+    function exige(id, pre){
+      var n = graphNode(id);
+      if(!n) return id + " no existe";
+      if(n.prereqs.indexOf(pre) < 0) return id + " debería requerir " + pre + " y requiere " + JSON.stringify(n.prereqs);
+      return null;
+    }
+    var mal = exige("al-complejos-polar", "al-complejos-modulo-conjugado")
+      || exige("al-complejos-modulo-conjugado", "al-complejos-operaciones")
+      || exige("al-polinomios-factorizacion", "al-polinomios-division")
+      || exige("al-polinomios-factorizacion", "al-complejos-ecuaciones")
+      || exige("al-vectores-rectas-planos", "al-vectores-combinaciones")
+      || exige("al-vectores-distancias-proyecciones", "al-vectores-producto-escalar")
+      || exige("al-vectores-distancias-proyecciones", "al-vectores-rectas-planos")
+      || exige("al-sistemas-parametro", "al-sistemas-gauss")
+      || exige("al-sistemas-parametro", "al-determinantes")
+      || exige("al-matrices-inversa", "al-determinantes")
+      || exige("al-matrices-inversa", "al-sistemas-gauss")
+      || exige("al-transformaciones-nucleo-imagen", "al-transformaciones-linealidad")
+      || exige("al-transformaciones-nucleo-imagen", "al-sistemas-gauss")
+      || exige("al-transformaciones-geometria", "al-determinantes")
+      || exige("al-conicas-desplazadas", "al-conicas-elementos")
+      || exige("al-conicas-intersecciones", "al-conicas-parabola");
+    if(mal) return mal;
+    for(var j = 0; j < AL_LESSONS.length; j++) if(!lessonById(AL_LESSONS[j])) return "la clase de la etapa no existe: " + AL_LESSONS[j];
+    return true;
+  });
+  check("Álgebra: correspondencia clases/generadores/habilidades (ninguna clase sin habilidades, ningún generador sin habilidad válida)", function(){
+    if(Object.keys(AL_LESSON_SKILLS).length !== AL_LESSONS.length) return "el mapa clase→habilidades no cubre las " + AL_LESSONS.length + " clases";
+    for(var i = 0; i < AL_LESSONS.length; i++){
+      var lid = AL_LESSONS[i], info = AL_LESSON_SKILLS[lid];
+      if(!info) return "la clase " + lid + " no tiene habilidades vinculadas";
+      if(info.habilidades.indexOf(info.principal) < 0) return "la principal de " + lid + " no está entre sus habilidades";
+      for(var h = 0; h < info.habilidades.length; h++){
+        var nodo = graphNode(info.habilidades[h]);
+        if(!nodo) return lid + " vincula una habilidad que no es nodo del grafo: " + info.habilidades[h];
+        if(nodo.lessons.indexOf(lid) < 0) return "el nodo " + info.habilidades[h] + " no declara entre sus clases a " + lid;
+      }
+      var meta = AL_GEN_META[lid], banco = LESSON_EXERCISES[lid] || [];
+      if(!meta) return "no hay tabla de declaración para " + lid;
+      if(meta.length !== banco.length) return "la tabla de " + lid + " declara " + meta.length + " generadores y el banco tiene " + banco.length;
+      for(var g = 0; g < meta.length; g++){
+        if(info.habilidades.indexOf(meta[g][0]) < 0) return lid + "#g" + g + " declara una habilidad que la clase no desarrolla: " + meta[g][0];
+        if(!(meta[g][1] === 1 || meta[g][1] === 2 || meta[g][1] === 3)) return lid + "#g" + g + " declara una dificultad inválida: " + meta[g][1];
+      }
+    }
+    return true;
+  });
+  check("Álgebra: barrido de generadores (cada instancia servida trae la habilidad y la dificultad declaradas en la tabla)", function(){
+    var mal = [];
+    AL_LESSONS.forEach(function(lid){
+      (LESSON_EXERCISES[lid] || []).forEach(function(gen, gi){
+        for(var r = 0; r < 15 && !mal.length; r++){
+          var e = sirve(gen);
+          if(!e){ mal.push(lid + "#g" + gi + " no sirvió una instancia válida"); break; }
+          if(e.skill !== AL_GEN_META[lid][gi][0]) mal.push(lid + "#g" + gi + " sirvió habilidad " + JSON.stringify(e.skill) + " y la tabla declara " + AL_GEN_META[lid][gi][0]);
+          else if(e.dificultad !== AL_GEN_META[lid][gi][1]) mal.push(lid + "#g" + gi + " sirvió dificultad " + JSON.stringify(e.dificultad) + " y la tabla declara " + AL_GEN_META[lid][gi][1]);
+        }
+      });
+    });
+    return mal.length ? mal[0] : true;
+  });
+  check("Álgebra: atribución sin duplicación (un intento de una clase multihabilidad cuenta una sola vez y para la habilidad correcta)", function(){
+    var set = [
+      att(1, "2026-11-10", "s1", "cbc-al2-matrices", null, "Producto de matrices", "cbc-al2-matrices#g7", true, null),
+      att(2, "2026-11-10", "s1", "cbc-al1-vectores", "frac-suma", "Distancia punto-plano", "cbc-al1-vectores#g12", true, 2),
+      att(3, "2026-11-10", "s1", "cbc-al2-conicas", null, "Cónica paso a paso", "cbc-al2-conicas#g17", true, null),
+      att(4, "2026-11-10", "s1", "cbc-al2-transformaciones", "al-transformaciones-linealidad", "Dimensión del núcleo", "cbc-al2-transformaciones#g8", true, 2)
+    ];
+    if(habilidadDeIntento(set[0]) !== "al-matrices-operaciones") return "el generador del producto de matrices no se atribuyó a operaciones: " + habilidadDeIntento(set[0]);
+    if(habilidadDeIntento(set[1]) !== "al-vectores-distancias-proyecciones") return "el intento con habilidad ajena no se atribuyó por su generador (g12 = distancia punto-plano): " + habilidadDeIntento(set[1]);
+    if(habilidadDeIntento(set[2]) !== "al-conicas-desplazadas") return "el intento histórico sin habilidad no se atribuyó por su generador (g17 = cónica paso a paso): " + habilidadDeIntento(set[2]);
+    if(habilidadDeIntento(set[3]) !== "al-transformaciones-nucleo-imagen") return "el intento con otra habilidad de la misma clase no se atribuyó por su generador (g8 = dimensión del núcleo): " + habilidadDeIntento(set[3]);
+    if(evidenciaDeHabilidad("frac-suma", set).length !== 0) return "un intento se contó también para frac-suma: hay duplicación";
+    if(evidenciaDeHabilidad("al-sistemas-gauss", set).length !== 0) return "un intento contó también para la principal de matrices: hay duplicación";
+    var suma = 0;
+    Object.keys(SKILL_GRAPH).forEach(function(id){ suma += evidenciaDeHabilidad(id, set).length; });
+    if(suma !== set.length) return "la evidencia total sobre el grafo es " + suma + " y debería ser exactamente " + set.length + " (un conteo por intento)";
+    return true;
+  });
+  check("Álgebra: AL_GEN_META manda en la atribución (skill no sobrescribe; sin generador resoluble no se atribuye a ninguna habilidad)", function(){
+    /* (a) skill null + generador válido → la habilidad del generador
+       (g7 de matrices es el producto de matrices según AL_GEN_META). */
+    var aA = att(1, "2026-11-10", "s1", "cbc-al2-matrices", null, "Producto de matrices", "cbc-al2-matrices#g7", true, null);
+    if(habilidadDeIntento(aA) !== "al-matrices-operaciones") return "(a) skill null con generador válido debería atribuir a al-matrices-operaciones y atribuyó a " + habilidadDeIntento(aA);
+    /* (b) skill válida de la misma clase pero distinta de la del
+       generador → prevalece AL_GEN_META. */
+    var aB = att(2, "2026-11-10", "s1", "cbc-al2-matrices", "al-determinantes", "Producto de matrices", "cbc-al2-matrices#g7", true, 2);
+    if(habilidadDeIntento(aB) !== "al-matrices-operaciones") return "(b) la skill de la misma clase sobrescribió a AL_GEN_META: atribuyó a " + habilidadDeIntento(aB);
+    if(evidenciaDeHabilidad("al-determinantes", [aB]).length !== 0) return "(b) el intento contó también para la skill que traía: hay sobrescritura o duplicación";
+    /* (c) skill ajena a la clase + generador válido → prevalece
+       AL_GEN_META. */
+    var aC = att(3, "2026-11-10", "s1", "cbc-al2-matrices", "an-lhopital", "Producto de matrices", "cbc-al2-matrices#g7", true, 2);
+    if(habilidadDeIntento(aC) !== "al-matrices-operaciones") return "(c) la skill ajena sobrescribió a AL_GEN_META: atribuyó a " + habilidadDeIntento(aC);
+    /* (d) generador inexistente o índice fuera del banco → no se
+       atribuye a ninguna habilidad, ni siquiera trayendo una skill
+       válida de la clase, y tampoco cae en la principal. */
+    var aD1 = att(4, "2026-11-10", "s1", "cbc-al2-matrices", null, "Producto de matrices", "cbc-al2-matrices#g99", true, null);
+    if(habilidadDeIntento(aD1) !== null) return "(d) un índice fuera del banco se atribuyó a " + habilidadDeIntento(aD1) + " en vez de a ninguna habilidad";
+    var aD2 = att(5, "2026-11-10", "s1", "cbc-al2-matrices", "al-matrices-operaciones", "Producto de matrices", "cbc-al2-matrices#g99", true, 2);
+    if(habilidadDeIntento(aD2) !== null) return "(d) con el generador fuera del banco, la skill del intento rescató la atribución: " + habilidadDeIntento(aD2);
+    var aD3 = att(6, "2026-11-10", "s1", "cbc-al2-matrices", "al-matrices-operaciones", "Producto de matrices", null, true, 2);
+    if(habilidadDeIntento(aD3) !== null) return "(d) sin generador registrado el intento se atribuyó a " + habilidadDeIntento(aD3) + " en vez de a ninguna habilidad";
+    var aD4 = att(7, "2026-11-10", "s1", "cbc-al2-matrices", null, "Producto escalar", "cbc-al1-vectores#g6", true, null);
+    if(habilidadDeIntento(aD4) !== null) return "(d) un generador de otra clase resolvió la atribución: " + habilidadDeIntento(aD4);
+    if(evidenciaDeHabilidad("al-sistemas-gauss", [aD1, aD2, aD3, aD4]).length !== 0) return "(d) algún intento sin generador resoluble cayó en la principal de su clase";
+    /* (e) ningún intento queda contado en dos habilidades: la suma
+       de la evidencia de todo el grafo es exactamente el número de
+       intentos atribuibles (los 3 con generador válido; los 4 sin
+       resolver no cuentan en ninguna). */
+    var mezcla = [aA, aB, aC, aD1, aD2, aD3, aD4];
+    var suma = 0;
+    Object.keys(SKILL_GRAPH).forEach(function(id){ suma += evidenciaDeHabilidad(id, mezcla).length; });
+    if(suma !== 3) return "(e) la evidencia total sobre el grafo es " + suma + " y debería ser exactamente 3 (solo los intentos con generador válido, una sola vez cada uno)";
+    /* (f) los intentos históricos CBC (skill null, dificultad null)
+       con generadores válidos siguen atribuyéndose por su generador. */
+    var hist = [
+      [att(11, "2026-11-10", "s1", "cbc-al1-conjuntos-complejos", null, "El módulo", "cbc-al1-conjuntos-complejos#g8", true, null), "al-complejos-modulo-conjugado"],
+      [att(12, "2026-11-10", "s1", "cbc-al1-polinomios", null, "Ruffini completo", "cbc-al1-polinomios#g7", true, null), "al-polinomios-division"],
+      [att(13, "2026-11-10", "s1", "cbc-al1-vectores", null, "Intersección recta-plano paso a paso", "cbc-al1-vectores#g16", true, null), "al-vectores-rectas-planos"],
+      [att(14, "2026-11-10", "s1", "cbc-al2-conicas", null, "Respuesta abierta", "cbc-al2-conicas#g20", true, null), "al-conicas-elementos"]
+    ];
+    for(var i = 0; i < hist.length; i++){
+      if(habilidadDeIntento(hist[i][0]) !== hist[i][1]) return "(f) el histórico de " + hist[i][0].gen + " debería atribuir a " + hist[i][1] + " y atribuyó a " + habilidadDeIntento(hist[i][0]);
+    }
+    return true;
+  });
+  check("Álgebra: una subhabilidad alcanza dominada con evidencia sintética válida, no domina si le falta un criterio y la evidencia de otra no la domina", function(){
+    /* Los generadores del conjunto son los que AL_GEN_META declara
+       para al-determinantes en el banco de matrices (g0, g2, g6,
+       g13 y g15). */
+    var set = conjuntoDominioAn("cbc-al2-matrices", "al-determinantes", [0, 2, 6, 13, 15]);
+    var m = masteryDeHabilidad("al-determinantes", set, {});
+    if(m.k !== "dominada") return "al-determinantes quedó en " + m.k + " con criterios " + JSON.stringify(m.criterios) + " y detalle " + JSON.stringify(m.detalle);
+    var sinDifAlta = set.map(function(a){ var c = Object.assign({}, a); c.dificultad = 1; return c; });
+    var m2 = masteryDeHabilidad("al-determinantes", sinDifAlta, {});
+    if(m2.criterios.dificultad) return "con toda la evidencia en dificultad 1 el criterio de dificultad debería fallar";
+    if(m2.k === "dominada") return "se marcó dominada faltándole el criterio de dificultad";
+    var otra = masteryDeHabilidad("al-sistemas-gauss", set, {});
+    if(otra.detalle.total !== 0) return "la evidencia de determinantes contó también para Gauss: ninguna habilidad se domina con evidencia de otra";
+    var vista = masteryDeHabilidad("al-determinantes", [], { "cbc-al2-matrices":"2026-11-10" });
+    if(vista.k !== "vista") return "con la clase vista y sin evidencia debería quedar vista y quedó " + vista.k;
+    return true;
+  });
+  check("Álgebra: bloqueo y desbloqueo por prerrequisitos", function(){
+    var bloq = bloqueosDe("al-matrices-inversa", [], {});
+    if(bloq.indexOf("al-determinantes") < 0 || bloq.indexOf("al-sistemas-gauss") < 0) return "al-matrices-inversa debería estar bloqueada por determinantes y por Gauss: " + JSON.stringify(bloq);
+    /* Generadores que AL_GEN_META declara para cada habilidad:
+       determinantes en matrices (g0, g2, g6, g13, g15) y Gauss en
+       matrices (g3, g9, g11, g12, g14). */
+    var ev = conjuntoDominioAn("cbc-al2-matrices", "al-determinantes", [0, 2, 6, 13, 15]).concat(conjuntoDominioAn("cbc-al2-matrices", "al-sistemas-gauss", [3, 9, 11, 12, 14]));
+    var libres = bloqueosDe("al-matrices-inversa", ev, {});
+    if(libres.length) return "con determinantes y Gauss dominados, al-matrices-inversa sigue bloqueada por: " + JSON.stringify(libres);
+    var cadena = bloqueosEnCadena("al-conicas-intersecciones", [], {});
+    if(cadena.indexOf("al-conicas-parabola") < 0 || cadena.indexOf("al-conicas-elementos") < 0) return "la cadena de al-conicas-intersecciones debería llegar a la parábola y a los elementos: " + JSON.stringify(cadena);
+    var pend = habilidadesPendientesAlgebra([], {});
+    if(pend.length !== 26) return "sin progreso deberían estar pendientes las 26 habilidades de la etapa y hay " + pend.length;
+    return true;
+  });
+  check("Álgebra: intentos históricos con skill null y dificultad null siguen funcionando, y los respaldos con habilidades al- importan", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      var viejo = recordAttempt({ lesson:"cbc-al1-vectores", skill:null, tipo:"Producto escalar", gen:"cbc-al1-vectores#g6", dada:"7", esperada:"7", ok:true, modo:"ronda", kind:"num" });
+      if(!viejo || viejo.skill !== null || viejo.dificultad !== null) return "el intento histórico no conservó skill null y dificultad null";
+      var nuevo = recordAttempt({ lesson:"cbc-al2-conicas", skill:"al-conicas-elementos", tipo:"Focos de la elipse", gen:"cbc-al2-conicas#g5", dada:"4", esperada:"4", ok:true, modo:"ronda", dificultad:2, kind:"num" });
+      if(!nuevo || nuevo.dificultad !== 2) return "recordAttempt no conservó la dificultad declarada por el generador de Álgebra";
+      if(!state.skillAgg["al-conicas-elementos"] || state.skillAgg["al-conicas-elementos"].total !== 1) return "skillAgg no agregó el intento de la subhabilidad de Álgebra";
+      var bad = validateStateShape(state);
+      if(bad) return "el estado con intentos de Álgebra no valida: " + bad;
+      var parsed = parseBackup(serializeBackup(state));
+      if(!parsed.ok) return "el respaldo con habilidades al- no se pudo importar: " + parsed.error;
+      var m = masteryDeHabilidad("al-vectores-producto-escalar", null, null);
+      if(m.detalle.total !== 1) return "la evidencia histórica de vectores debería atribuir 1 intento por su generador (g6 = producto escalar) y atribuyó " + m.detalle.total;
       if(m.detalle.dificultadAlta !== 0) return "la dificultad null histórica contó como dificultad alta";
       var histAntes = JSON.stringify(state.attempts);
       var norm1 = normalizeState(state);
@@ -10973,6 +11274,104 @@ Object.keys(AN_GEN_META).forEach(function(lid){
 });
 if(window.TutorData) window.TutorData.AN_GEN_META = AN_GEN_META;
 
+/* ================= Etapa Álgebra A: declaración por generador ======
+   Auditoría de los bancos reales de las 6 clases de Álgebra A (110
+   generadores en total; gN = el generador N del banco, en orden),
+   leídos uno por uno para asignar a cada uno su subhabilidad del
+   grafo y su dificultad real con la misma escala de las etapas
+   anteriores (1 = reconocimiento o un paso directo; 2 = varios
+   pasos; 3 = combinación de procedimientos, desarrollo por pasos o
+   respuesta abierta). La clasificación sale del contenido de cada
+   generador, no del criterio de dominio: predominan los 1 en los
+   bancos de reconocimiento (polinomios) y los 3 son solo los pasos
+   guiados completos, los abiertos y el corte entre dos cónicas.
+   Desglose por banco (cantidad de generadores por nivel):
+   - cbc-al1-conjuntos-complejos (18): 9 de nivel 1, 7 de nivel 2 y
+     2 de nivel 3. Ej.: nivel 1, la intersección se reconoce (g0);
+     nivel 2, dividir complejos pasando por el conjugado (g9);
+     nivel 3, el abierto de las parejas conjugadas (g17).
+   - cbc-al1-polinomios (17): 10/5/2. Ej.: nivel 1, el resto de
+     dividir por (x − a) es P(a) (g4); nivel 2, la tabla de Ruffini
+     completa (g7); nivel 3, el abierto del grado impar (g15).
+   - cbc-al1-vectores (19): 9/8/2. Ej.: nivel 1, el producto escalar
+     directo componente a componente (g6); nivel 2, la distancia de
+     un punto a un plano (g12); nivel 3, el corte recta-plano paso a
+     paso (g16).
+   - cbc-al2-matrices (18): 8/8/2. Ej.: nivel 1, el determinante 2×2
+     (g0); nivel 2, la inversa 2×2 con su fórmula y el determinante
+     (g8); nivel 3, Gauss paso a paso (g12) y el abierto del
+     determinante cero (g17).
+   - cbc-al2-transformaciones (17): 8/7/2. Ej.: nivel 1, el núcleo se
+     reconoce por su definición (g1); nivel 2, la dimensión del
+     núcleo por el rango y el teorema de las dimensiones (g8);
+     nivel 3, núcleo e imagen paso a paso (g13).
+   - cbc-al2-conicas (21): 8/9/4. Ej.: nivel 1, identificar la elipse
+     por la suma igual a 1 (g0); nivel 2, clasificar con el
+     discriminante (g9); nivel 3, los elementos desde la ecuación
+     general paso a paso (g18) y el corte entre dos cónicas (g16). */
+var AL_GEN_META = {
+  "cbc-al1-conjuntos-complejos": [
+    ["al-conjuntos", 1], ["al-complejos-modulo-conjugado", 1], ["al-complejos-polar", 1], ["al-complejos-ecuaciones", 1],
+    ["al-complejos-operaciones", 2], ["al-complejos-polar", 1], ["al-conjuntos", 2], ["al-conjuntos", 1],
+    ["al-complejos-modulo-conjugado", 1], ["al-complejos-modulo-conjugado", 2], ["al-complejos-operaciones", 2], ["al-complejos-polar", 2],
+    ["al-complejos-ecuaciones", 2], ["al-complejos-operaciones", 2], ["al-complejos-polar", 1], ["al-complejos-polar", 1],
+    ["al-complejos-modulo-conjugado", 3], ["al-complejos-ecuaciones", 3]
+  ],
+  "cbc-al1-polinomios": [
+    ["al-polinomios-factorizacion", 1], ["al-polinomios-factorizacion", 1], ["al-polinomios-factorizacion", 1], ["al-polinomios-factorizacion", 2],
+    ["al-polinomios-division", 1], ["al-polinomios-division", 1], ["al-polinomios-division", 1], ["al-polinomios-division", 2],
+    ["al-polinomios-factorizacion", 1], ["al-polinomios-factorizacion", 1], ["al-polinomios-coeficientes", 2], ["al-polinomios-coeficientes", 2],
+    ["al-polinomios-factorizacion", 2], ["al-polinomios-coeficientes", 1], ["al-polinomios-division", 3], ["al-polinomios-factorizacion", 3],
+    ["al-polinomios-coeficientes", 1]
+  ],
+  "cbc-al1-vectores": [
+    ["al-vectores-combinaciones", 1], ["al-vectores-combinaciones", 1], ["al-vectores-rectas-planos", 1], ["al-vectores-producto-vectorial", 1],
+    ["al-vectores-rectas-planos", 1], ["al-vectores-distancias-proyecciones", 1], ["al-vectores-producto-escalar", 1], ["al-vectores-producto-escalar", 1],
+    ["al-vectores-producto-escalar", 2], ["al-vectores-producto-vectorial", 2], ["al-vectores-rectas-planos", 1], ["al-vectores-rectas-planos", 2],
+    ["al-vectores-distancias-proyecciones", 2], ["al-vectores-distancias-proyecciones", 2], ["al-vectores-combinaciones", 2], ["al-vectores-producto-escalar", 2],
+    ["al-vectores-rectas-planos", 3], ["al-vectores-producto-escalar", 3], ["al-vectores-producto-vectorial", 2]
+  ],
+  "cbc-al2-matrices": [
+    ["al-determinantes", 1], ["al-matrices-operaciones", 1], ["al-determinantes", 1], ["al-sistemas-gauss", 1],
+    ["al-matrices-inversa", 1], ["al-sistemas-parametro", 1], ["al-determinantes", 1], ["al-matrices-operaciones", 2],
+    ["al-matrices-inversa", 2], ["al-sistemas-gauss", 2], ["al-sistemas-parametro", 2], ["al-sistemas-gauss", 2],
+    ["al-sistemas-gauss", 3], ["al-determinantes", 2], ["al-sistemas-gauss", 2], ["al-determinantes", 2],
+    ["al-sistemas-gauss", 1], ["al-matrices-inversa", 3]
+  ],
+  "cbc-al2-transformaciones": [
+    ["al-transformaciones-linealidad", 1], ["al-transformaciones-nucleo-imagen", 1], ["al-transformaciones-nucleo-imagen", 1], ["al-transformaciones-geometria", 1],
+    ["al-transformaciones-nucleo-imagen", 1], ["al-transformaciones-nucleo-imagen", 1], ["al-transformaciones-linealidad", 1], ["al-transformaciones-linealidad", 2],
+    ["al-transformaciones-nucleo-imagen", 2], ["al-transformaciones-nucleo-imagen", 2], ["al-transformaciones-geometria", 2], ["al-transformaciones-geometria", 2],
+    ["al-transformaciones-linealidad", 2], ["al-transformaciones-nucleo-imagen", 3], ["al-transformaciones-linealidad", 1], ["al-transformaciones-geometria", 2],
+    ["al-transformaciones-nucleo-imagen", 3]
+  ],
+  "cbc-al2-conicas": [
+    ["al-conicas-elementos", 1], ["al-conicas-elementos", 1], ["al-conicas-elementos", 1], ["al-conicas-elementos", 1],
+    ["al-conicas-elementos", 1], ["al-conicas-elementos", 2], ["al-conicas-parabola", 2], ["al-conicas-parabola", 2],
+    ["al-conicas-parabola", 2], ["al-conicas-discriminante-rotacion", 2], ["al-conicas-discriminante-rotacion", 1], ["al-conicas-desplazadas", 2],
+    ["al-conicas-discriminante-rotacion", 2], ["al-conicas-intersecciones", 2], ["al-conicas-elementos", 2], ["al-conicas-elementos", 1],
+    ["al-conicas-intersecciones", 3], ["al-conicas-desplazadas", 3], ["al-conicas-desplazadas", 3], ["al-conicas-parabola", 1],
+    ["al-conicas-elementos", 3]
+  ]
+};
+/* Aplicación de la declaración, igual que en Análisis: cada fábrica
+   de Álgebra queda envuelta para que el ejercicio que sirve nazca
+   con su habilidad y su dificultad. Los índices no cambian y
+   ningún otro banco se toca. */
+Object.keys(AL_GEN_META).forEach(function(lid){
+  var meta = AL_GEN_META[lid];
+  LESSON_EXERCISES[lid] = (LESSON_EXERCISES[lid] || []).map(function(gen, gi){
+    var m = meta[gi];
+    if(!m) return gen;
+    return function(){
+      var e = gen();
+      if(e && typeof e === "object"){ e.skill = m[0]; e.dificultad = m[1]; }
+      return e;
+    };
+  });
+});
+if(window.TutorData) window.TutorData.AL_GEN_META = AL_GEN_META;
+
 LESSON_EXERCISES["cbc-fis1-estatica"] = [
   function(){ var P = pick([200, 300, 400]); var RB = (100 * 2 + P * 1) / 4; return exNum("Reacción de un apoyo", "Una barra de 4 m y 100 N de peso se apoya en sus extremos A y B. Una carga de " + P + " N cuelga a 1 m de A. ¿Cuánto vale la reacción en B?", RB,
     ["DCL: R_A y R_B hacia arriba; el peso, 100 N en el centro (2 m de A); la carga, " + P + " N a 1 m de A.", "Momentos respecto de A, para que R_A no aparezca: R_B · 4 = 100 · 2 + " + P + " · 1 = " + (200 + P) + ".", "R_B = " + (200 + P) + " / 4 = " + RB + " N.", "Comprobación por ΣF = 0: R_A = 100 + " + P + " − " + RB + " = " + (100 + P - RB) + " N, y las dos reacciones suman el peso total ✓"]); },
@@ -11900,7 +12299,7 @@ function dominioDe(l){
 function renderGrafoPiloto(){
   var gl = $("#graph-list"); if(!gl) return;
   var orden = ordenHabilidades() || Object.keys(SKILL_GRAPH);
-  var ids = orden.filter(function(id){ return SKILL_GRAPH[id].piloto || SKILL_GRAPH[id].etapa === "analisis"; });
+  var ids = orden.filter(function(id){ return SKILL_GRAPH[id].piloto || SKILL_GRAPH[id].etapa === "analisis" || SKILL_GRAPH[id].etapa === "algebra"; });
   gl.innerHTML = ids.map(function(id){
     var n = SKILL_GRAPH[id];
     var m = masteryDeHabilidad(id, null, null);
