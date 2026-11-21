@@ -892,9 +892,35 @@ function isOpenAttempt(a){
   if(a.kind === "open") return true;
   return a.tipo === "Respuesta abierta" && typeof a.dada === "string" && a.dada.indexOf("Autoevaluación:") === 0;
 }
+/* ¿Este intento es de un ejercicio por pasos (steps) que se COMPLETÓ
+   con reintentos? Completar un desarrollo y acertarlo al primer intento
+   son dos cosas distintas: el steps solo se cierra cuando todas las
+   etapas quedaron resueltas, así que un intento steps con ok:false y
+   detalle pasos donde TODAS las etapas figuran ok pero alguna necesitó
+   reintentos (primero:false o reintentos > 0) es un ejercicio
+   completado con ayuda de la corrección inmediata, no un fallo: queda
+   en el historial con su detalle, pero no suma como error en los
+   agregados (lessonEx, skills, skillAgg, errorLog) ni en el patrón de
+   baja de dificultad. El steps sin reintentos (ok:true) sí cuenta como
+   acierto en todo, como siempre. Los intentos steps viejos SIN detalle
+   pasos no se reinterpretan: sin el detalle no se puede distinguir el
+   caso, y conservan el tratamiento que ya tenían. */
+function isStepsRetryAttempt(a){
+  if(!a || typeof a !== "object") return false;
+  if(a.kind !== "steps" || a.ok) return false;
+  if(!Array.isArray(a.pasos) || !a.pasos.length) return false;
+  var conReintentos = false;
+  for(var i = 0; i < a.pasos.length; i++){
+    var p = a.pasos[i];
+    if(!p || !p.ok) return false; /* alguna etapa no quedó resuelta: no es un completado */
+    if(p.primero === false || (typeof p.reintentos === "number" && p.reintentos > 0)) conReintentos = true;
+  }
+  return conReintentos;
+}
 function bumpSkillAggIn(agg, a){
   if(!agg || !a || typeof a.skill !== "string" || !a.skill) return;
   if(isOpenAttempt(a)) return; /* los abiertos no alimentan los agregados de dominio */
+  if(isStepsRetryAttempt(a)) return; /* un steps completado con reintentos tampoco: no es acierto ni error */
   var g = agg[a.skill];
   if(!isPlainObj(g)){ g = emptySkillAgg(); agg[a.skill] = g; }
   if(!isPlainObj(g.sesiones)) g.sesiones = {};
@@ -935,10 +961,18 @@ function normalizeState(s){
      intentos presentes: es la mejor reconstrucción posible y queda
      marcada en meta para que conste. */
   out.meta = isPlainObj(s.meta) ? s.meta : {};
+  /* skillAggReconstruido: si el agregado se reconstruye en ESTA misma
+     normalización, computeSkillAgg ya excluye los intentos abiertos
+     (bumpSkillAggIn los salta), así que la limpieza aggSinAbiertos de
+     más abajo NO debe volver a descontarlos de skillAgg: sería un
+     doble descuento. Los descuentos de lessonEx y skills sí se hacen
+     igual, porque esos agregados históricos sí incluían los abiertos. */
+  var skillAggReconstruido = false;
   if(isPlainObj(s.skillAgg) && !validateSkillAgg(s.skillAgg)){
     out.skillAgg = s.skillAgg;
   } else {
     out.skillAgg = computeSkillAgg(out.attempts);
+    skillAggReconstruido = true;
     if(out.attempts.length) out.meta.skillAggReconstruido = todayISO();
   }
   /* Corrección de auditoría, una sola vez por estado (queda marcada en
@@ -972,18 +1006,20 @@ function normalizeState(s){
           if(a.ok){ if(sx.ok > 0) sx.ok--; } else if(sx.mal > 0) sx.mal--;
         }
       });
-      var totAgg = 0;
-      Object.keys(out.skillAgg).forEach(function(k){ totAgg += out.skillAgg[k].total || 0; });
-      var conSkill = out.attempts.filter(function(a){ return typeof a.skill === "string" && !!a.skill; }).length;
-      if(totAgg === conSkill){
-        out.skillAgg = computeSkillAgg(out.attempts);
-      } else {
-        opensViejos.forEach(function(a){
-          if(a.skill && isPlainObj(out.skillAgg[a.skill])){
-            var gx = out.skillAgg[a.skill];
-            if(gx.total > 0){ gx.total--; if(a.ok){ if(gx.ok > 0) gx.ok--; } else if(gx.mal > 0) gx.mal--; }
-          }
-        });
+      if(!skillAggReconstruido){
+        var totAgg = 0;
+        Object.keys(out.skillAgg).forEach(function(k){ totAgg += out.skillAgg[k].total || 0; });
+        var conSkill = out.attempts.filter(function(a){ return typeof a.skill === "string" && !!a.skill; }).length;
+        if(totAgg === conSkill){
+          out.skillAgg = computeSkillAgg(out.attempts);
+        } else {
+          opensViejos.forEach(function(a){
+            if(a.skill && isPlainObj(out.skillAgg[a.skill])){
+              var gx = out.skillAgg[a.skill];
+              if(gx.total > 0){ gx.total--; if(a.ok){ if(gx.ok > 0) gx.ok--; } else if(gx.mal > 0) gx.mal--; }
+            }
+          });
+        }
       }
     }
     out.meta.aggSinAbiertos = todayISO();
@@ -1322,13 +1358,45 @@ function recordAttempt(f){
 /* Patrón de baja de dificultad (condición cerrada): un error aislado nunca
    baja el nivel; solo baja si la precisión de los últimos 6 intentos de la
    habilidad es menor al 60%. Los intentos de respuesta abierta no entran:
-   son autoevaluaciones, no evidencia objetiva de dificultad. */
+   son autoevaluaciones, no evidencia objetiva de dificultad. Tampoco
+   entran los steps completados con reintentos (ver isStepsRetryAttempt):
+   completaron el desarrollo, no son fallos. */
 function patronParaBajar(skillId){
   if(!state || !Array.isArray(state.attempts)) return false;
-  var ult = state.attempts.filter(function(a){ return a.skill === skillId && !isOpenAttempt(a); }).slice(-6);
+  var ult = state.attempts.filter(function(a){ return a.skill === skillId && !isOpenAttempt(a) && !isStepsRetryAttempt(a); }).slice(-6);
   if(ult.length < 6) return false;
   var okc = ult.filter(function(a){ return a.ok; }).length;
   return okc / ult.length < 0.6;
+}
+/* Contabilización de un ejercicio de ronda en los agregados de los que
+   salen la precisión y el dominio: skills (por habilidad), lessonEx
+   (por clase, lo que lee dominioDe) y errorLog. Es la única vía por la
+   que finish suma un resultado a esos agregados y vive fuera del
+   cierre de la ronda para que las pruebas del motor la ejerciten tal
+   cual corre en la página. Devuelve true si el resultado sumó (acierto
+   o error objetivo) y false si quedó solo en el historial:
+   - Respuesta abierta (open): el juicio es una autoevaluación del
+     alumno contra la solución modelo, no una corrección objetiva; su
+     comportamiento no cambia y no suma a ningún agregado.
+   - Steps completado con reintentos (kind "steps" con ok false al
+     cerrar finish, lo que solo ocurre cuando TODAS las etapas quedaron
+     resueltas pero alguna necesitó más de un intento): completar el
+     ejercicio y resolverlo todo al primer intento son dos métricas
+     distintas. No es un error (el desarrollo se completó) pero tampoco
+     evidencia independiente de dominio (hubo corrección inmediata por
+     etapa), así que no suma ni como acierto ni como error a ningún
+     agregado; queda en el historial con su detalle pasos (ver
+     isStepsRetryAttempt) y tampoco entra en patronParaBajar. El steps
+     sin reintentos llega con ok true y suma como acierto, como
+     siempre. */
+function contabilizarLex(lessonId, ex, skillId, ok){
+  var esAbierto = ex.kind === "open";
+  var esStepsConReintentos = ex.kind === "steps" && !ok;
+  if(esAbierto || esStepsConReintentos) return false;
+  if(skillId && skillById(skillId)){ var ss = skillStat(skillId); if(ok) ss.ok++; else ss.mal++; }
+  var ls = lessonExStat(lessonId); if(ok) ls.ok++; else ls.mal++;
+  if(!ok){ if(!state.errorLog) state.errorLog = []; state.errorLog.push({ lesson:lessonId, tipo:ex.type, fecha:todayISO() }); if(state.errorLog.length > 300) state.errorLog = state.errorLog.slice(-300); }
+  return true;
 }
 /* ================= Respaldo: exportar / importar con validación ================= */
 function serializeBackup(st){
@@ -1701,7 +1769,13 @@ function runPhaseATests(){
      limpieza única descuenta los abiertos heredados de lessonEx,
      skills y skillAgg sin tocar el historial; un intento por pasos
      guarda su detalle por etapa y sobrevive a exportar/importar; un
-     respaldo sin los campos nuevos importa igual que antes.
+     respaldo sin los campos nuevos importa igual que antes; y la
+     contabilización de la ronda (contabilizarLex, la vía que usa
+     finish) distingue completar un steps de acertarlo al primer
+     intento: el completado con reintentos no modifica el cociente de
+     dominio, no entra en lessonEx, skills, skillAgg ni errorLog, no
+     dispara el patrón de baja, y el historial conserva ambos casos
+     con su detalle.
    Qué NO hace: no valida los enunciados ni las soluciones de los
    tipos cuya respuesta no se deriva de los parámetros o del texto
    del enunciado; eso no es computable acá y no se presenta como
@@ -1902,9 +1976,157 @@ function runEngineTests(){
     if(back.state.attempts.length !== 1 || back.state.attempts[0].kind !== undefined || back.state.attempts[0].pasos !== undefined) return "el intento viejo cambió al importar";
     return true;
   });
+  check("La limpieza no descuenta dos veces los abiertos de skillAgg cuando el agregado se reconstruye en la misma normalización (5 objetivos + 3 abiertos, sin skillAgg previo)", function(){
+    var crudo = emptyStateV2();
+    delete crudo.skillAgg; /* sin skillAgg previo válido: normalizeState lo reconstruye con computeSkillAgg, que ya excluye los abiertos */
+    crudo.attempts = [];
+    var i;
+    for(i = 0; i < 5; i++) crudo.attempts.push({ ts:i + 1, fecha:"2026-11-12", session:"s-x", lesson:"s2-suma", skill:"frac-suma", tipo:"Suma", gen:"s2-suma#g0", dada:"5/6", esperada:"5/6", ok:true, modo:"ronda", dificultad:null });
+    for(i = 0; i < 3; i++) crudo.attempts.push({ ts:10 + i, fecha:"2026-11-12", session:"s-x", lesson:"s2-suma", skill:"frac-suma", tipo:"Respuesta abierta", gen:"s2-suma#g9", dada:"Autoevaluación: mi desarrollo coincide", esperada:"El desarrollo modelo está en la solución paso a paso.", ok:true, modo:"ronda", dificultad:null });
+    /* lessonEx y skills tal como los dejó el motor viejo: contaban los 8 intentos, abiertos incluidos. */
+    crudo.lessonEx = { "s2-suma": { ok:8, mal:0 } };
+    crudo.skills = { "frac-suma": { ok:8, mal:0, nivel:1, racha:0 } };
+    var limpio = normalizeState(crudo);
+    var esperado = computeSkillAgg(crudo.attempts.filter(function(a){ return !isOpenAttempt(a); }));
+    if(JSON.stringify(limpio.skillAgg) !== JSON.stringify(esperado)) return "skillAgg no coincide con computeSkillAgg sobre el historial sin abiertos: " + JSON.stringify(limpio.skillAgg);
+    if(!limpio.skillAgg["frac-suma"] || limpio.skillAgg["frac-suma"].total !== 5 || limpio.skillAgg["frac-suma"].ok !== 5) return "skillAgg quedó en " + JSON.stringify(limpio.skillAgg["frac-suma"]) + " en vez de total=5, ok=5 (doble descuento)";
+    if(limpio.lessonEx["s2-suma"].ok !== 5) return "lessonEx no quedó consistente tras descontar los 3 abiertos: ok=" + limpio.lessonEx["s2-suma"].ok;
+    if(limpio.skills["frac-suma"].ok !== 5) return "skills no quedó consistente tras descontar los 3 abiertos: ok=" + limpio.skills["frac-suma"].ok;
+    if(limpio.attempts.length !== 8) return "la normalización tocó el historial de intentos";
+    var antes = JSON.stringify({ sa:limpio.skillAgg, le:limpio.lessonEx, sk:limpio.skills });
+    var otra = normalizeState(limpio);
+    if(JSON.stringify({ sa:otra.skillAgg, le:otra.lessonEx, sk:otra.skills }) !== antes) return "una segunda normalización volvió a alterar los agregados";
+    return true;
+  });
+  check("Un steps completado con reintentos queda en el historial con su detalle pero no suma como error (ni skillAgg, ni dominio, ni patrón de baja); al primer intento sí suma como acierto", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      var pasosRet = [ { primero:true, reintentos:0, ok:true }, { primero:false, reintentos:2, ok:true } ];
+      var aRet = recordAttempt({ lesson:"s2-suma", skill:"frac-suma", tipo:"Suma paso a paso", gen:"s2-suma#g7", dada:"6 · 5/6", esperada:"El resultado final es 5/6.", ok:false, modo:"ronda", kind:"steps", pasos:pasosRet });
+      if(!isStepsRetryAttempt(aRet)) return "el intento steps completado con reintentos no se reconoce como tal";
+      if(state.attempts.length !== 1 || !aRet.pasos || aRet.pasos.length !== 2 || aRet.pasos[1].reintentos !== 2) return "el historial no conserva el steps con reintentos y su detalle por etapa";
+      if(state.skillAgg["frac-suma"]) return "el steps con reintentos alimentó skillAgg como si fuera un error";
+      /* El dominio sale de lessonEx y finish no lo toca en este caso:
+         con 12 aciertos objetivos la clase está dominada y el intento
+         con reintentos no forma parte de ese conteo. */
+      state.lessonEx["s2-suma"] = { ok:12, mal:0 };
+      if(dominioDe({ id:"s2-suma" }).k !== "dominado") return "preparación de la prueba: 12/12 debería dar dominado";
+      if(state.lessonEx["s2-suma"].ok + state.lessonEx["s2-suma"].mal !== 12) return "el steps con reintentos alteró el conteo del que sale el dominio";
+      state.attempts = [];
+      for(var i = 0; i < 6; i++) recordAttempt({ lesson:"s1-signos", skill:"signos", tipo:"Signos paso a paso", gen:"s1-signos#g5", dada:"x", esperada:"y", ok:false, modo:"ronda", kind:"steps", pasos:pasosRet });
+      if(patronParaBajar("signos")) return "seis steps completados con reintentos dispararon el patrón de baja";
+      if(state.skillAgg["signos"]) return "los steps con reintentos alimentaron skillAgg";
+      var aFirst = recordAttempt({ lesson:"s2-suma", skill:"frac-suma", tipo:"Suma paso a paso", gen:"s2-suma#g7", dada:"6 · 5/6", esperada:"El resultado final es 5/6.", ok:true, modo:"ronda", kind:"steps", pasos:[ { primero:true, reintentos:0, ok:true }, { primero:true, reintentos:0, ok:true } ] });
+      if(isStepsRetryAttempt(aFirst)) return "un steps al primer intento se clasificó como completado con reintentos";
+      if(!state.skillAgg["frac-suma"] || state.skillAgg["frac-suma"].total !== 1 || state.skillAgg["frac-suma"].ok !== 1) return "el steps al primer intento no sumó como acierto en skillAgg";
+      var conPasos = state.attempts.filter(function(a){ return a.kind === "steps" && Array.isArray(a.pasos) && a.pasos.length === 2; });
+      if(conPasos.length !== 7) return "el historial no conserva los dos casos de steps con su detalle (hay " + conPasos.length + ")";
+      if(isStepsRetryAttempt({ kind:"steps", ok:false })) return "un steps histórico sin detalle pasos se reinterpretó como completado con reintentos";
+      var back = parseBackup(serializeBackup(state));
+      if(!back.ok) return "un respaldo con steps con reintentos fue rechazado: " + back.error;
+      var imp = back.state.attempts.filter(isStepsRetryAttempt);
+      if(imp.length !== 6) return "tras importar, los steps con reintentos ya no se reconocen (hay " + imp.length + ")";
+      return true;
+    } finally { state = snapState; }
+  });
+  check("La contabilización de la ronda (contabilizarLex, la vía que usa finish) distingue completar un steps de acertarlo al primer intento: dominio, patrón de baja, historial y respaldos viejos", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      var exSteps = { kind:"steps", type:"Suma paso a paso" };
+      var pasosRet = [ { primero:true, reintentos:0, ok:true }, { primero:false, reintentos:2, ok:true } ];
+      var pasosFirst = [ { primero:true, reintentos:0, ok:true }, { primero:true, reintentos:0, ok:true } ];
+      /* Punto de partida al borde del dominio: 12 bien de 14 = 85,7%.
+         Un mal más bajaría el cociente a 12/15 = 80% y la clase
+         dejaría de estar dominada. */
+      state.lessonEx["s2-suma"] = { ok:12, mal:2 };
+      state.skills["frac-suma"] = { ok:12, mal:2, nivel:2, racha:0 };
+      if(dominioDe({ id:"s2-suma" }).k !== "dominado") return "preparación de la prueba: 12/14 debería dar dominado";
+      var cocienteAntes = 12 / 14;
+      /* 1) Steps completado con reintentos, registrado como lo hace
+         finish: contabilizarLex + recordAttempt con ok false y el
+         detalle por etapa. No modifica el cociente de dominio. */
+      if(contabilizarLex("s2-suma", exSteps, "frac-suma", false) !== false) return "contabilizarLex sumó un steps completado con reintentos a los agregados";
+      recordAttempt({ lesson:"s2-suma", skill:"frac-suma", tipo:"Suma paso a paso", gen:"s2-suma#g7", dada:"6 · 5/6", esperada:"El resultado final es 5/6.", ok:false, modo:"ronda", kind:"steps", pasos:pasosRet });
+      var lx = state.lessonEx["s2-suma"], sk = state.skills["frac-suma"];
+      if(lx.ok !== 12 || lx.mal !== 2) return "el steps con reintentos modificó lessonEx: " + JSON.stringify(lx);
+      if(lx.ok / (lx.ok + lx.mal) !== cocienteAntes) return "el steps con reintentos modificó el cociente de dominio";
+      if(dominioDe({ id:"s2-suma" }).k !== "dominado") return "el steps con reintentos hizo perder el dominio de la clase";
+      if(sk.ok !== 12 || sk.mal !== 2) return "el steps con reintentos modificó skills: " + JSON.stringify(sk);
+      if(state.errorLog.length !== 0) return "el steps con reintentos entró en el registro de errores";
+      if(state.skillAgg["frac-suma"]) return "el steps con reintentos alimentó skillAgg";
+      /* 2) Seis steps completados con reintentos de otra habilidad no
+         disparan el patrón de reducción de dificultad. */
+      for(var i = 0; i < 6; i++){
+        contabilizarLex("s1-signos", { kind:"steps", type:"Signos paso a paso" }, "signos", false);
+        recordAttempt({ lesson:"s1-signos", skill:"signos", tipo:"Signos paso a paso", gen:"s1-signos#g5", dada:"x", esperada:"y", ok:false, modo:"ronda", kind:"steps", pasos:pasosRet });
+      }
+      if(patronParaBajar("signos")) return "seis steps completados con reintentos dispararon el patrón de baja";
+      if(state.lessonEx["s1-signos"]) return "los steps con reintentos crearon conteos en lessonEx de otra clase";
+      /* 3) Steps al primer intento: suma como acierto en todo. */
+      if(contabilizarLex("s2-suma", exSteps, "frac-suma", true) !== true) return "contabilizarLex no sumó un steps al primer intento";
+      recordAttempt({ lesson:"s2-suma", skill:"frac-suma", tipo:"Suma paso a paso", gen:"s2-suma#g7", dada:"6 · 5/6", esperada:"El resultado final es 5/6.", ok:true, modo:"ronda", kind:"steps", pasos:pasosFirst });
+      if(state.lessonEx["s2-suma"].ok !== 13 || state.lessonEx["s2-suma"].mal !== 2) return "el steps al primer intento no sumó como acierto en lessonEx";
+      if(state.skills["frac-suma"].ok !== 13) return "el steps al primer intento no sumó como acierto en skills";
+      if(!state.skillAgg["frac-suma"] || state.skillAgg["frac-suma"].total !== 1 || state.skillAgg["frac-suma"].ok !== 1) return "el steps al primer intento no sumó como acierto en skillAgg";
+      /* 4) El historial conserva los dos casos con su detalle por etapa. */
+      var hRet = state.attempts.filter(function(a){ return a.kind === "steps" && !a.ok; });
+      var hFirst = state.attempts.filter(function(a){ return a.kind === "steps" && a.ok; });
+      if(hRet.length !== 7 || hFirst.length !== 1) return "el historial no conserva ambos casos de steps (con reintentos: " + hRet.length + ", al primer intento: " + hFirst.length + ")";
+      if(!hRet[0].pasos || hRet[0].pasos.length !== 2 || hRet[0].pasos[1].reintentos !== 2 || hRet[0].pasos[1].primero !== false) return "el historial perdió el detalle por etapa del steps con reintentos";
+      if(!hFirst[0].pasos || hFirst[0].pasos.some(function(p){ return !p.primero || p.reintentos !== 0 || !p.ok; })) return "el historial perdió el detalle por etapa del steps al primer intento";
+      /* Los abiertos conservan su comportamiento por la misma vía, y un
+         error objetivo sigue sumando como error con su registro. */
+      if(contabilizarLex("s2-suma", { kind:"open", type:"Respuesta abierta" }, "frac-suma", false) !== false) return "un abierto pasó a sumar en los agregados";
+      if(state.lessonEx["s2-suma"].mal !== 2 || state.errorLog.length !== 0) return "el abierto alteró lessonEx o el registro de errores";
+      if(contabilizarLex("s2-suma", { kind:"num", type:"Suma" }, "frac-suma", false) !== true) return "un error objetivo ya no suma en los agregados";
+      if(state.lessonEx["s2-suma"].mal !== 3 || state.errorLog.length !== 1) return "el error objetivo no quedó en lessonEx y en el registro de errores";
+      /* 5) Un respaldo con un steps histórico SIN detalle pasos (formato
+         anterior a que se guardara el detalle) importa igual que antes
+         y no se reinterpreta como completado con reintentos. */
+      var viejoSt = emptyStateV2();
+      viejoSt.attempts = [ { ts:1760000000000, fecha:"2026-11-12", session:"s-vieja", lesson:"s2-suma", skill:"frac-suma", tipo:"Suma paso a paso", gen:"s2-suma#g7", dada:"6 · 5/6", esperada:"El resultado final es 5/6.", ok:false, modo:"ronda", dificultad:null, kind:"steps" } ];
+      viejoSt.skillAgg = computeSkillAgg(viejoSt.attempts);
+      var backV = parseBackup(serializeBackup(viejoSt));
+      if(!backV.ok) return "un respaldo con un steps histórico sin pasos fue rechazado: " + backV.error;
+      if(backV.state.attempts.length !== 1 || backV.state.attempts[0].pasos !== undefined) return "el steps histórico cambió al importar";
+      if(isStepsRetryAttempt(backV.state.attempts[0])) return "el steps histórico sin detalle se reinterpretó como completado con reintentos";
+      return true;
+    } finally { state = snapState; }
+  });
+  check("La tolerancia numérica no acepta respuestas erróneas cuando la respuesta es chica (casos obligatorios y generadores reales) y mantiene la habitual en magnitudes normales", function(){
+    var solOk = ["Paso único de prueba."];
+    function gr(ans, dada){ return gradeLex(exNum("T", "¿Pregunta?", ans, solOk), dada); }
+    if(!gr(0.04, "0.04").ok) return "ans=0,04 ya no acepta 0,04";
+    if(gr(0.04, "0.05").ok) return "ans=0,04 sigue aceptando 0,05";
+    if(!gr(0.0651, "0.0651").ok) return "ans=0,0651 ya no acepta 0,0651";
+    if(gr(0.0651, "0.07").ok) return "ans=0,0651 sigue aceptando 0,07";
+    var genDec = LESSON_EXERCISES["s3-dec-operaciones"][2];
+    var chicas = 0;
+    for(var i = 0; i < 300 && chicas < 3; i++){
+      var e1 = genDec();
+      if(!e1 || e1.kind !== "num" || !(Math.abs(e1.ans) < 0.1)) continue;
+      chicas++;
+      if(!gradeLex(e1, String(e1.ans)).ok) return "s3-dec-operaciones#g2: la respuesta correcta " + e1.ans + " fue rechazada";
+      var mal = Math.round((e1.ans + 0.01) * 100) / 100;
+      if(gradeLex(e1, String(mal)).ok) return "s3-dec-operaciones#g2: aceptó " + mal + " con respuesta " + e1.ans;
+    }
+    if(!chicas) return "no se generó ninguna instancia chica de s3-dec-operaciones#g2 para probar";
+    var gensInt = LESSON_EXERCISES["cbc-an2-integrales"], e9 = null;
+    for(var j = 0; j < gensInt.length && !e9; j++){ var cand = gensInt[j](); if(cand && cand.kind === "num" && Math.abs(cand.ans - 0.0651) < 1e-12) e9 = cand; }
+    if(!e9) return "no se encontró el generador de integrales con respuesta 0,0651";
+    if(!gradeLex(e9, "0.0651").ok) return "cbc-an2-integrales#g9: la respuesta correcta fue rechazada";
+    if(gradeLex(e9, "0.07").ok) return "cbc-an2-integrales#g9: aceptó 0,07";
+    if(!gr(2.5, "2.51").ok) return "ans=2,5 ya no acepta 2,51 (tolerancia habitual rota)";
+    if(gr(2.5, "2.52").ok) return "ans=2,5 acepta 2,52";
+    if(!gr(0.46875, "0.46").ok) return "ans=0,46875 ya no acepta 0,46 (tolerancia habitual rota)";
+    if(!gr(100, "100.01").ok) return "ans=100 ya no acepta 100,01 (tolerancia habitual rota)";
+    return true;
+  });
   return results;
 }
-window.TutorData = { migrateV1toV2: migrateV1toV2, validateStateShape: validateStateShape, serializeBackup: serializeBackup, parseBackup: parseBackup, importBackupText: importBackupText, recordAttempt: recordAttempt, patronParaBajar: patronParaBajar, runPhaseATests: runPhaseATests, runEngineTests: runEngineTests, isOpenAttempt: isOpenAttempt, writeVerified: writeVerified, saveState: saveState, loadState: loadState, computeSkillAgg: computeSkillAgg, skillAggSummary: skillAggSummary, ATTEMPTS_CAP: ATTEMPTS_CAP, getState: function(){ return state; }, getSessionId: function(){ return currentSessionId; } };
+window.TutorData = { migrateV1toV2: migrateV1toV2, validateStateShape: validateStateShape, serializeBackup: serializeBackup, parseBackup: parseBackup, importBackupText: importBackupText, recordAttempt: recordAttempt, patronParaBajar: patronParaBajar, runPhaseATests: runPhaseATests, runEngineTests: runEngineTests, isOpenAttempt: isOpenAttempt, isStepsRetryAttempt: isStepsRetryAttempt, writeVerified: writeVerified, saveState: saveState, loadState: loadState, computeSkillAgg: computeSkillAgg, skillAggSummary: skillAggSummary, ATTEMPTS_CAP: ATTEMPTS_CAP, getState: function(){ return state; }, getSessionId: function(){ return currentSessionId; } };
 function skillStat(id){
   if(!state.skills[id]) state.skills[id] = { ok:0, mal:0, nivel:1, racha:0 };
   return state.skills[id];
@@ -9615,7 +9837,15 @@ function gradeLex(ex, raw, selIdx){
   if(ex.kind === "num"){
     var v = parseAnswer(norm);
     if(isNaN(v)) return { counted:false, msg:"Escribe un número o una fracción como 5/6 para poder revisar." };
-    return { counted:true, ok: Math.abs(v - ex.ans) < 0.011 };
+    /* Tolerancia: la habitual es absoluta (0,011) y se mantiene para
+       |ans| >= 0,1. Con respuestas chicas (|ans| < 0,1) esa tolerancia
+       aceptaba respuestas erróneas (con ans = 0,04 aceptaba 0,05; con
+       ans = 0,0651 aceptaba 0,07), así que ahí la tolerancia pasa a ser
+       el 5% del valor, con un piso de 0,0011 para no exigir más
+       precisión de la que el enunciado pide: ans = 0,04 acepta 0,04 y
+       rechaza 0,05; ans = 0,0651 acepta 0,0651 y rechaza 0,07. */
+    var tolNum = Math.abs(ex.ans) < 0.1 ? Math.max(0.0011, Math.abs(ex.ans) * 0.05) : 0.011;
+    return { counted:true, ok: Math.abs(v - ex.ans) < tolNum };
   }
   if(ex.kind === "frac"){
     var m = norm.replace(/\s+/g, "").match(/^(-?\d+)(?:\/(\d+))?$/);
@@ -9863,20 +10093,26 @@ function startLessonExercises(l, mount){
        conteos por clase de los que sale el dominio (lessonEx, que lee
        dominioDe), ni al registro de errores que alimenta los repasos.
        Los agregados por habilidad (skillAgg) tampoco los cuentan:
-       recordAttempt los excluye vía isOpenAttempt. */
-    var esAbierto = ex.kind === "open";
-    if(!esAbierto){
-      if(skillId && skillById(skillId)){ var ss = skillStat(skillId); if(ok) ss.ok++; else ss.mal++; }
-      var ls = lessonExStat(l.id); if(ok) ls.ok++; else ls.mal++;
-      if(!ok){ if(!state.errorLog) state.errorLog = []; state.errorLog.push({ lesson:l.id, tipo:ex.type, fecha:todayISO() }); if(state.errorLog.length > 300) state.errorLog = state.errorLog.slice(-300); }
-    }
+       recordAttempt los excluye vía isOpenAttempt.
+       Los ejercicios por pasos (steps) solo llegan a finish cuando el
+       desarrollo quedó COMPLETO: si ok es false es porque alguna etapa
+       necesitó reintentos. Ese caso se distingue del acierto al primer
+       intento (ok true, suma como acierto en todo) sin tratarlo como
+       error: queda en el historial con su detalle pasos, pero no suma
+       ni a skills, ni a lessonEx, ni al registro de errores, y
+       recordAttempt lo excluye de skillAgg vía isStepsRetryAttempt. */
+    /* La suma a skills, lessonEx y errorLog pasa por contabilizarLex:
+       es la que distingue el acierto objetivo del abierto (no suma) y
+       del steps completado con reintentos (no suma ni como acierto ni
+       como error). */
+    contabilizarLex(l.id, ex, skillId, ok);
     recordAttempt({ lesson:l.id, skill:skillId || null, tipo:ex.type, gen:ex._gen || null, dada:(dada === null || dada === undefined ? "" : dada), esperada:lexCorrectText(ex), ok:ok, modo:"ronda", dificultad:(ex.dificultad === null || ex.dificultad === undefined ? null : ex.dificultad), kind:ex.kind, pasos:pasosDetalle || null });
     saveState();
     var fb = $("#lex-fb", mount);
     if(ok && ex.kind === "open"){ fb.className = "feedback ok"; fb.textContent = "Bien: marcaste que tu desarrollo coincide con el modelo. Ese juicio tuyo es el que queda registrado."; }
     else if(ok && ex.kind === "steps"){ fb.className = "feedback ok"; fb.textContent = "Desarrollo completo y sin reintentos: cada etapa salió al primer intento. Compáralo con la solución completa."; }
     else if(ok){ fb.className = "feedback ok"; fb.textContent = pick(["Correcto. Así se hace.", "Correcto. Esa es la idea.", "Correcto. Paso firme."]); }
-    else if(ex.kind === "steps"){ fb.className = "feedback bad"; fb.textContent = "Completaste el desarrollo, pero alguna etapa necesitó más de un intento: por eso esta vez no cuenta como acierto. Mira la solución completa y compárala etapa por etapa."; }
+    else if(ex.kind === "steps"){ fb.className = "feedback bad"; fb.textContent = "Completaste el desarrollo, pero alguna etapa necesitó más de un intento: queda registrado como completado con reintentos, así que no suma como acierto ni como error. Mira la solución completa y compárala etapa por etapa."; }
     else if(ex.kind === "open"){ fb.className = "feedback bad"; fb.textContent = "Queda registrado como no logrado, según tu propia evaluación. Compara tu desarrollo con el modelo y fíjate qué paso falta o sobra."; }
     else if(gr && gr.notSimple){ fb.className = "feedback bad"; fb.textContent = "El valor está bien, pero la fracción no está simplificada. " + lexCorrectText(ex) + " Mira los pasos."; }
     else { fb.className = "feedback bad"; fb.textContent = "Todavía no. " + lexCorrectText(ex) + " Mira la solución paso a paso."; }
@@ -9903,7 +10139,8 @@ function startLessonExercises(l, mount){
      se corrige al instante con gradeLex (el mismo corrector de siempre).
      Una etapa que sale mal no avanza: se reintenta hasta que salga, pero
      el ejercicio solo cuenta como acierto si TODAS las etapas salieron
-     al primer intento. Al cerrar la última etapa se llama a finish una
+     al primer intento; completado con reintentos no cuenta ni como
+     acierto ni como error (ver isStepsRetryAttempt). Al cerrar la última etapa se llama a finish una
      sola vez, así el intento se registra igual que cualquier otro.
      Además del acierto global, se guarda el detalle por etapa
      (stepDetail): si salió al primer intento, cuántos reintentos
@@ -10296,10 +10533,12 @@ $("#exam-submit").addEventListener("click", function(){
 })();
 
 /* ================= Progreso ================= */
-/* El dominio sale de lessonEx, que cuenta SOLO ejercicios con
-   corrección objetiva: los de respuesta abierta no suman (finish los
-   excluye al registrar y los que el motor viejo ya había sumado se
-   descontaron una vez en normalizeState; ver meta.aggSinAbiertos). */
+/* El dominio sale de lessonEx, que cuenta SOLO lo que contabilizarLex
+   suma: los de respuesta abierta no suman (se excluyen al registrar y
+   los que el motor viejo ya había sumado se descontaron una vez en
+   normalizeState; ver meta.aggSinAbiertos) y un steps completado con
+   reintentos tampoco suma, ni como acierto ni como error (ver
+   isStepsRetryAttempt y contabilizarLex). */
 function dominioDe(l){
   var st = state.lessonEx[l.id] || { ok:0, mal:0 };
   var tot = st.ok + st.mal;
@@ -10319,7 +10558,7 @@ function renderProgreso(){
     var aggTotal = 0, aggSkills = 0;
     if(isPlainObj(state.skillAgg)){ Object.keys(state.skillAgg).forEach(function(k){ aggTotal += state.skillAgg[k].total || 0; aggSkills++; }); }
     var aggTxt = aggTotal ? " Los agregados por habilidad conservan la historia completa de los intentos con corrección objetiva: " + aggTotal + " intentos acumulados en " + aggSkills + (aggSkills === 1 ? " habilidad" : " habilidades") + ", sin recorte." : "";
-    ai.textContent = (nAtt ? "Registro de intentos (Fase A): " + nAtt + " intentos guardados en " + Object.keys(sesiones).length + " sesiones (máximo " + ATTEMPTS_CAP + " en el registro crudo; el recorte solo elimina los más antiguos). Cada intento guarda fecha, sesión, clase, habilidad, tipo, tu respuesta, la esperada, si acertaste y el modo (ronda, práctica o examen). Los ejercicios de respuesta abierta quedan en este registro, pero como los evalúas tú contra la solución modelo, no cuentan para el dominio ni para la precisión."
+    ai.textContent = (nAtt ? "Registro de intentos (Fase A): " + nAtt + " intentos guardados en " + Object.keys(sesiones).length + " sesiones (máximo " + ATTEMPTS_CAP + " en el registro crudo; el recorte solo elimina los más antiguos). Cada intento guarda fecha, sesión, clase, habilidad, tipo, tu respuesta, la esperada, si acertaste y el modo (ronda, práctica o examen). Los ejercicios de respuesta abierta quedan en este registro, pero como los evalúas tú contra la solución modelo, no cuentan para el dominio ni para la precisión. Un desarrollo por pasos completado con reintentos también queda registrado, con el detalle de cada etapa, pero no suma como acierto ni como error: completar el desarrollo y resolverlo todo al primer intento son dos cosas distintas."
       : "Registro de intentos (Fase A): todavía no hay intentos guardados con el detalle nuevo. Desde ahora, cada respuesta en rondas, práctica y exámenes queda registrada con fecha, sesión, clase, habilidad, tipo, tu respuesta, la esperada, si acertaste y el modo.") + aggTxt;
   }
   var rpBtn = $("#backup-restore-pre");
