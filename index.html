@@ -132,26 +132,24 @@
   .sketch{ display:block; width:100%; max-width:100%; height:auto; margin:0; }
   .hoy-sketches{ min-width:0; position:relative; }
   .hoy-sketches .sketch{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .hoy-weeks{ margin-top:28px; border-top:1px solid var(--line); }
+  .hoy-weeks{
+    margin-top:28px; border:1px solid var(--line-2); border-radius:12px;
+    max-height:440px; overflow-y:auto; overflow-x:hidden; background:#fff;
+    scrollbar-width:thin; scrollbar-color:var(--line-2) transparent;
+    overscroll-behavior:contain;
+  }
+  .hoy-weeks::-webkit-scrollbar{ width:8px; }
+  .hoy-weeks::-webkit-scrollbar-thumb{ background:var(--line-2); border-radius:99px; }
+  .hoy-weeks::-webkit-scrollbar-track{ background:transparent; }
   .hoy-week{
     display:flex; align-items:center; gap:16px; width:100%; text-align:left;
-    padding:13px 6px; border-bottom:1px solid var(--line); min-height:54px;
+    padding:13px 12px; border-bottom:1px solid var(--line); min-height:54px;
   }
+  .hoy-week:last-child{ border-bottom:none; }
   .hoy-week:hover{ background:var(--soft); }
   .hoy-week .wn{ font-size:13px; font-weight:600; color:var(--ink-3); text-transform:uppercase; letter-spacing:.06em; min-width:84px; }
   .hoy-week .wt{ font-weight:600; font-size:18px; }
   .hoy-week .wc{ margin-left:auto; font-size:15px; color:var(--ink-3); white-space:nowrap; font-variant-numeric:tabular-nums; }
-  .hoy-weeks-more{
-    margin-top:12px; border:1px solid var(--line-2); border-radius:12px;
-    max-height:220px; overflow-y:auto; overflow-x:hidden; background:#fff;
-    scrollbar-width:thin; scrollbar-color:var(--line-2) transparent;
-    overscroll-behavior:contain;
-  }
-  .hoy-weeks-more::-webkit-scrollbar{ width:8px; }
-  .hoy-weeks-more::-webkit-scrollbar-thumb{ background:var(--line-2); border-radius:99px; }
-  .hoy-weeks-more::-webkit-scrollbar-track{ background:transparent; }
-  .hoy-weeks-more .hoy-week{ padding-left:12px; padding-right:12px; }
-  .hoy-weeks-more .hoy-week:last-child{ border-bottom:none; }
 
   /* ---------- Courses list ---------- */
   .week-head{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin:34px 0 4px; padding-bottom:8px; border-bottom:1px solid var(--ink); }
@@ -559,7 +557,7 @@
       <div class="hoy-left">
         <h1 id="hoy-title">Comenzar</h1>
         <div class="hoy-plan" id="hoy-plan"></div>
-        <div class="hoy-weeks" id="hoy-weeks"></div>
+        <div class="hoy-weeks" id="hoy-weeks" tabindex="0" aria-label="Todas las semanas: desplázate dentro de este cuadro para verlas"></div>
       </div>
       <div class="hoy-sketches">
         <img class="sketch" src="assets/dibujos-hoy.webp" alt="Dibujos a lápiz de matemática y la carrera: un compás trazando un círculo, la parábola y = x², la sumatoria, el triángulo de Pitágoras, la identidad de Euler, la onda senoidal, un circuito en serie, la integral, la derivada, un vector, una matriz 2×2 y el logaritmo." />
@@ -5236,11 +5234,7 @@ function renderHoy(){
     return '<button class="hoy-week" data-week="' + w.n + '"><span class="wn">Semana ' + w.n + '</span>' +
       '<span class="wt">' + esc(w.title) + '</span><span class="wc">' + done + '/' + ls.length + ' clases</span></button>';
   }
-  var hoyFirst = WEEKS.slice(0, 8).map(hoyWeekBtn).join("");
-  var hoyRest = WEEKS.slice(8);
-  hw.innerHTML = hoyFirst + (hoyRest.length ?
-    '<div class="hoy-weeks-more" tabindex="0" aria-label="Semanas 9 en adelante: desplázate dentro de este cuadro para verlas">' +
-    hoyRest.map(hoyWeekBtn).join("") + '</div>' : "");
+  hw.innerHTML = WEEKS.map(hoyWeekBtn).join("");
   $$("#hoy-weeks .hoy-week").forEach(function(b){
     b.addEventListener("click", function(){ showView("clases"); });
   });
