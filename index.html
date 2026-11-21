@@ -718,7 +718,7 @@
     </div>
     <div class="prog-section">
       <h2>Habilidades del grafo: fracciones y Análisis A</h2>
-      <p class="small faint">Las habilidades de la semana de fracciones y de Análisis Matemático A, y cómo se relacionan: cada una puede estar pendiente, vista (viste la clase, sin practicar), practicada o dominada. Dominada sale solo de tus ejercicios con corrección objetiva: 12 o más intentos que cuentan (máximo 5 por cada generador registrado; en los exámenes el registro agrupa por semana, así que cuentan hasta 5 por semana de examen), 85% o más de aciertos, en 2 o más sesiones en días distintos, con 80% o más en tu sesión más reciente, en 3 o más tipos de ejercicio y con 4 o más intentos de dificultad 2 o más. Ver una clase nunca marca una habilidad como dominada. Si una habilidad está bloqueada, acá dice qué prerrequisito le falta.</p>
+      <p class="small faint">Las habilidades de fracciones (de la semana 2 de Pre-CBC) y las de Análisis Matemático A (del CBC), y cómo se relacionan: cada una puede estar pendiente, vista (viste la clase, sin practicar), practicada o dominada. Dominada sale solo de tus ejercicios con corrección objetiva: 12 o más intentos que cuentan (máximo 5 por cada generador registrado; en los exámenes el registro agrupa por semana, así que cuentan hasta 5 por semana de examen), 85% o más de aciertos, en 2 o más sesiones en días distintos, con 80% o más en tu sesión más reciente, en 3 o más tipos de ejercicio y con 4 o más intentos de dificultad 2 o más. Ver una clase nunca marca una habilidad como dominada. Si una habilidad está bloqueada, acá dice qué prerrequisito le falta.</p>
       <div id="graph-list"></div>
     </div>
     <div class="prog-section">
@@ -753,7 +753,7 @@
       </details>
       <details style="margin-top:14px;">
         <summary class="small" style="cursor:pointer;">Pruebas de la Fase B (grafo de habilidades)</summary>
-        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad, la herencia a la habilidad principal de los intentos sin habilidad declarada, y la dificultad declarada por cada generador. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
+        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad (la declaración del generador en AN_GEN_META manda sobre la habilidad que traiga el intento; si el generador no se puede resolver, el intento no se atribuye a ninguna habilidad), y la dificultad declarada por cada generador. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
         <button class="btn" id="run-graph-tests">Correr las pruebas del grafo</button>
         <div class="small" id="graph-test-results" style="margin-top:10px;"></div>
       </details>
@@ -6421,6 +6421,13 @@ var SKILL_GRAPH = {
      - 42 nodos nuevos con prefijo an-, uno por bloque real de
        contenido de las 8 clases CBC de Análisis A; NO uno por clase:
        cada clase desarrolla varias habilidades (ver AN_LESSON_SKILLS).
+       Desglose por clase: funciones 6, sucesiones 4, límites 4,
+       derivadas 5, estudio 9 (crecimiento, extremos, concavidad,
+       estudio completo, optimización, Taylor, aproximación lineal,
+       Newton y asíntotas oblicuas), integrales 6, EDO 3 y series 5:
+       6 + 4 + 4 + 5 + 9 + 6 + 3 + 5 = 42 nodos an- en total
+       (an-integrales-aplicaciones se cuenta en integrales, aunque
+       también se enseña en la clase de EDO).
        Los ids históricos de SKILLS y del piloto no se tocan.
      - etapa:"analisis" distingue estos nodos del piloto (piloto:false)
        sin cambiar ninguna cuenta del piloto: habilidadesPendientes y
@@ -6495,16 +6502,20 @@ var AN_LESSONS = ["cbc-an1-funciones", "cbc-an1-sucesiones", "cbc-an1-limites", 
 /* Vinculación clase → habilidades de la etapa de Análisis. A
    diferencia del piloto (una clase, un nodo dueño), estas clases son
    multihabilidad: cada una desarrolla varias habilidades del grafo.
-   - habilidades: las que la clase enseña y evalúa. Un intento de la
-     clase cuya habilidad declarada (la que trae el generador, ver
-     AN_GEN_META) está en esta lista cuenta para ESA habilidad.
-   - principal: la habilidad central de la clase y el respaldo de
-     atribución. Así se atribuye la evidencia histórica de estas
-     clases, que trae skill null pero sí lesson y gen: primero por el
-     generador que la sirvió (gen "clase#gN" → AN_GEN_META) y, si el
-     generador no resuelve, por la clase (la principal), sin modificar
-     el historial y sin duplicar: cada intento cuenta una sola vez,
-     para una sola habilidad (ver habilidadDeIntento). */
+   - habilidades: las que la clase enseña y evalúa.
+   - principal: la habilidad central de la clase (dato descriptivo;
+     NO interviene en la atribución de evidencia).
+   Atribución de la evidencia de estas clases (ver
+   habilidadDeIntento): AN_GEN_META es la fuente autoritativa. Se
+   resuelve primero lesson + gen (gen "clase#gN" → AN_GEN_META) y el
+   intento cuenta exactamente para la habilidad que ese generador
+   declara; a.skill no puede sobrescribirla. Si el generador no
+   existe, el índice está fuera del banco o no hay entrada válida,
+   el intento no se atribuye a ninguna habilidad (null): no cae en
+   la principal ni en ninguna otra. Así se atribuye también la
+   evidencia histórica de estas clases, que trae skill null pero sí
+   lesson y gen, sin modificar el historial y sin duplicar: cada
+   intento cuenta una sola vez, para una sola habilidad. */
 var AN_LESSON_SKILLS = {
   "cbc-an1-funciones": { principal:"an-funciones-dominio", habilidades:["an-funciones-dominio", "an-funciones-asintotas", "an-funciones-comp-inv", "an-funciones-exp-log", "an-funciones-trig", "an-funciones-propiedades"] },
   "cbc-an1-sucesiones": { principal:"an-sucesiones-termino", habilidades:["an-sucesiones-termino", "an-sucesiones-limite", "an-sucesiones-monotonia", "an-sucesiones-sumas"] },
@@ -6555,16 +6566,21 @@ function habilidadDeIntento(a){
      se le puede atribuir ninguna. Regla de atribución sin duplicación
      (cada intento cuenta una sola vez, para una sola habilidad):
      - Si el intento es de una clase multihabilidad de Análisis
-       (AN_LESSON_SKILLS): cuenta para la habilidad que el intento
-       declara si esa habilidad es una de las que la clase desarrolla.
-       Si no declara ninguna (los intentos históricos de estas clases
-       traen skill null) o declara una ajena a la clase, se atribuye
-       por su generador: el campo gen "clase#gN" identifica el
-       generador que lo sirvió y AN_GEN_META dice qué habilidad
-       evalúa ese generador. Solo si tampoco el generador resuelve
-       (gen ausente o fuera del banco) cuenta para la habilidad
-       principal de la clase. El historial no se toca: la atribución
-       se calcula al leer, no al registrar.
+       (AN_LESSON_SKILLS): AN_GEN_META es la fuente autoritativa. Se
+       resuelve primero lesson + gen: el campo gen "clase#gN"
+       identifica el generador que lo sirvió y, si existe una entrada
+       válida para ese generador, el intento cuenta exactamente para
+       la habilidad que AN_GEN_META declara para él; a.skill NO
+       puede sobrescribir una habilidad distinta declarada por
+       AN_GEN_META (ni una válida de la misma clase ni una ajena).
+       Si el generador no existe, el índice está fuera del banco o
+       no hay entrada válida, el intento no se atribuye a ninguna
+       habilidad (null): NO se atribuye automáticamente a
+       multi.principal. Así se atribuyen también los intentos
+       históricos de estas clases, que traen skill null pero sí
+       lesson y gen. El historial no se toca: la atribución se
+       calcula al consultar, no al registrar, sin migrar ni
+       reescribir ningún intento.
      - Si el intento es de una clase con nodo dueño (el piloto de
        fracciones): cuenta para el dueño de la clase, como siempre.
      - En cualquier otro caso (práctica, exámenes, sin clase): cuenta
@@ -6573,13 +6589,12 @@ function habilidadDeIntento(a){
   if(a.lesson){
     var multi = (typeof AN_LESSON_SKILLS !== "undefined" && AN_LESSON_SKILLS) ? AN_LESSON_SKILLS[a.lesson] : null;
     if(multi){
-      if(typeof a.skill === "string" && multi.habilidades.indexOf(a.skill) >= 0) return a.skill;
       var gm = (typeof a.gen === "string") ? a.gen.match(/^(.+)#g(\d+)$/) : null;
       if(gm && gm[1] === a.lesson && typeof AN_GEN_META !== "undefined" && AN_GEN_META && AN_GEN_META[a.lesson]){
         var entrada = AN_GEN_META[a.lesson][+gm[2]];
-        if(entrada && multi.habilidades.indexOf(entrada[0]) >= 0) return entrada[0];
+        if(entrada && typeof entrada[0] === "string" && entrada[0] && graphNode(entrada[0])) return entrada[0];
       }
-      return multi.principal;
+      return null;
     }
     var duenos = duenoDeClase();
     if(duenos[a.lesson]) return duenos[a.lesson];
@@ -6734,6 +6749,22 @@ function runSkillGraphTests(){
     var tipos = ["Tipo A", "Tipo B", "Tipo C"], out = [], i, g;
     for(i = 0; i < 6; i++){ g = lesson + "#g" + (i % 3); out.push(att(1000 + i, "2026-11-10", "s-dia1", lesson, skill, tipos[i % 3], g, true, 2)); }
     for(i = 0; i < 6; i++){ g = lesson + "#g" + (3 + (i % 3)); out.push(att(2000 + i, "2026-11-11", "s-dia2", lesson, skill, tipos[i % 3], g, i < 5, 2)); }
+    return out;
+  }
+  /* Conjunto de dominio para una clase multihabilidad de Análisis:
+     la misma estructura que conjuntoDominio (12 intentos, 11 bien,
+     2 días y 2 sesiones, última sesión 5/6, 3 tipos, dificultad 2),
+     pero los generadores son los que AN_GEN_META declara para la
+     habilidad objetivo (índices gens del banco de la clase). Hace
+     falta desde que AN_GEN_META es la fuente autoritativa de la
+     atribución: la evidencia solo cuenta para la habilidad si los
+     generadores que la sirvieron son los de esa habilidad. */
+  function conjuntoDominioAn(lesson, skill, gens){
+    var tipos = ["Tipo A", "Tipo B", "Tipo C"], out = [], i;
+    for(i = 0; i < 12; i++){
+      var dia2 = i >= 6;
+      out.push(att(1000 + i * 10, dia2 ? "2026-11-11" : "2026-11-10", dia2 ? "s-dia2" : "s-dia1", lesson, skill, tipos[i % 3], lesson + "#g" + gens[i % gens.length], i < 11, 2));
+    }
     return out;
   }
   check("Integridad del grafo: todos los ids referenciados existen (nodos, prerrequisitos y clases)", function(){
@@ -7117,8 +7148,8 @@ function runSkillGraphTests(){
       att(5, "2026-11-10", "s1", "cbc-an2-integrales", null, "Impropia p", "cbc-an2-integrales#g23", true, null)
     ];
     if(habilidadDeIntento(set[0]) !== "an-integrales-aplicaciones") return "el generador de áreas de la clase de EDO no se atribuyó a aplicaciones: " + habilidadDeIntento(set[0]);
-    if(habilidadDeIntento(set[1]) !== "an-limites-calculo") return "el intento histórico sin habilidad no heredó la principal de su clase: " + habilidadDeIntento(set[1]);
-    if(habilidadDeIntento(set[2]) !== "an-limites-calculo") return "el intento con habilidad ajena a la clase no cayó en la principal: " + habilidadDeIntento(set[2]);
+    if(habilidadDeIntento(set[1]) !== "an-limites-calculo") return "el intento histórico sin habilidad no se atribuyó por su generador (g0 = cálculo de límites): " + habilidadDeIntento(set[1]);
+    if(habilidadDeIntento(set[2]) !== "an-limites-calculo") return "el intento con habilidad ajena a la clase no se atribuyó por su generador (g1 = cálculo de límites): " + habilidadDeIntento(set[2]);
     if(habilidadDeIntento(set[3]) !== "an-lhopital") return "el intento de L'Hôpital no se atribuyó a an-lhopital: " + habilidadDeIntento(set[3]);
     if(habilidadDeIntento(set[4]) !== "an-impropias") return "el intento histórico sin habilidad no se atribuyó por su generador (g23 = impropias): " + habilidadDeIntento(set[4]);
     if(evidenciaDeHabilidad("frac-suma", set).length !== 0) return "un intento se contó también para frac-suma: hay duplicación";
@@ -7128,8 +7159,57 @@ function runSkillGraphTests(){
     if(suma !== set.length) return "la evidencia total sobre el grafo es " + suma + " y debería ser exactamente " + set.length + " (un conteo por intento)";
     return true;
   });
+  check("Análisis: AN_GEN_META manda en la atribución (skill no sobrescribe; sin generador resoluble no se atribuye a ninguna habilidad)", function(){
+    /* (a) skill null + generador válido → la habilidad del generador
+       (g13 de derivadas es L'Hôpital según AN_GEN_META). */
+    var aA = att(1, "2026-11-10", "s1", "cbc-an2-derivadas", null, "L'Hôpital 0/0", "cbc-an2-derivadas#g13", true, null);
+    if(habilidadDeIntento(aA) !== "an-lhopital") return "(a) skill null con generador válido debería atribuir a an-lhopital y atribuyó a " + habilidadDeIntento(aA);
+    /* (b) skill válida de la misma clase pero distinta de la del
+       generador → prevalece AN_GEN_META. */
+    var aB = att(2, "2026-11-10", "s1", "cbc-an2-derivadas", "an-derivadas-tangente", "L'Hôpital 0/0", "cbc-an2-derivadas#g13", true, 2);
+    if(habilidadDeIntento(aB) !== "an-lhopital") return "(b) la skill de la misma clase sobrescribió a AN_GEN_META: atribuyó a " + habilidadDeIntento(aB);
+    if(evidenciaDeHabilidad("an-derivadas-tangente", [aB]).length !== 0) return "(b) el intento contó también para la skill que traía: hay sobrescritura o duplicación";
+    /* (c) skill ajena a la clase + generador válido → prevalece
+       AN_GEN_META. */
+    var aC = att(3, "2026-11-10", "s1", "cbc-an2-derivadas", "frac-suma", "L'Hôpital 0/0", "cbc-an2-derivadas#g13", true, 2);
+    if(habilidadDeIntento(aC) !== "an-lhopital") return "(c) la skill ajena sobrescribió a AN_GEN_META: atribuyó a " + habilidadDeIntento(aC);
+    /* (d) generador inexistente o índice fuera del banco → no se
+       atribuye a ninguna habilidad, ni siquiera trayendo una skill
+       válida de la clase, y tampoco cae en la principal. */
+    var aD1 = att(4, "2026-11-10", "s1", "cbc-an2-derivadas", null, "L'Hôpital 0/0", "cbc-an2-derivadas#g99", true, null);
+    if(habilidadDeIntento(aD1) !== null) return "(d) un índice fuera del banco se atribuyó a " + habilidadDeIntento(aD1) + " en vez de a ninguna habilidad";
+    var aD2 = att(5, "2026-11-10", "s1", "cbc-an2-derivadas", "an-lhopital", "L'Hôpital 0/0", "cbc-an2-derivadas#g99", true, 2);
+    if(habilidadDeIntento(aD2) !== null) return "(d) con el generador fuera del banco, la skill del intento rescató la atribución: " + habilidadDeIntento(aD2);
+    var aD3 = att(6, "2026-11-10", "s1", "cbc-an2-derivadas", "an-lhopital", "L'Hôpital 0/0", null, true, 2);
+    if(habilidadDeIntento(aD3) !== null) return "(d) sin generador registrado el intento se atribuyó a " + habilidadDeIntento(aD3) + " en vez de a ninguna habilidad";
+    var aD4 = att(7, "2026-11-10", "s1", "cbc-an2-derivadas", null, "Serie geométrica", "cbc-an2-series#g0", true, null);
+    if(habilidadDeIntento(aD4) !== null) return "(d) un generador de otra clase resolvió la atribución: " + habilidadDeIntento(aD4);
+    if(evidenciaDeHabilidad("an-derivadas-reglas", [aD1, aD2, aD3, aD4]).length !== 0) return "(d) algún intento sin generador resoluble cayó en la principal de su clase";
+    /* (e) ningún intento queda contado en dos habilidades: la suma
+       de la evidencia de todo el grafo es exactamente el número de
+       intentos atribuibles (los 3 con generador válido; los 4 sin
+       resolver no cuentan en ninguna). */
+    var mezcla = [aA, aB, aC, aD1, aD2, aD3, aD4];
+    var suma = 0;
+    Object.keys(SKILL_GRAPH).forEach(function(id){ suma += evidenciaDeHabilidad(id, mezcla).length; });
+    if(suma !== 3) return "(e) la evidencia total sobre el grafo es " + suma + " y debería ser exactamente 3 (solo los intentos con generador válido, una sola vez cada uno)";
+    /* (f) los intentos históricos CBC (skill null, dificultad null)
+       con generadores válidos siguen atribuyéndose por su generador. */
+    var hist = [
+      [att(11, "2026-11-10", "s1", "cbc-an1-funciones", null, "Trigonométricas", "cbc-an1-funciones#g11", true, null), "an-funciones-trig"],
+      [att(12, "2026-11-10", "s1", "cbc-an2-estudio", null, "Oblicua por límites", "cbc-an2-estudio#g22", true, null), "an-asintotas-oblicuas"],
+      [att(13, "2026-11-10", "s1", "cbc-an2-series", null, "Suma geométrica", "cbc-an2-series#g0", true, null), "an-series-sumas"],
+      [att(14, "2026-11-10", "s1", "cbc-an2-edo", null, "EDO directa", "cbc-an2-edo#g6", true, null), "an-edo-directa"]
+    ];
+    for(var i = 0; i < hist.length; i++){
+      if(habilidadDeIntento(hist[i][0]) !== hist[i][1]) return "(f) el histórico de " + hist[i][0].gen + " debería atribuir a " + hist[i][1] + " y atribuyó a " + habilidadDeIntento(hist[i][0]);
+    }
+    return true;
+  });
   check("Análisis: una subhabilidad alcanza dominada con evidencia sintética válida, no domina si le falta un criterio y la evidencia de otra no la domina", function(){
-    var set = conjuntoDominio("cbc-an2-integrales", "an-impropias");
+    /* Los generadores del conjunto son los que AN_GEN_META declara
+       para an-impropias en el banco de integrales (g23 a g28). */
+    var set = conjuntoDominioAn("cbc-an2-integrales", "an-impropias", [23, 24, 25, 26, 27, 28]);
     var m = masteryDeHabilidad("an-impropias", set, {});
     if(m.k !== "dominada") return "an-impropias quedó en " + m.k + " con criterios " + JSON.stringify(m.criterios) + " y detalle " + JSON.stringify(m.detalle);
     var sinDifAlta = set.map(function(a){ var c = Object.assign({}, a); c.dificultad = 1; return c; });
@@ -7145,7 +7225,10 @@ function runSkillGraphTests(){
   check("Análisis: bloqueo y desbloqueo por prerrequisitos", function(){
     var bloq = bloqueosDe("an-impropias", [], {});
     if(bloq.indexOf("an-integral-barrow") < 0 || bloq.indexOf("an-limites-calculo") < 0) return "an-impropias debería estar bloqueada por Barrow y por cálculo de límites: " + JSON.stringify(bloq);
-    var ev = conjuntoDominio("cbc-an2-integrales", "an-integral-barrow").concat(conjuntoDominio("cbc-an1-limites", "an-limites-calculo"));
+    /* Generadores que AN_GEN_META declara para cada habilidad:
+       Barrow en integrales (g0, g3, g17, g20, g22) y cálculo de
+       límites en límites (g0, g1, g2, g3, g13, g15). */
+    var ev = conjuntoDominioAn("cbc-an2-integrales", "an-integral-barrow", [0, 3, 17, 20, 22]).concat(conjuntoDominioAn("cbc-an1-limites", "an-limites-calculo", [0, 1, 2, 3, 13, 15]));
     var libres = bloqueosDe("an-impropias", ev, {});
     if(libres.length) return "con Barrow y cálculo de límites dominados, an-impropias sigue bloqueada por: " + JSON.stringify(libres);
     var cadena = bloqueosEnCadena("an-series-potencias", [], {});
@@ -7168,7 +7251,7 @@ function runSkillGraphTests(){
       var parsed = parseBackup(serializeBackup(state));
       if(!parsed.ok) return "el respaldo con habilidades an- no se pudo importar: " + parsed.error;
       var m = masteryDeHabilidad("an-limites-calculo", null, null);
-      if(m.detalle.total !== 1) return "la evidencia histórica de límites debería atribuir 1 intento a la principal y atribuyó " + m.detalle.total;
+      if(m.detalle.total !== 1) return "la evidencia histórica de límites debería atribuir 1 intento por su generador (g0 = cálculo de límites) y atribuyó " + m.detalle.total;
       if(m.detalle.dificultadAlta !== 0) return "la dificultad null histórica contó como dificultad alta";
       var histAntes = JSON.stringify(state.attempts);
       var norm1 = normalizeState(state);
