@@ -717,8 +717,8 @@
       <div id="dominio-list"></div>
     </div>
     <div class="prog-section">
-      <h2>Habilidades del grafo: fracciones, Análisis A y Álgebra A</h2>
-      <p class="small faint">Las habilidades de fracciones (de la semana 2 de Pre-CBC), las de Análisis Matemático A y las de Álgebra A (del CBC), y cómo se relacionan: cada una puede estar pendiente, vista (viste la clase, sin practicar), practicada o dominada. Dominada sale solo de tus ejercicios con corrección objetiva: 12 o más intentos que cuentan (máximo 5 por cada generador registrado; en los exámenes el registro agrupa por semana, así que cuentan hasta 5 por semana de examen), 85% o más de aciertos, en 2 o más sesiones en días distintos, con 80% o más en tu sesión más reciente, en 3 o más tipos de ejercicio y con 4 o más intentos de dificultad 2 o más. Ver una clase nunca marca una habilidad como dominada. Si una habilidad está bloqueada, acá dice qué prerrequisito le falta.</p>
+      <h2>Habilidades del grafo: fracciones, Análisis A, Álgebra A y Física 03</h2>
+      <p class="small faint">Las habilidades de fracciones (de la semana 2 de Pre-CBC), las de Análisis Matemático A, las de Álgebra A y las de Física 03 (del CBC), y cómo se relacionan: cada una puede estar pendiente, vista (viste la clase, sin practicar), practicada o dominada. Dominada sale solo de tus ejercicios con corrección objetiva: 12 o más intentos que cuentan (máximo 5 por cada generador registrado; en los exámenes el registro agrupa por semana, así que cuentan hasta 5 por semana de examen), 85% o más de aciertos, en 2 o más sesiones en días distintos, con 80% o más en tu sesión más reciente, en 3 o más tipos de ejercicio y con 4 o más intentos de dificultad 2 o más. Ver una clase nunca marca una habilidad como dominada. Si una habilidad está bloqueada, acá dice qué prerrequisito le falta.</p>
       <div id="graph-list"></div>
     </div>
     <div class="prog-section">
@@ -753,7 +753,7 @@
       </details>
       <details style="margin-top:14px;">
         <summary class="small" style="cursor:pointer;">Pruebas de la Fase B (grafo de habilidades)</summary>
-        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad (la declaración del generador en AN_GEN_META manda sobre la habilidad que traiga el intento; si el generador no se puede resolver, el intento no se atribuye a ninguna habilidad), y la dificultad declarada por cada generador. Incluye también la etapa de Álgebra A: las 26 subhabilidades de las 6 clases, con la misma atribución autoritativa por generador (AL_GEN_META) y la misma dificultad declarada por generador; y su corrección de dominio: las tres subhabilidades que tenían solo 2 generadores (operaciones con matrices, sistemas con parámetro e intersecciones de cónicas) sumaron generadores nuevos y distintos que las evalúan de verdad, así que las pruebas comprueban que cada una tiene al menos 3 generadores y alcanza Dominada con evidencia sintética válida construida con la dificultad real de sus generadores. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
+        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad (la declaración del generador en AN_GEN_META manda sobre la habilidad que traiga el intento; si el generador no se puede resolver, el intento no se atribuye a ninguna habilidad), y la dificultad declarada por cada generador. Incluye también la etapa de Álgebra A: las 26 subhabilidades de las 6 clases, con la misma atribución autoritativa por generador (AL_GEN_META) y la misma dificultad declarada por generador; y su corrección de dominio: las tres subhabilidades que tenían solo 2 generadores (operaciones con matrices, sistemas con parámetro e intersecciones de cónicas) sumaron generadores nuevos y distintos que las evalúan de verdad, así que las pruebas comprueban que cada una tiene al menos 3 generadores y alcanza Dominada con evidencia sintética válida construida con la dificultad real de sus generadores. E incluye la etapa de Física 03: las 25 subhabilidades de las 7 clases, con la misma atribución autoritativa por generador (FI_GEN_META), la misma dificultad declarada por generador, las dependencias entre materias justificadas (los productos escalar y vectorial de Álgebra como base de las operaciones con vectores en Física) y la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores y tope de 12 o más intentos cada una, sin haber necesitado generadores nuevos). Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
         <button class="btn" id="run-graph-tests">Correr las pruebas del grafo</button>
         <div class="small" id="graph-test-results" style="margin-top:10px;"></div>
       </details>
@@ -6576,7 +6576,79 @@ var SKILL_GRAPH = {
   "al-conicas-parabola": { name:"La parábola: foco y directriz", desc:"El parámetro p en x² = 4p·y, el foco y la directriz, y el vértice de la parábola corrida.", lessons:["cbc-al2-conicas"], prereqs:["al-conicas-elementos"], piloto:false, etapa:"algebra" },
   "al-conicas-discriminante-rotacion": { name:"Clasificación por el discriminante y rotación", desc:"B² − 4AC decide el tipo de la cónica general y la rotación de ejes elimina el término xy.", lessons:["cbc-al2-conicas"], prereqs:["al-conicas-elementos"], piloto:false, etapa:"algebra" },
   "al-conicas-desplazadas": { name:"Cónicas desplazadas: completar cuadrados", desc:"De la ecuación general a la canónica completando cuadrados, para leer centro, semiejes y radio.", lessons:["cbc-al2-conicas"], prereqs:["al-conicas-elementos"], piloto:false, etapa:"algebra" },
-  "al-conicas-intersecciones": { name:"Intersecciones de cónicas y rectas", desc:"Sustituir y decidir por el discriminante: dos puntos, tangencia o ninguno, y el corte entre dos cónicas.", lessons:["cbc-al2-conicas"], prereqs:["al-conicas-parabola"], piloto:false, etapa:"algebra" }
+  "al-conicas-intersecciones": { name:"Intersecciones de cónicas y rectas", desc:"Sustituir y decidir por el discriminante: dos puntos, tangencia o ninguno, y el corte entre dos cónicas.", lessons:["cbc-al2-conicas"], prereqs:["al-conicas-parabola"], piloto:false, etapa:"algebra" },
+  /* ---- Expansión del grafo, etapa Física 03 (semanas 18 y 19).
+     Decisiones de esta etapa:
+     - 25 nodos nuevos con prefijo fi-, uno por bloque real de
+       contenido evaluable de las 7 clases CBC de Física 03 que
+       existen en el código (semana 18: magnitudes, estática,
+       cinemática 1D y cinemática 2D; semana 19: dinámica, energía
+       e hidrostática). Desglose por clase: magnitudes 3 propias
+       más 1 compartida con estática, estática 3 (una compartida),
+       cinemática 1D 4, cinemática 2D 3, dinámica 5, energía 4 e
+       hidrostática 3: 25 nodos fi- en total. Los ids históricos de
+       SKILLS, del piloto, de Análisis y de Álgebra no se tocan.
+     - etapa:"fisica" distingue estos nodos sin cambiar ninguna
+       cuenta anterior: el piloto, Análisis y Álgebra siguen
+       contando solo los suyos.
+     - lessons de un nodo = clases que lo enseñan. Cada clase de
+       Física es multihabilidad (ver FI_LESSON_SKILLS) y la
+       atribución de su evidencia es por generador, con FI_GEN_META
+       como fuente autoritativa, igual que en Análisis y Álgebra.
+       fi-estatica-momento-equilibrio se enseña en dos clases: la
+       introducción de magnitudes (equilibrio y momento) y la clase
+       de estática que lo desarrolla.
+     - Prerrequisitos: solo dependencias pedagógicas reales. Dentro
+       de la materia: descomponer vectores sostiene al momento y al
+       tiro oblicuo; el MRUV sostiene a la caída libre y a los
+       encuentros; Newton sostiene al plano con rozamiento, a los
+       sistemas, a las oscilaciones y a la hidrostática (la propia
+       clase de hidrostática declara que usa masa y peso, fuerza y
+       superficie y el equilibrio ΣF = 0 de dinámica); el trabajo
+       sostiene al teorema y este a la conservación y al balance
+       con rozamiento; la presión sostiene a Pascal y a Arquímedes.
+     - Dependencias entre materias (solo dos, justificadas por el
+       contenido): fi-vectores-operaciones requiere
+       al-vectores-producto-escalar y al-vectores-producto-vectorial
+       porque sus generadores de Física calculan exactamente esos
+       dos productos entre vectores, que Álgebra A (semanas 16 y
+       17, antes que Física) enseña como procedimiento. Ninguna
+       otra habilidad de Física declara prerrequisitos de Análisis
+       o Álgebra: el resto usa matemática del Pre-CBC o de la
+       propia materia, y declarar más sería arbitrario.
+     - Cobertura para el dominio: las 25 habilidades tienen al
+       menos 3 generadores declarados en FI_GEN_META (la menor,
+       fi-movimiento-relativo y fi-hidrostatica-pascal-prensa y
+       fi-cinematica-encuentro-combinados y fi-energia-cinetica-teorema,
+       tienen exactamente 3), así que con el tope de 5 por generador
+       todas pueden acumular 12 o más intentos contabilizables, y
+       todas tienen generadores de dificultad 2 o más. Ningún banco
+       necesitó generadores nuevos: la cobertura ya alcanzaba. */
+  "fi-magnitudes-clasificacion-unidades": { name:"Magnitudes, unidades y análisis dimensional", desc:"Escalares y vectoriales, pasaje de unidades entre km/h y m/s, y el análisis dimensional que caza fórmulas imposibles.", lessons:["cbc-fis1-magnitudes"], prereqs:[], piloto:false, etapa:"fisica" },
+  "fi-vectores-componentes": { name:"Componentes y proyección de vectores", desc:"Descomponer un vector con seno y coseno, proyectarlo sobre un eje y comprobar el módulo recomponiendo.", lessons:["cbc-fis1-magnitudes"], prereqs:[], piloto:false, etapa:"fisica" },
+  "fi-vectores-operaciones": { name:"Operaciones con vectores: módulo, suma y productos", desc:"El módulo por Pitágoras, la resultante componente a componente y los productos escalar y vectorial en contexto físico.", lessons:["cbc-fis1-magnitudes"], prereqs:["al-vectores-producto-escalar", "al-vectores-producto-vectorial"], piloto:false, etapa:"fisica" },
+  "fi-estatica-momento-equilibrio": { name:"Momento de una fuerza y condiciones de equilibrio", desc:"El momento como tendencia a girar, su cálculo con la componente perpendicular y las dos condiciones ΣF = 0 y ΣM = 0.", lessons:["cbc-fis1-magnitudes", "cbc-fis1-estatica"], prereqs:["fi-vectores-componentes"], piloto:false, etapa:"fisica" },
+  "fi-estatica-reacciones": { name:"Reacciones de vínculo en apoyos", desc:"Hallar las reacciones de los apoyos de una barra con momentos respecto de un extremo y ΣF = 0, con el DCL primero.", lessons:["cbc-fis1-estatica"], prereqs:["fi-estatica-momento-equilibrio"], piloto:false, etapa:"fisica" },
+  "fi-estatica-maquinas-centro": { name:"Palancas, poleas y centro de gravedad", desc:"La palanca como balance de momentos, la polea móvil que reparte la carga y el centro de gravedad como promedio pesado por las masas.", lessons:["cbc-fis1-estatica"], prereqs:["fi-estatica-momento-equilibrio"], piloto:false, etapa:"fisica" },
+  "fi-cinematica-mru-mruv": { name:"MRU y MRUV: ecuaciones horarias", desc:"Posición lineal en el MRU, posición cuadrática y velocidad en el MRUV, y la tercera ecuación que evita el tiempo.", lessons:["cbc-fis1-cinematica1d"], prereqs:[], piloto:false, etapa:"fisica" },
+  "fi-cinematica-descripcion-graficos": { name:"Descripción del movimiento y gráficos", desc:"Sistema de referencia, velocidad y aceleración medias, y la lectura de gráficos: pendiente de x(t) y área bajo v(t).", lessons:["cbc-fis1-cinematica1d"], prereqs:["fi-cinematica-mru-mruv"], piloto:false, etapa:"fisica" },
+  "fi-cinematica-caida-tiro-vertical": { name:"Caída libre y tiro vertical", desc:"El MRUV con a = −g: altura máxima, tiempo de subida, velocidad y tiempo de caída desde el reposo.", lessons:["cbc-fis1-cinematica1d"], prereqs:["fi-cinematica-mru-mruv"], piloto:false, etapa:"fisica" },
+  "fi-cinematica-encuentro-combinados": { name:"Encuentros y movimientos por etapas", desc:"Igualar las ecuaciones horarias de dos móviles y coser fases de aceleración y de velocidad constante.", lessons:["cbc-fis1-cinematica1d"], prereqs:["fi-cinematica-mru-mruv"], piloto:false, etapa:"fisica" },
+  "fi-tiro-oblicuo": { name:"Tiro oblicuo y tiro horizontal", desc:"Dos movimientos cosidos por el tiempo: MRU en x y tiro vertical en y; alcance, altura máxima y tiempo de vuelo.", lessons:["cbc-fis1-cinematica2d"], prereqs:["fi-vectores-componentes", "fi-cinematica-caida-tiro-vertical"], piloto:false, etapa:"fisica" },
+  "fi-movimiento-circular": { name:"Movimiento circular uniforme", desc:"Período, frecuencia, velocidad angular y tangencial, y la aceleración centrípeta que apunta al centro.", lessons:["cbc-fis1-cinematica2d"], prereqs:[], piloto:false, etapa:"fisica" },
+  "fi-movimiento-relativo": { name:"Movimiento relativo", desc:"La velocidad respecto de otro sistema como suma vectorial: el bote, la corriente y el tiempo de cruce.", lessons:["cbc-fis1-cinematica2d"], prereqs:["fi-vectores-operaciones"], piloto:false, etapa:"fisica" },
+  "fi-dinamica-newton-dcl": { name:"Leyes de Newton y diagrama de cuerpo libre", desc:"El protocolo del DCL, la segunda ley con la fuerza neta, el peso aparente y los sistemas no inerciales.", lessons:["cbc-fis2-dinamica"], prereqs:["fi-cinematica-descripcion-graficos"], piloto:false, etapa:"fisica" },
+  "fi-dinamica-plano-rozamiento": { name:"Plano inclinado y rozamiento", desc:"El peso descompuesto en el plano, la normal, el rozamiento estático que se ajusta y el cinético que vale μk·N.", lessons:["cbc-fis2-dinamica"], prereqs:["fi-dinamica-newton-dcl", "fi-vectores-componentes"], piloto:false, etapa:"fisica" },
+  "fi-dinamica-sistemas-circular": { name:"Sistemas vinculados y dinámica circular", desc:"La máquina de Atwood con una sola tensión, la tensión como resultante centrípeta y el peralte sin rozamiento.", lessons:["cbc-fis2-dinamica"], prereqs:["fi-dinamica-newton-dcl", "fi-movimiento-circular"], piloto:false, etapa:"fisica" },
+  "fi-gravitacion-orbitas": { name:"Gravitación y órbitas", desc:"El campo g que cae con 1/r², la velocidad orbital, la flotación en caída libre y la tercera ley de Kepler.", lessons:["cbc-fis2-dinamica"], prereqs:["fi-dinamica-newton-dcl", "fi-movimiento-circular"], piloto:false, etapa:"fisica" },
+  "fi-oscilaciones": { name:"Oscilador armónico: péndulo y resorte", desc:"La fuerza restauradora F = −k·x y los períodos del péndulo simple y del sistema masa-resorte.", lessons:["cbc-fis2-dinamica"], prereqs:["fi-dinamica-newton-dcl"], piloto:false, etapa:"fisica" },
+  "fi-energia-trabajo-potencia": { name:"Trabajo de una fuerza y potencia", desc:"El trabajo como producto escalar, con ángulo y con fuerza variable como área, y la potencia media e instantánea.", lessons:["cbc-fis2-energia"], prereqs:["fi-vectores-operaciones", "fi-dinamica-newton-dcl"], piloto:false, etapa:"fisica" },
+  "fi-energia-cinetica-teorema": { name:"Energía cinética y teorema del trabajo", desc:"Ec = (1/2)·m·v² y el teorema universal: el trabajo total es la variación de la energía cinética.", lessons:["cbc-fis2-energia"], prereqs:["fi-energia-trabajo-potencia"], piloto:false, etapa:"fisica" },
+  "fi-energia-conservacion": { name:"Energías potenciales y conservación de la mecánica", desc:"Potencial gravitatoria y elástica, fuerzas conservativas y la conservación cuando solo ellas trabajan.", lessons:["cbc-fis2-energia"], prereqs:["fi-energia-cinetica-teorema"], piloto:false, etapa:"fisica" },
+  "fi-energia-balance-roce": { name:"Balance con fuerzas no conservativas", desc:"El trabajo del rozamiento con su signo y el balance ΔE mecánica = W no conservativo cuando la mecánica no se conserva.", lessons:["cbc-fis2-energia"], prereqs:["fi-energia-conservacion", "fi-dinamica-plano-rozamiento"], piloto:false, etapa:"fisica" },
+  "fi-hidrostatica-presion": { name:"Densidad, presión y teorema fundamental", desc:"Densidad y peso específico, presión como fuerza sobre área, el teorema fundamental con presión absoluta y manométrica, y Torricelli.", lessons:["cbc-fis2-hidrostatica"], prereqs:["fi-dinamica-newton-dcl"], piloto:false, etapa:"fisica" },
+  "fi-hidrostatica-pascal-prensa": { name:"Principio de Pascal y prensa hidráulica", desc:"El incremento de presión que se transmite por igual: la fuerza se multiplica por las áreas y el recorrido se paga en la misma proporción.", lessons:["cbc-fis2-hidrostatica"], prereqs:["fi-hidrostatica-presion"], piloto:false, etapa:"fisica" },
+  "fi-hidrostatica-arquimedes-flotacion": { name:"Arquímedes, peso aparente y flotación", desc:"El empuje como peso del fluido desalojado, el peso aparente y la fracción sumergida al flotar en equilibrio.", lessons:["cbc-fis2-hidrostatica"], prereqs:["fi-hidrostatica-presion"], piloto:false, etapa:"fisica" }
 };
 /* Clases del piloto: las 11 de la semana 2 (fracciones de Pre-CBC). */
 var PILOT_LESSONS = ["s2-fraccion", "s2-division-resto", "s2-tipos", "s2-primos-mcd-mcm", "s2-equivalentes", "s2-comparar", "s2-suma", "s2-mult", "s2-negativas", "s2-cantidad", "s2-combinadas"];
@@ -6625,6 +6697,24 @@ var AL_LESSON_SKILLS = {
   "cbc-al2-transformaciones": { principal:"al-transformaciones-nucleo-imagen", habilidades:["al-transformaciones-linealidad", "al-transformaciones-nucleo-imagen", "al-transformaciones-geometria"] },
   "cbc-al2-conicas": { principal:"al-conicas-elementos", habilidades:["al-conicas-elementos", "al-conicas-parabola", "al-conicas-discriminante-rotacion", "al-conicas-desplazadas", "al-conicas-intersecciones"] }
 };
+/* Clases de la etapa de Física 03: las 7 de las semanas 18 y 19. */
+var FI_LESSONS = ["cbc-fis1-magnitudes", "cbc-fis1-estatica", "cbc-fis1-cinematica1d", "cbc-fis1-cinematica2d", "cbc-fis2-dinamica", "cbc-fis2-energia", "cbc-fis2-hidrostatica"];
+/* Vinculación clase → habilidades de la etapa de Física, con la
+   misma semántica que AN_LESSON_SKILLS y AL_LESSON_SKILLS: estas
+   clases también son multihabilidad, principal es un dato
+   descriptivo que NO interviene en la atribución, y la fuente
+   autoritativa de la evidencia es la tabla por generador
+   (FI_GEN_META): si el generador no se puede resolver, el intento
+   no se atribuye a ninguna habilidad. */
+var FI_LESSON_SKILLS = {
+  "cbc-fis1-magnitudes": { principal:"fi-vectores-operaciones", habilidades:["fi-magnitudes-clasificacion-unidades", "fi-vectores-componentes", "fi-vectores-operaciones", "fi-estatica-momento-equilibrio"] },
+  "cbc-fis1-estatica": { principal:"fi-estatica-reacciones", habilidades:["fi-estatica-momento-equilibrio", "fi-estatica-reacciones", "fi-estatica-maquinas-centro"] },
+  "cbc-fis1-cinematica1d": { principal:"fi-cinematica-mru-mruv", habilidades:["fi-cinematica-mru-mruv", "fi-cinematica-descripcion-graficos", "fi-cinematica-caida-tiro-vertical", "fi-cinematica-encuentro-combinados"] },
+  "cbc-fis1-cinematica2d": { principal:"fi-tiro-oblicuo", habilidades:["fi-tiro-oblicuo", "fi-movimiento-circular", "fi-movimiento-relativo"] },
+  "cbc-fis2-dinamica": { principal:"fi-dinamica-newton-dcl", habilidades:["fi-dinamica-newton-dcl", "fi-dinamica-plano-rozamiento", "fi-dinamica-sistemas-circular", "fi-gravitacion-orbitas", "fi-oscilaciones"] },
+  "cbc-fis2-energia": { principal:"fi-energia-conservacion", habilidades:["fi-energia-trabajo-potencia", "fi-energia-cinetica-teorema", "fi-energia-conservacion", "fi-energia-balance-roce"] },
+  "cbc-fis2-hidrostatica": { principal:"fi-hidrostatica-presion", habilidades:["fi-hidrostatica-presion", "fi-hidrostatica-pascal-prensa", "fi-hidrostatica-arquimedes-flotacion"] }
+};
 function graphNode(id){ return (typeof SKILL_GRAPH !== "undefined" && SKILL_GRAPH && SKILL_GRAPH[id]) || null; }
 function prereqsDe(id){ var n = graphNode(id); return n ? n.prereqs.slice() : []; }
 function duenoDeClase(){
@@ -6665,8 +6755,9 @@ function habilidadDeIntento(a){
      se le puede atribuir ninguna. Regla de atribución sin duplicación
      (cada intento cuenta una sola vez, para una sola habilidad):
      - Si el intento es de una clase multihabilidad de Análisis
-       (AN_LESSON_SKILLS) o de Álgebra (AL_LESSON_SKILLS): la tabla
-       por generador de su etapa (AN_GEN_META o AL_GEN_META) es la
+       (AN_LESSON_SKILLS), de Álgebra (AL_LESSON_SKILLS) o de
+       Física (FI_LESSON_SKILLS): la tabla
+       por generador de su etapa (AN_GEN_META, AL_GEN_META o FI_GEN_META) es la
        fuente autoritativa. Se resuelve primero lesson + gen: el
        campo gen "clase#gN" identifica el generador que lo sirvió y,
        si existe una entrada válida para ese generador, el intento
@@ -6694,6 +6785,9 @@ function habilidadDeIntento(a){
     } else if(typeof AL_LESSON_SKILLS !== "undefined" && AL_LESSON_SKILLS && AL_LESSON_SKILLS[a.lesson]){
       multi = AL_LESSON_SKILLS[a.lesson];
       tablaGen = (typeof AL_GEN_META !== "undefined" && AL_GEN_META) ? AL_GEN_META[a.lesson] : null;
+    } else if(typeof FI_LESSON_SKILLS !== "undefined" && FI_LESSON_SKILLS && FI_LESSON_SKILLS[a.lesson]){
+      multi = FI_LESSON_SKILLS[a.lesson];
+      tablaGen = (typeof FI_GEN_META !== "undefined" && FI_GEN_META) ? FI_GEN_META[a.lesson] : null;
     }
     if(multi){
       var gm = (typeof a.gen === "string") ? a.gen.match(/^(.+)#g(\d+)$/) : null;
@@ -6812,6 +6906,11 @@ function habilidadesPendientesAlgebra(attempts, lessonsDone){
      saber qué falta y qué prerrequisito frena cada avance. */
   return pendientesDeGrupo(function(n){ return n.etapa === "algebra"; }, attempts, lessonsDone);
 }
+function habilidadesPendientesFisica(attempts, lessonsDone){
+  /* Las de la etapa de Física 03: pendientes con sus bloqueos, para
+     saber qué falta y qué prerrequisito frena cada avance. */
+  return pendientesDeGrupo(function(n){ return n.etapa === "fisica"; }, attempts, lessonsDone);
+}
 if(window.TutorData){
   window.TutorData.SKILL_GRAPH = SKILL_GRAPH;
   window.TutorData.PILOT_LESSONS = PILOT_LESSONS;
@@ -6829,9 +6928,12 @@ if(window.TutorData){
   window.TutorData.AL_LESSONS = AL_LESSONS;
   window.TutorData.AL_LESSON_SKILLS = AL_LESSON_SKILLS;
   window.TutorData.habilidadesPendientesAlgebra = habilidadesPendientesAlgebra;
+  window.TutorData.FI_LESSONS = FI_LESSONS;
+  window.TutorData.FI_LESSON_SKILLS = FI_LESSON_SKILLS;
+  window.TutorData.habilidadesPendientesFisica = habilidadesPendientesFisica;
 }
 
-/* ================= Pruebas de la Fase B (Skill Graph, piloto + Análisis A + Álgebra A) =================
+/* ================= Pruebas de la Fase B (Skill Graph, piloto + Análisis A + Álgebra A + Física 03) =================
    Batería separada de la Fase A y de la del motor: integridad del
    grafo (ids, prerrequisitos, orden topológico, sin ciclos),
    vinculación de clases y generadores del piloto, evaluabilidad de
@@ -7628,6 +7730,241 @@ function runSkillGraphTests(){
       if(!parsed.ok) return "el respaldo con habilidades al- no se pudo importar: " + parsed.error;
       var m = masteryDeHabilidad("al-vectores-producto-escalar", null, null);
       if(m.detalle.total !== 1) return "la evidencia histórica de vectores debería atribuir 1 intento por su generador (g6 = producto escalar) y atribuyó " + m.detalle.total;
+      if(m.detalle.dificultadAlta !== 0) return "la dificultad null histórica contó como dificultad alta";
+      var histAntes = JSON.stringify(state.attempts);
+      var norm1 = normalizeState(state);
+      if(JSON.stringify(norm1.attempts) !== histAntes) return "normalizeState alteró el historial de intentos";
+      var norm2 = normalizeState(norm1);
+      if(JSON.stringify(norm2.attempts) !== histAntes) return "la segunda normalización alteró el historial";
+      if(JSON.stringify(norm2.skillAgg) !== JSON.stringify(norm1.skillAgg)) return "la segunda normalización no fue idempotente en skillAgg";
+      return true;
+    } finally { state = snapState; }
+  });
+  /* ---- Etapa de Física 03: grafo extendido, clases multihabilidad,
+     atribución autoritativa por generador, dificultad declarada y
+     cobertura de dominio para todas las habilidades ---- */
+  check("Física: integridad de la etapa (25 nodos fi-, ids válidos y las dependencias exigidas por la materia, incluidas las dos entre materias)", function(){
+    var fiIds = Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id].etapa === "fisica"; });
+    if(fiIds.length !== 25) return "la etapa debería tener 25 nodos y tiene " + fiIds.length;
+    for(var i = 0; i < fiIds.length; i++){
+      if(fiIds[i].indexOf("fi-") !== 0) return "el nodo de la etapa no tiene el prefijo fi-: " + fiIds[i];
+      if(!knownSkillId(fiIds[i])) return "el nodo " + fiIds[i] + " no es un id de habilidad válido";
+    }
+    function exige(id, pre){
+      var n = graphNode(id);
+      if(!n) return id + " no existe";
+      if(n.prereqs.indexOf(pre) < 0) return id + " debería requerir " + pre + " y requiere " + JSON.stringify(n.prereqs);
+      return null;
+    }
+    var mal = exige("fi-vectores-operaciones", "al-vectores-producto-escalar")
+      || exige("fi-vectores-operaciones", "al-vectores-producto-vectorial")
+      || exige("fi-estatica-reacciones", "fi-estatica-momento-equilibrio")
+      || exige("fi-cinematica-caida-tiro-vertical", "fi-cinematica-mru-mruv")
+      || exige("fi-tiro-oblicuo", "fi-vectores-componentes")
+      || exige("fi-tiro-oblicuo", "fi-cinematica-caida-tiro-vertical")
+      || exige("fi-movimiento-relativo", "fi-vectores-operaciones")
+      || exige("fi-dinamica-plano-rozamiento", "fi-dinamica-newton-dcl")
+      || exige("fi-dinamica-plano-rozamiento", "fi-vectores-componentes")
+      || exige("fi-gravitacion-orbitas", "fi-movimiento-circular")
+      || exige("fi-energia-cinetica-teorema", "fi-energia-trabajo-potencia")
+      || exige("fi-energia-conservacion", "fi-energia-cinetica-teorema")
+      || exige("fi-energia-balance-roce", "fi-dinamica-plano-rozamiento")
+      || exige("fi-hidrostatica-presion", "fi-dinamica-newton-dcl")
+      || exige("fi-hidrostatica-pascal-prensa", "fi-hidrostatica-presion")
+      || exige("fi-hidrostatica-arquimedes-flotacion", "fi-hidrostatica-presion");
+    if(mal) return mal;
+    /* Ninguna otra habilidad de Física depende de Análisis o de
+       Álgebra: las únicas dependencias entre materias son los dos
+       productos entre vectores de fi-vectores-operaciones. */
+    for(var j = 0; j < fiIds.length; j++){
+      var ps = SKILL_GRAPH[fiIds[j]].prereqs;
+      for(var k = 0; k < ps.length; k++){
+        if(ps[k].indexOf("an-") === 0) return fiIds[j] + " declara un prerrequisito de Análisis no justificado: " + ps[k];
+        if(ps[k].indexOf("al-") === 0 && fiIds[j] !== "fi-vectores-operaciones") return fiIds[j] + " declara un prerrequisito de Álgebra que no es el de los productos entre vectores: " + ps[k];
+      }
+    }
+    for(var l = 0; l < FI_LESSONS.length; l++) if(!lessonById(FI_LESSONS[l])) return "la clase de la etapa no existe: " + FI_LESSONS[l];
+    if(FI_LESSONS.length !== 7) return "la etapa debería tener 7 clases y declara " + FI_LESSONS.length;
+    return true;
+  });
+  check("Física: correspondencia clases/generadores/habilidades (ninguna clase sin habilidades, ningún generador sin habilidad válida)", function(){
+    if(Object.keys(FI_LESSON_SKILLS).length !== FI_LESSONS.length) return "el mapa clase→habilidades no cubre las " + FI_LESSONS.length + " clases";
+    for(var i = 0; i < FI_LESSONS.length; i++){
+      var lid = FI_LESSONS[i], info = FI_LESSON_SKILLS[lid];
+      if(!info) return "la clase " + lid + " no tiene habilidades vinculadas";
+      if(info.habilidades.indexOf(info.principal) < 0) return "la principal de " + lid + " no está entre sus habilidades";
+      for(var h = 0; h < info.habilidades.length; h++){
+        var nodo = graphNode(info.habilidades[h]);
+        if(!nodo) return lid + " vincula una habilidad que no es nodo del grafo: " + info.habilidades[h];
+        if(nodo.lessons.indexOf(lid) < 0) return "el nodo " + info.habilidades[h] + " no declara entre sus clases a " + lid;
+      }
+      var meta = FI_GEN_META[lid], banco = LESSON_EXERCISES[lid] || [];
+      if(!meta) return "no hay tabla de declaración para " + lid;
+      if(meta.length !== banco.length) return "la tabla de " + lid + " declara " + meta.length + " generadores y el banco tiene " + banco.length;
+      for(var g = 0; g < meta.length; g++){
+        if(info.habilidades.indexOf(meta[g][0]) < 0) return lid + "#g" + g + " declara una habilidad que la clase no desarrolla: " + meta[g][0];
+        if(!(meta[g][1] === 1 || meta[g][1] === 2 || meta[g][1] === 3)) return lid + "#g" + g + " declara una dificultad inválida: " + meta[g][1];
+      }
+    }
+    return true;
+  });
+  check("Física: barrido de generadores (cada instancia servida trae la habilidad y la dificultad declaradas en la tabla)", function(){
+    var mal = [];
+    FI_LESSONS.forEach(function(lid){
+      (LESSON_EXERCISES[lid] || []).forEach(function(gen, gi){
+        for(var r = 0; r < 15 && !mal.length; r++){
+          var e = sirve(gen);
+          if(!e){ mal.push(lid + "#g" + gi + " no sirvió una instancia válida"); break; }
+          if(e.skill !== FI_GEN_META[lid][gi][0]) mal.push(lid + "#g" + gi + " sirvió habilidad " + JSON.stringify(e.skill) + " y la tabla declara " + FI_GEN_META[lid][gi][0]);
+          else if(e.dificultad !== FI_GEN_META[lid][gi][1]) mal.push(lid + "#g" + gi + " sirvió dificultad " + JSON.stringify(e.dificultad) + " y la tabla declara " + FI_GEN_META[lid][gi][1]);
+        }
+      });
+    });
+    return mal.length ? mal[0] : true;
+  });
+  check("Física: atribución sin duplicación (un intento de una clase multihabilidad cuenta una sola vez y para la habilidad correcta)", function(){
+    var set = [
+      att(1, "2026-11-10", "s1", "cbc-fis2-dinamica", null, "Plano inclinado paso a paso", "cbc-fis2-dinamica#g11", true, null),
+      att(2, "2026-11-10", "s1", "cbc-fis1-magnitudes", "frac-suma", "Producto escalar", "cbc-fis1-magnitudes#g9", true, 2),
+      att(3, "2026-11-10", "s1", "cbc-fis2-hidrostatica", null, "Hidrostática paso a paso", "cbc-fis2-hidrostatica#g10", true, null),
+      att(4, "2026-11-10", "s1", "cbc-fis1-estatica", "fi-estatica-reacciones", "Momento neto", "cbc-fis1-estatica#g12", true, 2),
+      att(5, "2026-11-10", "s1", "cbc-fis1-magnitudes", null, "Verdadero o falso", "cbc-fis1-magnitudes#g1", true, null)
+    ];
+    if(habilidadDeIntento(set[0]) !== "fi-dinamica-plano-rozamiento") return "el generador del plano inclinado paso a paso no se atribuyó a plano y rozamiento: " + habilidadDeIntento(set[0]);
+    if(habilidadDeIntento(set[1]) !== "fi-vectores-operaciones") return "el intento con habilidad ajena no se atribuyó por su generador (g9 = producto escalar): " + habilidadDeIntento(set[1]);
+    if(habilidadDeIntento(set[2]) !== "fi-hidrostatica-arquimedes-flotacion") return "el intento histórico sin habilidad no se atribuyó por su generador (g10 = peso aparente paso a paso): " + habilidadDeIntento(set[2]);
+    if(habilidadDeIntento(set[3]) !== "fi-estatica-momento-equilibrio") return "el intento con otra habilidad de la misma clase no se atribuyó por su generador (g12 = momento neto): " + habilidadDeIntento(set[3]);
+    if(habilidadDeIntento(set[4]) !== "fi-estatica-momento-equilibrio") return "el generador de equilibrio de la clase de magnitudes no se atribuyó a la habilidad compartida con estática: " + habilidadDeIntento(set[4]);
+    if(evidenciaDeHabilidad("frac-suma", set).length !== 0) return "un intento se contó también para frac-suma: hay duplicación";
+    if(evidenciaDeHabilidad("fi-dinamica-newton-dcl", set).length !== 0) return "el generador del plano contó también para la principal de dinámica: hay duplicación";
+    var suma = 0;
+    Object.keys(SKILL_GRAPH).forEach(function(id){ suma += evidenciaDeHabilidad(id, set).length; });
+    if(suma !== set.length) return "la evidencia total sobre el grafo es " + suma + " y debería ser exactamente " + set.length + " (un conteo por intento)";
+    return true;
+  });
+  check("Física: FI_GEN_META manda en la atribución (skill no sobrescribe; sin generador resoluble no se atribuye a ninguna habilidad)", function(){
+    /* (a) skill null + generador válido → la habilidad del generador
+       (g11 de dinámica es el plano inclinado paso a paso según
+       FI_GEN_META). */
+    var aA = att(1, "2026-11-10", "s1", "cbc-fis2-dinamica", null, "Plano inclinado paso a paso", "cbc-fis2-dinamica#g11", true, null);
+    if(habilidadDeIntento(aA) !== "fi-dinamica-plano-rozamiento") return "(a) skill null con generador válido debería atribuir a fi-dinamica-plano-rozamiento y atribuyó a " + habilidadDeIntento(aA);
+    /* (b) skill válida de la misma clase pero distinta de la del
+       generador → prevalece FI_GEN_META. */
+    var aB = att(2, "2026-11-10", "s1", "cbc-fis2-dinamica", "fi-oscilaciones", "Plano inclinado paso a paso", "cbc-fis2-dinamica#g11", true, 2);
+    if(habilidadDeIntento(aB) !== "fi-dinamica-plano-rozamiento") return "(b) la skill de la misma clase sobrescribió a FI_GEN_META: atribuyó a " + habilidadDeIntento(aB);
+    if(evidenciaDeHabilidad("fi-oscilaciones", [aB]).length !== 0) return "(b) el intento contó también para la skill que traía: hay sobrescritura o duplicación";
+    /* (c) skill ajena a la clase + generador válido → prevalece
+       FI_GEN_META. */
+    var aC = att(3, "2026-11-10", "s1", "cbc-fis2-dinamica", "al-determinantes", "Plano inclinado paso a paso", "cbc-fis2-dinamica#g11", true, 2);
+    if(habilidadDeIntento(aC) !== "fi-dinamica-plano-rozamiento") return "(c) la skill ajena sobrescribió a FI_GEN_META: atribuyó a " + habilidadDeIntento(aC);
+    /* (d) generador inexistente o índice fuera del banco → no se
+       atribuye a ninguna habilidad, ni siquiera trayendo una skill
+       válida de la clase, y tampoco cae en la principal. */
+    var aD1 = att(4, "2026-11-10", "s1", "cbc-fis2-dinamica", null, "Plano inclinado paso a paso", "cbc-fis2-dinamica#g99", true, null);
+    if(habilidadDeIntento(aD1) !== null) return "(d) un índice fuera del banco se atribuyó a " + habilidadDeIntento(aD1) + " en vez de a ninguna habilidad";
+    var aD2 = att(5, "2026-11-10", "s1", "cbc-fis2-dinamica", "fi-dinamica-plano-rozamiento", "Plano inclinado paso a paso", "cbc-fis2-dinamica#g99", true, 2);
+    if(habilidadDeIntento(aD2) !== null) return "(d) con el generador fuera del banco, la skill del intento rescató la atribución: " + habilidadDeIntento(aD2);
+    var aD3 = att(6, "2026-11-10", "s1", "cbc-fis2-dinamica", "fi-dinamica-plano-rozamiento", "Plano inclinado paso a paso", null, true, 2);
+    if(habilidadDeIntento(aD3) !== null) return "(d) sin generador registrado el intento se atribuyó a " + habilidadDeIntento(aD3) + " en vez de a ninguna habilidad";
+    var aD4 = att(7, "2026-11-10", "s1", "cbc-fis2-dinamica", null, "Producto escalar", "cbc-fis1-magnitudes#g9", true, null);
+    if(habilidadDeIntento(aD4) !== null) return "(d) un generador de otra clase resolvió la atribución: " + habilidadDeIntento(aD4);
+    if(evidenciaDeHabilidad("fi-dinamica-newton-dcl", [aD1, aD2, aD3, aD4]).length !== 0) return "(d) algún intento sin generador resoluble cayó en la principal de su clase";
+    /* (e) ningún intento queda contado en dos habilidades: la suma
+       de la evidencia de todo el grafo es exactamente el número de
+       intentos atribuibles (los 3 con generador válido; los 4 sin
+       resolver no cuentan en ninguna). */
+    var mezcla = [aA, aB, aC, aD1, aD2, aD3, aD4];
+    var suma = 0;
+    Object.keys(SKILL_GRAPH).forEach(function(id){ suma += evidenciaDeHabilidad(id, mezcla).length; });
+    if(suma !== 3) return "(e) la evidencia total sobre el grafo es " + suma + " y debería ser exactamente 3 (solo los intentos con generador válido, una sola vez cada uno)";
+    /* (f) los intentos históricos CBC (skill null, dificultad null)
+       con generadores válidos siguen atribuyéndose por su generador. */
+    var hist = [
+      [att(11, "2026-11-10", "s1", "cbc-fis1-cinematica2d", null, "El alcance del tiro oblicuo", "cbc-fis1-cinematica2d#g6", true, null), "fi-tiro-oblicuo"],
+      [att(12, "2026-11-10", "s1", "cbc-fis2-energia", null, "Teorema trabajo-energía paso a paso", "cbc-fis2-energia#g10", true, null), "fi-energia-cinetica-teorema"],
+      [att(13, "2026-11-10", "s1", "cbc-fis1-estatica", null, "Barra paso a paso", "cbc-fis1-estatica#g8", true, null), "fi-estatica-reacciones"],
+      [att(14, "2026-11-10", "s1", "cbc-fis2-hidrostatica", null, "La prensa hidráulica", "cbc-fis2-hidrostatica#g7", true, null), "fi-hidrostatica-pascal-prensa"]
+    ];
+    for(var i = 0; i < hist.length; i++){
+      if(habilidadDeIntento(hist[i][0]) !== hist[i][1]) return "(f) el histórico de " + hist[i][0].gen + " debería atribuir a " + hist[i][1] + " y atribuyó a " + habilidadDeIntento(hist[i][0]);
+    }
+    return true;
+  });
+  check("Física: cobertura de dominio para todas las habilidades (al menos 3 generadores, tope de 12 o más y generadores de dificultad 2 o más)", function(){
+    var fiIds = Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id].etapa === "fisica"; });
+    for(var i = 0; i < fiIds.length; i++){
+      var skill = fiIds[i], gens = [], conDifAlta = 0;
+      FI_LESSONS.forEach(function(lid){
+        (FI_GEN_META[lid] || []).forEach(function(m, gi){ if(m[0] === skill){ gens.push(lid + "#g" + gi); if(m[1] >= 2) conDifAlta++; } });
+      });
+      if(gens.length < 3) return skill + " tiene " + gens.length + " generadores declarados y necesita al menos 3 para poder llegar a 12 intentos con el tope de 5";
+      if(gens.length * 5 < 12) return skill + " con " + gens.length + " generadores y el tope de 5 por generador llega a " + (gens.length * 5) + " intentos, menos que los 12 del dominio";
+      if(conDifAlta < 1) return skill + " no tiene ningún generador de dificultad 2 o más: el criterio de dificultad alta sería inalcanzable";
+    }
+    return true;
+  });
+  check("Física: dominio sintético válido en una subhabilidad por clase (7 clases), sin dominar con evidencia de otra", function(){
+    /* Los generadores de cada conjunto son los que FI_GEN_META
+       declara para la habilidad objetivo en su clase. */
+    var objetivos = [
+      ["cbc-fis1-magnitudes", "fi-vectores-operaciones", [6, 8, 9, 13, 15]],
+      ["cbc-fis1-estatica", "fi-estatica-reacciones", [0, 1, 5, 8, 11, 14]],
+      ["cbc-fis1-cinematica1d", "fi-cinematica-caida-tiro-vertical", [2, 3, 10, 11, 12]],
+      ["cbc-fis1-cinematica2d", "fi-tiro-oblicuo", [0, 5, 6, 7, 8, 9]],
+      ["cbc-fis2-dinamica", "fi-gravitacion-orbitas", [6, 7, 8, 16]],
+      ["cbc-fis2-energia", "fi-energia-conservacion", [1, 4, 9, 11, 12]],
+      ["cbc-fis2-hidrostatica", "fi-hidrostatica-arquimedes-flotacion", [3, 8, 9, 10, 14, 16]]
+    ];
+    for(var t = 0; t < objetivos.length; t++){
+      var lid = objetivos[t][0], skill = objetivos[t][1], gens = objetivos[t][2];
+      var set = conjuntoDominioAn(lid, skill, gens);
+      var m = masteryDeHabilidad(skill, set, {});
+      if(m.k !== "dominada") return skill + " quedó en " + m.k + " con criterios " + JSON.stringify(m.criterios) + " y detalle " + JSON.stringify(m.detalle);
+      var sinDifAlta = set.map(function(a){ var c = Object.assign({}, a); c.dificultad = 1; return c; });
+      var m2 = masteryDeHabilidad(skill, sinDifAlta, {});
+      if(m2.criterios.dificultad) return skill + ": con toda la evidencia en dificultad 1 el criterio de dificultad debería fallar";
+      if(m2.k === "dominada") return skill + ": se marcó dominada faltándole el criterio de dificultad";
+      for(var o = 0; o < objetivos.length; o++){
+        if(objetivos[o][1] === skill) continue;
+        var otra = masteryDeHabilidad(objetivos[o][1], set, {});
+        if(otra.detalle.total !== 0) return "la evidencia de " + skill + " contó también para " + objetivos[o][1] + ": ninguna habilidad se domina con evidencia de otra";
+      }
+      var vista = masteryDeHabilidad(skill, [], (function(){ var d = {}; d[lid] = "2026-11-10"; return d; })());
+      if(vista.k !== "vista") return skill + ": con la clase vista y sin evidencia debería quedar vista y quedó " + vista.k;
+    }
+    return true;
+  });
+  check("Física: bloqueo y desbloqueo por prerrequisitos (también en la cadena que cruza a Álgebra)", function(){
+    var bloq = bloqueosDe("fi-hidrostatica-arquimedes-flotacion", [], {});
+    if(bloq.indexOf("fi-hidrostatica-presion") < 0) return "fi-hidrostatica-arquimedes-flotacion debería estar bloqueada por fi-hidrostatica-presion: " + JSON.stringify(bloq);
+    /* Generadores que FI_GEN_META declara para presión en
+       hidrostática (g0, g2, g4, g5, g6, g11, g12, g13, g15). */
+    var ev = conjuntoDominioAn("cbc-fis2-hidrostatica", "fi-hidrostatica-presion", [0, 2, 4, 5, 6, 11, 12, 13, 15]);
+    var libres = bloqueosDe("fi-hidrostatica-arquimedes-flotacion", ev, {});
+    if(libres.length) return "con presión dominada, Arquímedes sigue bloqueada por: " + JSON.stringify(libres);
+    var cadena = bloqueosEnCadena("fi-energia-trabajo-potencia", [], {});
+    if(cadena.indexOf("fi-vectores-operaciones") < 0 || cadena.indexOf("al-vectores-producto-escalar") < 0 || cadena.indexOf("al-vectores-producto-vectorial") < 0) return "la cadena de fi-energia-trabajo-potencia debería llegar a las operaciones con vectores y, a través de ellas, a los productos de Álgebra: " + JSON.stringify(cadena);
+    var cadenaFi = bloqueosEnCadena("fi-vectores-operaciones", [], {});
+    if(cadenaFi.length !== 2) return "la cadena de fi-vectores-operaciones debería ser exactamente sus 2 prerrequisitos de Álgebra y es " + JSON.stringify(cadenaFi);
+    var pend = habilidadesPendientesFisica([], {});
+    if(pend.length !== 25) return "sin progreso deberían estar pendientes las 25 habilidades de la etapa y hay " + pend.length;
+    return true;
+  });
+  check("Física: intentos históricos con skill null y dificultad null siguen funcionando, y los respaldos con habilidades fi- importan", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      var viejo = recordAttempt({ lesson:"cbc-fis1-cinematica1d", skill:null, tipo:"Caída libre: el tiempo", gen:"cbc-fis1-cinematica1d#g11", dada:"2", esperada:"2", ok:true, modo:"ronda", kind:"num" });
+      if(!viejo || viejo.skill !== null || viejo.dificultad !== null) return "el intento histórico no conservó skill null y dificultad null";
+      var nuevo = recordAttempt({ lesson:"cbc-fis2-hidrostatica", skill:"fi-hidrostatica-pascal-prensa", tipo:"La prensa hidráulica", gen:"cbc-fis2-hidrostatica#g7", dada:"2000", esperada:"2000", ok:true, modo:"ronda", dificultad:2, kind:"num" });
+      if(!nuevo || nuevo.dificultad !== 2) return "recordAttempt no conservó la dificultad declarada por el generador de Física";
+      if(!state.skillAgg["fi-hidrostatica-pascal-prensa"] || state.skillAgg["fi-hidrostatica-pascal-prensa"].total !== 1) return "skillAgg no agregó el intento de la subhabilidad de Física";
+      var bad = validateStateShape(state);
+      if(bad) return "el estado con intentos de Física no valida: " + bad;
+      var parsed = parseBackup(serializeBackup(state));
+      if(!parsed.ok) return "el respaldo con habilidades fi- no se pudo importar: " + parsed.error;
+      var m = masteryDeHabilidad("fi-cinematica-caida-tiro-vertical", null, null);
+      if(m.detalle.total !== 1) return "la evidencia histórica de cinemática debería atribuir 1 intento por su generador (g11 = caída libre, el tiempo) y atribuyó " + m.detalle.total;
       if(m.detalle.dificultadAlta !== 0) return "la dificultad null histórica contó como dificultad alta";
       var histAntes = JSON.stringify(state.attempts);
       var norm1 = normalizeState(state);
@@ -11529,6 +11866,126 @@ LESSON_EXERCISES["cbc-fis1-estatica"] = [
      "La ecuación queda con una sola incógnita, la otra reacción, que se despeja en un paso. Después ΣF = 0 da la primera reacción sin plantear otro momento.",
      "Con el eje en un punto cualquiera, las dos reacciones aparecen en la ecuación de momentos y hay que resolver un sistema de dos ecuaciones. El resultado final es el mismo, porque el equilibrio no depende del eje elegido: lo que cambia es el trabajo. Elegir bien el eje es estrategia, no un truco."]); }
 ];
+/* ================= Etapa Física 03: declaración por generador =====
+   Auditoría de los bancos reales de las 7 clases de Física 03 (127
+   generadores en total; gN = el generador N del banco, en orden),
+   leídos uno por uno para asignar a cada uno su subhabilidad del
+   grafo y su dificultad real con la misma escala de las etapas
+   anteriores (1 = reconocimiento o un paso directo; 2 = varios
+   pasos; 3 = combinación de procedimientos, desarrollo por pasos o
+   respuesta abierta). La clasificación sale del contenido de cada
+   generador, no del criterio de dominio. Desglose por banco
+   (cantidad de generadores por nivel 1/2/3):
+   - cbc-fis1-magnitudes (18): 12/4/2. Ej.: nivel 1, el pasaje de
+     unidades dividiendo por 3,6 (g10); nivel 2, el módulo de la
+     resultante sumando componentes y aplicando Pitágoras (g8);
+     nivel 3, descomponer paso a paso con comprobación del módulo
+     (g14) y el abierto escalar/vectorial (g17).
+   - cbc-fis1-estatica (16): 6/8/2. Ej.: nivel 1, el momento directo
+     fuerza por distancia (g2); nivel 2, la reacción en B por
+     momentos respecto de A (g0); nivel 3, la barra paso a paso
+     (g8) y el abierto sobre la elección del eje (g15).
+   - cbc-fis1-cinematica1d (18): 6/9/3. Ej.: nivel 1, la posición
+     del MRU con su ecuación horaria (g6); nivel 2, la velocidad
+     media en dos tramos como total sobre total (g8, en la
+     subhabilidad de encuentros y combinados); nivel 3, el
+     encuentro paso a paso (g9).
+   - cbc-fis1-cinematica2d (18): 10/5/3. Ej.: nivel 1, la
+     centrípeta directa v²/R (g1); nivel 2, el alcance combinando
+     componentes, tiempo de vuelo y MRU (g6); nivel 3, el tiro
+     horizontal paso a paso (g9). En el bloque circular, el único
+     generador de nivel 2 o más es el paso a paso (g16): alcanza
+     para el criterio de dificultad porque un solo generador
+     aporta hasta 5 intentos con el tope.
+   - cbc-fis2-dinamica (20): 7/11/2. Ej.: nivel 1, la segunda ley
+     directa F/m (g9); nivel 2, la Atwood sumando los dos DCL
+     (g12); nivel 3, el plano inclinado paso a paso (g11) y el
+     abierto de la fuerza ficticia (g19).
+   - cbc-fis2-energia (18): 9/7/2. Ej.: nivel 1, la cinética
+     directa (1/2)·m·v² (g8); nivel 2, la conservación en la caída
+     igualando potencial y cinética (g11); nivel 3, el teorema
+     trabajo-energía paso a paso (g10) y el abierto del rozamiento
+     sin potencial (g17).
+   - cbc-fis2-hidrostatica (19): 11/5/3. Ej.: nivel 1, la presión
+     por profundidad ρ·g·h (g0); nivel 2, la prensa hidráulica por
+     la razón de áreas (g7); nivel 3, el peso aparente paso a paso
+     (g10), la presión absoluta paso a paso (g13) y el abierto del
+     empuje y la profundidad (g18).
+   Cobertura: cada subhabilidad fi- tiene al menos 3 generadores
+   entre los bancos de sus clases (fi-estatica-momento-equilibrio
+   suma los de magnitudes y los de estática), con tope de 12 o más
+   intentos contabilizables y generadores de dificultad 2 o más:
+   ningún banco necesitó generadores nuevos en esta etapa. */
+var FI_GEN_META = {
+  "cbc-fis1-magnitudes": [
+    ["fi-magnitudes-clasificacion-unidades", 1], ["fi-estatica-momento-equilibrio", 1], ["fi-estatica-momento-equilibrio", 1], ["fi-vectores-componentes", 1],
+    ["fi-magnitudes-clasificacion-unidades", 1], ["fi-magnitudes-clasificacion-unidades", 1], ["fi-vectores-operaciones", 2], ["fi-vectores-componentes", 1],
+    ["fi-vectores-operaciones", 2], ["fi-vectores-operaciones", 2], ["fi-magnitudes-clasificacion-unidades", 1], ["fi-magnitudes-clasificacion-unidades", 1],
+    ["fi-vectores-componentes", 1], ["fi-vectores-operaciones", 1], ["fi-vectores-componentes", 3], ["fi-vectores-operaciones", 1],
+    ["fi-magnitudes-clasificacion-unidades", 2], ["fi-magnitudes-clasificacion-unidades", 3]
+  ],
+  "cbc-fis1-estatica": [
+    ["fi-estatica-reacciones", 2], ["fi-estatica-reacciones", 2], ["fi-estatica-momento-equilibrio", 1], ["fi-estatica-maquinas-centro", 2],
+    ["fi-estatica-momento-equilibrio", 1], ["fi-estatica-reacciones", 1], ["fi-estatica-momento-equilibrio", 2], ["fi-estatica-maquinas-centro", 2],
+    ["fi-estatica-reacciones", 3], ["fi-estatica-maquinas-centro", 2], ["fi-estatica-maquinas-centro", 1], ["fi-estatica-reacciones", 2],
+    ["fi-estatica-momento-equilibrio", 2], ["fi-estatica-momento-equilibrio", 1], ["fi-estatica-reacciones", 1], ["fi-estatica-momento-equilibrio", 3]
+  ],
+  "cbc-fis1-cinematica1d": [
+    ["fi-cinematica-mru-mruv", 1], ["fi-cinematica-descripcion-graficos", 1], ["fi-cinematica-caida-tiro-vertical", 2], ["fi-cinematica-caida-tiro-vertical", 1],
+    ["fi-cinematica-mru-mruv", 2], ["fi-cinematica-mru-mruv", 1], ["fi-cinematica-mru-mruv", 1], ["fi-cinematica-mru-mruv", 2],
+    ["fi-cinematica-encuentro-combinados", 2], ["fi-cinematica-encuentro-combinados", 3], ["fi-cinematica-caida-tiro-vertical", 2], ["fi-cinematica-caida-tiro-vertical", 2],
+    ["fi-cinematica-caida-tiro-vertical", 1], ["fi-cinematica-descripcion-graficos", 2], ["fi-cinematica-descripcion-graficos", 2], ["fi-cinematica-descripcion-graficos", 2],
+    ["fi-cinematica-encuentro-combinados", 3], ["fi-cinematica-caida-tiro-vertical", 3]
+  ],
+  "cbc-fis1-cinematica2d": [
+    ["fi-tiro-oblicuo", 1], ["fi-movimiento-circular", 1], ["fi-movimiento-circular", 1], ["fi-movimiento-circular", 1],
+    ["fi-movimiento-relativo", 1], ["fi-tiro-oblicuo", 1], ["fi-tiro-oblicuo", 2], ["fi-tiro-oblicuo", 2],
+    ["fi-tiro-oblicuo", 2], ["fi-tiro-oblicuo", 3], ["fi-movimiento-circular", 1], ["fi-movimiento-circular", 1],
+    ["fi-movimiento-circular", 1], ["fi-movimiento-relativo", 2], ["fi-movimiento-relativo", 2], ["fi-tiro-oblicuo", 1],
+    ["fi-movimiento-circular", 3], ["fi-tiro-oblicuo", 3]
+  ],
+  "cbc-fis2-dinamica": [
+    ["fi-dinamica-plano-rozamiento", 1], ["fi-dinamica-plano-rozamiento", 1], ["fi-dinamica-sistemas-circular", 1], ["fi-oscilaciones", 1],
+    ["fi-oscilaciones", 2], ["fi-dinamica-newton-dcl", 1], ["fi-gravitacion-orbitas", 2], ["fi-gravitacion-orbitas", 2],
+    ["fi-gravitacion-orbitas", 1], ["fi-dinamica-newton-dcl", 1], ["fi-dinamica-newton-dcl", 2], ["fi-dinamica-plano-rozamiento", 3],
+    ["fi-dinamica-sistemas-circular", 2], ["fi-dinamica-plano-rozamiento", 2], ["fi-dinamica-sistemas-circular", 2], ["fi-dinamica-sistemas-circular", 2],
+    ["fi-gravitacion-orbitas", 2], ["fi-oscilaciones", 2], ["fi-oscilaciones", 2], ["fi-dinamica-newton-dcl", 3]
+  ],
+  "cbc-fis2-energia": [
+    ["fi-energia-cinetica-teorema", 1], ["fi-energia-conservacion", 1], ["fi-energia-trabajo-potencia", 1], ["fi-energia-balance-roce", 1],
+    ["fi-energia-conservacion", 1], ["fi-energia-balance-roce", 1], ["fi-energia-trabajo-potencia", 1], ["fi-energia-trabajo-potencia", 2],
+    ["fi-energia-cinetica-teorema", 1], ["fi-energia-conservacion", 1], ["fi-energia-cinetica-teorema", 3], ["fi-energia-conservacion", 2],
+    ["fi-energia-conservacion", 2], ["fi-energia-trabajo-potencia", 2], ["fi-energia-balance-roce", 2], ["fi-energia-trabajo-potencia", 2],
+    ["fi-energia-balance-roce", 2], ["fi-energia-balance-roce", 3]
+  ],
+  "cbc-fis2-hidrostatica": [
+    ["fi-hidrostatica-presion", 1], ["fi-hidrostatica-pascal-prensa", 1], ["fi-hidrostatica-presion", 1], ["fi-hidrostatica-arquimedes-flotacion", 1],
+    ["fi-hidrostatica-presion", 1], ["fi-hidrostatica-presion", 1], ["fi-hidrostatica-presion", 1], ["fi-hidrostatica-pascal-prensa", 2],
+    ["fi-hidrostatica-arquimedes-flotacion", 2], ["fi-hidrostatica-arquimedes-flotacion", 1], ["fi-hidrostatica-arquimedes-flotacion", 3], ["fi-hidrostatica-presion", 1],
+    ["fi-hidrostatica-presion", 1], ["fi-hidrostatica-presion", 3], ["fi-hidrostatica-arquimedes-flotacion", 1], ["fi-hidrostatica-presion", 2],
+    ["fi-hidrostatica-arquimedes-flotacion", 2], ["fi-hidrostatica-pascal-prensa", 2], ["fi-hidrostatica-arquimedes-flotacion", 3]
+  ]
+};
+/* Aplicación de la declaración, igual que en Análisis y Álgebra:
+   cada fábrica de Física queda envuelta para que el ejercicio que
+   sirve nazca con su habilidad y su dificultad. Este bloque va
+   después de la definición del banco de estática (el último de
+   Física en declararse en el archivo) para que los 7 bancos ya
+   existan. Los índices no cambian y ningún otro banco se toca. */
+Object.keys(FI_GEN_META).forEach(function(lid){
+  var meta = FI_GEN_META[lid];
+  LESSON_EXERCISES[lid] = (LESSON_EXERCISES[lid] || []).map(function(gen, gi){
+    var m = meta[gi];
+    if(!m) return gen;
+    return function(){
+      var e = gen();
+      if(e && typeof e === "object"){ e.skill = m[0]; e.dificultad = m[1]; }
+      return e;
+    };
+  });
+});
+if(window.TutorData) window.TutorData.FI_GEN_META = FI_GEN_META;
+
 LESSON_EXERCISES["cbc-pc-escribir"] = [
   function(){ return exNum("Escribir y comprobar", "La función suma_pares de la clase suma los pares de una lista. ¿Qué devuelve suma_pares([1, 2, 3, 4, 6])?", 12,
     ["Recorro con el plan de la clase: 1 no, 2 sí (total 2), 3 no, 4 sí (total 6), 6 sí (total 12).", "El return está fuera del ciclo: devuelve el total final, 12.", "Error habitual: un return dentro del ciclo devolvería 2 y cortaría la función."]); },
@@ -12420,7 +12877,7 @@ function dominioDe(l){
 function renderGrafoPiloto(){
   var gl = $("#graph-list"); if(!gl) return;
   var orden = ordenHabilidades() || Object.keys(SKILL_GRAPH);
-  var ids = orden.filter(function(id){ return SKILL_GRAPH[id].piloto || SKILL_GRAPH[id].etapa === "analisis" || SKILL_GRAPH[id].etapa === "algebra"; });
+  var ids = orden.filter(function(id){ return SKILL_GRAPH[id].piloto || SKILL_GRAPH[id].etapa === "analisis" || SKILL_GRAPH[id].etapa === "algebra" || SKILL_GRAPH[id].etapa === "fisica"; });
   gl.innerHTML = ids.map(function(id){
     var n = SKILL_GRAPH[id];
     var m = masteryDeHabilidad(id, null, null);
