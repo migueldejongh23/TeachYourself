@@ -717,8 +717,8 @@
       <div id="dominio-list"></div>
     </div>
     <div class="prog-section">
-      <h2>Habilidades de fracciones (grafo, piloto)</h2>
-      <p class="small faint">Las habilidades de la semana de fracciones y cómo se relacionan: cada una puede estar pendiente, vista (viste la clase, sin practicar), practicada o dominada. Dominada sale solo de tus ejercicios con corrección objetiva: 12 o más intentos que cuentan (máximo 5 por cada generador registrado; en los exámenes el registro agrupa por semana, así que cuentan hasta 5 por semana de examen), 85% o más de aciertos, en 2 o más sesiones en días distintos, con 80% o más en tu sesión más reciente, en 3 o más tipos de ejercicio y con 4 o más intentos de dificultad 2 o más. Ver una clase nunca marca una habilidad como dominada. Si una habilidad está bloqueada, acá dice qué prerrequisito le falta.</p>
+      <h2>Habilidades del grafo: fracciones y Análisis A</h2>
+      <p class="small faint">Las habilidades de la semana de fracciones y de Análisis Matemático A, y cómo se relacionan: cada una puede estar pendiente, vista (viste la clase, sin practicar), practicada o dominada. Dominada sale solo de tus ejercicios con corrección objetiva: 12 o más intentos que cuentan (máximo 5 por cada generador registrado; en los exámenes el registro agrupa por semana, así que cuentan hasta 5 por semana de examen), 85% o más de aciertos, en 2 o más sesiones en días distintos, con 80% o más en tu sesión más reciente, en 3 o más tipos de ejercicio y con 4 o más intentos de dificultad 2 o más. Ver una clase nunca marca una habilidad como dominada. Si una habilidad está bloqueada, acá dice qué prerrequisito le falta.</p>
       <div id="graph-list"></div>
     </div>
     <div class="prog-section">
@@ -752,8 +752,8 @@
         <div class="small" id="engine-test-results" style="margin-top:10px;"></div>
       </details>
       <details style="margin-top:14px;">
-        <summary class="small" style="cursor:pointer;">Pruebas de la Fase B (grafo de habilidades, piloto de fracciones)</summary>
-        <p class="small faint" style="margin:8px 0;">Batería del piloto del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
+        <summary class="small" style="cursor:pointer;">Pruebas de la Fase B (grafo de habilidades)</summary>
+        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad, la herencia a la habilidad principal de los intentos sin habilidad declarada, y la dificultad declarada por cada generador. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
         <button class="btn" id="run-graph-tests">Correr las pruebas del grafo</button>
         <div class="small" id="graph-test-results" style="margin-top:10px;"></div>
       </details>
@@ -6415,10 +6415,106 @@ var SKILL_GRAPH = {
   "frac-mult": { name:"Multiplicar y dividir fracciones", desc:"Directo al multiplicar; dar vuelta la segunda al dividir.", lessons:["s2-mult"], prereqs:[], piloto:true },
   "frac-negativas": { name:"Fracciones negativas", desc:"Operar fracciones con signo usando la regla de signos y las operaciones con fracciones.", lessons:["s2-negativas"], prereqs:["signos", "frac-suma", "frac-mult"], piloto:true },
   "frac-cantidad": { name:"Fracción de una cantidad", desc:"Cuánto es una fracción de un número, cuánto queda y cómo hallar el todo sabiendo una parte.", lessons:["s2-cantidad"], prereqs:["frac-mult"], piloto:true },
-  "frac-combinadas": { name:"Operaciones combinadas con fracciones", desc:"Sumas, restas, multiplicaciones y divisiones en una sola cuenta, en orden.", lessons:["s2-combinadas"], prereqs:["frac-suma", "frac-mult"], piloto:true }
+  "frac-combinadas": { name:"Operaciones combinadas con fracciones", desc:"Sumas, restas, multiplicaciones y divisiones en una sola cuenta, en orden.", lessons:["s2-combinadas"], prereqs:["frac-suma", "frac-mult"], piloto:true },
+  /* ---- Expansión del grafo, etapa Análisis Matemático A (semanas 14
+     y 15). Decisiones de esta etapa:
+     - 42 nodos nuevos con prefijo an-, uno por bloque real de
+       contenido de las 8 clases CBC de Análisis A; NO uno por clase:
+       cada clase desarrolla varias habilidades (ver AN_LESSON_SKILLS).
+       Los ids históricos de SKILLS y del piloto no se tocan.
+     - etapa:"analisis" distingue estos nodos del piloto (piloto:false)
+       sin cambiar ninguna cuenta del piloto: habilidadesPendientes y
+       sus pruebas siguen contando solo el piloto.
+     - lessons de un nodo = clases que lo enseñan. A diferencia del
+       piloto, una clase puede figurar en varios nodos (es
+       multihabilidad) y un nodo puede enseñarse en dos clases:
+       an-integrales-aplicaciones se enseña en cbc-an2-integrales y en
+       cbc-an2-edo, cuyos primeros generadores son áreas entre curvas.
+     - Prerrequisitos: solo dependencias reales, entre ellas las de la
+       cadena de la materia: la derivada se define como un límite
+       (an-derivadas-definicion ← an-limites-calculo); el estudio de
+       funciones trabaja derivando (an-estudio-* ← an-derivadas-reglas
+       o an-derivadas-tangente); integrar es antiderivar
+       (an-integrales-primitivas ← an-derivadas-reglas) y la integral
+       impropia es un límite de integrales (an-impropias ←
+       an-integral-barrow y an-limites-calculo); las series son sumas
+       infinitas de sucesiones (an-series-sumas ← an-sucesiones-limite)
+       y el criterio integral las ata a las impropias
+       (an-series-criterios ← an-impropias); una EDO se resuelve
+       integrando (an-edo-directa ← an-integrales-primitivas). Dentro
+       de cada unidad, los prerrequisitos son los del procedimiento:
+       simplificar el resultado de un límite de sucesión no se exigió;
+       comparar funciones por asíntotas sí pide dominio, etc. */
+  "an-funciones-dominio": { name:"Dominio de funciones", desc:"Qué valores puede tomar x: denominadores que no se anulan, radicandos no negativos y argumentos de logaritmo positivos.", lessons:["cbc-an1-funciones"], prereqs:[], piloto:false, etapa:"analisis" },
+  "an-funciones-asintotas": { name:"Asíntotas y homográficas", desc:"Asíntotas verticales y horizontales de funciones racionales y los casos degenerados de la homográfica.", lessons:["cbc-an1-funciones"], prereqs:["an-funciones-dominio"], piloto:false, etapa:"analisis" },
+  "an-funciones-comp-inv": { name:"Composición e inversa", desc:"Encadenar funciones con ∘ y hallar la inversa despejando e intercambiando variables.", lessons:["cbc-an1-funciones"], prereqs:[], piloto:false, etapa:"analisis" },
+  "an-funciones-exp-log": { name:"Exponenciales y logaritmos", desc:"Ecuaciones exponenciales y logarítmicas y el logaritmo como exponente.", lessons:["cbc-an1-funciones"], prereqs:[], piloto:false, etapa:"analisis" },
+  "an-funciones-trig": { name:"Funciones trigonométricas", desc:"Valores exactos de los ángulos notables y el período de sen(kx).", lessons:["cbc-an1-funciones"], prereqs:[], piloto:false, etapa:"analisis" },
+  "an-funciones-propiedades": { name:"Propiedades de funciones", desc:"Imagen, inyectividad, supremo e ínfimo: qué salidas toma una función y si las repite.", lessons:["cbc-an1-funciones"], prereqs:[], piloto:false, etapa:"analisis" },
+  "an-sucesiones-termino": { name:"Término general y recurrencias", desc:"Generar términos desde la fórmula y desde recurrencias aritméticas y geométricas.", lessons:["cbc-an1-sucesiones"], prereqs:[], piloto:false, etapa:"analisis" },
+  "an-sucesiones-limite": { name:"Límites de sucesiones", desc:"Límites de cocientes por comparación de grados, con raíces, exponenciales y el número e.", lessons:["cbc-an1-sucesiones"], prereqs:["an-sucesiones-termino"], piloto:false, etapa:"analisis" },
+  "an-sucesiones-monotonia": { name:"Monotonía, acotación y supremo", desc:"Sucesiones crecientes y decrecientes, cotas, supremo, teorema de la monotonía acotada y puntos fijos de recurrencias.", lessons:["cbc-an1-sucesiones"], prereqs:["an-sucesiones-limite"], piloto:false, etapa:"analisis" },
+  "an-sucesiones-sumas": { name:"Sumas de sucesiones", desc:"Sumas parciales de sucesiones aritméticas con la fórmula de Gauss.", lessons:["cbc-an1-sucesiones"], prereqs:["an-sucesiones-termino"], piloto:false, etapa:"analisis" },
+  "an-limites-calculo": { name:"Cálculo de límites", desc:"Indeterminaciones 0/0 factorizando y con conjugados, límites en el infinito, el trigonométrico y el tipo e.", lessons:["cbc-an1-limites"], prereqs:["an-sucesiones-limite"], piloto:false, etapa:"analisis" },
+  "an-limites-laterales": { name:"Límites laterales", desc:"Límites por izquierda y por derecha en funciones por partes y con valor absoluto, y cuándo el límite existe.", lessons:["cbc-an1-limites"], prereqs:["an-limites-calculo"], piloto:false, etapa:"analisis" },
+  "an-limites-asintotas": { name:"Asíntotas desde el límite", desc:"Asíntotas verticales, horizontales y la oblicua como límites en el infinito y en los puntos excluidos.", lessons:["cbc-an1-limites"], prereqs:["an-limites-calculo"], piloto:false, etapa:"analisis" },
+  "an-continuidad": { name:"Continuidad", desc:"Las tres condiciones de continuidad, discontinuidades evitables y de salto, parámetros, Bolzano y valores intermedios.", lessons:["cbc-an1-limites"], prereqs:["an-limites-laterales"], piloto:false, etapa:"analisis" },
+  "an-derivadas-definicion": { name:"Derivada por definición", desc:"La derivada como límite del cociente incremental y la derivabilidad en un punto con pico.", lessons:["cbc-an2-derivadas"], prereqs:["an-limites-calculo"], piloto:false, etapa:"analisis" },
+  "an-derivadas-reglas": { name:"Reglas de derivación", desc:"Potencia, regla de la cadena, producto, cociente y derivada del logaritmo compuesto.", lessons:["cbc-an2-derivadas"], prereqs:["an-derivadas-definicion"], piloto:false, etapa:"analisis" },
+  "an-derivadas-tangente": { name:"Recta tangente", desc:"La pendiente como derivada en el punto, la ecuación completa de la tangente y tangentes paralelas a una recta.", lessons:["cbc-an2-derivadas"], prereqs:["an-derivadas-reglas"], piloto:false, etapa:"analisis" },
+  "an-derivadas-teoremas": { name:"Teoremas de Fermat, Rolle y Lagrange", desc:"Puntos críticos y los teoremas que garantizan dónde se anula la derivada.", lessons:["cbc-an2-derivadas"], prereqs:["an-derivadas-definicion"], piloto:false, etapa:"analisis" },
+  "an-lhopital": { name:"Regla de L'Hôpital", desc:"Indeterminaciones 0/0 e ∞/∞ derivando numerador y denominador, con sus hipótesis y su límite lógico.", lessons:["cbc-an2-derivadas"], prereqs:["an-derivadas-reglas", "an-limites-calculo"], piloto:false, etapa:"analisis" },
+  "an-estudio-crecimiento": { name:"Crecimiento y decrecimiento", desc:"El signo de f' decide dónde la función sube y dónde baja.", lessons:["cbc-an2-estudio"], prereqs:["an-derivadas-reglas"], piloto:false, etapa:"analisis" },
+  "an-estudio-extremos": { name:"Extremos locales", desc:"Puntos críticos, criterio de la primera y de la segunda derivada y el teorema de Fermat.", lessons:["cbc-an2-estudio"], prereqs:["an-estudio-crecimiento"], piloto:false, etapa:"analisis" },
+  "an-estudio-concavidad": { name:"Concavidad e inflexión", desc:"El signo de f'' decide la concavidad y los puntos de inflexión exigen cambio de concavidad.", lessons:["cbc-an2-estudio"], prereqs:["an-derivadas-reglas"], piloto:false, etapa:"analisis" },
+  "an-estudio-completo": { name:"Estudio completo de una función", desc:"Dominio, críticos, signos de f', extremos, concavidad e inflexión en un solo estudio ordenado.", lessons:["cbc-an2-estudio"], prereqs:["an-estudio-crecimiento", "an-estudio-extremos", "an-estudio-concavidad"], piloto:false, etapa:"analisis" },
+  "an-optimizacion": { name:"Optimización", desc:"Modelar una cantidad, derivarla y confirmar el extremo: rectángulos, productos y cercas.", lessons:["cbc-an2-estudio"], prereqs:["an-estudio-extremos"], piloto:false, etapa:"analisis" },
+  "an-taylor": { name:"Polinomios de Taylor", desc:"Coeficientes como derivadas en el centro sobre factoriales y el resto como error de la aproximación.", lessons:["cbc-an2-estudio"], prereqs:["an-derivadas-reglas"], piloto:false, etapa:"analisis" },
+  "an-aprox-lineal": { name:"Aproximación lineal y diferenciales", desc:"La recta tangente como aproximación y el diferencial dy frente al cambio real Δy.", lessons:["cbc-an2-estudio"], prereqs:["an-derivadas-tangente"], piloto:false, etapa:"analisis" },
+  "an-newton": { name:"Método de Newton-Raphson", desc:"Iterar con la tangente hasta la raíz, y cuándo el método no puede seguir.", lessons:["cbc-an2-estudio"], prereqs:["an-derivadas-tangente"], piloto:false, etapa:"analisis" },
+  "an-asintotas-oblicuas": { name:"Asíntotas oblicuas", desc:"Pendiente y ordenada por límites y por división, posición de la curva y verificación por la definición.", lessons:["cbc-an2-estudio"], prereqs:["an-limites-asintotas"], piloto:false, etapa:"analisis" },
+  "an-integrales-primitivas": { name:"Primitivas e integral indefinida", desc:"Antiderivar y la constante +C: todas las primitivas difieren en una constante.", lessons:["cbc-an2-integrales"], prereqs:["an-derivadas-reglas"], piloto:false, etapa:"analisis" },
+  "an-integral-barrow": { name:"Integral definida y regla de Barrow", desc:"El teorema fundamental, Barrow con primitivas y propiedades como la simetría de las impares.", lessons:["cbc-an2-integrales"], prereqs:["an-integrales-primitivas"], piloto:false, etapa:"analisis" },
+  "an-riemann": { name:"Sumas de Riemann e integración aproximada", desc:"Aproximar la integral con rectángulos por izquierda, derecha y punto medio, y cómo baja el error al refinar.", lessons:["cbc-an2-integrales"], prereqs:[], piloto:false, etapa:"analisis" },
+  "an-integrales-metodos": { name:"Métodos de integración", desc:"Sustitución (la cadena al revés) e integración por partes.", lessons:["cbc-an2-integrales"], prereqs:["an-integrales-primitivas"], piloto:false, etapa:"analisis" },
+  "an-integrales-aplicaciones": { name:"Aplicaciones de la integral", desc:"Áreas entre curvas, volúmenes por discos, arandelas y capas, y longitud de curvas.", lessons:["cbc-an2-integrales", "cbc-an2-edo"], prereqs:["an-integral-barrow"], piloto:false, etapa:"analisis" },
+  "an-impropias": { name:"Integrales impropias", desc:"Intervalos infinitos e integrandos que explotan: definición como límite, integrales p y convergencia.", lessons:["cbc-an2-integrales"], prereqs:["an-integral-barrow", "an-limites-calculo"], piloto:false, etapa:"analisis" },
+  "an-edo-directa": { name:"EDO de integración directa", desc:"Resolver y' = f(x) integrando y fijar la constante con la condición inicial.", lessons:["cbc-an2-edo"], prereqs:["an-integrales-primitivas"], piloto:false, etapa:"analisis" },
+  "an-edo-separables": { name:"EDO separables", desc:"Separar variables, integrar cada lado y despejar: y' = k·y y las separables con radicales.", lessons:["cbc-an2-edo"], prereqs:["an-edo-directa"], piloto:false, etapa:"analisis" },
+  "an-edo-modelos": { name:"Modelos exponenciales con EDO", desc:"Crecimiento exponencial y tiempo de duplicación desde P' = k·P.", lessons:["cbc-an2-edo"], prereqs:["an-edo-separables"], piloto:false, etapa:"analisis" },
+  "an-series-sumas": { name:"Series con suma exacta", desc:"Series geométricas y telescópicas: cuándo la suma infinita se puede calcular.", lessons:["cbc-an2-series"], prereqs:["an-sucesiones-limite"], piloto:false, etapa:"analisis" },
+  "an-series-criterios": { name:"Criterios de convergencia de series", desc:"Término general, p-series, cociente, raíz y criterio integral.", lessons:["cbc-an2-series"], prereqs:["an-series-sumas", "an-impropias"], piloto:false, etapa:"analisis" },
+  "an-series-alternadas": { name:"Series alternadas", desc:"El criterio de Leibniz y cuándo una alternada ni siquiera puede converger.", lessons:["cbc-an2-series"], prereqs:["an-series-criterios"], piloto:false, etapa:"analisis" },
+  "an-series-absoluta": { name:"Convergencia absoluta y condicional", desc:"Si converge en valor absoluto, converge; la condicional es el caso más fino.", lessons:["cbc-an2-series"], prereqs:["an-series-criterios"], piloto:false, etapa:"analisis" },
+  "an-series-potencias": { name:"Series de potencias", desc:"Radio e intervalo de convergencia, con los extremos estudiados uno por uno.", lessons:["cbc-an2-series"], prereqs:["an-series-criterios"], piloto:false, etapa:"analisis" }
 };
 /* Clases del piloto: las 11 de la semana 2 (fracciones de Pre-CBC). */
 var PILOT_LESSONS = ["s2-fraccion", "s2-division-resto", "s2-tipos", "s2-primos-mcd-mcm", "s2-equivalentes", "s2-comparar", "s2-suma", "s2-mult", "s2-negativas", "s2-cantidad", "s2-combinadas"];
+/* Clases de la etapa de Análisis A: las 8 de las semanas 14 y 15. */
+var AN_LESSONS = ["cbc-an1-funciones", "cbc-an1-sucesiones", "cbc-an1-limites", "cbc-an2-derivadas", "cbc-an2-estudio", "cbc-an2-integrales", "cbc-an2-edo", "cbc-an2-series"];
+/* Vinculación clase → habilidades de la etapa de Análisis. A
+   diferencia del piloto (una clase, un nodo dueño), estas clases son
+   multihabilidad: cada una desarrolla varias habilidades del grafo.
+   - habilidades: las que la clase enseña y evalúa. Un intento de la
+     clase cuya habilidad declarada (la que trae el generador, ver
+     AN_GEN_META) está en esta lista cuenta para ESA habilidad.
+   - principal: la habilidad central de la clase y el respaldo de
+     atribución. Así se atribuye la evidencia histórica de estas
+     clases, que trae skill null pero sí lesson y gen: primero por el
+     generador que la sirvió (gen "clase#gN" → AN_GEN_META) y, si el
+     generador no resuelve, por la clase (la principal), sin modificar
+     el historial y sin duplicar: cada intento cuenta una sola vez,
+     para una sola habilidad (ver habilidadDeIntento). */
+var AN_LESSON_SKILLS = {
+  "cbc-an1-funciones": { principal:"an-funciones-dominio", habilidades:["an-funciones-dominio", "an-funciones-asintotas", "an-funciones-comp-inv", "an-funciones-exp-log", "an-funciones-trig", "an-funciones-propiedades"] },
+  "cbc-an1-sucesiones": { principal:"an-sucesiones-termino", habilidades:["an-sucesiones-termino", "an-sucesiones-limite", "an-sucesiones-monotonia", "an-sucesiones-sumas"] },
+  "cbc-an1-limites": { principal:"an-limites-calculo", habilidades:["an-limites-calculo", "an-limites-laterales", "an-limites-asintotas", "an-continuidad"] },
+  "cbc-an2-derivadas": { principal:"an-derivadas-reglas", habilidades:["an-derivadas-definicion", "an-derivadas-reglas", "an-derivadas-tangente", "an-derivadas-teoremas", "an-lhopital"] },
+  "cbc-an2-estudio": { principal:"an-estudio-crecimiento", habilidades:["an-estudio-crecimiento", "an-estudio-extremos", "an-estudio-concavidad", "an-estudio-completo", "an-optimizacion", "an-taylor", "an-aprox-lineal", "an-newton", "an-asintotas-oblicuas"] },
+  "cbc-an2-integrales": { principal:"an-integral-barrow", habilidades:["an-integrales-primitivas", "an-integral-barrow", "an-riemann", "an-integrales-metodos", "an-integrales-aplicaciones", "an-impropias"] },
+  "cbc-an2-edo": { principal:"an-edo-directa", habilidades:["an-edo-directa", "an-edo-separables", "an-edo-modelos", "an-integrales-aplicaciones"] },
+  "cbc-an2-series": { principal:"an-series-sumas", habilidades:["an-series-sumas", "an-series-criterios", "an-series-alternadas", "an-series-absoluta", "an-series-potencias"] }
+};
 function graphNode(id){ return (typeof SKILL_GRAPH !== "undefined" && SKILL_GRAPH && SKILL_GRAPH[id]) || null; }
 function prereqsDe(id){ var n = graphNode(id); return n ? n.prereqs.slice() : []; }
 function duenoDeClase(){
@@ -6454,17 +6550,51 @@ function ordenHabilidades(){
   }
   return orden.length === ids.length ? orden : null;
 }
+function habilidadDeIntento(a){
+  /* La ÚNICA habilidad a la que se atribuye un intento, o null si no
+     se le puede atribuir ninguna. Regla de atribución sin duplicación
+     (cada intento cuenta una sola vez, para una sola habilidad):
+     - Si el intento es de una clase multihabilidad de Análisis
+       (AN_LESSON_SKILLS): cuenta para la habilidad que el intento
+       declara si esa habilidad es una de las que la clase desarrolla.
+       Si no declara ninguna (los intentos históricos de estas clases
+       traen skill null) o declara una ajena a la clase, se atribuye
+       por su generador: el campo gen "clase#gN" identifica el
+       generador que lo sirvió y AN_GEN_META dice qué habilidad
+       evalúa ese generador. Solo si tampoco el generador resuelve
+       (gen ausente o fuera del banco) cuenta para la habilidad
+       principal de la clase. El historial no se toca: la atribución
+       se calcula al leer, no al registrar.
+     - Si el intento es de una clase con nodo dueño (el piloto de
+       fracciones): cuenta para el dueño de la clase, como siempre.
+     - En cualquier otro caso (práctica, exámenes, sin clase): cuenta
+       para la habilidad que el intento declara. */
+  if(!a || typeof a !== "object") return null;
+  if(a.lesson){
+    var multi = (typeof AN_LESSON_SKILLS !== "undefined" && AN_LESSON_SKILLS) ? AN_LESSON_SKILLS[a.lesson] : null;
+    if(multi){
+      if(typeof a.skill === "string" && multi.habilidades.indexOf(a.skill) >= 0) return a.skill;
+      var gm = (typeof a.gen === "string") ? a.gen.match(/^(.+)#g(\d+)$/) : null;
+      if(gm && gm[1] === a.lesson && typeof AN_GEN_META !== "undefined" && AN_GEN_META && AN_GEN_META[a.lesson]){
+        var entrada = AN_GEN_META[a.lesson][+gm[2]];
+        if(entrada && multi.habilidades.indexOf(entrada[0]) >= 0) return entrada[0];
+      }
+      return multi.principal;
+    }
+    var duenos = duenoDeClase();
+    if(duenos[a.lesson]) return duenos[a.lesson];
+  }
+  return (typeof a.skill === "string" && a.skill) ? a.skill : null;
+}
 function evidenciaDeHabilidad(id, attempts){
   /* Intentos puntuables que son evidencia de la habilidad, con el
      tope de 5 por generador aplicado (ver el comentario del modelo).
      attempts por defecto es el registro real del estado. */
   var lista = Array.isArray(attempts) ? attempts : (state && Array.isArray(state.attempts) ? state.attempts : []);
-  var duenos = duenoDeClase();
   var cruda = lista.filter(function(a){
     if(!a || typeof a !== "object") return false;
     if(isOpenAttempt(a) || isStepsRetryAttempt(a)) return false;
-    if(a.lesson && duenos[a.lesson]) return duenos[a.lesson] === id;
-    return a.skill === id;
+    return habilidadDeIntento(a) === id;
   });
   cruda.sort(function(x, y){ return (x.ts || 0) - (y.ts || 0); });
   var porGen = {}, out = [];
@@ -6535,15 +6665,25 @@ function bloqueosEnCadena(id, attempts, lessonsDone){
   })(id);
   return out;
 }
-function habilidadesPendientes(attempts, lessonsDone){
-  /* Habilidades del piloto sin dominar, en orden topológico, cada una
-     con sus bloqueos directos: el mapa de qué falta y qué lo frena. */
+function pendientesDeGrupo(esDelGrupo, attempts, lessonsDone){
+  /* Habilidades de un grupo del grafo sin dominar, en orden
+     topológico, cada una con sus bloqueos directos: el mapa de qué
+     falta y qué lo frena. */
   var orden = ordenHabilidades() || Object.keys(SKILL_GRAPH);
-  return orden.filter(function(id){ return SKILL_GRAPH[id].piloto; })
+  return orden.filter(function(id){ return esDelGrupo(SKILL_GRAPH[id]); })
     .map(function(id){
       var m = masteryDeHabilidad(id, attempts, lessonsDone);
       return m.k === "dominada" ? null : { id:id, estado:m.k, bloqueos:bloqueosDe(id, attempts, lessonsDone) };
     }).filter(Boolean);
+}
+function habilidadesPendientes(attempts, lessonsDone){
+  /* Las del piloto de fracciones (comportamiento histórico, intacto). */
+  return pendientesDeGrupo(function(n){ return !!n.piloto; }, attempts, lessonsDone);
+}
+function habilidadesPendientesAnalisis(attempts, lessonsDone){
+  /* Las de la etapa de Análisis A: pendientes con sus bloqueos, para
+     saber qué falta y qué prerrequisito frena cada avance. */
+  return pendientesDeGrupo(function(n){ return n.etapa === "analisis"; }, attempts, lessonsDone);
 }
 if(window.TutorData){
   window.TutorData.SKILL_GRAPH = SKILL_GRAPH;
@@ -6555,9 +6695,13 @@ if(window.TutorData){
   window.TutorData.habilidadesPendientes = habilidadesPendientes;
   window.TutorData.ordenHabilidades = ordenHabilidades;
   window.TutorData.evidenciaDeHabilidad = evidenciaDeHabilidad;
+  window.TutorData.AN_LESSONS = AN_LESSONS;
+  window.TutorData.AN_LESSON_SKILLS = AN_LESSON_SKILLS;
+  window.TutorData.habilidadDeIntento = habilidadDeIntento;
+  window.TutorData.habilidadesPendientesAnalisis = habilidadesPendientesAnalisis;
 }
 
-/* ================= Pruebas de la Fase B (Skill Graph, piloto) =================
+/* ================= Pruebas de la Fase B (Skill Graph, piloto + Análisis A) =================
    Batería separada de la Fase A y de la del motor: integridad del
    grafo (ids, prerrequisitos, orden topológico, sin ciclos),
    vinculación de clases y generadores del piloto, evaluabilidad de
@@ -6900,6 +7044,140 @@ function runSkillGraphTests(){
     if(m.detalle.dificultadAlta !== 6) return "deberían contar 6 intentos de dificultad alta y contaron " + m.detalle.dificultadAlta;
     if(m.k !== "dominada") return "con la mitad de la evidencia en dificultad 2, frac-simpl debería dominar y quedó en " + m.k;
     return true;
+  });
+  /* ---- Etapa de Análisis A: grafo extendido, clases multihabilidad,
+     atribución sin duplicación y dificultad declarada ---- */
+  check("Análisis: integridad de la etapa (42 nodos an-, ids válidos y las dependencias exigidas por la materia)", function(){
+    var anIds = Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id].etapa === "analisis"; });
+    if(anIds.length !== 42) return "la etapa debería tener 42 nodos y tiene " + anIds.length;
+    for(var i = 0; i < anIds.length; i++){
+      if(anIds[i].indexOf("an-") !== 0) return "el nodo de la etapa no tiene el prefijo an-: " + anIds[i];
+      if(!knownSkillId(anIds[i])) return "el nodo " + anIds[i] + " no es un id de habilidad válido";
+    }
+    function exige(id, pre){
+      var n = graphNode(id);
+      if(!n) return id + " no existe";
+      if(n.prereqs.indexOf(pre) < 0) return id + " debería requerir " + pre + " y requiere " + JSON.stringify(n.prereqs);
+      return null;
+    }
+    var mal = exige("an-derivadas-definicion", "an-limites-calculo")
+      || exige("an-estudio-crecimiento", "an-derivadas-reglas")
+      || exige("an-integrales-primitivas", "an-derivadas-reglas")
+      || exige("an-impropias", "an-integral-barrow")
+      || exige("an-impropias", "an-limites-calculo")
+      || exige("an-series-criterios", "an-impropias")
+      || exige("an-series-sumas", "an-sucesiones-limite")
+      || exige("an-edo-directa", "an-integrales-primitivas")
+      || exige("an-asintotas-oblicuas", "an-limites-asintotas");
+    if(mal) return mal;
+    for(var j = 0; j < AN_LESSONS.length; j++) if(!lessonById(AN_LESSONS[j])) return "la clase de la etapa no existe: " + AN_LESSONS[j];
+    return true;
+  });
+  check("Análisis: correspondencia clases/generadores/habilidades (ninguna clase sin habilidades, ningún generador sin habilidad válida)", function(){
+    if(Object.keys(AN_LESSON_SKILLS).length !== AN_LESSONS.length) return "el mapa clase→habilidades no cubre las " + AN_LESSONS.length + " clases";
+    for(var i = 0; i < AN_LESSONS.length; i++){
+      var lid = AN_LESSONS[i], info = AN_LESSON_SKILLS[lid];
+      if(!info) return "la clase " + lid + " no tiene habilidades vinculadas";
+      if(info.habilidades.indexOf(info.principal) < 0) return "la principal de " + lid + " no está entre sus habilidades";
+      for(var h = 0; h < info.habilidades.length; h++){
+        var nodo = graphNode(info.habilidades[h]);
+        if(!nodo) return lid + " vincula una habilidad que no es nodo del grafo: " + info.habilidades[h];
+        if(nodo.lessons.indexOf(lid) < 0) return "el nodo " + info.habilidades[h] + " no declara entre sus clases a " + lid;
+      }
+      var meta = AN_GEN_META[lid], banco = LESSON_EXERCISES[lid] || [];
+      if(!meta) return "no hay tabla de declaración para " + lid;
+      if(meta.length !== banco.length) return "la tabla de " + lid + " declara " + meta.length + " generadores y el banco tiene " + banco.length;
+      for(var g = 0; g < meta.length; g++){
+        if(info.habilidades.indexOf(meta[g][0]) < 0) return lid + "#g" + g + " declara una habilidad que la clase no desarrolla: " + meta[g][0];
+        if(!(meta[g][1] === 1 || meta[g][1] === 2 || meta[g][1] === 3)) return lid + "#g" + g + " declara una dificultad inválida: " + meta[g][1];
+      }
+    }
+    return true;
+  });
+  check("Análisis: barrido de generadores (cada instancia servida trae la habilidad y la dificultad declaradas en la tabla)", function(){
+    var mal = [];
+    AN_LESSONS.forEach(function(lid){
+      (LESSON_EXERCISES[lid] || []).forEach(function(gen, gi){
+        for(var r = 0; r < 15 && !mal.length; r++){
+          var e = sirve(gen);
+          if(!e){ mal.push(lid + "#g" + gi + " no sirvió una instancia válida"); break; }
+          if(e.skill !== AN_GEN_META[lid][gi][0]) mal.push(lid + "#g" + gi + " sirvió habilidad " + JSON.stringify(e.skill) + " y la tabla declara " + AN_GEN_META[lid][gi][0]);
+          else if(e.dificultad !== AN_GEN_META[lid][gi][1]) mal.push(lid + "#g" + gi + " sirvió dificultad " + JSON.stringify(e.dificultad) + " y la tabla declara " + AN_GEN_META[lid][gi][1]);
+        }
+      });
+    });
+    return mal.length ? mal[0] : true;
+  });
+  check("Análisis: atribución sin duplicación (un intento de una clase multihabilidad cuenta una sola vez y para la habilidad correcta)", function(){
+    var set = [
+      att(1, "2026-11-10", "s1", "cbc-an2-edo", "an-integrales-aplicaciones", "Área entre curvas", "cbc-an2-edo#g0", true, 2),
+      att(2, "2026-11-10", "s1", "cbc-an1-limites", null, "Límite 0/0", "cbc-an1-limites#g0", true, null),
+      att(3, "2026-11-10", "s1", "cbc-an1-limites", "frac-suma", "Límite con raíz", "cbc-an1-limites#g1", true, 2),
+      att(4, "2026-11-10", "s1", "cbc-an2-derivadas", "an-lhopital", "L'Hôpital", "cbc-an2-derivadas#g13", true, 2),
+      att(5, "2026-11-10", "s1", "cbc-an2-integrales", null, "Impropia p", "cbc-an2-integrales#g23", true, null)
+    ];
+    if(habilidadDeIntento(set[0]) !== "an-integrales-aplicaciones") return "el generador de áreas de la clase de EDO no se atribuyó a aplicaciones: " + habilidadDeIntento(set[0]);
+    if(habilidadDeIntento(set[1]) !== "an-limites-calculo") return "el intento histórico sin habilidad no heredó la principal de su clase: " + habilidadDeIntento(set[1]);
+    if(habilidadDeIntento(set[2]) !== "an-limites-calculo") return "el intento con habilidad ajena a la clase no cayó en la principal: " + habilidadDeIntento(set[2]);
+    if(habilidadDeIntento(set[3]) !== "an-lhopital") return "el intento de L'Hôpital no se atribuyó a an-lhopital: " + habilidadDeIntento(set[3]);
+    if(habilidadDeIntento(set[4]) !== "an-impropias") return "el intento histórico sin habilidad no se atribuyó por su generador (g23 = impropias): " + habilidadDeIntento(set[4]);
+    if(evidenciaDeHabilidad("frac-suma", set).length !== 0) return "un intento se contó también para frac-suma: hay duplicación";
+    if(evidenciaDeHabilidad("an-edo-directa", set).length !== 0) return "el generador de áreas contó también para la principal de EDO: hay duplicación";
+    var suma = 0;
+    Object.keys(SKILL_GRAPH).forEach(function(id){ suma += evidenciaDeHabilidad(id, set).length; });
+    if(suma !== set.length) return "la evidencia total sobre el grafo es " + suma + " y debería ser exactamente " + set.length + " (un conteo por intento)";
+    return true;
+  });
+  check("Análisis: una subhabilidad alcanza dominada con evidencia sintética válida, no domina si le falta un criterio y la evidencia de otra no la domina", function(){
+    var set = conjuntoDominio("cbc-an2-integrales", "an-impropias");
+    var m = masteryDeHabilidad("an-impropias", set, {});
+    if(m.k !== "dominada") return "an-impropias quedó en " + m.k + " con criterios " + JSON.stringify(m.criterios) + " y detalle " + JSON.stringify(m.detalle);
+    var sinDifAlta = set.map(function(a){ var c = Object.assign({}, a); c.dificultad = 1; return c; });
+    var m2 = masteryDeHabilidad("an-impropias", sinDifAlta, {});
+    if(m2.criterios.dificultad) return "con toda la evidencia en dificultad 1 el criterio de dificultad debería fallar";
+    if(m2.k === "dominada") return "se marcó dominada faltándole el criterio de dificultad";
+    var otra = masteryDeHabilidad("an-integral-barrow", set, {});
+    if(otra.detalle.total !== 0) return "la evidencia de impropias contó también para Barrow: ninguna habilidad se domina con evidencia de otra";
+    var vista = masteryDeHabilidad("an-impropias", [], { "cbc-an2-integrales":"2026-11-10" });
+    if(vista.k !== "vista") return "con la clase vista y sin evidencia debería quedar vista y quedó " + vista.k;
+    return true;
+  });
+  check("Análisis: bloqueo y desbloqueo por prerrequisitos", function(){
+    var bloq = bloqueosDe("an-impropias", [], {});
+    if(bloq.indexOf("an-integral-barrow") < 0 || bloq.indexOf("an-limites-calculo") < 0) return "an-impropias debería estar bloqueada por Barrow y por cálculo de límites: " + JSON.stringify(bloq);
+    var ev = conjuntoDominio("cbc-an2-integrales", "an-integral-barrow").concat(conjuntoDominio("cbc-an1-limites", "an-limites-calculo"));
+    var libres = bloqueosDe("an-impropias", ev, {});
+    if(libres.length) return "con Barrow y cálculo de límites dominados, an-impropias sigue bloqueada por: " + JSON.stringify(libres);
+    var cadena = bloqueosEnCadena("an-series-potencias", [], {});
+    if(cadena.indexOf("an-impropias") < 0 || cadena.indexOf("an-sucesiones-limite") < 0) return "la cadena de an-series-potencias debería llegar a impropias y a límites de sucesiones: " + JSON.stringify(cadena);
+    var pend = habilidadesPendientesAnalisis([], {});
+    if(pend.length !== 42) return "sin progreso deberían estar pendientes las 42 habilidades de la etapa y hay " + pend.length;
+    return true;
+  });
+  check("Análisis: intentos históricos con skill null y dificultad null siguen funcionando, y los respaldos con habilidades an- importan", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      var viejo = recordAttempt({ lesson:"cbc-an1-limites", skill:null, tipo:"Límite 0/0", gen:"cbc-an1-limites#g0", dada:"8", esperada:"8", ok:true, modo:"ronda", kind:"num" });
+      if(!viejo || viejo.skill !== null || viejo.dificultad !== null) return "el intento histórico no conservó skill null y dificultad null";
+      var nuevo = recordAttempt({ lesson:"cbc-an2-integrales", skill:"an-impropias", tipo:"Impropia p", gen:"cbc-an2-integrales#g23", dada:"1", esperada:"1", ok:true, modo:"ronda", dificultad:2, kind:"frac" });
+      if(!nuevo || nuevo.dificultad !== 2) return "recordAttempt no conservó la dificultad declarada por el generador de Análisis";
+      if(!state.skillAgg["an-impropias"] || state.skillAgg["an-impropias"].total !== 1) return "skillAgg no agregó el intento de la subhabilidad de Análisis";
+      var bad = validateStateShape(state);
+      if(bad) return "el estado con intentos de Análisis no valida: " + bad;
+      var parsed = parseBackup(serializeBackup(state));
+      if(!parsed.ok) return "el respaldo con habilidades an- no se pudo importar: " + parsed.error;
+      var m = masteryDeHabilidad("an-limites-calculo", null, null);
+      if(m.detalle.total !== 1) return "la evidencia histórica de límites debería atribuir 1 intento a la principal y atribuyó " + m.detalle.total;
+      if(m.detalle.dificultadAlta !== 0) return "la dificultad null histórica contó como dificultad alta";
+      var histAntes = JSON.stringify(state.attempts);
+      var norm1 = normalizeState(state);
+      if(JSON.stringify(norm1.attempts) !== histAntes) return "normalizeState alteró el historial de intentos";
+      var norm2 = normalizeState(norm1);
+      if(JSON.stringify(norm2.attempts) !== histAntes) return "la segunda normalización alteró el historial";
+      if(JSON.stringify(norm2.skillAgg) !== JSON.stringify(norm1.skillAgg)) return "la segunda normalización no fue idempotente en skillAgg";
+      return true;
+    } finally { state = snapState; }
   });
   return results;
 }
@@ -10473,6 +10751,145 @@ LESSON_EXERCISES["cbc-an2-edo"] = [
      "Despeje: y = ±e^C · e^(x²). Como ±e^C recorre todos los reales no nulos, y sumando la solución y = 0 que la separación había apartado, la familia completa es y = A · e^(x²) con A real cualquiera.",
      "La condición inicial: y(0) = A · e⁰ = A = 3. La solución única del problema es y = 3 · e^(x²). Comprobación: su derivada es 3 · 2x · e^(x²) = 2x · y ✓"]); }
 ];
+/* ================= Fase B · Declaración de habilidad y dificultad de
+   los generadores de Análisis A =================
+   Cada generador de las 8 clases de Análisis declara, por su índice en
+   el banco (gN = el generador N, en orden), la habilidad del grafo que
+   evalúa y la dificultad real de la instancia que produce, con la
+   misma escala del piloto: 1 = reconocimiento o un paso directo;
+   2 = aplicación con varios pasos; 3 = combinación de procedimientos
+   o razonamiento más complejo. La declaración vive en esta tabla y se
+   aplica al ejercicio servido envolviendo cada fábrica (el mismo
+   mecanismo con el que el piloto declara la dificultad con exDif):
+   finish registra ex.skill y ex.dificultad tal cual, sin tocar el
+   contenido ni las respuestas de ningún generador. Los abiertos
+   declaran su habilidad y dificultad, pero como todo abierto no
+   cuentan como evidencia de dominio.
+   Clasificación por banco (conteos por nivel, auditada generador por
+   generador contra su exigencia; ningún nivel se infló para cumplir
+   el criterio de dominio, y cada banco conserva generadores de nivel
+   1 que no cuentan como dificultad alta):
+   - cbc-an1-funciones (18): 8 de nivel 1, 9 de nivel 2, 1 de nivel 3.
+     Ej.: nivel 1, la asíntota vertical se lee del denominador (g4);
+     nivel 2, el dominio con raíz y denominador pide dos condiciones
+     a la vez (g0); nivel 3, el abierto de inyectividad exige
+     justificar y construir la inversa restringida (g17).
+   - cbc-an1-sucesiones (17): 7/8/2. Ej.: nivel 1, evaluar el término
+     general en un n (g0); nivel 2, el límite de un cociente dividiendo
+     por la mayor potencia (g2); nivel 3, el punto fijo de una
+     recurrencia combina límite, planteo y despeje (g15).
+   - cbc-an1-limites (18): 6/11/1. Ej.: nivel 1, el límite lateral se
+     evalúa en su rama (g4); nivel 2, la indeterminación 0/0 con raíz
+     pide el conjugado (g1); nivel 3, el abierto de continuidad (g17).
+   - cbc-an2-derivadas (18): 2/15/1. Predominan los 2 porque casi todo
+     el banco es aplicar una regla y evaluar o despejar después. Ej.:
+     nivel 1, el exponente que resulta al derivar una potencia (g1);
+     nivel 2, la cadena con el seno (g2); nivel 3, el abierto que
+     deriva x² desde la definición (g17).
+   - cbc-an2-estudio (26): 8/11/7. Ej.: nivel 1, el criterio de la
+     segunda derivada se reconoce (g2); nivel 2, la concavidad pide
+     anular f'' y simplificar (g3); nivel 3, el estudio completo (g6),
+     las optimizaciones (g7 a g9) y la oblicua paso a paso (g22)
+     combinan procedimientos.
+   - cbc-an2-integrales (33): 18/12/3. Los 1 son reconocimientos y
+     evaluaciones directas con la primitiva dada. Ej.: nivel 1, Barrow
+     con primitiva dada (g0); nivel 2, la suma de Riemann por derecha
+     (g6) y las impropias por la definición como límite (g23, g25 a
+     g28); nivel 3, integración por partes con Barrow (g18) y los
+     abiertos (g22, g32).
+   - cbc-an2-edo (18): 6/9/3. Los generadores g0 a g5 y g15 son de
+     áreas entre curvas: evalúan an-integrales-aplicaciones aunque
+     vivan en esta clase (atribución por la habilidad declarada, no
+     por la clase). Ej.: nivel 1, el primer paso de separar variables
+     (g8); nivel 2, la EDO con condición inicial (g6); nivel 3, la
+     separable con radicales (g10) y la separable paso a paso (g16).
+   - cbc-an2-series (18): 7/9/2. Ej.: nivel 1, la p-serie se decide por
+     la regla (g4); nivel 2, la suma de la geométrica con la fórmula
+     (g0); nivel 3, radio e intervalo paso a paso con los dos extremos
+     estudiados (g15) y el abierto de la armónica (g17). */
+var AN_GEN_META = {
+  "cbc-an1-funciones": [
+    ["an-funciones-dominio", 2], ["an-funciones-dominio", 2], ["an-funciones-comp-inv", 2], ["an-funciones-comp-inv", 2],
+    ["an-funciones-asintotas", 1], ["an-funciones-asintotas", 2], ["an-funciones-asintotas", 1], ["an-funciones-asintotas", 2],
+    ["an-funciones-exp-log", 1], ["an-funciones-exp-log", 1], ["an-funciones-exp-log", 1], ["an-funciones-trig", 1],
+    ["an-funciones-trig", 2], ["an-funciones-propiedades", 1], ["an-funciones-propiedades", 2], ["an-funciones-propiedades", 1],
+    ["an-funciones-comp-inv", 2], ["an-funciones-propiedades", 3]
+  ],
+  "cbc-an1-sucesiones": [
+    ["an-sucesiones-termino", 1], ["an-sucesiones-termino", 1], ["an-sucesiones-limite", 2], ["an-sucesiones-limite", 2],
+    ["an-sucesiones-limite", 1], ["an-sucesiones-limite", 2], ["an-sucesiones-limite", 2], ["an-sucesiones-monotonia", 1],
+    ["an-sucesiones-termino", 2], ["an-sucesiones-termino", 2], ["an-sucesiones-sumas", 2], ["an-sucesiones-limite", 1],
+    ["an-sucesiones-monotonia", 1], ["an-sucesiones-monotonia", 1], ["an-sucesiones-limite", 2], ["an-sucesiones-monotonia", 3],
+    ["an-sucesiones-limite", 3]
+  ],
+  "cbc-an1-limites": [
+    ["an-limites-calculo", 2], ["an-limites-calculo", 2], ["an-limites-calculo", 2], ["an-limites-calculo", 2],
+    ["an-limites-laterales", 1], ["an-limites-asintotas", 1], ["an-limites-asintotas", 1], ["an-limites-asintotas", 2],
+    ["an-continuidad", 2], ["an-continuidad", 2], ["an-continuidad", 1], ["an-continuidad", 1],
+    ["an-continuidad", 2], ["an-limites-calculo", 1], ["an-limites-laterales", 2], ["an-limites-calculo", 2],
+    ["an-limites-calculo", 2], ["an-continuidad", 3]
+  ],
+  "cbc-an2-derivadas": [
+    ["an-derivadas-definicion", 2], ["an-derivadas-reglas", 1], ["an-derivadas-reglas", 2], ["an-derivadas-reglas", 2],
+    ["an-derivadas-reglas", 2], ["an-derivadas-reglas", 2], ["an-derivadas-tangente", 2], ["an-derivadas-tangente", 2],
+    ["an-derivadas-definicion", 2], ["an-derivadas-reglas", 2], ["an-derivadas-teoremas", 2], ["an-derivadas-teoremas", 2],
+    ["an-derivadas-teoremas", 2], ["an-lhopital", 2], ["an-lhopital", 2], ["an-lhopital", 1],
+    ["an-derivadas-tangente", 2], ["an-derivadas-definicion", 3]
+  ],
+  "cbc-an2-estudio": [
+    ["an-estudio-crecimiento", 2], ["an-estudio-extremos", 1], ["an-estudio-extremos", 1], ["an-estudio-concavidad", 2],
+    ["an-estudio-concavidad", 1], ["an-estudio-crecimiento", 1], ["an-estudio-completo", 3], ["an-optimizacion", 3],
+    ["an-optimizacion", 3], ["an-optimizacion", 3], ["an-taylor", 2], ["an-taylor", 1],
+    ["an-aprox-lineal", 2], ["an-aprox-lineal", 1], ["an-aprox-lineal", 2], ["an-newton", 2],
+    ["an-newton", 1], ["an-estudio-extremos", 3], ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 2],
+    ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 3], ["an-asintotas-oblicuas", 1],
+    ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 3]
+  ],
+  "cbc-an2-integrales": [
+    ["an-integral-barrow", 1], ["an-integrales-primitivas", 1], ["an-integrales-metodos", 1], ["an-integral-barrow", 1],
+    ["an-integrales-aplicaciones", 1], ["an-integrales-primitivas", 1], ["an-riemann", 2], ["an-riemann", 1],
+    ["an-riemann", 1], ["an-riemann", 1], ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 1],
+    ["an-integrales-aplicaciones", 1], ["an-integrales-aplicaciones", 1], ["an-integrales-aplicaciones", 1], ["an-integrales-aplicaciones", 1],
+    ["an-integrales-aplicaciones", 1], ["an-integral-barrow", 2], ["an-integrales-metodos", 3], ["an-integrales-aplicaciones", 2],
+    ["an-integral-barrow", 1], ["an-integrales-metodos", 2], ["an-integral-barrow", 3], ["an-impropias", 2],
+    ["an-impropias", 1], ["an-impropias", 2], ["an-impropias", 2], ["an-impropias", 2],
+    ["an-impropias", 2], ["an-impropias", 1], ["an-impropias", 2], ["an-impropias", 2],
+    ["an-impropias", 3]
+  ],
+  "cbc-an2-series": [
+    ["an-series-sumas", 2], ["an-series-sumas", 2], ["an-series-sumas", 2], ["an-series-criterios", 1],
+    ["an-series-criterios", 1], ["an-series-criterios", 2], ["an-series-criterios", 1], ["an-series-criterios", 2],
+    ["an-series-alternadas", 2], ["an-series-absoluta", 1], ["an-series-alternadas", 2], ["an-series-potencias", 2],
+    ["an-series-potencias", 1], ["an-series-potencias", 2], ["an-series-potencias", 1], ["an-series-potencias", 3],
+    ["an-series-absoluta", 1], ["an-series-criterios", 3]
+  ],
+  "cbc-an2-edo": [
+    ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2],
+    ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2], ["an-edo-directa", 2], ["an-edo-directa", 2],
+    ["an-edo-separables", 1], ["an-edo-separables", 1], ["an-edo-separables", 3], ["an-edo-modelos", 1],
+    ["an-edo-modelos", 2], ["an-edo-directa", 1], ["an-edo-separables", 1], ["an-integrales-aplicaciones", 1],
+    ["an-edo-separables", 3], ["an-edo-separables", 3]
+  ]
+};
+/* Aplicación de la declaración: cada fábrica de Análisis queda
+   envuelta para que el ejercicio que sirve nazca con su habilidad y
+   su dificultad. Los índices no cambian (lastServed y el campo gen
+   "clase#gN" siguen refiriendo al mismo generador) y ningún otro
+   banco se toca. */
+Object.keys(AN_GEN_META).forEach(function(lid){
+  var meta = AN_GEN_META[lid];
+  LESSON_EXERCISES[lid] = (LESSON_EXERCISES[lid] || []).map(function(gen, gi){
+    var m = meta[gi];
+    if(!m) return gen;
+    return function(){
+      var e = gen();
+      if(e && typeof e === "object"){ e.skill = m[0]; e.dificultad = m[1]; }
+      return e;
+    };
+  });
+});
+if(window.TutorData) window.TutorData.AN_GEN_META = AN_GEN_META;
+
 LESSON_EXERCISES["cbc-fis1-estatica"] = [
   function(){ var P = pick([200, 300, 400]); var RB = (100 * 2 + P * 1) / 4; return exNum("Reacción de un apoyo", "Una barra de 4 m y 100 N de peso se apoya en sus extremos A y B. Una carga de " + P + " N cuelga a 1 m de A. ¿Cuánto vale la reacción en B?", RB,
     ["DCL: R_A y R_B hacia arriba; el peso, 100 N en el centro (2 m de A); la carga, " + P + " N a 1 m de A.", "Momentos respecto de A, para que R_A no aparezca: R_B · 4 = 100 · 2 + " + P + " · 1 = " + (200 + P) + ".", "R_B = " + (200 + P) + " / 4 = " + RB + " N.", "Comprobación por ΣF = 0: R_A = 100 + " + P + " − " + RB + " = " + (100 + P - RB) + " N, y las dos reacciones suman el peso total ✓"]); },
@@ -11400,7 +11817,7 @@ function dominioDe(l){
 function renderGrafoPiloto(){
   var gl = $("#graph-list"); if(!gl) return;
   var orden = ordenHabilidades() || Object.keys(SKILL_GRAPH);
-  var ids = orden.filter(function(id){ return SKILL_GRAPH[id].piloto; });
+  var ids = orden.filter(function(id){ return SKILL_GRAPH[id].piloto || SKILL_GRAPH[id].etapa === "analisis"; });
   gl.innerHTML = ids.map(function(id){
     var n = SKILL_GRAPH[id];
     var m = masteryDeHabilidad(id, null, null);
