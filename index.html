@@ -724,7 +724,7 @@
     <div class="prog-section">
       <h2>Respaldo de tu progreso</h2>
       <p class="small faint">Tu progreso vive en este navegador (estado v2). Exporta un respaldo en JSON para guardarlo o pasarlo a otro equipo. Al importar, el archivo se valida campo por campo antes de tocar nada: tipos correctos (números, textos, booleanos, listas, objetos), conteos no negativos, fechas reales, notas y niveles dentro de su rango e ids de clases y habilidades que existen. Si algo no cumple, el respaldo se rechaza entero y tu progreso actual queda intacto. La importación tampoco se da por buena hasta comprobar el guardado: escribe el estado nuevo, lo relee desde el navegador y solo confirma si la relectura coincide. Si la escritura o la comprobación fallan, te avisa del fallo (no del éxito), tu progreso anterior sigue donde estaba y además queda su copia guardada, recuperable con el botón de restaurar copia.</p>
-      <p class="small faint">Límite del registro de intentos: se conservan los 8.000 intentos más recientes. Al superarlo se recortan solo los intentos más antiguos del registro crudo. Eso no cambia tu dominio ni tus repasos futuros: el dominio y las fechas de repaso se calculan desde los agregados por habilidad (totales, aciertos, errores, sesiones, días y última fecha de práctica de cada habilidad), que se actualizan con cada intento y nunca se recortan, más la evidencia reciente que queda dentro de la ventana de 8.000. Como cada intento deja su aporte en el agregado antes de cualquier recorte, recortar el registro no mueve ningún estado de dominio ni ninguna fecha de repaso.</p>
+      <p class="small faint">Límite del registro de intentos: se conservan los 8.000 intentos más recientes. Al superarlo se recortan solo los intentos más antiguos del registro crudo. Eso no cambia tu dominio ni tus repasos futuros: el dominio y las fechas de repaso se calculan desde los agregados por habilidad (totales, aciertos, errores, sesiones, días y última fecha de práctica de cada habilidad), que se actualizan con cada intento de corrección objetiva y nunca se recortan, más la evidencia reciente que queda dentro de la ventana de 8.000. Como cada intento deja su aporte en el agregado antes de cualquier recorte, recortar el registro no mueve ningún estado de dominio ni ninguna fecha de repaso.</p>
       <p class="small" id="attempts-info" style="margin:6px 0 10px;"></p>
       <div class="row">
         <button class="btn solid" id="backup-export">Exportar respaldo (JSON)</button>
@@ -739,6 +739,12 @@
         <p class="small faint" style="margin:8px 0;">Corren sobre las funciones y el localStorage reales de esta página: migración sembrando una clave v1 de verdad, persistencia releyendo tras una recarga simulada, importación real con relectura, validación estricta y fallos de almacenamiento simulados. Antes de tocar el almacenamiento guardan tus claves y tu estado, y los restauran al terminar cada prueba: tu progreso guardado no cambia.</p>
         <button class="btn" id="run-tests">Correr las pruebas</button>
         <div class="small" id="test-results" style="margin-top:10px;"></div>
+      </details>
+      <details style="margin-top:14px;">
+        <summary class="small" style="cursor:pointer;">Pruebas del motor de ejercicios (auditoría)</summary>
+        <p class="small faint" style="margin:8px 0;">Batería separada de la Fase A: corre todos los generadores de ejercicios muchas veces comprobando que siempre se puede servir una instancia válida, recompute las respuestas de las familias donde se pueden derivar sin confiar en el generador (operaciones entre fracciones desde el propio enunciado, con aritmética exacta, y numéricos con la respuesta también en texto) y verifica las correcciones de la auditoría: los ejercicios abiertos quedan en el historial pero no cuentan como evidencia de dominio, y los de pasos guardan su detalle por etapa. Lo que no se puede recompute (la corrección del resto de enunciados y soluciones) no se presenta como validado por estas pruebas. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
+        <button class="btn" id="run-engine-tests">Correr las pruebas del motor</button>
+        <div class="small" id="engine-test-results" style="margin-top:10px;"></div>
       </details>
     </div>
     <div class="prog-section">
@@ -842,7 +848,10 @@ var STATE_VERSION = 2;
    crudo completo, sino desde dos fuentes que el recorte no toca:
    1) state.skillAgg: agregados por habilidad (totales, aciertos, errores,
       sesiones y días distintos, última fecha de evidencia) que se
-      actualizan con CADA intento en recordAttempt y NUNCA se recortan.
+      actualizan con cada intento OBJETIVO en recordAttempt y NUNCA se
+      recortan. Los intentos de respuesta abierta quedan solo en el
+      registro crudo: son autoevaluaciones y no son evidencia de
+      dominio (ver isOpenAttempt).
       Como se alimentan al momento de registrar, un intento recortado ya
       dejó su aporte en el agregado: los conteos históricos, la precisión
       acumulada y la última evidencia por habilidad se conservan enteros.
@@ -862,14 +871,30 @@ function emptyStateV2(){
 }
 /* ---------- Agregados por habilidad (skillAgg) ----------
    Totales históricos por habilidad, separados del registro crudo de
-   intentos. Se actualizan con cada intento (recordAttempt) y nunca se
+   intentos. Se actualizan con cada intento objetivo (recordAttempt;
+   los de respuesta abierta se excluyen, ver isOpenAttempt) y nunca se
    recortan: son la base sobre la que las fases siguientes calcularán
    dominio y repasos sin que el tope de ATTEMPTS_CAP los altere. */
 function emptySkillAgg(){
   return { total:0, ok:0, mal:0, sesiones:{}, dias:{}, ultimaFecha:"", ultimoTs:0 };
 }
+/* ¿Este intento es de un ejercicio de respuesta abierta (exOpen)?
+   El abierto se autoevalúa contra una solución modelo: el juicio
+   "coincide / no coincide" es del alumno, no una corrección objetiva,
+   así que NO cuenta como evidencia de dominio. Se distingue por el
+   campo kind ("open") que recordAttempt guarda desde esta corrección.
+   Los intentos abiertos guardados ANTES de que existiera kind también
+   son identificables: son los únicos cuyo tipo es "Respuesta abierta"
+   (el tipo que generan todos los exOpen) y cuya respuesta registrada
+   es el texto de la autoevaluación ("Autoevaluación: …"). */
+function isOpenAttempt(a){
+  if(!a || typeof a !== "object") return false;
+  if(a.kind === "open") return true;
+  return a.tipo === "Respuesta abierta" && typeof a.dada === "string" && a.dada.indexOf("Autoevaluación:") === 0;
+}
 function bumpSkillAggIn(agg, a){
   if(!agg || !a || typeof a.skill !== "string" || !a.skill) return;
+  if(isOpenAttempt(a)) return; /* los abiertos no alimentan los agregados de dominio */
   var g = agg[a.skill];
   if(!isPlainObj(g)){ g = emptySkillAgg(); agg[a.skill] = g; }
   if(!isPlainObj(g.sesiones)) g.sesiones = {};
@@ -915,6 +940,53 @@ function normalizeState(s){
   } else {
     out.skillAgg = computeSkillAgg(out.attempts);
     if(out.attempts.length) out.meta.skillAggReconstruido = todayISO();
+  }
+  /* Corrección de auditoría, una sola vez por estado (queda marcada en
+     meta.aggSinAbiertos): antes de esta corrección, los intentos de
+     respuesta abierta alimentaban los mismos agregados que los
+     objetivos (lessonEx, skills y skillAgg), porque el motor los
+     registraba igual. Esos intentos viejos SÍ son identificables en el
+     registro crudo (ver isOpenAttempt) y cada uno aportó exactamente
+     una vez a cada agregado al registrarse, así que su aporte se
+     descuenta: un acierto abierto resta 1 de ok y un fallo abierto
+     resta 1 de mal, sin bajar de 0. En skillAgg, si los totales
+     coinciden exactamente con los intentos con habilidad que quedan
+     en la ventana cruda, el agregado se reconstruye entero sin los
+     abiertos (sesiones, días y última fecha quedan exactos); si el
+     agregado cuenta MÁS que la ventana (hubo recortes), solo se
+     descuentan los conteos y las sesiones/días/última fecha pueden
+     conservar el rastro de un abierto ya recortado, cuyo aporte ya no
+     es separable: es la limitación conocida de esta limpieza y no se
+     inventa una mayor. Los intentos abiertos en sí no se tocan: quedan
+     en el historial con su valor pedagógico. */
+  if(!out.meta.aggSinAbiertos){
+    var opensViejos = out.attempts.filter(isOpenAttempt);
+    if(opensViejos.length){
+      opensViejos.forEach(function(a){
+        if(a.lesson && isPlainObj(out.lessonEx[a.lesson])){
+          var cx = out.lessonEx[a.lesson];
+          if(a.ok){ if(cx.ok > 0) cx.ok--; } else if(cx.mal > 0) cx.mal--;
+        }
+        if(a.skill && isPlainObj(out.skills[a.skill])){
+          var sx = out.skills[a.skill];
+          if(a.ok){ if(sx.ok > 0) sx.ok--; } else if(sx.mal > 0) sx.mal--;
+        }
+      });
+      var totAgg = 0;
+      Object.keys(out.skillAgg).forEach(function(k){ totAgg += out.skillAgg[k].total || 0; });
+      var conSkill = out.attempts.filter(function(a){ return typeof a.skill === "string" && !!a.skill; }).length;
+      if(totAgg === conSkill){
+        out.skillAgg = computeSkillAgg(out.attempts);
+      } else {
+        opensViejos.forEach(function(a){
+          if(a.skill && isPlainObj(out.skillAgg[a.skill])){
+            var gx = out.skillAgg[a.skill];
+            if(gx.total > 0){ gx.total--; if(a.ok){ if(gx.ok > 0) gx.ok--; } else if(gx.mal > 0) gx.mal--; }
+          }
+        });
+      }
+    }
+    out.meta.aggSinAbiertos = todayISO();
   }
   /* lastServed: índices de los generadores servidos en la última ronda de
      cada clase, para no repetirlos en la ronda siguiente. Es un campo
@@ -1025,6 +1097,19 @@ function validateAttempt(a, idx){
   if(typeof a.ok !== "boolean") return p + ".ok debe ser booleano";
   if(["", "ronda", "practica", "examen"].indexOf(a.modo) < 0) return p + ".modo debe ser ronda, practica o examen";
   if(!(a.dificultad === null || (isNonNegInt(a.dificultad) && a.dificultad >= 1 && a.dificultad <= 3))) return p + ".dificultad debe ser null o un nivel entre 1 y 3";
+  /* Campos opcionales nuevos: los respaldos viejos no los traen y son
+     válidos igual; si están, tienen que tener la forma esperada. */
+  if(a.kind !== undefined && !isShortStr(a.kind, 40)) return p + ".kind debe ser un texto corto";
+  if(a.pasos !== undefined){
+    if(!Array.isArray(a.pasos) || a.pasos.length > 40) return p + ".pasos debe ser una lista de hasta 40 etapas";
+    for(var pi = 0; pi < a.pasos.length; pi++){
+      var ps = a.pasos[pi];
+      if(!isPlainObj(ps)) return p + ".pasos[" + pi + "] debe ser un objeto";
+      if(typeof ps.primero !== "boolean") return p + ".pasos[" + pi + "].primero debe ser booleano";
+      if(!isNonNegInt(ps.reintentos)) return p + ".pasos[" + pi + "].reintentos debe ser un entero no negativo";
+      if(typeof ps.ok !== "boolean") return p + ".pasos[" + pi + "].ok debe ser booleano";
+    }
+  }
   return null;
 }
 function validateStateShape(s){
@@ -1124,6 +1209,7 @@ function validateStateShape(s){
     if(s.meta.migratedAt !== undefined && !isValidDateStr(s.meta.migratedAt)) return "meta.migratedAt no es una fecha válida";
     if(s.meta.migratedFrom !== undefined && !isShortStr(s.meta.migratedFrom, 50)) return "meta.migratedFrom debe ser un texto corto";
     if(s.meta.skillAggReconstruido !== undefined && !isValidDateStr(s.meta.skillAggReconstruido)) return "meta.skillAggReconstruido no es una fecha válida";
+    if(s.meta.aggSinAbiertos !== undefined && !isValidDateStr(s.meta.aggSinAbiertos)) return "meta.aggSinAbiertos no es una fecha válida";
   }
   return null;
 }
@@ -1208,6 +1294,19 @@ function recordAttempt(f){
     modo: f.modo || "",
     dificultad: f.dificultad === null || f.dificultad === undefined ? null : f.dificultad
   };
+  /* Campos opcionales nuevos (los respaldos viejos no los traen y los
+     intentos sin ellos siguen siendo válidos): kind distingue el tipo
+     de ejercicio ("open", "steps", "num", "frac", "choice", "order")
+     para poder separar la evidencia objetiva de la autoevaluada, y
+     pasos guarda el detalle por etapa de un ejercicio por pasos
+     (primero: salió al primer intento; reintentos: correcciones
+     fallidas antes de acertarla; ok: resultado final de la etapa). */
+  if(typeof f.kind === "string" && f.kind) att.kind = f.kind;
+  if(Array.isArray(f.pasos) && f.pasos.length){
+    att.pasos = f.pasos.slice(0, 40).map(function(p){
+      return { primero: !!(p && p.primero), reintentos: (p && isNonNegInt(p.reintentos)) ? p.reintentos : 0, ok: !!(p && p.ok) };
+    });
+  }
   state.attempts.push(att);
   /* El agregado por habilidad se actualiza ANTES de cualquier recorte:
      el intento ya dejó su aporte histórico aunque después salga de la
@@ -1222,10 +1321,11 @@ function recordAttempt(f){
 }
 /* Patrón de baja de dificultad (condición cerrada): un error aislado nunca
    baja el nivel; solo baja si la precisión de los últimos 6 intentos de la
-   habilidad es menor al 60%. */
+   habilidad es menor al 60%. Los intentos de respuesta abierta no entran:
+   son autoevaluaciones, no evidencia objetiva de dificultad. */
 function patronParaBajar(skillId){
   if(!state || !Array.isArray(state.attempts)) return false;
-  var ult = state.attempts.filter(function(a){ return a.skill === skillId; }).slice(-6);
+  var ult = state.attempts.filter(function(a){ return a.skill === skillId && !isOpenAttempt(a); }).slice(-6);
   if(ult.length < 6) return false;
   var okc = ult.filter(function(a){ return a.ok; }).length;
   return okc / ult.length < 0.6;
@@ -1581,7 +1681,230 @@ function runPhaseATests(){
   });
   return results;
 }
-window.TutorData = { migrateV1toV2: migrateV1toV2, validateStateShape: validateStateShape, serializeBackup: serializeBackup, parseBackup: parseBackup, importBackupText: importBackupText, recordAttempt: recordAttempt, patronParaBajar: patronParaBajar, runPhaseATests: runPhaseATests, writeVerified: writeVerified, saveState: saveState, loadState: loadState, computeSkillAgg: computeSkillAgg, skillAggSummary: skillAggSummary, ATTEMPTS_CAP: ATTEMPTS_CAP, getState: function(){ return state; }, getSessionId: function(){ return currentSessionId; } };
+/* ================= Pruebas del motor de ejercicios =================
+   Batería independiente de la de la Fase A: la Fase A prueba los
+   cimientos de datos (migración, respaldos, persistencia); esta
+   prueba el motor de ejercicios y las correcciones de la auditoría
+   del motor. Qué hace:
+   - Barrido real de generadores: corre todos los generadores de
+     LESSON_EXERCISES muchas veces y comprueba que de cada uno se
+     puede servir una instancia sana (lexExerciseSane) dentro de 8
+     intentos, igual que hace la ronda al servir.
+   - Recomputación independiente donde la respuesta se deriva sin
+     confiar en el generador: en fracciones, cuando el enunciado
+     termina en una operación entre dos fracciones, opera los
+     operandos del propio enunciado con aritmética entera exacta y
+     compara contra fn/fd; en numéricos cuyo ansText es solo un
+     número, compara ese texto contra ans.
+   - Correcciones de la auditoría: un intento open (nuevo o heredado)
+     no mueve los agregados por habilidad ni el patrón de baja; la
+     limpieza única descuenta los abiertos heredados de lessonEx,
+     skills y skillAgg sin tocar el historial; un intento por pasos
+     guarda su detalle por etapa y sobrevive a exportar/importar; un
+     respaldo sin los campos nuevos importa igual que antes.
+   Qué NO hace: no valida los enunciados ni las soluciones de los
+   tipos cuya respuesta no se deriva de los parámetros o del texto
+   del enunciado; eso no es computable acá y no se presenta como
+   validado. Las pruebas que tocan el estado lo hacen sobre un estado
+   de prueba y restauran el real al terminar. */
+function runEngineTests(){
+  var results = [];
+  function check(name, fn){
+    try{ var r = fn(); results.push({ name:name, ok: r === true, detail: typeof r === "string" ? r : "" }); }
+    catch(e){ results.push({ name:name, ok:false, detail:String(e && e.message || e) }); }
+  }
+  /* ---- Barrido de generadores con recomputación ---- */
+  var RONDAS = 25;
+  var stats = { gens:0, servidos:0, instancias:0, fracEnun:0, fracParam:0, numTexto:0 };
+  var sinServir = [], malFrac = [], malNum = [];
+  function recomputaFrac(e){
+    stats.fracParam++;
+    if(Math.abs(e.ans - e.fn / e.fd) > 1e-9 * Math.max(1, Math.abs(e.ans))) malFrac.push("la respuesta no es fn/fd: " + e.prompt);
+    var p = e.prompt.replace(/\s*(=\s*)?\?\s*$/, "");
+    /* Carácter significativo anterior a una posición (saltando espacios
+       y paréntesis de apertura): si es un operador, un dígito o una
+       barra, la expresión encontrada es parte de una cuenta mayor y el
+       patrón no es seguro: se salta y no se cuenta como verificado. */
+    function signoPrevio(idx){
+      var i = idx - 1;
+      while(i >= 0 && (p.charAt(i) === " " || p.charAt(i) === "(")) i--;
+      return i >= 0 ? p.charAt(i) : "";
+    }
+    function esCorte(ch){ return ch === "−" || ch === "-" || ch === "+" || ch === "·" || ch === "÷" || ch === "*" || ch === "/" || /\d/.test(ch); }
+    /* Cadena de sumas y restas de fracciones al final del enunciado
+       (dos o más términos): se evalúa completa, de izquierda a
+       derecha, con enteros exactos, y se compara por multiplicación
+       cruzada contra fn/fd. */
+    var mc = p.match(/(\d+\/\d+(?:\s*[+−-]\s*\d+\/\d+)+)\s*\)?\s*$/);
+    if(mc){
+      if(esCorte(signoPrevio(mc.index))) return;
+      var terms = mc[1].match(/\d+\/\d+|[+−-]/g), en = null, ed = 1, pendOp = "+";
+      terms.forEach(function(tk){
+        if(tk === "+" || tk === "−" || tk === "-"){ pendOp = tk; return; }
+        var pr = tk.split("/"), tn = +pr[0], td = +pr[1];
+        if(en === null){ en = tn; ed = td; }
+        else if(pendOp === "+"){ en = en * td + tn * ed; ed = ed * td; }
+        else { en = en * td - tn * ed; ed = ed * td; }
+      });
+      stats.fracEnun++;
+      if(en * e.fd !== e.fn * ed) malFrac.push("el enunciado no da la respuesta esperada: " + e.prompt + " → opera " + en + "/" + ed + " y el ejercicio espera " + e.fn + "/" + e.fd);
+      return;
+    }
+    /* Operación única entre dos fracciones al final del enunciado. */
+    var m = p.match(/(\d+)\/(\d+)\s*([+−·÷*x-])\s*\(?\s*(\d+)\/(\d+)\s*\)?\s*$/);
+    if(m){
+      if(esCorte(signoPrevio(m.index))) return;
+      var a = +m[1], b = +m[2], c = +m[4], d = +m[5], op = m[3], en2, ed2;
+      if(op === "+"){ en2 = a * d + c * b; ed2 = b * d; }
+      else if(op === "−" || op === "-"){ en2 = a * d - c * b; ed2 = b * d; }
+      else if(op === "·" || op === "*" || op === "x"){ en2 = a * c; ed2 = b * d; }
+      else if(op === "÷"){ if(c === 0) return; en2 = a * d; ed2 = b * c; }
+      else return;
+      stats.fracEnun++;
+      if(en2 * e.fd !== e.fn * ed2) malFrac.push("el enunciado no da la respuesta esperada: " + e.prompt + " → opera " + en2 + "/" + ed2 + " y el ejercicio espera " + e.fn + "/" + e.fd);
+    }
+  }
+  function recomputaEj(e){
+    if(!e) return;
+    if(e.kind === "frac") recomputaFrac(e);
+    else if(e.kind === "num" && typeof e.ansText === "string"){
+      var tx = e.ansText.trim();
+      if(/^[−-]?\d+([.,]\d+)?$/.test(tx)){
+        stats.numTexto++;
+        var v = parseFloat(tx.replace("−", "-").replace(",", "."));
+        if(Math.abs(v - e.ans) > 1e-9) malNum.push("ansText no coincide con ans: " + e.prompt + " (" + tx + " contra " + e.ans + ")");
+      }
+    }
+    else if(e.kind === "steps"){ e.steps.forEach(recomputaEj); }
+  }
+  Object.keys(LESSON_EXERCISES).forEach(function(lid){
+    (LESSON_EXERCISES[lid] || []).forEach(function(gen, gi){
+      stats.gens++;
+      for(var r = 0; r < RONDAS; r++){
+        var e = null;
+        for(var t = 0; t < 8 && !e; t++){
+          var cand = null;
+          try{ cand = gen(); }catch(err){ cand = null; }
+          stats.instancias++;
+          if(lexExerciseSane(cand)) e = cand;
+        }
+        if(!e){ sinServir.push(lid + "#g" + gi); break; }
+        stats.servidos++;
+        recomputaEj(e);
+      }
+    });
+  });
+  check("Barrido: los " + stats.gens + " generadores sirven una instancia válida en hasta 8 intentos (" + stats.servidos + " servicios, " + stats.instancias + " instancias generadas)", function(){
+    if(sinServir.length) return "generadores que no sirvieron ni en 8 intentos: " + sinServir.slice(0, 6).join(", ") + (sinServir.length > 6 ? " y " + (sinServir.length - 6) + " más" : "");
+    return true;
+  });
+  check("Recomputación de fracciones desde el enunciado: " + stats.fracEnun + " operaciones verificadas con aritmética exacta y " + stats.fracParam + " respuestas contra fn/fd", function(){
+    if(stats.fracEnun < 50) return "se verificaron muy pocos enunciados con operación (" + stats.fracEnun + "): la recomputación no es representativa";
+    if(malFrac.length) return malFrac[0];
+    return true;
+  });
+  check("Recomputación numérica desde el texto de la respuesta: " + stats.numTexto + " verificados", function(){
+    if(stats.numTexto < 20) return "muy pocos numéricos con texto de respuesta puramente numérico (" + stats.numTexto + ")";
+    if(malNum.length) return malNum[0];
+    return true;
+  });
+  check("La validación reforzada rechaza ejercicios inconsistentes y acepta los correctos", function(){
+    var solOk = ["Paso único de prueba."];
+    if(!lexExerciseSane(exNum("T", "¿Cuánto es 2 + 2?", 4, solOk))) return "rechazó un numérico correcto";
+    if(lexExerciseSane(exNum("T", "¿Cuánto es 2 + 2?", Infinity, solOk))) return "aceptó una respuesta infinita";
+    if(lexExerciseSane(exNum("T", "¿Cuánto es 2 + 2?", 1e16, solOk))) return "aceptó una respuesta de magnitud absurda";
+    if(!lexExerciseSane(exFrac("T", "Calcula: 1/2 + 1/4", 3, 4, solOk))) return "rechazó una fracción correcta";
+    var fracMal = exFrac("T", "Calcula: 1/2 + 1/4", 3, 4, solOk); fracMal.ans = 0.5;
+    if(lexExerciseSane(fracMal)) return "aceptó una fracción cuya respuesta no es fn/fd";
+    var fracNoSimp = { type:"T", kind:"frac", prompt:"Calcula: 2/4", fn:2, fd:4, ans:0.5, sol:solOk };
+    if(lexExerciseSane(fracNoSimp)) return "aceptó una fracción sin simplificar";
+    if(!lexExerciseSane(exChoice("T", "¿Pregunta?", "bien", "mal1", "mal2", solOk))) return "rechazó una opción múltiple correcta";
+    if(lexExerciseSane(exChoice("T", "¿Pregunta?", "bien", "bien", "mal2", solOk))) return "aceptó un distractor con el mismo texto que la respuesta correcta";
+    if(lexExerciseSane(exChoice("T", "¿Pregunta?", "bien", "mal", "mal", solOk))) return "aceptó dos distractores con el mismo texto";
+    if(!lexExerciseSane(exOpen("T", "Justifica tal cosa.", ["Desarrollo modelo de prueba."], null))) return "rechazó un abierto con solución modelo";
+    if(lexExerciseSane(exOpen("T", "Justifica tal cosa.", [""], null))) return "aceptó un abierto con la solución modelo vacía";
+    if(lexExerciseSane(exOpen("T", "Justifica tal cosa.", [], null))) return "aceptó un abierto sin solución modelo";
+    var stOk = exSteps("T", "Resuelve en etapas.", [exNum("E1", "¿1 + 1?", 2, solOk), exNum("E2", "¿2 + 2?", 4, solOk)], solOk);
+    if(!lexExerciseSane(stOk)) return "rechazó un ejercicio por pasos correcto";
+    var stUna = exSteps("T", "Resuelve en etapas.", [exNum("E1", "¿1 + 1?", 2, solOk)], solOk);
+    if(lexExerciseSane(stUna)) return "aceptó un ejercicio por pasos con una sola etapa";
+    var stMala = exSteps("T", "Resuelve en etapas.", [exNum("E1", "¿1 + 1?", 2, solOk), exNum("E2", "¿2 + 2?", NaN, solOk)], solOk);
+    if(lexExerciseSane(stMala)) return "aceptó un ejercicio por pasos con una etapa inválida";
+    return true;
+  });
+  check("Un intento abierto queda en el historial pero no altera los agregados por habilidad ni el patrón de baja (ni nuevo ni heredado)", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      recordAttempt({ lesson:"s2-suma", skill:"frac-suma", tipo:"Suma", gen:"s2-suma#g0", dada:"5/6", esperada:"5/6", ok:true, modo:"ronda", kind:"frac" });
+      var aggAntes = JSON.stringify(state.skillAgg);
+      var aOpen = recordAttempt({ lesson:"s2-suma", skill:"frac-suma", tipo:"Respuesta abierta", gen:"s2-suma#g9", dada:"Autoevaluación: mi desarrollo coincide", esperada:"El desarrollo modelo está en la solución paso a paso.", ok:true, modo:"ronda", kind:"open" });
+      if(!aOpen || aOpen.kind !== "open") return "el intento abierto no quedó marcado con kind open";
+      if(state.attempts.length !== 2) return "el intento abierto no quedó en el historial de intentos";
+      if(JSON.stringify(state.skillAgg) !== aggAntes) return "el intento abierto alteró los agregados por habilidad";
+      var aggObj = computeSkillAgg(state.attempts);
+      if(!aggObj["frac-suma"] || aggObj["frac-suma"].total !== 1) return "computeSkillAgg contó el intento abierto";
+      var legado = { skill:"signos", ok:false, tipo:"Respuesta abierta", dada:"Autoevaluación: no coincide o está incompleto" };
+      if(!isOpenAttempt(legado)) return "un intento abierto heredado (sin kind) no se reconoce como abierto";
+      if(isOpenAttempt({ skill:"signos", ok:false, tipo:"Suma", dada:"3" })) return "un intento objetivo se reconoció como abierto";
+      state.attempts = [];
+      for(var i = 0; i < 6; i++) state.attempts.push({ skill:"signos", ok:false, kind:"open", tipo:"Respuesta abierta", dada:"Autoevaluación: no coincide o está incompleto" });
+      if(patronParaBajar("signos")) return "seis autoevaluaciones fallidas marcaron patrón de baja de dificultad";
+      state.attempts = state.attempts.map(function(){ return { skill:"signos", ok:false, tipo:"Suma", dada:"0" }; });
+      if(!patronParaBajar("signos")) return "seis fallos objetivos ya no marcan patrón de baja";
+      return true;
+    } finally { state = snapState; }
+  });
+  check("La limpieza única descuenta los abiertos heredados de lessonEx, skills y skillAgg sin tocar el historial ni repetirse", function(){
+    var crudo = emptyStateV2();
+    crudo.attempts = [
+      { ts:1, fecha:"2026-11-12", session:"s-x", lesson:"s2-suma", skill:"frac-suma", tipo:"Suma", gen:"s2-suma#g0", dada:"5/6", esperada:"5/6", ok:true, modo:"ronda", dificultad:null },
+      { ts:2, fecha:"2026-11-12", session:"s-x", lesson:"s2-suma", skill:"frac-suma", tipo:"Respuesta abierta", gen:"s2-suma#g9", dada:"Autoevaluación: mi desarrollo coincide", esperada:"El desarrollo modelo está en la solución paso a paso.", ok:true, modo:"ronda", dificultad:null }
+    ];
+    crudo.lessonEx = { "s2-suma": { ok:2, mal:0 } };
+    crudo.skills = { "frac-suma": { ok:2, mal:0, nivel:1, racha:0 } };
+    /* Agregado tal como lo dejó el motor viejo: cuenta los dos intentos. */
+    crudo.skillAgg = { "frac-suma": { total:2, ok:2, mal:0, sesiones:{ "s-x":true }, dias:{ "2026-11-12":true }, ultimaFecha:"2026-11-12", ultimoTs:2 } };
+    var limpio = normalizeState(crudo);
+    if(limpio.attempts.length !== 2) return "la limpieza tocó el historial de intentos";
+    if(limpio.lessonEx["s2-suma"].ok !== 1) return "lessonEx no descontó el acierto abierto heredado";
+    if(limpio.skills["frac-suma"].ok !== 1) return "skills no descontó el acierto abierto heredado";
+    if(!limpio.skillAgg["frac-suma"] || limpio.skillAgg["frac-suma"].total !== 1) return "skillAgg no descontó el intento abierto heredado";
+    if(!limpio.meta.aggSinAbiertos) return "la limpieza no quedó marcada en meta";
+    var otra = normalizeState(limpio);
+    if(otra.lessonEx["s2-suma"].ok !== 1 || otra.skillAgg["frac-suma"].total !== 1) return "la limpieza se aplicó dos veces";
+    return true;
+  });
+  check("Un intento por pasos guarda su detalle por etapa y sobrevive a exportar e importar", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      var pasos = [ { primero:true, reintentos:0, ok:true }, { primero:false, reintentos:2, ok:true }, { primero:true, reintentos:0, ok:true } ];
+      var a = recordAttempt({ lesson:"s2-suma", skill:"frac-suma", tipo:"Suma paso a paso", gen:"s2-suma#g7", dada:"6 · 3 · 5/6", esperada:"El resultado final es 5/6.", ok:false, modo:"ronda", kind:"steps", pasos:pasos });
+      if(!a.pasos || a.pasos.length !== 3) return "el intento no guardó el detalle por etapa";
+      if(a.pasos[0].primero !== true || a.pasos[1].primero !== false || a.pasos[1].reintentos !== 2 || a.pasos[2].ok !== true) return "el detalle por etapa guardado no coincide con lo registrado";
+      var malo = validateStateShape(state);
+      if(malo) return "el estado con detalle por etapa no pasa la validación: " + malo;
+      var back = parseBackup(serializeBackup(state));
+      if(!back.ok) return "un respaldo con detalle por etapa fue rechazado: " + back.error;
+      var pa = back.state.attempts[0].pasos;
+      if(!pa || pa.length !== 3 || pa[1].reintentos !== 2) return "el detalle por etapa no sobrevivió a exportar e importar";
+      if(back.state.attempts[0].kind !== "steps") return "el campo kind no sobrevivió a exportar e importar";
+      return true;
+    } finally { state = snapState; }
+  });
+  check("Un respaldo viejo, sin kind ni pasos en sus intentos, importa igual que antes", function(){
+    var viejo = migrateV1toV2({ lessonsDone:{}, lessonEx:{}, skills:{}, exams:[], visits:{}, errorLog:[], started:"2026-11-10" });
+    viejo.attempts = [ { ts:1760000000000, fecha:"2026-11-12", session:"s-vieja", lesson:"s2-fraccion", skill:"frac-suma", tipo:"Suma", gen:"s2-fraccion#g0", dada:"5/6", esperada:"5/6", ok:true, modo:"ronda", dificultad:2 } ];
+    viejo.skillAgg = computeSkillAgg(viejo.attempts);
+    var back = parseBackup(serializeBackup(viejo));
+    if(!back.ok) return "un respaldo sin los campos nuevos fue rechazado: " + back.error;
+    if(back.state.attempts.length !== 1 || back.state.attempts[0].kind !== undefined || back.state.attempts[0].pasos !== undefined) return "el intento viejo cambió al importar";
+    return true;
+  });
+  return results;
+}
+window.TutorData = { migrateV1toV2: migrateV1toV2, validateStateShape: validateStateShape, serializeBackup: serializeBackup, parseBackup: parseBackup, importBackupText: importBackupText, recordAttempt: recordAttempt, patronParaBajar: patronParaBajar, runPhaseATests: runPhaseATests, runEngineTests: runEngineTests, isOpenAttempt: isOpenAttempt, writeVerified: writeVerified, saveState: saveState, loadState: loadState, computeSkillAgg: computeSkillAgg, skillAggSummary: skillAggSummary, ATTEMPTS_CAP: ATTEMPTS_CAP, getState: function(){ return state; }, getSessionId: function(){ return currentSessionId; } };
 function skillStat(id){
   if(!state.skills[id]) state.skills[id] = { ok:0, mal:0, nivel:1, racha:0 };
   return state.skills[id];
@@ -4180,7 +4503,7 @@ LESSONS.push(
       s:"En la Cátedra Única, derivadas y valor medio entran en el primer parcial; Taylor e integrales quedan para el segundo.",
       b:[ {k:"ink", t:"derivar = hallar la pendiente que cambia", c:"green"} ] }
   ] },
-{ id:"cbc-an2-estudio", week:15, title:"Análisis A · Unidad 5: estudio de funciones, Taylor y optimización", desc:"Crecimiento, extremos, concavidad, el estudio completo de una función, el polinomio de Taylor, la aproximación lineal y los diferenciales, y el método de Newton-Raphson.",
+{ id:"cbc-an2-estudio", week:15, title:"Análisis A · Unidad 5: estudio de funciones, Taylor y optimización", desc:"Crecimiento, extremos, concavidad, asíntotas oblicuas, el estudio completo de una función, el polinomio de Taylor, la aproximación lineal y los diferenciales, y el método de Newton-Raphson.",
   steps:[
     { v:"CRECIMIENTO", vc:"blue", i:"El signo de la derivada manda, con condiciones: en un intervalo donde f es continua y derivable en su interior, donde f prima es positiva f crece y donde es negativa f decrece. Sin esa continuidad en el intervalo y esa derivabilidad en el interior, el signo de f' por sí solo no autoriza a afirmar el crecimiento. Los candidatos a extremos locales son los puntos del dominio donde f' = 0 o donde f' no existe: ser candidato no garantiza que haya extremo, hay que comprobarlo.",
       r:"El criterio completo: se arma la tabla de signos de f prima y se lee el crecimiento y los extremos de una sola mirada.",
@@ -4193,6 +4516,30 @@ LESSONS.push(
       r:"Punto de inflexión: exige que la concavidad cambie, es decir, que f'' cambie de signo a uno y otro lado del punto. Que f''(c) = 0 o que f''(c) no exista es condición necesaria pero NO suficiente: sin cambio de signo de f'' no hay inflexión, aunque f''(c) valga 0. Y el estudio completo de una función junta todo: dominio, raíces, asíntotas (también oblicuas), crecimiento, extremos, concavidad, inflexiones y el gráfico final.",
       s:"El estudio completo es EL ejercicio integrador del segundo parcial: una sola función ejercita las Unidades 1, 3, 4 y 5 a la vez.",
       b:[ {k:"ink", t:"f'' > 0 cóncava arriba · f'' < 0 cóncava abajo, donde f'' existe", c:"green"} ] },
+    { v:"ASÍNTOTAS OBLICUAS: LA DEFINICIÓN", vc:"blue", i:"Definición precisa: la recta y = mx + n es asíntota oblicua de f en +∞ si la distancia vertical entre la curva y la recta tiende a 0, es decir, si el límite de f(x) − (mx + n) cuando x tiende a +∞ es 0. En −∞ la definición es la misma, con x tendiendo a −∞. Conceptos previos explícitos: los límites en el infinito de la Unidad 3 y las asíntotas horizontales, que son el caso particular m = 0 de esta misma definición: si m sale 0, la recta es horizontal y no se la llama oblicua.",
+      r:"Interpretación intuitiva: la curva no se pega a una altura fija ni se dispara: se pega a una recta inclinada, como un avión que se acomoda en su senda de descenso. La recta no toca necesariamente a la curva: asíntota habla del comportamiento lejos, y la curva puede cruzarla en la zona finita sin que eso rompa nada.",
+      s:"El método sale de la propia definición, en dos límites calculados en el mismo infinito: m = límite de f(x)/x, y después n = límite de (f(x) − mx), usando esa m ya calculada. Hay asíntota oblicua solo si los dos límites existen y son finitos, y m ≠ 0. Si alguno no existe o es infinito, no hay recta a la cual pegarse: el paso siguiente calcula un caso completo y el de más adelante muestra qué pasa cuando falla uno de los dos.",
+      b:[ {k:"ink", t:"m = lim f(x)/x · n = lim (f(x) − mx), en el mismo infinito", c:"green"}, {k:"ink", t:"hay oblicua ⇔ m y n finitos y m ≠ 0", c:"green"} ] },
+    { v:"OBLICUAS: EJEMPLO POR LÍMITES", vc:"black", i:"Ejemplo desarrollado sin saltos: hallar la asíntota oblicua de f(x) = (x² + 1)/(x − 1) en +∞. Paso 1, la pendiente: m = límite de f(x)/x = límite de (x² + 1)/(x² − x). Dividiendo numerador y denominador por x², el límite es 1/1 = 1: m = 1, finito y distinto de 0, el primer chequeo pasa. Paso 2, la ordenada: n = límite de (f(x) − x) = límite de (x² + 1 − x·(x − 1))/(x − 1) = límite de (x + 1)/(x − 1), porque −x·(x − 1) es −x² + x y el x² se cancela con el del numerador. Dividiendo por x: el límite es 1/1 = 1: n = 1.",
+      r:"Paso 3, la verificación que cierra el método, volviendo a la definición: f(x) − (x + 1) = (x² + 1 − (x + 1)(x − 1))/(x − 1) = (x² + 1 − (x² − 1))/(x − 1) = 2/(x − 1), que tiende a 0 cuando x crece. La recta es y = x + 1 y la distancia vertical efectivamente muere: no es una asíntota declarada, es una asíntota comprobada.",
+      s:"Fijate en el orden obligatorio: n no se puede calcular antes que m, porque la fórmula de n usa la m ya hallada. Y los dos límites se calculan en el mismo infinito: una función puede tener oblicuas distintas en +∞ y en −∞, y cada una sale de repetir el método en su infinito (en las racionales de este ejemplo coinciden, pero eso se comprueba, no se asume).",
+      b:[ {k:"flow", items:[
+          { l:"Paso 1 · m", t:"lim f(x)/x = lim (x² + 1)/(x² − x) = 1", c:"blue" },
+          { l:"Paso 2 · n", t:"lim (f(x) − x) = lim (x + 1)/(x − 1) = 1", c:"blue" },
+          { l:"Paso 3 · Verificación", t:"f(x) − (x + 1) = 2/(x − 1) → 0 ✓", c:"green" },
+          { l:"Asíntota", t:"y = x + 1", c:"green" } ]} ] },
+    { v:"OBLICUAS: DIVISIÓN POLINÓMICA Y POSICIÓN", vc:"green", i:"El mismo ejemplo por el segundo camino, el atajo de las funciones racionales: si el grado del numerador supera en exactamente 1 al del denominador, la división polinómica da la asíntota directamente. Dividiendo x² + 1 por x − 1: el cociente es x + 1 y el resto es 2, porque (x − 1)(x + 1) = x² − 1 y (x² + 1) − (x² − 1) = 2. Entonces f(x) = x + 1 + 2/(x − 1): el cociente de la división es la asíntota, y = x + 1, la misma recta que dio el método de los límites, y el término 2/(x − 1) es la distancia vertical, que tiende a 0 sola.",
+      r:"La posición de la curva respecto de la asíntota la decide el signo de esa distancia, f(x) − (mx + n) = 2/(x − 1). Para x grande positivo el denominador es positivo y la distancia es positiva: en +∞ la curva viene por encima de la recta. Para x tendiendo a −∞, el denominador x − 1 es negativo y la distancia es negativa: en −∞ la curva viene por debajo. La misma cuenta que verifica la asíntota dice de qué lado viene la curva en cada infinito: por eso la verificación del paso anterior no es un trámite.",
+      s:"Comparación de los dos caminos: el método de los límites vale para cualquier función, racional o no, pero exige dos límites y la verificación; la división polinómica es inmediata, pero solo existe para racionales y solo cuando la diferencia de grados es exactamente 1. Si la diferencia de grados es 0, la asíntota es horizontal; si es 2 o más, no hay recta asíntota, como muestra el paso siguiente. Elegir el camino es parte del ejercicio: racional con diferencia 1, división; cualquier otra cosa, límites.",
+      b:[ {k:"ink", t:"(x² + 1)/(x − 1) = x + 1 + 2/(x − 1): el cociente es la asíntota", c:"green"}, {k:"ink", t:"posición: signo de f(x) − (mx + n) en cada infinito", c:"blue"} ] },
+    { v:"OBLICUAS: ERRORES FRECUENTES", vc:"orange", i:"Error 1, el más cobrado: declarar la oblicua con solo la m. Contraejemplo completo: f(x) = x + √x para x > 0. La pendiente sale perfecta: m = límite de (x + √x)/x = límite de (1 + 1/√x) = 1. Pero n = límite de (f(x) − x) = límite de √x = +∞: n no existe como número finito, y la distancia entre la curva y cualquier recta de pendiente 1 crece sin tope. No hay asíntota oblicua, aunque la m haya dado un número lindo. La existencia de m es la mitad del chequeo, nunca el chequeo entero.",
+      r:"Error 2: confundir con ramas parabólicas. Si m no existe o es infinito, la curva se aleja siguiendo una forma curva, no una recta: f(x) = x² + 1/x tiene f(x)/x = x + 1/x², que tiende a infinito, así que no hay m y no hay oblicua: tiene una rama parabólica en la dirección del eje y. En una racional eso pasa exactamente cuando el grado del numerador supera al del denominador en 2 o más. Error 3: calcular m en +∞ y n en −∞ mezclados, o dar por hecho que la oblicua de un infinito sirve para el otro sin repetir la cuenta.",
+      s:"El checklist que evita los tres errores: ¿existe m finito y distinto de 0? ¿existe n finito, calculado con esa m y en el mismo infinito? ¿la verificación f(x) − (mx + n) tiende a 0? Si alguna respuesta es no, la conclusión correcta no es una recta: es decir qué hay en su lugar (horizontal si m = 0 con n finito, rama parabólica si m no existe o es infinito, nada si n no existe). En un parcial, esa conclusión justificada vale más que una recta inventada.",
+      b:[ {k:"flow", items:[
+          { l:"m finito, n infinito", t:"f(x) = x + √x: no hay oblicua", c:"orange" },
+          { l:"m no existe o es infinito", t:"f(x) = x² + 1/x: rama parabólica", c:"orange" },
+          { l:"m = 0 y n finito", t:"asíntota horizontal, no oblicua", c:"blue" },
+          { l:"m y n finitos, m ≠ 0", t:"oblicua y = mx + n ✓", c:"green" } ]} ] },
     { v:"OPTIMIZACIÓN", vc:"orange", i:"Optimizar es modelar: expresar la cantidad a maximizar o minimizar como función de una variable, derivar, hallar el crítico y verificar que es el extremo buscado.",
       r:"El problema tipo: con un perímetro dado, el rectángulo de área máxima es el cuadrado. La respuesta sale del vértice... y se comprueba con la derivada.",
       s:"El paso difícil no es derivar: es armar la función desde el enunciado. La práctica de parciales viejos es donde esta traducción se aprende.",
@@ -4246,7 +4593,7 @@ LESSONS.push(
       s:"Estudio de funciones y Taylor suelen abrir el segundo parcial en la Cátedra Única, seguidos por integrales y series.",
       b:[ {k:"ink", t:"f' dice cómo crece · f'' dice cómo se curva", c:"green"} ] }
   ] },
-{ id:"cbc-an2-integrales", week:15, title:"Análisis A · Unidad 6: integrales", desc:"Primitivas, sumas de Riemann e integración aproximada, teorema fundamental del cálculo, regla de Barrow, métodos de sustitución y por partes, áreas entre curvas, volúmenes de revolución y longitud de curvas.",
+{ id:"cbc-an2-integrales", week:15, title:"Análisis A · Unidad 6: integrales", desc:"Primitivas, sumas de Riemann e integración aproximada, teorema fundamental del cálculo, regla de Barrow, integrales impropias, métodos de sustitución y por partes, áreas entre curvas, volúmenes de revolución y longitud de curvas.",
   steps:[
     { v:"PRIMITIVA", vc:"blue", i:"Una primitiva de f es una función cuya derivada es f. Integrar es derivar al revés: la integral de xⁿ es xⁿ⁺¹/(n + 1) + C, PERO SOLO SI n ≠ −1. Con n = −1 la fórmula pediría dividir por cero y se rompe: ese caso excluido tiene su propia primitiva, la integral de 1/x es ln|x| + C. La constante C representa a toda la familia de primitivas.",
       r:"La constante no es un adorno: todas las primitivas de una función difieren en una constante. Olvidar la C en una integral indefinida es error de parcial.",
@@ -4316,7 +4663,31 @@ LESSONS.push(
           { l:"Integrando", t:"√(1 + (f'(x))²) = √(1 + x)", c:"" },
           { l:"Barrow", t:"(2/3) · (8 − 1) = 14/3", c:"green" },
           { l:"Valor", t:"L = 14/3 ≈ 4,67", c:"green" } ]} ] },
-    { v:"CIERRA", vc:"black", i:"Unidad 6 completa: primitiva con su constante y su caso excluido n = −1; la integral definida como límite de sumas de Riemann, con Barrow para el valor exacto cuando hay primitiva; sustitución y por partes como métodos; y las aplicaciones con el planteo antes que la cuenta: área entre curvas, volúmenes de revolución por discos, arandelas y capas, y longitud de curvas.",
+    { v:"INTEGRALES IMPROPIAS: PRIMERA ESPECIE", vc:"blue", i:"Hasta acá, toda integral definida vivía en un intervalo finito con una función acotada. Una integral impropia rompe una de esas dos comodidades, y se define como un límite: no es una integral nueva, es una integral común llevada al límite. De primera especie, el intervalo es infinito: por definición, la integral de f entre a y +∞ es el límite cuando t tiende a +∞ de la integral común entre a y t, siempre que f sea integrable en cada [a, t]. Conceptos previos explícitos: la integral definida y Barrow, de esta misma clase, y los límites en el infinito de la Unidad 3.",
+      r:"Las variantes salen de la misma idea: entre −∞ y b, es el límite cuando t tiende a −∞ de la integral entre t y b. Y en toda la recta no se escribe un solo límite: se parte en un punto cualquiera c y se suman dos impropias, la de (−∞, c] y la de [c, +∞), y cada una debe converger por su cuenta. Si el límite de la definición existe y es finito, la integral converge y ese límite es su valor; si el límite es infinito o no existe, la integral diverge y no tiene valor numérico.",
+      s:"Interpretación intuitiva: es un área de extensión infinita que puede valer un número finito, porque la altura se achica lo bastante rápido para compensar el ancho que crece. Que el intervalo no termine no obliga a que el área sea infinita: lo decide la competencia entre el ancho que crece y la altura que decrece, y el límite de la definición es el árbitro. Error frecuente número uno del tema: escribir infinito como extremo en Barrow y operar como si fuera un número; infinito no se evalúa en una primitiva, se llega a él con un límite, como hace la definición.",
+      b:[ {k:"ink", t:"∫ₐ^∞ f = lim (t → ∞) ∫ₐᵗ f: converge si el límite existe y es finito", c:"green"}, {k:"ink", t:"en toda la recta: partir en un c y exigir que las dos mitades converjan", c:"blue"} ] },
+    { v:"LAS INTEGRALES p: EL CÁLCULO COMPLETO", vc:"black", i:"La familia de referencia del tema, calculada una vez y para siempre: la integral de 1/x^p entre 1 e infinito. Caso p = 1: la integral entre 1 y t es ln t, y ln t tiende a +∞ cuando t crece: diverge. Caso p ≠ 1: la primitiva de x^(−p) es x^(1 − p)/(1 − p), así que la integral entre 1 y t vale (t^(1 − p) − 1)/(1 − p). Si p > 1, el exponente 1 − p es negativo y t^(1 − p) tiende a 0: el límite es 1/(p − 1), finito, y la integral converge a ese valor. Si p < 1, el exponente es positivo y t^(1 − p) tiende a +∞: diverge.",
+      r:"El resultado que queda como patrón: la integral de 1/x^p entre 1 e infinito converge si y solo si p > 1, y en ese caso vale 1/(p − 1). Los dos ejemplos canónicos salen de ahí: con p = 2, la integral de 1/x² entre 1 e infinito converge y vale 1/(2 − 1) = 1; con p = 1 es la armónica integral, que diverge. Las integrales p son a las impropias lo que las p-series son a las series: el patrón contra el que se compara todo lo demás, por comparación directa o en el límite.",
+      s:"La conexión que hay que dejar explícita: el criterio integral de la clase de series (Unidad 7) usa exactamente estas integrales. Cuando ese criterio compara la serie Σ1/n^p con la integral de 1/x^p, la conclusión de la serie sale de este cálculo: la serie converge si y solo si p > 1 porque esta integral converge si y solo si p > 1. Sin esta clase, el criterio integral es una receta; con esta clase, es una consecuencia.",
+      b:[ {k:"flow", items:[
+          { l:"p > 1", t:"∫₁^∞ dx/x^p = 1/(p − 1): converge", c:"green" },
+          { l:"p = 2", t:"∫₁^∞ dx/x² = 1", c:"green" },
+          { l:"p = 1", t:"∫₁^∞ dx/x = lim ln t = ∞: diverge", c:"orange" },
+          { l:"p < 1", t:"diverge: t^(1 − p) → ∞", c:"orange" } ]} ] },
+    { v:"SEGUNDA ESPECIE: LA FUNCIÓN EXPLOTA", vc:"orange", i:"De segunda especie, el intervalo es finito pero la función no es acotada en un punto del intervalo: se dispara a infinito en ese punto. La definición es el mismo reflejo, un límite que se acerca al punto problemático sin tocarlo: si el problema está en el extremo izquierdo a, la integral entre a y b es el límite cuando ε tiende a 0 por la derecha de la integral común entre a + ε y b. Si el problema está en el extremo derecho, el límite se acerca desde adentro por la izquierda; y si el punto problemático está en el interior, la integral se parte en dos en ese punto y cada mitad es una impropia que debe converger por su cuenta.",
+      r:"Ejemplo completo de segunda especie: la integral de 1/√x entre 0 y 1, con el problema en 0. Por la definición: el límite cuando ε tiende a 0+ de la integral entre ε y 1. La primitiva de x^(−1/2) es 2√x, así que la integral entre ε y 1 vale 2√1 − 2√ε = 2 − 2√ε, y cuando ε tiende a 0 eso tiende a 2. La integral converge y vale 2: la función se dispara en 0, pero tan despacio que el área total es finita. El contraste que marca el borde: la integral de 1/x entre 0 y 1 da, con el mismo procedimiento, el límite de −ln ε, que es +∞: diverge. Explotar no alcanza para divergir ni para converger: lo decide la velocidad de la explosión, y el límite lo mide.",
+      s:"Errores frecuentes de esta especie: aplicar Barrow directamente entre 0 y 1 como si nada pasara en 0 (con 1/√x el número final coincide de casualidad, pero el procedimiento es inválido y con 1/x daría un ln 0 disfrazado); y no partir la integral cuando el punto problemático está en el interior: la integral de 1/x² entre −1 y 1 no vale el Barrow ciego entre −1 y 1, porque en 0 la función explota; partida en 0, cada mitad diverge y la integral diverge. Si el interior no se parte, el problema queda escondido dentro de la cuenta.",
+      b:[ {k:"ink", t:"∫₀¹ dx/√x = lim (ε → 0+) (2 − 2√ε) = 2: converge", c:"green"}, {k:"ink", t:"problema en el interior ⇒ partir ahí, y cada parte debe converger", c:"blue"} ] },
+    { v:"IMPOPRIAS: ERRORES Y CHECKLIST", vc:"green", i:"El checklist completo del tema, que junta las dos especies. Primero: identificar qué la hace impropia (¿un extremo infinito, una explosión en un extremo, una explosión interior?) porque eso decide la definición que se aplica. Segundo: escribirla como límite antes de calcular nada. Tercero: si hay un punto problemático interior, partir ahí. Cuarto: calcular la integral común con Barrow y recién después tomar el límite. Quinto: concluir en el idioma del tema, converge a tal valor o diverge; una impropia nunca se responde solo con un número sin decir si el límite existió.",
+      r:"El error conceptual que resume todos los demás: creer que si el integrando tiende a 0 en el infinito, la integral converge. Contraejemplo ya calculado en esta clase: 1/x tiende a 0 cuando x crece, y sin embargo su integral entre 1 e infinito diverge, porque tiende a 0 demasiado lento. Tendencia a 0 del integrando es condición necesaria, jamás suficiente: la misma lección que la condición del término general en las series, y no por casualidad, porque el criterio integral ata los dos mundos.",
+      s:"Dónde vuelve este tema: en el criterio integral de la Unidad 7, como ya quedó dicho, y en toda integral de la carrera donde el dominio se estire a infinito. La rutina segura es siempre la misma: límite primero, Barrow adentro, conclusión con la palabra converge o diverge.",
+      b:[ {k:"flow", items:[
+          { l:"1 · Identificar", t:"¿extremo infinito o explosión? ¿en un extremo o interior?", c:"blue" },
+          { l:"2 · Como límite", t:"escribir la definición antes de calcular", c:"blue" },
+          { l:"3 · Barrow y límite", t:"la integral común primero, el límite después", c:"" },
+          { l:"4 · Concluir", t:"converge a un valor, o diverge", c:"green" } ]} ] },
+    { v:"CIERRA", vc:"black", i:"Unidad 6 completa: primitiva con su constante y su caso excluido n = −1; la integral definida como límite de sumas de Riemann, con Barrow para el valor exacto cuando hay primitiva; sustitución y por partes como métodos; las integrales impropias definidas como límites, de las dos especies, con las integrales p como referencia; y las aplicaciones con el planteo antes que la cuenta: área entre curvas, volúmenes de revolución por discos, arandelas y capas, y longitud de curvas.",
       r:"Queda la última unidad del programa: las series.",
       s:"En el final de la materia, la integral aparece combinada con estudio de funciones y con aplicaciones: un ejercicio típico pide plantear el volumen o la longitud y recién después resolver la integral que resulta. Quien plantea mal el radio o el integrando pierde el ejercicio aunque integre perfecto.",
       b:[ {k:"ink", t:"la suma aproxima · Barrow calcula · la aplicación se plantea", c:"green"} ] }
@@ -7629,7 +8000,37 @@ LESSON_EXERCISES["cbc-an2-estudio"] = [
     ["Como c es un máximo local, para h chico el cociente [f(c + h) − f(c)]/h tiene numerador menor o igual que 0.",
      "Por derecha (h > 0) el cociente es menor o igual que 0, así que la derivada lateral derecha, si existe, es menor o igual que 0.",
      "Por izquierda (h < 0) el denominador cambia el signo de la desigualdad: el cociente es mayor o igual que 0, y la derivada lateral izquierda es mayor o igual que 0.",
-     "Si f es derivable en c, las dos laterales coinciden con f'(c): un número que es a la vez ≤ 0 y ≥ 0. Por lo tanto f'(c) = 0. Ojo: el recíproco es falso, f'(c) = 0 no garantiza extremo (x³ en 0)."]); }
+     "Si f es derivable en c, las dos laterales coinciden con f'(c): un número que es a la vez ≤ 0 y ≥ 0. Por lo tanto f'(c) = 0. Ojo: el recíproco es falso, f'(c) = 0 no garantiza extremo (x³ en 0)."]); },
+  function(){ var o = pick([{ a:2, b:3, c:1, n:1, R:-1 }, { a:2, b:-3, c:1, n:-5, R:5 }, { a:3, b:2, c:2, n:-4, R:8 }, { a:3, b:5, c:-1, n:8, R:8 }]);
+    var fs = o.a + "x² " + (o.b < 0 ? "− " + Math.abs(o.b) : "+ " + o.b) + "x"; var ds = "x " + (o.c < 0 ? "− " + Math.abs(o.c) : "+ " + o.c);
+    return exNum("Oblicua: la pendiente m", "Para f(x) = (" + fs + ")/(" + ds + "), la asíntota oblicua en +∞ tiene pendiente m = límite de f(x)/x. ¿Cuánto vale m?", o.a, ["En el infinito mandan los términos de mayor grado: f(x)/x se comporta como (" + o.a + "x²)/(x · x) = " + o.a + ".", "m = " + o.a + ", finito y distinto de 0: el primer chequeo de la oblicua pasa. Falta calcular n con esa m antes de declarar la recta."]); },
+  function(){ var o = pick([{ a:2, b:3, c:1, n:1, R:-1 }, { a:2, b:-3, c:1, n:-5, R:5 }, { a:3, b:2, c:2, n:-4, R:8 }, { a:3, b:5, c:-1, n:8, R:8 }]);
+    var fs = o.a + "x² " + (o.b < 0 ? "− " + Math.abs(o.b) : "+ " + o.b) + "x"; var ds = "x " + (o.c < 0 ? "− " + Math.abs(o.c) : "+ " + o.c);
+    return exNum("Oblicua: la ordenada n por división", "Dividiendo el numerador por el denominador, f(x) = (" + fs + ")/(" + ds + ") se escribe como cociente más resto sobre (" + ds + "), y el cociente es la asíntota. ¿Cuánto vale n, la ordenada al origen de esa recta?", o.n, ["La división da cociente " + o.a + "x " + (o.n < 0 ? "− " + Math.abs(o.n) : "+ " + o.n) + " y resto " + o.R + ": f(x) = (" + o.a + "x " + (o.n < 0 ? "− " + Math.abs(o.n) : "+ " + o.n) + ") + " + o.R + "/(" + ds + ").", "El término del resto tiende a 0 en el infinito, así que la asíntota es y = " + o.a + "x " + (o.n < 0 ? "− " + Math.abs(o.n) : "+ " + o.n) + " y n = " + fmtN(o.n) + ". Por el método de los límites da lo mismo: m = " + o.a + " y n = límite de (f(x) − " + o.a + "x)."]); },
+  function(){ var q = pick([1, 2, 3]), k = pick([1, 5]); return exNum("Oblicua de (x² + k)/(x − q)", "La función f(x) = (x² + " + k + ")/(x − " + q + ") tiene asíntota oblicua y = x + n en +∞. ¿Cuánto vale n?", q, ["Por división: x² + " + k + " = (x − " + q + ")(x + " + q + ") + " + (q * q + k) + ", así que f(x) = x + " + q + " + " + (q * q + k) + "/(x − " + q + ").", "El resto sobre el denominador tiende a 0: la recta es y = x + " + q + " y n = " + q + ". Por límites: m = 1 y n = límite de (f(x) − x) = " + q + ". Coinciden los dos caminos."]); },
+  function(){ var o = pick([{ a:2, b:3, c:1, n:1, R:-1 }, { a:2, b:-3, c:1, n:-5, R:5 }, { a:3, b:2, c:2, n:-4, R:8 }, { a:3, b:5, c:-1, n:8, R:8 }]);
+    var fs = o.a + "x² " + (o.b < 0 ? "− " + Math.abs(o.b) : "+ " + o.b) + "x"; var ds = "x " + (o.c < 0 ? "− " + Math.abs(o.c) : "+ " + o.c);
+    var pos = o.R > 0 ? "por encima de la asíntota: f(x) − (mx + n) es positivo" : "por debajo de la asíntota: f(x) − (mx + n) es negativo";
+    var posAlt = o.R > 0 ? "por debajo de la asíntota: f(x) − (mx + n) es negativo" : "por encima de la asíntota: f(x) − (mx + n) es positivo";
+    return exChoice("Oblicua: posición de la curva", "Para f(x) = (" + fs + ")/(" + ds + "), la asíntota en +∞ es y = " + o.a + "x " + (o.n < 0 ? "− " + Math.abs(o.n) : "+ " + o.n) + " y la diferencia f(x) − (mx + n) es " + o.R + "/(" + ds + "). Cuando x tiende a +∞, la curva viene…", pos, posAlt, "exactamente sobre la asíntota en todo el infinito", ["El signo de la diferencia lo manda el resto " + o.R + ", porque el denominador " + ds + " es positivo para x grande: la diferencia tiene el signo de " + o.R + ".", "Diferencia positiva, curva por encima de la recta; diferencia negativa, por debajo. La posición se lee de la misma expresión que verifica que la distancia tiende a 0."]); },
+  function(){ var o = pick([{ a:2, b:-3, c:1, n:-5, R:5 }, { a:3, b:2, c:2, n:-4, R:8 }]);
+    var fs = o.a + "x² " + (o.b < 0 ? "− " + Math.abs(o.b) : "+ " + o.b) + "x"; var ds = "x " + (o.c < 0 ? "− " + Math.abs(o.c) : "+ " + o.c);
+    var e = exSteps("Asíntota oblicua paso a paso", "Halla la asíntota oblicua de f(x) = (" + fs + ")/(" + ds + ") en +∞ en etapas: pendiente, ordenada y verificación.",
+    [ exNum("Etapa 1 · La pendiente", "¿Cuánto vale m = límite de f(x)/x cuando x tiende a +∞?", o.a, ["En el infinito manda el cociente de los términos de mayor grado: (" + o.a + "x²)/(x · x) = " + o.a + "."]),
+      exNum("Etapa 2 · La ordenada", "Con esa m, ¿cuánto vale n = límite de (f(x) − " + o.a + "x) cuando x tiende a +∞?", o.n, ["Poniendo todo sobre el denominador común: f(x) − " + o.a + "x = (" + fmtN(o.n) + "x)/(" + ds + "), porque los términos en x² se cancelan y el coeficiente de x que queda es " + o.b + " − " + o.a + " · " + o.c + " = " + fmtN(o.n) + ". Su límite es el cociente de los coeficientes de x: " + fmtN(o.n) + "/" + "1 = " + fmtN(o.n) + "."]),
+      exChoice("Etapa 3 · La verificación", "La diferencia f(x) − (mx + n) resulta " + o.R + "/(" + ds + "). ¿Qué se concluye?", "tiende a 0: la recta y = " + o.a + "x " + (o.n < 0 ? "− " + Math.abs(o.n) : "+ " + o.n) + " es la asíntota oblicua", "tiende a " + o.R + ": no hay asíntota", "no tiende a 0: hay rama parabólica", ["El denominador crece sin tope y el numerador es constante: la diferencia tiende a 0, que es exactamente la definición de asíntota."]) ],
+    ["m = límite de f(x)/x = " + o.a + ": finito y distinto de 0, primer chequeo aprobado.",
+     "n = límite de (f(x) − " + o.a + "x) = " + fmtN(o.n) + ", calculado en el mismo infinito y con la m ya hallada: segundo chequeo aprobado.",
+     "Verificación por la definición: f(x) − (" + o.a + "x " + (o.n < 0 ? "− " + Math.abs(o.n) : "+ " + o.n) + ") = " + o.R + "/(" + ds + ") → 0. Por división polinómica sale lo mismo: el cociente de la división es " + o.a + "x " + (o.n < 0 ? "− " + Math.abs(o.n) : "+ " + o.n) + " y el resto es " + o.R + ".",
+     "Asíntota oblicua en +∞: y = " + o.a + "x " + (o.n < 0 ? "− " + Math.abs(o.n) : "+ " + o.n) + "."]);
+    e.ansText = "y = " + o.a + "x " + (o.n < 0 ? "− " + Math.abs(o.n) : "+ " + o.n); return e; },
+  function(){ return exVF("Verdadero o falso", "Toda función racional cuyo numerador tiene grado mayor que el denominador tiene una asíntota oblicua", false, ["Solo cuando la diferencia de grados es exactamente 1. Si la diferencia es 2 o más, m = límite de f(x)/x no es finito: no hay recta asíntota y la función tiene una rama parabólica.", "Y aun con diferencia 1 hay que verificar que n exista y sea finito: la oblicua exige los dos límites, no uno."]); },
+  function(){ return exChoice("Cuando la m no alcanza", "Para f(x) = x + √x, con x > 0, la pendiente candidata da m = límite de f(x)/x = 1. Sin embargo, f no tiene asíntota oblicua en +∞ porque…", "n = límite de (f(x) − x) = límite de √x es infinito: la distancia a cualquier recta de pendiente 1 crece sin tope", "la función no es racional y las oblicuas son solo para racionales", "m debió calcularse en −∞ y no en +∞", ["La oblicua exige los dos límites finitos: m = 1 pasa, pero n no existe como número finito y la definición, que la distancia tienda a 0, no se cumple para ninguna recta.", "El método de los límites vale para cualquier función, no solo racionales: lo que falla acá no es el tipo de función, es el segundo límite. Declarar la recta y = x + n sin n es el error típico del tema."]); },
+  function(){ return exOpen("Respuesta abierta", "Escribe un desarrollo que explique por qué para hallar una asíntota oblicua no alcanza con calcular m = límite de f(x)/x: hay que calcular también n y verificar la definición. Ilustra con un ejemplo donde m existe pero no hay asíntota.",
+    ["La definición manda: y = mx + n es asíntota en +∞ si la distancia vertical f(x) − (mx + n) tiende a 0. La pendiente m sola solo dice que la curva crece como una recta de esa inclinación; no dice a qué altura va esa recta ni si la distancia se achica.",
+     "El procedimiento completo es: m = límite de f(x)/x; con esa m, n = límite de (f(x) − mx), en el mismo infinito; y hay recta solo si los dos límites existen y son finitos, con m ≠ 0 (si m = 0, la recta sería horizontal).",
+     "Contraejemplo: f(x) = x + √x tiene m = límite de (1 + 1/√x) = 1, pero n = límite de √x = +∞: la distancia entre la curva y cualquier recta de pendiente 1 crece sin tope, y no hay asíntota oblicua.",
+     "Conclusión: m sin n es medio chequeo. La verificación final es siempre la de la definición: f(x) − (mx + n) tiene que tender a 0."]); }
 ];
 LESSON_EXERCISES["cbc-an2-integrales"] = [
   function(){ return exNum("Barrow", "La integral definida de 2x entre 0 y 3, con primitiva x², vale F(3) − F(0). ¿Cuánto da?", 9, ["F(3) = 9 y F(0) = 0: la resta da 9.", "Es el área bajo la recta 2x entre 0 y 3: un triángulo de base 3 y altura 6."]); },
@@ -7678,7 +8079,29 @@ LESSON_EXERCISES["cbc-an2-integrales"] = [
     ["Barrow dice que la integral entre a y b es F(b) − F(a), donde F es una primitiva cualquiera de f.",
      "Si se usa otra primitiva, es de la forma F(x) + C, porque todas las primitivas de una función difieren en una constante.",
      "Al restar: (F(b) + C) − (F(a) + C) = F(b) − F(a): la constante aparece una vez sumando y una restando, y se cancela exactamente.",
-     "Por eso la integral definida es un número único aunque la primitiva no lo sea, y por eso en las definidas se trabaja con la primitiva más simple, la de C = 0."]); }
+     "Por eso la integral definida es un número único aunque la primitiva no lo sea, y por eso en las definidas se trabaja con la primitiva más simple, la de C = 0."]); },
+  function(){ var p = pick([2, 3]); return exFrac("Impropia p: el valor", "La integral impropia de 1/x^" + p + " entre 1 e infinito converge. ¿Cuánto vale? Escríbelo como fracción simplificada.", 1, p - 1, ["Por la definición como límite: la integral entre 1 y t es 1 − 1/t^" + (p - 1) + " (sale de la primitiva x^(1 − " + p + ")/(1 − " + p + ")).", "Cuando t tiende a infinito, 1/t^" + (p - 1) + " tiende a 0 y el límite es 1/(p − 1) con p = " + p + ": vale " + fracStr(1, p - 1) + ". Es la fórmula general de las integrales p: para p > 1, la integral entre 1 e infinito vale 1/(p − 1)."]); },
+  function(){ var o = pick([{ p:"1/2", r:"diverge", sol:"p = 1/2 < 1: t^(1 − p) crece sin tope y la integral diverge." }, { p:"1", r:"diverge", sol:"p = 1: la integral entre 1 y t es ln t, que tiende a infinito. Diverge." }, { p:"2", r:"converge", sol:"p = 2 > 1: converge, y vale 1/(2 − 1) = 1." }, { p:"3", r:"converge", sol:"p = 3 > 1: converge, y vale 1/(3 − 1) = 1/2." }]); return exChoice("Impropia p: ¿converge?", "La integral impropia de 1/x^" + o.p + " entre 1 e infinito…", o.r, o.r === "converge" ? "diverge" : "converge", "converge a 0", [o.sol, "La regla de las integrales p: entre 1 e infinito, converge si y solo si p > 1. Es el mismo umbral que el de las p-series, porque el criterio integral las ata."]); },
+  function(){ var a = pick([2, 4]); return exNum("Impropia desde otro extremo", "La integral impropia de 1/x² entre " + a + " e infinito vale…", 1 / a, ["Por la definición: la integral entre " + a + " y t es 1/" + a + " − 1/t, con la primitiva −1/x.", "Cuando t tiende a infinito, 1/t muere y el límite es 1/" + a + " = " + (1 / a) + ". La integral converge: cambiar el extremo finito cambia el valor, no la convergencia."]); },
+  function(){ var a = pick([2, 3]); return exNum("Segunda especie: explota pero converge", "La integral impropia de " + a + "/√x entre 0 y 1, donde el integrando se dispara en 0, vale…", 2 * a, ["Es de segunda especie: por definición es el límite cuando ε tiende a 0+ de la integral entre ε y 1. La primitiva de " + a + "/√x es " + (2 * a) + "√x.", "La integral entre ε y 1 vale " + (2 * a) + " − " + (2 * a) + "√ε, y cuando ε tiende a 0 eso tiende a " + (2 * a) + ". La función explota en 0, pero lo bastante despacio para que el área sea finita: converge a " + (2 * a) + "."]); },
+  function(){ var k = pick([1, 2]); return exNum("Impropia exponencial", "La integral impropia de e elevado a " + (k === 1 ? "−x" : "−" + k + "x") + " entre 0 e infinito vale…", 1 / k, ["Por la definición: la integral entre 0 y t es (1 − e elevado a " + (k === 1 ? "−t" : "−" + k + "t") + ")/" + k + ", con la primitiva −e^(−" + k + "x)/" + k + ". El término exponencial tiende a 0 cuando t crece.", "El límite es 1/" + k + " = " + (1 / k) + ": la exponencial decreciente se achica tan rápido que el área infinita en extensión es finita."]); },
+  function(){ var e = exSteps("Impropia paso a paso", "Calcula la integral impropia de 1/x² entre 1 e infinito en etapas, siguiendo la definición como límite: nada de evaluar infinito en la primitiva.",
+    [ exChoice("Etapa 1 · La primitiva", "¿Cuál de estas es una primitiva de 1/x²?", "−1/x", "ln(x²)", "−2/x³", ["Se comprueba derivando: la derivada de −1/x es 1/x². En cambio −2/x³ es la derivada de 1/x², no su primitiva."]),
+      exNum("Etapa 2 · El límite", "Con esa primitiva, la integral entre 1 y t vale 1 − 1/t. ¿A qué número tiende cuando t tiende a infinito?", 1, ["1/t muere cuando t crece: el límite es 1."]),
+      exChoice("Etapa 3 · La conclusión", "Como el límite de la definición existe y es finito, la integral impropia…", "converge y vale 1", "diverge, porque el intervalo es infinito", "vale infinito", ["Intervalo infinito no significa valor infinito: converge exactamente cuando el límite de la definición es un número finito."]) ],
+    ["La definición: la integral entre 1 e infinito es el límite cuando t tiende a infinito de la integral común entre 1 y t. Primero se integra en un intervalo finito, con Barrow.",
+     "Con la primitiva −1/x, la integral entre 1 y t es (−1/t) − (−1) = 1 − 1/t.",
+     "Recién ahora el límite: cuando t tiende a infinito, 1 − 1/t tiende a 1.",
+     "Conclusión en el idioma del tema: la integral converge y vale 1. Es la misma integral que decide, por el criterio integral, que la serie Σ1/n² converge."]);
+    e.ansText = "converge a 1"; return e; },
+  function(){ return exVF("Verdadero o falso", "La integral impropia de 1/x entre 1 e infinito converge, porque el integrando 1/x tiende a 0 cuando x crece", false, ["Que el integrando tienda a 0 es necesario pero no suficiente: 1/x tiende a 0 demasiado lento. La integral entre 1 y t es ln t, que crece sin tope.", "Es la misma lección que en series con la condición del término general: tender a 0 no garantiza convergencia, ni en sumas ni en integrales."]); },
+  function(){ return exChoice("El problema está en el interior", "La integral de 1/x² entre −1 y 1 parece salir por Barrow, pero el integrando se dispara en x = 0, que está adentro del intervalo. La conclusión correcta es…", "hay que partirla en 0, y como cada mitad diverge, la integral diverge", "vale lo que da Barrow entre −1 y 1, porque los extremos son finitos", "converge, porque la función es par y las dos mitades se compensan", ["Con un punto problemático interior, la definición obliga a partir la integral en ese punto y exigir que cada impropia converja por su cuenta.", "Cada mitad, comparada con la integral de 1/x² entre 0 y 1, diverge: partida, la impropia diverge. El Barrow ciego entre −1 y 1 esconde el problema dentro de la cuenta y da un número sin sentido. Acá no hay compensación posible: los dos lados son positivos y cada uno ya es infinito."]); },
+  function(){ return exChoice("Segunda especie que diverge", "La integral impropia de 1/x entre 0 y 1, donde el integrando se dispara en 0, …", "diverge: por la definición vale el límite de −ln ε cuando ε tiende a 0+, que es infinito", "converge y vale 0, porque ln 1 es 0", "converge y vale 1", ["Por la definición de segunda especie: la integral entre ε y 1 es −ln ε, y cuando ε se acerca a 0 eso crece sin tope.", "El contraste con 1/√x, que sí converge a 2, es la velocidad de la explosión: 1/x explota demasiado rápido cerca de 0. Evaluar ln 0 como si fuera un número sería aplicar Barrow donde la definición pide un límite."]); },
+  function(){ return exOpen("Respuesta abierta", "Escribe un desarrollo que explique por qué la integral de 1/x² entre 1 e infinito no se puede calcular evaluando la primitiva en infinito, y cómo la calcula en cambio la definición de integral impropia, paso a paso.",
+    ["Infinito no es un número: no se puede reemplazar t por infinito en la primitiva −1/x ni operar con ese símbolo como si fuera un extremo común. Barrow vale entre extremos finitos.",
+     "La definición reemplaza el extremo infinito por un extremo finito variable: la integral entre 1 e infinito es el límite cuando t tiende a infinito de la integral común entre 1 y t.",
+     "Esa integral común sí sale por Barrow: con la primitiva −1/x vale (−1/t) − (−1/1) = 1 − 1/t.",
+     "Recién al final se toma el límite: 1 − 1/t tiende a 1. Como el límite existe y es finito, la integral converge y vale 1. Si el límite fuera infinito o no existiera, la conclusión sería que diverge y no tiene valor."]); }
 ];
 LESSON_EXERCISES["cbc-an2-series"] = [
   function(){ var k = pick([2, 3, 4]); return exFrac("Geométrica de razón 1/k", "La serie geométrica con primer término 1/" + k + " y razón 1/" + k + " suma…", 1, k - 1, ["La suma de una geométrica convergente es primer término sobre (1 − razón): (1/" + k + ")/(1 − 1/" + k + ").", "Eso es (1/" + k + ")/(" + (k - 1) + "/" + k + ") = 1/" + (k - 1) + ". Converge porque |razón| = 1/" + k + " < 1."]); },
@@ -9318,22 +9741,54 @@ function renderExerciseLauncher(l, mount){
   $('[data-lex="start"]', mount).addEventListener("click", function(){ startLessonExercises(l, mount); });
 }
 /* Garantía al servir: ningún ejercicio degenerado llega a la ronda.
-   Un ejercicio es servible si su respuesta esperada es finita, su
-   denominador (si es fracción) es no nulo, sus opciones existen y, en
-   el tipo por etapas, cada etapa es a su vez servible. Los generadores
-   ya eligen parámetros válidos por construcción (denominadores no
-   nulos, radicandos que son cuadrados perfectos); esta validación es la
-   red final: lo que no pasa se regenera o se sustituye por otro
-   generador, nunca se sirve con la respuesta reescrita. */
+   Qué valida esta función (y qué no): valida estructura y tipos, y
+   además la consistencia que SÍ es computable desde los propios datos
+   del ejercicio: en fracciones, que la respuesta numérica sea
+   exactamente fn/fd y que la fracción vaya simplificada; en opción
+   múltiple, que ningún texto de opción se repita (la correcta es única
+   por texto y los distractores no coinciden con ella ni entre sí); en
+   numéricos, respuesta finita y de magnitud razonable; en abiertos,
+   que la solución modelo tenga texto; en los de pasos, al menos 2
+   etapas y cada etapa sana. Lo que NO puede validar: que el enunciado
+   diga lo que el generador quiso decir ni que la solución desarrollada
+   sea matemáticamente correcta en los tipos donde la respuesta no se
+   deriva de los parámetros. Esa parte la cubre, donde es derivable,
+   la batería de recomputación de runEngineTests; el resto del
+   contenido no se presenta como validado por esta función.
+   Los generadores ya eligen parámetros válidos por construcción
+   (denominadores no nulos, radicandos que son cuadrados perfectos);
+   esta validación es la red final: lo que no pasa se regenera o se
+   sustituye por otro generador, nunca se sirve con la respuesta
+   reescrita. */
 function lexExerciseSane(e){
   if(!e || typeof e !== "object" || typeof e.prompt !== "string" || !e.prompt) return false;
   if(!Array.isArray(e.sol) || !e.sol.length) return false;
-  if(e.kind === "num") return typeof e.ans === "number" && isFinite(e.ans);
-  if(e.kind === "frac") return typeof e.fn === "number" && isFinite(e.fn) && e.fd > 0 && isFinite(e.ans);
-  if(e.kind === "choice") return Array.isArray(e.options) && e.options.length >= 2 && e.correct >= 0 && e.correct < e.options.length;
+  if(e.kind === "num") return typeof e.ans === "number" && isFinite(e.ans) && Math.abs(e.ans) < 1e15;
+  if(e.kind === "frac"){
+    if(!(typeof e.fn === "number" && isFinite(e.fn) && e.fd > 0 && isFinite(e.ans))) return false;
+    /* La respuesta tiene que ser la fracción misma: ans = fn/fd. */
+    if(Math.abs(e.ans - e.fn / e.fd) > 1e-9 * Math.max(1, Math.abs(e.ans))) return false;
+    /* Con numerador y denominador enteros, la fracción servida va
+       simplificada (exFrac la normaliza; esto lo comprueba). */
+    if(Math.floor(e.fn) === e.fn && Math.floor(e.fd) === e.fd && gcd(e.fn, e.fd) !== 1) return false;
+    return true;
+  }
+  if(e.kind === "choice"){
+    if(!Array.isArray(e.options) || e.options.length < 2 || !(e.correct >= 0 && e.correct < e.options.length)) return false;
+    var vistos = {};
+    for(var oi = 0; oi < e.options.length; oi++){
+      var o = e.options[oi];
+      if(!(typeof o === "string" || typeof o === "number")) return false;
+      var tx = String(o).trim();
+      if(!tx) return false;
+      if(vistos[tx]) return false; /* texto repetido: la correcta no sería única ni los distractores distintos */
+      vistos[tx] = true;
+    }
+    return true;
+  }
   if(e.kind === "order") return Array.isArray(e.order) && e.order.length >= 2 && e.order.every(function(v){ return typeof v === "number" && isFinite(v); });
   if(e.kind === "steps") return Array.isArray(e.steps) && e.steps.length >= 2 && e.steps.every(function(st){ return !!st && st.kind !== "steps" && st.kind !== "open" && lexExerciseSane(st); });
-  if(e.kind === "open") return true;
+  if(e.kind === "open") return e.sol.some(function(s){ return typeof s === "string" && s.trim().length > 0; });
   return false;
 }
 function startLessonExercises(l, mount){
@@ -9397,14 +9852,25 @@ function startLessonExercises(l, mount){
       el.className = res[i] === true ? "ok" : res[i] === false ? "bad" : (i === idx ? "cur" : "");
     });
   }
-  function finish(ok, gr, dada){
+  function finish(ok, gr, dada, pasosDetalle){
     answered = true; res[idx] = ok;
     var ex = round[idx];
     var skillId = ex.skill || LESSON_SKILL[l.id];
-    if(skillId && skillById(skillId)){ var ss = skillStat(skillId); if(ok) ss.ok++; else ss.mal++; }
-    var ls = lessonExStat(l.id); if(ok) ls.ok++; else ls.mal++;
-    if(!ok){ if(!state.errorLog) state.errorLog = []; state.errorLog.push({ lesson:l.id, tipo:ex.type, fecha:todayISO() }); if(state.errorLog.length > 300) state.errorLog = state.errorLog.slice(-300); }
-    recordAttempt({ lesson:l.id, skill:skillId || null, tipo:ex.type, gen:ex._gen || null, dada:(dada === null || dada === undefined ? "" : dada), esperada:lexCorrectText(ex), ok:ok, modo:"ronda", dificultad:(ex.dificultad === null || ex.dificultad === undefined ? null : ex.dificultad) });
+    /* Los ejercicios abiertos (exOpen) quedan registrados en el
+       historial de intentos, con su valor pedagógico, pero su juicio
+       es una autoevaluación del alumno, no una corrección objetiva:
+       no suman a la precisión por habilidad (state.skills), ni a los
+       conteos por clase de los que sale el dominio (lessonEx, que lee
+       dominioDe), ni al registro de errores que alimenta los repasos.
+       Los agregados por habilidad (skillAgg) tampoco los cuentan:
+       recordAttempt los excluye vía isOpenAttempt. */
+    var esAbierto = ex.kind === "open";
+    if(!esAbierto){
+      if(skillId && skillById(skillId)){ var ss = skillStat(skillId); if(ok) ss.ok++; else ss.mal++; }
+      var ls = lessonExStat(l.id); if(ok) ls.ok++; else ls.mal++;
+      if(!ok){ if(!state.errorLog) state.errorLog = []; state.errorLog.push({ lesson:l.id, tipo:ex.type, fecha:todayISO() }); if(state.errorLog.length > 300) state.errorLog = state.errorLog.slice(-300); }
+    }
+    recordAttempt({ lesson:l.id, skill:skillId || null, tipo:ex.type, gen:ex._gen || null, dada:(dada === null || dada === undefined ? "" : dada), esperada:lexCorrectText(ex), ok:ok, modo:"ronda", dificultad:(ex.dificultad === null || ex.dificultad === undefined ? null : ex.dificultad), kind:ex.kind, pasos:pasosDetalle || null });
     saveState();
     var fb = $("#lex-fb", mount);
     if(ok && ex.kind === "open"){ fb.className = "feedback ok"; fb.textContent = "Bien: marcaste que tu desarrollo coincide con el modelo. Ese juicio tuyo es el que queda registrado."; }
@@ -9438,10 +9904,17 @@ function startLessonExercises(l, mount){
      Una etapa que sale mal no avanza: se reintenta hasta que salga, pero
      el ejercicio solo cuenta como acierto si TODAS las etapas salieron
      al primer intento. Al cerrar la última etapa se llama a finish una
-     sola vez, así el intento se registra igual que cualquier otro. */
+     sola vez, así el intento se registra igual que cualquier otro.
+     Además del acierto global, se guarda el detalle por etapa
+     (stepDetail): si salió al primer intento, cuántos reintentos
+     costó y su resultado final; viaja al registro del intento en el
+     campo pasos. La interfaz no afirma ningún "patrón de error por
+     pasos": ese detalle queda guardado para cuando se calcule algo
+     real desde él. */
   function wireSteps(ex){
     var stepIdx = 0, allFirst = true, busy = false;
     var given = [];
+    var stepRetries = 0, stepDetail = [];
     var box = $("#lex-steps", mount);
     if(!box) return;
     function stepFb(cls, msg){
@@ -9491,6 +9964,7 @@ function startLessonExercises(l, mount){
       if(!gr.counted){ stepFb("bad", gr.msg); return; }
       if(!gr.ok){
         allFirst = false;
+        stepRetries++;
         if(st.kind === "choice" && btn){ btn.classList.add("wrong"); btn.disabled = true; }
         stepFb("bad", gr.notSimple
           ? "El valor está bien, pero tiene que ir simplificado. Escríbelo en su forma más simple para seguir."
@@ -9498,6 +9972,8 @@ function startLessonExercises(l, mount){
         return;
       }
       busy = true;
+      stepDetail.push({ primero: stepRetries === 0, reintentos: stepRetries, ok: true });
+      stepRetries = 0;
       given[stepIdx] = st.kind === "choice" ? String(st.options[selIdx]) : String(raw).trim();
       if(st.kind === "choice"){
         $$(".lex-opt", box).forEach(function(b, i){
@@ -9512,7 +9988,7 @@ function startLessonExercises(l, mount){
         stepIdx++;
         if(stepIdx >= ex.steps.length){
           box.innerHTML = doneHtml() + '<p class="muted" style="margin-top:12px;">Desarrollo terminado: todas las etapas quedaron resueltas. Abajo está la solución completa para comparar.</p>';
-          finish(allFirst, null, given.join(" · ").slice(0, 480));
+          finish(allFirst, null, given.join(" · ").slice(0, 480), stepDetail);
         } else renderStep();
       }, 750);
     }
@@ -9820,6 +10296,10 @@ $("#exam-submit").addEventListener("click", function(){
 })();
 
 /* ================= Progreso ================= */
+/* El dominio sale de lessonEx, que cuenta SOLO ejercicios con
+   corrección objetiva: los de respuesta abierta no suman (finish los
+   excluye al registrar y los que el motor viejo ya había sumado se
+   descontaron una vez en normalizeState; ver meta.aggSinAbiertos). */
 function dominioDe(l){
   var st = state.lessonEx[l.id] || { ok:0, mal:0 };
   var tot = st.ok + st.mal;
@@ -9838,8 +10318,8 @@ function renderProgreso(){
     (state.attempts || []).forEach(function(a){ if(a.session) sesiones[a.session] = true; });
     var aggTotal = 0, aggSkills = 0;
     if(isPlainObj(state.skillAgg)){ Object.keys(state.skillAgg).forEach(function(k){ aggTotal += state.skillAgg[k].total || 0; aggSkills++; }); }
-    var aggTxt = aggTotal ? " Los agregados por habilidad conservan la historia completa: " + aggTotal + " intentos acumulados en " + aggSkills + (aggSkills === 1 ? " habilidad" : " habilidades") + ", sin recorte." : "";
-    ai.textContent = (nAtt ? "Registro de intentos (Fase A): " + nAtt + " intentos guardados en " + Object.keys(sesiones).length + " sesiones (máximo " + ATTEMPTS_CAP + " en el registro crudo; el recorte solo elimina los más antiguos). Cada intento guarda fecha, sesión, clase, habilidad, tipo, tu respuesta, la esperada, si acertaste y el modo (ronda, práctica o examen)."
+    var aggTxt = aggTotal ? " Los agregados por habilidad conservan la historia completa de los intentos con corrección objetiva: " + aggTotal + " intentos acumulados en " + aggSkills + (aggSkills === 1 ? " habilidad" : " habilidades") + ", sin recorte." : "";
+    ai.textContent = (nAtt ? "Registro de intentos (Fase A): " + nAtt + " intentos guardados en " + Object.keys(sesiones).length + " sesiones (máximo " + ATTEMPTS_CAP + " en el registro crudo; el recorte solo elimina los más antiguos). Cada intento guarda fecha, sesión, clase, habilidad, tipo, tu respuesta, la esperada, si acertaste y el modo (ronda, práctica o examen). Los ejercicios de respuesta abierta quedan en este registro, pero como los evalúas tú contra la solución modelo, no cuentan para el dominio ni para la precisión."
       : "Registro de intentos (Fase A): todavía no hay intentos guardados con el detalle nuevo. Desde ahora, cada respuesta en rondas, práctica y exámenes queda registrada con fecha, sesión, clase, habilidad, tipo, tu respuesta, la esperada, si acertaste y el modo.") + aggTxt;
   }
   var rpBtn = $("#backup-restore-pre");
@@ -9989,6 +10469,14 @@ $("#reset-all").addEventListener("click", function(){
     var rs = runPhaseATests();
     var pas = rs.filter(function(r){ return r.ok; }).length;
     if(testOut) testOut.innerHTML = rs.map(function(r){
+      return '<div style="padding:6px 0; border-bottom:1px solid var(--line);">' + (r.ok ? "✓" : "✗") + " " + esc(r.name) + (r.detail ? ' <span class="faint">· ' + esc(r.detail) + "</span>" : "") + "</div>";
+    }).join("") + '<p style="margin-top:8px;"><strong>' + pas + " de " + rs.length + " pruebas pasaron.</strong></p>";
+  });
+  var engBtn = $("#run-engine-tests"), engOut = $("#engine-test-results");
+  if(engBtn) engBtn.addEventListener("click", function(){
+    var rs = runEngineTests();
+    var pas = rs.filter(function(r){ return r.ok; }).length;
+    if(engOut) engOut.innerHTML = rs.map(function(r){
       return '<div style="padding:6px 0; border-bottom:1px solid var(--line);">' + (r.ok ? "✓" : "✗") + " " + esc(r.name) + (r.detail ? ' <span class="faint">· ' + esc(r.detail) + "</span>" : "") + "</div>";
     }).join("") + '<p style="margin-top:8px;"><strong>' + pas + " de " + rs.length + " pruebas pasaron.</strong></p>";
   });
