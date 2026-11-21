@@ -6358,20 +6358,47 @@ var EXAM_SKILLS = { 1:["signos"], 2:["frac-simpl","frac-suma","frac-mult"], 3:["
          de los exámenes de esa semana: como máximo 5 intentos de
          examen por semana cuentan para el dominio). Es lo que el
          registro permite distinguir sin inventar datos.
-       - La dificultad (criterio f): en las rondas de clase el campo
-         dificultad se registra null salvo que el ejercicio la
-         declare, y hoy ningún generador de ronda la declara; la
-         práctica de SKILLS registra el nivel (1 a 3) y los exámenes
-         registran 2. Consecuencia real con los datos actuales: el
-         criterio f solo puede satisfacerse con intentos de práctica
-         o de examen, que etiquetan las habilidades gruesas
-         (frac-simpl, frac-suma, frac-mult, signos). Las
-         subhabilidades nuevas, cuya evidencia hoy viene solo de
-         rondas de clase con dificultad null, pueden llegar a
-         practicada pero NO a dominada hasta que las rondas registren
-         dificultad (asignarla por generador es una decisión
-         pendiente de revisión, no se inventó un valor). El cálculo
-         no rellena ese hueco: dificultad null nunca cuenta como 2.
+       - La dificultad (criterio f): la práctica de SKILLS registra
+         el nivel (1 a 3) y los exámenes registran 2. En las rondas
+         de clase, finish registra la dificultad que el ejercicio
+         declara, y null si no declara ninguna. Los 11 bancos del
+         piloto declaran la suya desde la auditoría de dificultad de
+         esta fase: cada generador marca la dificultad real de la
+         instancia que produce (envolviendo la fábrica con exDif o
+         asignando e.dificultad), con esta escala: 1 = reconocimiento
+         o procedimiento directo de un paso; 2 = aplicación con
+         varios pasos o elaboración adicional; 3 = combinación de
+         procedimientos o razonamiento más complejo. La
+         clasificación no se hizo para satisfacer el criterio: sale
+         de leer cada generador, y la batería del grafo la verifica
+         contra esta tabla (gN = el generador N del banco, en orden):
+           s2-fraccion: g0:1 g1:1 g2:2 g3:2 g4:1, y g5 por
+             instancia: 1 si la fracción se escribe tal cual, 2 si
+             hay que simplificarla (gcd del par mayor que 1).
+           s2-division-resto: g0:2 g1:1 g2:1 g3:1 g4:2 g5:2.
+           s2-tipos: g0:1 g1:2 g2:2 g3:2 g4:1 g5:2 g6:1.
+           s2-primos-mcd-mcm: g0:2 g1:2 g2:2 g3:2 g4:1 g5:2.
+           s2-equivalentes: g0:2 g1:1 g2:2 g3:2 g4:2 g5:1.
+           s2-comparar: g0:1 g1:1 g2:2 g3:1 g4:2 g5:2 g6:2.
+           s2-suma: g0 por instancia (1 si el resultado ya es
+             irreducible, 2 si hay que simplificarlo), g1:2 g2:2
+             g3:2 g4:2 g5:2 g6:3 g7:2 g8:3 (el g8 es el abierto:
+             declara su dificultad, pero como todo abierto no
+             cuenta como evidencia de dominio).
+           s2-mult: g0 por instancia (la misma regla que s2-suma
+             g0, sobre el producto), g1:2 g2:1 g3:1 g4:2 g5:2.
+           s2-negativas: g0:3 g1:2 g2:3 g3:3 g4:1 g5:3. Predominan
+             los 3 porque esta clase ES la combinación de la regla
+             de signos con las operaciones de fracciones.
+           s2-cantidad: g0:2 g1:2 g2:2 g3:2 g4:1 g5:2.
+           s2-combinadas: g0:3 g1:3 g2:3 g3:1 g4:3 g5:1. Los 3 son
+             la combinación de operaciones que la clase enseña.
+         Con esto, las subhabilidades nuevas pueden satisfacer el
+         criterio f con la evidencia de sus propias rondas. Los
+         intentos históricos conservan su dificultad null y null
+         nunca cuenta como dificultad alta: no se reinterpretó
+         ningún intento viejo. Las clases fuera del piloto todavía
+         no declaran dificultad: sus rondas siguen en null.
        - La sesión más reciente (criterio d) se toma de la evidencia
          ya filtrada y con tope: si esa sesión tiene pocos intentos,
          su precisión manda igual.
@@ -6537,7 +6564,12 @@ if(window.TutorData){
    las habilidades nuevas con el sistema de intentos existente y el
    cálculo de dominio con conjuntos sintéticos de intentos (cumple
    todo → dominada; falta un criterio → practicada; solo clase vista
-   → vista). Las pruebas que tocan el estado global trabajan sobre
+   → vista). Y la dificultad declarada por los generadores del piloto:
+   válida en cada instancia, igual a la clasificación auditada (fija o
+   por instancia), conservada por recordAttempt en el registro, con la
+   1 fuera del criterio de dificultad alta y la 2 y la 3 dentro, y una
+   subhabilidad nueva que alcanza dominada con la dificultad real de
+   sus propios generadores. Las pruebas que tocan el estado global trabajan sobre
    uno de prueba y restauran el real al terminar. */
 function runSkillGraphTests(){
   var results = [];
@@ -6692,6 +6724,181 @@ function runSkillGraphTests(){
     if(con.length) return "con MCD/MCM y simplificar dominados, frac-suma sigue bloqueada por: " + JSON.stringify(con);
     var pend = habilidadesPendientes([], {});
     if(pend.length !== Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id].piloto; }).length) return "sin progreso deberían estar pendientes las 11 habilidades del piloto y hay " + pend.length;
+    return true;
+  });
+  /* ---- Dificultad de los generadores del piloto ----
+     Clasificación esperada por generador según la exigencia real de
+     cada ejercicio (la misma tabla documentada en el bloque del
+     grafo). null = la dificultad depende de la instancia generada y
+     se verifica contra su regla, leyendo los operandos del propio
+     enunciado servido. */
+  var DIF_ESPERADA = {
+    "s2-fraccion": [1, 1, 2, 2, 1, null],
+    "s2-division-resto": [2, 1, 1, 1, 2, 2],
+    "s2-tipos": [1, 2, 2, 2, 1, 2, 1],
+    "s2-primos-mcd-mcm": [2, 2, 2, 2, 1, 2],
+    "s2-equivalentes": [2, 1, 2, 2, 2, 1],
+    "s2-comparar": [1, 1, 2, 1, 2, 2, 2],
+    "s2-suma": [null, 2, 2, 2, 2, 2, 3, 2, 3],
+    "s2-mult": [null, 2, 1, 1, 2, 2],
+    "s2-negativas": [3, 2, 3, 3, 1, 3],
+    "s2-cantidad": [2, 2, 2, 2, 1, 2],
+    "s2-combinadas": [3, 3, 3, 1, 3, 1]
+  };
+  function sirve(gen){
+    for(var t = 0; t < 8; t++){ var cand = null; try{ cand = gen(); }catch(err){ cand = null; } if(lexExerciseSane(cand)) return cand; }
+    return null;
+  }
+  function difSegunEnunciado(lid, gi, e){
+    var m;
+    if(lid === "s2-fraccion" && gi === 5){ m = e.prompt.match(/en (\d+) porciones iguales y te comes (\d+)/); if(m) return gcd(+m[2], +m[1]) > 1 ? 2 : 1; }
+    if(lid === "s2-suma" && gi === 0){ m = e.prompt.match(/: (\d+)\/(\d+) \+ (\d+)\/\d+/); if(m) return gcd(+m[1] + +m[3], +m[2]) > 1 ? 2 : 1; }
+    if(lid === "s2-mult" && gi === 0){ m = e.prompt.match(/\((\d+)\/(\d+)\) · \((\d+)\/(\d+)\)/); if(m) return gcd(+m[1] * +m[3], +m[2] * +m[4]) > 1 ? 2 : 1; }
+    return null;
+  }
+  check("Dificultad: todos los generadores del piloto producen una dificultad válida (entera de 1 a 3) en cada instancia servida", function(){
+    var mal = [];
+    PILOT_LESSONS.forEach(function(lid){
+      (LESSON_EXERCISES[lid] || []).forEach(function(gen, gi){
+        for(var r = 0; r < 30 && !mal.length; r++){
+          var e = sirve(gen);
+          if(!e){ mal.push(lid + "#g" + gi + " no sirvió una instancia válida"); break; }
+          if(!(e.dificultad === 1 || e.dificultad === 2 || e.dificultad === 3)) mal.push(lid + "#g" + gi + " produjo dificultad " + JSON.stringify(e.dificultad) + " en: " + e.prompt);
+        }
+      });
+    });
+    return mal.length ? mal[0] : true;
+  });
+  check("Dificultad: la de cada generador coincide con la clasificación auditada (fija o según la instancia)", function(){
+    var mal = [];
+    PILOT_LESSONS.forEach(function(lid){
+      var esp = DIF_ESPERADA[lid];
+      if(!esp || esp.length !== (LESSON_EXERCISES[lid] || []).length){ mal.push("la tabla de clasificación no cubre el banco de " + lid); return; }
+      (LESSON_EXERCISES[lid] || []).forEach(function(gen, gi){
+        var vistos = {};
+        for(var r = 0; r < 60 && !mal.length; r++){
+          var e = sirve(gen);
+          if(!e){ mal.push(lid + "#g" + gi + " no sirvió una instancia válida"); break; }
+          vistos[e.dificultad] = true;
+          if(esp[gi] !== null && e.dificultad !== esp[gi]) mal.push(lid + "#g" + gi + " debería ser dificultad " + esp[gi] + " y produjo " + e.dificultad + " en: " + e.prompt);
+          if(esp[gi] === null){
+            var regla = difSegunEnunciado(lid, gi, e);
+            if(regla === null) mal.push(lid + "#g" + gi + ": no se pudo verificar la regla por instancia en: " + e.prompt);
+            else if(e.dificultad !== regla) mal.push(lid + "#g" + gi + " debería ser " + regla + " según la instancia y produjo " + e.dificultad + " en: " + e.prompt);
+          }
+        }
+        if(!mal.length && esp[gi] === null && !(vistos[1] && vistos[2])) mal.push(lid + "#g" + gi + " debería variar entre 1 y 2 según la instancia y solo produjo " + Object.keys(vistos).join(", "));
+      });
+    });
+    return mal.length ? mal[0] : true;
+  });
+  check("Dificultad: la 1 no cuenta para el criterio de dificultad alta; la 2 y la 3 sí, y el umbral sigue siendo 4", function(){
+    function conDif(d){ return conjuntoDominio("s2-suma", "frac-suma").map(function(a){ var c = Object.assign({}, a); c.dificultad = d; return c; }); }
+    var m1 = masteryDeHabilidad("frac-suma", conDif(1), {});
+    if(m1.criterios.dificultad) return "los intentos de dificultad 1 contaron como dificultad alta";
+    if(m1.k === "dominada") return "se marcó dominada con toda la evidencia en dificultad 1";
+    var m2 = masteryDeHabilidad("frac-suma", conDif(2), {});
+    if(!m2.criterios.dificultad || m2.k !== "dominada") return "con dificultad 2 en todo el conjunto debería dominar y quedó en " + m2.k;
+    var m3 = masteryDeHabilidad("frac-suma", conDif(3), {});
+    if(!m3.criterios.dificultad || m3.k !== "dominada") return "con dificultad 3 en todo el conjunto debería dominar y quedó en " + m3.k;
+    var pocos = conDif(1).map(function(a, i){ var c = Object.assign({}, a); if(i < 3) c.dificultad = 2; return c; });
+    if(masteryDeHabilidad("frac-suma", pocos, {}).criterios.dificultad) return "3 intentos de dificultad alta alcanzaron el umbral de 4: el criterio cambió";
+    var justos = conDif(1).map(function(a, i){ var c = Object.assign({}, a); if(i < 4) c.dificultad = 3; return c; });
+    if(!masteryDeHabilidad("frac-suma", justos, {}).criterios.dificultad) return "4 intentos de dificultad alta no alcanzaron el umbral";
+    return true;
+  });
+  check("Dificultad: recordAttempt la guarda en el registro tal como la declara el generador, y sin declararla queda null como en el historial", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      var e = sirve(LESSON_EXERCISES["s2-primos-mcd-mcm"][0]);
+      if(!e || e.dificultad !== 2) return "el generador de MCD no produjo la dificultad esperada (2)";
+      /* La misma expresión con la que finish pasa la dificultad de la
+         ronda a recordAttempt. */
+      var a = recordAttempt({ lesson:"s2-primos-mcd-mcm", skill:"frac-mcd-mcm", tipo:e.type, gen:"s2-primos-mcd-mcm#g0", dada:"6", esperada:"6", ok:true, modo:"ronda", dificultad:(e.dificultad === null || e.dificultad === undefined ? null : e.dificultad), kind:e.kind });
+      if(!a || a.dificultad !== 2) return "recordAttempt no conservó la dificultad del ejercicio";
+      if(state.attempts[state.attempts.length - 1].dificultad !== 2) return "la dificultad no quedó guardada en el registro de intentos";
+      var viejo = recordAttempt({ lesson:"s2-primos-mcd-mcm", skill:"frac-mcd-mcm", tipo:"El MCD", gen:"s2-primos-mcd-mcm#g0", dada:"6", esperada:"6", ok:true, modo:"ronda", kind:"num" });
+      if(!viejo || viejo.dificultad !== null) return "un intento sin dificultad declarada no quedó en null";
+      var bad = validateStateShape(state);
+      if(bad) return "el estado con dificultades registradas no valida: " + bad;
+      return true;
+    } finally { state = snapState; }
+  });
+  check("Dificultad: la ronda real la conserva hasta el registro (ronda montada y respondida de verdad en el DOM)", function(){
+    var snapState = state;
+    var mount = document.createElement("div");
+    try{
+      state = emptyStateV2();
+      document.body.appendChild(mount);
+      startLessonExercises(lessonById("s2-primos-mcd-mcm"), mount);
+      var opt = mount.querySelector(".lex-opt");
+      var inp = mount.querySelector("#lex-in");
+      if(opt){ opt.click(); }
+      else if(inp){
+        /* Respuesta parseable y equivocada: la ronda la corrige y el
+           intento se registra igual, con su dificultad. */
+        inp.value = (inp.getAttribute("placeholder") || "").indexOf("3/4") >= 0 ? "999/7" : "999999";
+        var chk = mount.querySelector("#lex-check");
+        if(!chk) return "la ronda no mostró el botón Revisar";
+        chk.click();
+      }
+      else return "la ronda no mostró ni opciones ni campo de respuesta";
+      if(state.attempts.length !== 1) return "la ronda debería haber registrado 1 intento y registró " + state.attempts.length;
+      var a = state.attempts[0];
+      if(a.lesson !== "s2-primos-mcd-mcm" || a.modo !== "ronda") return "el intento registrado no es de la ronda de la clase";
+      var gm = /^s2-primos-mcd-mcm#g(\d+)$/.exec(a.gen || "");
+      if(!gm) return "el intento no trae el generador esperado: " + a.gen;
+      var esperada = DIF_ESPERADA["s2-primos-mcd-mcm"][+gm[1]];
+      if(a.dificultad !== esperada) return "el intento del generador g" + gm[1] + " quedó con dificultad " + JSON.stringify(a.dificultad) + " y la clasificación dice " + esperada;
+      return true;
+    } finally {
+      if(mount.parentNode) mount.parentNode.removeChild(mount);
+      state = snapState;
+      /* La ronda guarda el estado al servir y al responder: se
+         repone el estado real en el almacenamiento. */
+      saveState();
+    }
+  });
+  check("Dominio con dificultad real: una subhabilidad nueva (frac-comparar) alcanza dominada con evidencia servida por sus propios generadores", function(){
+    /* La evidencia se construye con el tipo y la dificultad que los
+       generadores reales de la clase producen al servirlos: ningún
+       valor de dificultad se inventa en la prueba. */
+    var gensUsados = [2, 4, 5, 6], set = [], fallos = 0;
+    gensUsados.forEach(function(gi){
+      for(var r = 0; r < 3; r++){
+        var e = sirve(LESSON_EXERCISES["s2-comparar"][gi]);
+        if(!e){ fallos++; return; }
+        var dia2 = set.length >= 6;
+        set.push(att(1000 + set.length * 10 + gi, dia2 ? "2026-11-11" : "2026-11-10", dia2 ? "s-dia2" : "s-dia1", "s2-comparar", "frac-simpl", e.type, "s2-comparar#g" + gi, true, e.dificultad));
+      }
+    });
+    if(fallos) return "algún generador de s2-comparar no sirvió una instancia válida";
+    if(set.length !== 12) return "la evidencia debería tener 12 intentos y tiene " + set.length;
+    /* 11 de 12 bien: el último intento (segunda sesión) sale mal y la
+       sesión reciente queda 5/6 (83%), sobre el 80% exigido. */
+    set[set.length - 1].ok = false;
+    var m = masteryDeHabilidad("frac-comparar", set, {});
+    if(m.detalle.dificultadAlta < 4) return "la evidencia con dificultad real registrada sumó solo " + m.detalle.dificultadAlta + " intentos de dificultad alta";
+    if(m.k !== "dominada") return "frac-comparar quedó en " + m.k + " con criterios " + JSON.stringify(m.criterios) + " y detalle " + JSON.stringify(m.detalle);
+    /* La misma evidencia con la dificultad en null (como quedaba
+       registrada antes de esta corrección) NO domina: el dato
+       registrado es el que habilita el criterio, sin reinterpretar
+       ningún intento. */
+    var sinDif = set.map(function(a){ var c = Object.assign({}, a); c.dificultad = null; return c; });
+    var mSin = masteryDeHabilidad("frac-comparar", sinDif, {});
+    if(mSin.k === "dominada" || mSin.criterios.dificultad) return "sin dificultad registrada el criterio de dificultad debería fallar";
+    return true;
+  });
+  check("Históricos con dificultad null conviven con los nuevos: cuentan como siempre y nunca como dificultad alta", function(){
+    var set = conjuntoDominio("s2-equivalentes", "frac-simpl").map(function(a, i){
+      var c = Object.assign({}, a);
+      c.dificultad = i % 2 === 0 ? null : 2; /* mitad historial viejo (null), mitad rondas nuevas (2) */
+      return c;
+    });
+    var m = masteryDeHabilidad("frac-simpl", set, {});
+    if(m.detalle.dificultadAlta !== 6) return "deberían contar 6 intentos de dificultad alta y contaron " + m.detalle.dificultadAlta;
+    if(m.k !== "dominada") return "con la mitad de la evidencia en dificultad 2, frac-simpl debería dominar y quedó en " + m.k;
     return true;
   });
   return results;
@@ -7691,6 +7898,15 @@ function exSteps(type, prompt, steps, sol, skill){
 function exOpen(type, prompt, sol, skill){
   return { type:type, kind:"open", prompt:prompt, sol:sol, skill:skill || null };
 }
+/* Dificultad declarada de un ejercicio de ronda (1 a 3, la escala del
+   criterio de dominio del Skill Graph): exDif marca el ejercicio que
+   devuelve un generador y lo retorna, para envolver la llamada a la
+   fábrica en la misma expresión. finish la pasa a recordAttempt tal
+   cual; un ejercicio que no la declara registra dificultad null, como
+   siempre. Hoy solo la declaran los 11 bancos del piloto de
+   fracciones, con la clasificación auditada que documenta el bloque
+   de la Fase B (ningún otro banco cambia de comportamiento). */
+function exDif(e, d){ e.dificultad = d; return e; }
 
 var LESSON_EXERCISES = {};
 LESSON_EXERCISES["s1-signos"] = [
@@ -7760,64 +7976,64 @@ LESSON_EXERCISES["s1-mult"] = [
 ];
 
 LESSON_EXERCISES["s2-fraccion"] = [
-  function(){ var d = pick([4, 5, 6, 8]), n = ri(1, d - 1); return exChoice("Las partes", "En la fracción " + n + "/" + d + ", ¿qué dice el número " + d + "?",
+  function(){ var d = pick([4, 5, 6, 8]), n = ri(1, d - 1); return exDif(exChoice("Las partes", "En la fracción " + n + "/" + d + ", ¿qué dice el número " + d + "?",
     "en cuántas partes iguales se divide", "cuántas partes se toman", "cuántas partes sobran",
-    ["El denominador manda el tamaño del pedazo: divide en " + d + " partes iguales.", "El numerador, el " + n + ", dice cuántas partes se toman."]); },
+    ["El denominador manda el tamaño del pedazo: divide en " + d + " partes iguales.", "El numerador, el " + n + ", dice cuántas partes se toman."]), 1); },
   function(){ var pares = [[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[1,8],[3,8]]; var p = pick(pares);
     var e = exNum("A decimal", "Pasa a decimal: " + p[0] + "/" + p[1] + " = ?", p[0] / p[1],
     ["La raya de la fracción es una división esperando hacerse.", p[0] + "/" + p[1] + " = " + p[0] + " ÷ " + p[1] + " = " + String(p[0] / p[1]).replace(".", ",")]);
-    e.ansText = String(p[0] / p[1]).replace(".", ","); return e; },
-  function(){ var d = pick([2, 3, 4]), extra = ri(1, d - 1), n = 2 * d + extra; return exChoice("En la recta", "¿Entre qué dos enteros está " + n + "/" + d + "?",
+    e.ansText = String(p[0] / p[1]).replace(".", ","); e.dificultad = 1; return e; },
+  function(){ var d = pick([2, 3, 4]), extra = ri(1, d - 1), n = 2 * d + extra; return exDif(exChoice("En la recta", "¿Entre qué dos enteros está " + n + "/" + d + "?",
     "entre 2 y 3", "entre 1 y 2", "entre 3 y 4",
-    [n + "/" + d + " = 2 + " + extra + "/" + d + ": ya pasó el 2, pero todavía no llega al 3."]); },
+    [n + "/" + d + " = 2 + " + extra + "/" + d + ": ya pasó el 2, pero todavía no llega al 3."]), 2); },
   function(){ var pares = [[3,4,20],[1,2,18],[2,3,12],[3,5,20],[1,4,16],[5,6,24]]; var p = pick(pares); var ans = p[2] * p[0] / p[1];
-    return exNum("Problema real", "¿Cuánto es " + p[0] + "/" + p[1] + " de " + p[2] + "?", ans,
-    fracOfSteps(p[0], p[1], p[2])); },
-  function(){ var d = pick([3, 4, 5]), n = d + ri(1, 3); return exVF("Verdadero o falso", n + "/" + d + " es menor que 1", false,
-    ["Si el numerador es mayor que el denominador, la fracción vale más que 1.", n + "/" + d + " = 1 + " + (n - d) + "/" + d]); },
-  function(){ var p = pick([[3,8],[1,6],[3,6],[2,8],[5,8],[1,4]]); return exFrac("Escribir la fracción", "Divides una pizza en " + p[1] + " porciones iguales y te comes " + p[0] + ". ¿Qué fracción de la pizza comiste? (escríbela simplificada)", p[0], p[1],
-    ["Se divide en " + p[1] + " partes iguales y se toman " + p[0] + ".", "Comiste " + fracStr(p[0], p[1]) + " de la pizza."]); }
+    return exDif(exNum("Problema real", "¿Cuánto es " + p[0] + "/" + p[1] + " de " + p[2] + "?", ans,
+    fracOfSteps(p[0], p[1], p[2])), 2); },
+  function(){ var d = pick([3, 4, 5]), n = d + ri(1, 3); return exDif(exVF("Verdadero o falso", n + "/" + d + " es menor que 1", false,
+    ["Si el numerador es mayor que el denominador, la fracción vale más que 1.", n + "/" + d + " = 1 + " + (n - d) + "/" + d]), 1); },
+  function(){ var p = pick([[3,8],[1,6],[3,6],[2,8],[5,8],[1,4]]); return exDif(exFrac("Escribir la fracción", "Divides una pizza en " + p[1] + " porciones iguales y te comes " + p[0] + ". ¿Qué fracción de la pizza comiste? (escríbela simplificada)", p[0], p[1],
+    ["Se divide en " + p[1] + " partes iguales y se toman " + p[0] + ".", "Comiste " + fracStr(p[0], p[1]) + " de la pizza."]), gcd(p[0], p[1]) > 1 ? 2 : 1); }
 ];
 LESSON_EXERCISES["s2-equivalentes"] = [
   function(){ var pares = [[2,3],[3,4],[2,5],[3,5],[4,5],[5,6],[2,7],[3,7],[5,7],[4,9]]; var p = pick(pares); var f = ri(2, 6);
-    return exFrac("Simplificar", "Simplifica al máximo: " + (p[0] * f) + "/" + (p[1] * f), p[0], p[1],
-    ["El divisor común más grande de " + (p[0] * f) + " y " + (p[1] * f) + " es " + f + ": divido los dos por " + f + ".", "Arriba: " + (p[0] * f) + " ÷ " + f + " = " + p[0], "Abajo: " + (p[1] * f) + " ÷ " + f + " = " + p[1], (p[0] * f) + "/" + (p[1] * f) + " = " + fracStr(p[0], p[1])]); },
+    return exDif(exFrac("Simplificar", "Simplifica al máximo: " + (p[0] * f) + "/" + (p[1] * f), p[0], p[1],
+    ["El divisor común más grande de " + (p[0] * f) + " y " + (p[1] * f) + " es " + f + ": divido los dos por " + f + ".", "Arriba: " + (p[0] * f) + " ÷ " + f + " = " + p[0], "Abajo: " + (p[1] * f) + " ÷ " + f + " = " + p[1], (p[0] * f) + "/" + (p[1] * f) + " = " + fracStr(p[0], p[1])]), 2); },
   function(){ var pares = [[1,2],[2,3],[3,4],[1,3],[2,5],[3,5]]; var p = pick(pares); var k = ri(2, 5);
-    return exChoice("Equivalentes", "¿Cuál fracción es equivalente a " + p[0] + "/" + p[1] + "?",
+    return exDif(exChoice("Equivalentes", "¿Cuál fracción es equivalente a " + p[0] + "/" + p[1] + "?",
       (p[0] * k) + "/" + (p[1] * k), (p[0] * k) + "/" + (p[1] * (k + 1)), (p[0] + 1) + "/" + (p[1] + 1),
-      ["Equivalente se fabrica multiplicando arriba y abajo por el mismo número, aquí el " + k + ".", p[0] + "/" + p[1] + " = " + (p[0] * k) + "/" + (p[1] * k)]); },
+      ["Equivalente se fabrica multiplicando arriba y abajo por el mismo número, aquí el " + k + ".", p[0] + "/" + p[1] + " = " + (p[0] * k) + "/" + (p[1] * k)]), 1); },
   function(){ var pares = [[1,2],[2,3],[3,4],[1,5],[3,5],[2,7]]; var p = pick(pares); var k = pick([2, 3, 4, 6]);
-    return exNum("El número que falta", "Completa la equivalencia: " + p[0] + "/" + p[1] + " = ___/" + (p[1] * k), p[0] * k,
-    ["El denominador se multiplicó por " + k + ", así que el numerador se multiplica por lo mismo.", p[0] + " · " + k + " = " + (p[0] * k), p[0] + "/" + p[1] + " = " + (p[0] * k) + "/" + (p[1] * k)]); },
+    return exDif(exNum("El número que falta", "Completa la equivalencia: " + p[0] + "/" + p[1] + " = ___/" + (p[1] * k), p[0] * k,
+    ["El denominador se multiplicó por " + k + ", así que el numerador se multiplica por lo mismo.", p[0] + " · " + k + " = " + (p[0] * k), p[0] + "/" + p[1] + " = " + (p[0] * k) + "/" + (p[1] * k)]), 2); },
   function(){ var pares = [[2,4,1,2],[3,6,1,2],[2,6,1,3],[4,6,2,3],[5,10,1,2],[6,8,3,4]]; var p = pick(pares);
-    if(Math.random() < 0.5) return exVF("Verdadero o falso", p[0] + "/" + p[1] + " es equivalente a " + (p[2] + 1) + "/" + p[3], false,
-      ["Multiplico en cruz: " + p[0] + " · " + p[3] + " = " + (p[0] * p[3]) + " y " + p[1] + " · " + (p[2] + 1) + " = " + (p[1] * (p[2] + 1)) + ".", "Los dos productos no dan igual: no son equivalentes."]);
-    return exVF("Verdadero o falso", p[0] + "/" + p[1] + " es equivalente a " + p[2] + "/" + p[3], true,
-      ["Multiplico en cruz: " + p[0] + " · " + p[3] + " = " + (p[0] * p[3]) + " y " + p[1] + " · " + p[2] + " = " + (p[1] * p[2]) + ".", "Los dos productos dan igual: sí son equivalentes."]); },
-  function(){ return exFrac("Problema real", "Una pizza se corta en 4 porciones y comes 2. ¿Qué fracción comiste, escrita en su forma más simple?", 1, 2,
-    ["Comiste 2 de 4 partes: eso es 2/4.", "Simplifico dividiendo arriba y abajo por 2: 2/4 = 1/2"]); },
-  function(){ var pares = [[1,2],[2,3],[3,4]]; var p = pick(pares); return exChoice("La que no es", "¿Cuál de estas NO es equivalente a " + p[0] + "/" + p[1] + "?",
+    if(Math.random() < 0.5) return exDif(exVF("Verdadero o falso", p[0] + "/" + p[1] + " es equivalente a " + (p[2] + 1) + "/" + p[3], false,
+      ["Multiplico en cruz: " + p[0] + " · " + p[3] + " = " + (p[0] * p[3]) + " y " + p[1] + " · " + (p[2] + 1) + " = " + (p[1] * (p[2] + 1)) + ".", "Los dos productos no dan igual: no son equivalentes."]), 2);
+    return exDif(exVF("Verdadero o falso", p[0] + "/" + p[1] + " es equivalente a " + p[2] + "/" + p[3], true,
+      ["Multiplico en cruz: " + p[0] + " · " + p[3] + " = " + (p[0] * p[3]) + " y " + p[1] + " · " + p[2] + " = " + (p[1] * p[2]) + ".", "Los dos productos dan igual: sí son equivalentes."]), 2); },
+  function(){ return exDif(exFrac("Problema real", "Una pizza se corta en 4 porciones y comes 2. ¿Qué fracción comiste, escrita en su forma más simple?", 1, 2,
+    ["Comiste 2 de 4 partes: eso es 2/4.", "Simplifico dividiendo arriba y abajo por 2: 2/4 = 1/2"]), 2); },
+  function(){ var pares = [[1,2],[2,3],[3,4]]; var p = pick(pares); return exDif(exChoice("La que no es", "¿Cuál de estas NO es equivalente a " + p[0] + "/" + p[1] + "?",
       (p[0] + 1) + "/" + (p[1] + 1), (p[0] * 2) + "/" + (p[1] * 2), (p[0] * 3) + "/" + (p[1] * 3),
-      ["Sumar lo mismo arriba y abajo cambia el valor: eso no fabrica equivalentes.", "En cambio, multiplicar por 2/2 o por 3/3 deja el valor intacto."]); }
+      ["Sumar lo mismo arriba y abajo cambia el valor: eso no fabrica equivalentes.", "En cambio, multiplicar por 2/2 o por 3/3 deja el valor intacto."]), 1); }
 ];
 LESSON_EXERCISES["s2-suma"] = [
-  function(){ var d = pick([5, 6, 7, 8, 9]), n1 = ri(1, d - 2), n2 = ri(1, d - 1 - n1); return exFrac("Mismo denominador", "Calcula y simplifica: " + n1 + "/" + d + " + " + n2 + "/" + d, n1 + n2, d,
-    ["Con el mismo denominador se suman solo los numeradores: el denominador describe el tamaño del pedazo.", n1 + "/" + d + " + " + n2 + "/" + d + " = " + fracStr(n1 + n2, d)]); },
+  function(){ var d = pick([5, 6, 7, 8, 9]), n1 = ri(1, d - 2), n2 = ri(1, d - 1 - n1); return exDif(exFrac("Mismo denominador", "Calcula y simplifica: " + n1 + "/" + d + " + " + n2 + "/" + d, n1 + n2, d,
+    ["Con el mismo denominador se suman solo los numeradores: el denominador describe el tamaño del pedazo.", n1 + "/" + d + " + " + n2 + "/" + d + " = " + fracStr(n1 + n2, d)]), gcd(n1 + n2, d) > 1 ? 2 : 1); },
   function(){ var p = pick([[1,2,1,3],[1,3,1,4],[2,3,1,6],[1,4,1,2],[1,2,1,6],[3,4,1,8]]); var m = (p[1] * p[3]) / gcd(p[1], p[3]); var N = p[0] * (m / p[1]) + p[2] * (m / p[3]);
-    return exFrac("Denominador común", "Calcula y simplifica: " + p[0] + "/" + p[1] + " + " + p[2] + "/" + p[3], N, m,
-    ["El denominador común es " + m + ".", "Convierto: " + p[0] + "/" + p[1] + " = " + (p[0] * (m / p[1])) + "/" + m + " y " + p[2] + "/" + p[3] + " = " + (p[2] * (m / p[3])) + "/" + m + ".", "Ahora sumo arriba: " + p[0] + "/" + p[1] + " + " + p[2] + "/" + p[3] + " = " + fracStr(N, m)]); },
+    return exDif(exFrac("Denominador común", "Calcula y simplifica: " + p[0] + "/" + p[1] + " + " + p[2] + "/" + p[3], N, m,
+    ["El denominador común es " + m + ".", "Convierto: " + p[0] + "/" + p[1] + " = " + (p[0] * (m / p[1])) + "/" + m + " y " + p[2] + "/" + p[3] + " = " + (p[2] * (m / p[3])) + "/" + m + ".", "Ahora sumo arriba: " + p[0] + "/" + p[1] + " + " + p[2] + "/" + p[3] + " = " + fracStr(N, m)]), 2); },
   function(){ var p = pick([[3,4,1,6],[5,6,1,3],[7,8,1,4],[2,3,1,6],[5,8,1,4]]); var m = (p[1] * p[3]) / gcd(p[1], p[3]); var N = p[0] * (m / p[1]) - p[2] * (m / p[3]);
-    return exFrac("Restar fracciones", "Calcula y simplifica: " + p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3], N, m,
-    ["Primero igualo los denominadores con el " + m + ": pedazos del mismo tamaño.", "Convierto la primera: " + p[0] + "/" + p[1] + " = " + (p[0] * (m / p[1])) + "/" + m, "Convierto la segunda: " + p[2] + "/" + p[3] + " = " + (p[2] * (m / p[3])) + "/" + m, "Ahora resto solo arriba: " + (p[0] * (m / p[1])) + " − " + (p[2] * (m / p[3])) + " = " + N, p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3] + " = " + fracStr(N, m)]); },
+    return exDif(exFrac("Restar fracciones", "Calcula y simplifica: " + p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3], N, m,
+    ["Primero igualo los denominadores con el " + m + ": pedazos del mismo tamaño.", "Convierto la primera: " + p[0] + "/" + p[1] + " = " + (p[0] * (m / p[1])) + "/" + m, "Convierto la segunda: " + p[2] + "/" + p[3] + " = " + (p[2] * (m / p[3])) + "/" + m, "Ahora resto solo arriba: " + (p[0] * (m / p[1])) + " − " + (p[2] * (m / p[3])) + " = " + N, p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3] + " = " + fracStr(N, m)]), 2); },
   function(){ var d = pick([6, 8, 9]), n1 = ri(1, 3), tot = n1 + ri(2, 3); if(tot >= d) tot = d - 1; var falta = tot - n1;
-    return exFrac("El número que falta", "¿Qué fracción falta?  " + n1 + "/" + d + " + ___ = " + tot + "/" + d + "  (escríbela simplificada)", falta, d,
-    ["Los denominadores ya son iguales: solo falta contar arriba.", tot + " − " + n1 + " = " + falta + " pedazos de " + d + ".", n1 + "/" + d + " + " + fracStr(falta, d) + " = " + fracStr(tot, d)]); },
-  function(){ return exFrac("Problema real", "Para una receta usas 1/2 taza de harina a la mañana y 1/4 de taza a la tarde. ¿Cuánta harina usaste en total? (en tazas, como fracción simplificada)", 3, 4,
-    ["Primero hablo el mismo idioma: convierto 1/2 a cuartos.", "1/2 = 2/4", "2/4 + 1/4 = 3/4"]); },
-  function(){ return exVF("Verdadero o falso", "1/2 + 1/3 = 2/5", false,
-    ["Ese 2/5 sale de sumar también los denominadores, y eso no se hace.", "Lo correcto: 1/2 + 1/3 = 3/6 + 2/6 = 5/6"]); },
-  function(){ return exChoice("Comparar sumas", "¿Cuál de estas sumas da el resultado mayor?", "1/2 + 1/3", "1/4 + 1/3", "1/6 + 1/6",
-    ["Pasadas a decimal: 1/2 + 1/3 ≈ 0,83 — 1/4 + 1/3 ≈ 0,58 — 1/6 + 1/6 ≈ 0,33.", "La mayor es 1/2 + 1/3 = 5/6."]); },
+    return exDif(exFrac("El número que falta", "¿Qué fracción falta?  " + n1 + "/" + d + " + ___ = " + tot + "/" + d + "  (escríbela simplificada)", falta, d,
+    ["Los denominadores ya son iguales: solo falta contar arriba.", tot + " − " + n1 + " = " + falta + " pedazos de " + d + ".", n1 + "/" + d + " + " + fracStr(falta, d) + " = " + fracStr(tot, d)]), 2); },
+  function(){ return exDif(exFrac("Problema real", "Para una receta usas 1/2 taza de harina a la mañana y 1/4 de taza a la tarde. ¿Cuánta harina usaste en total? (en tazas, como fracción simplificada)", 3, 4,
+    ["Primero hablo el mismo idioma: convierto 1/2 a cuartos.", "1/2 = 2/4", "2/4 + 1/4 = 3/4"]), 2); },
+  function(){ return exDif(exVF("Verdadero o falso", "1/2 + 1/3 = 2/5", false,
+    ["Ese 2/5 sale de sumar también los denominadores, y eso no se hace.", "Lo correcto: 1/2 + 1/3 = 3/6 + 2/6 = 5/6"]), 2); },
+  function(){ return exDif(exChoice("Comparar sumas", "¿Cuál de estas sumas da el resultado mayor?", "1/2 + 1/3", "1/4 + 1/3", "1/6 + 1/6",
+    ["Pasadas a decimal: 1/2 + 1/3 ≈ 0,83 — 1/4 + 1/3 ≈ 0,58 — 1/6 + 1/6 ≈ 0,33.", "La mayor es 1/2 + 1/3 = 5/6."]), 3); },
   function(){ var p = pick([[1,2,1,3],[2,3,1,4],[1,3,2,5],[3,4,1,6],[1,4,1,6],[2,5,1,3]]); var m = (p[1] * p[3]) / gcd(p[1], p[3]); var n1c = p[0] * (m / p[1]), n2c = p[2] * (m / p[3]); var N = n1c + n2c;
     var e = exSteps("Suma paso a paso", "Resuelve " + p[0] + "/" + p[1] + " + " + p[2] + "/" + p[3] + " en etapas: cada resultado intermedio se revisa antes de seguir.",
     [ exNum("Etapa 1 · El denominador común", "¿Cuál es el denominador común más chico de " + p[0] + "/" + p[1] + " y " + p[2] + "/" + p[3] + ", el MCM de " + p[1] + " y " + p[3] + "?", m,
@@ -7832,27 +8048,27 @@ LESSON_EXERCISES["s2-suma"] = [
      "Convierto: " + p[0] + "/" + p[1] + " = " + n1c + "/" + m + " y " + p[2] + "/" + p[3] + " = " + n2c + "/" + m + ".",
      "Sumo solo los numeradores: " + n1c + " + " + n2c + " = " + N + ".",
      p[0] + "/" + p[1] + " + " + p[2] + "/" + p[3] + " = " + fracStr(N, m)], "frac-suma");
-    e.ansText = fracStr(N, m); return e; },
-  function(){ return exOpen("Respuesta abierta", "Un compañero dice que 1/2 + 1/3 = 2/5 porque «se suma arriba y se suma abajo». Escribe un desarrollo que le explique por qué eso está mal y cuánto da en realidad la suma.",
+    e.ansText = fracStr(N, m); e.dificultad = 2; return e; },
+  function(){ return exDif(exOpen("Respuesta abierta", "Un compañero dice que 1/2 + 1/3 = 2/5 porque «se suma arriba y se suma abajo». Escribe un desarrollo que le explique por qué eso está mal y cuánto da en realidad la suma.",
     ["El denominador no cuenta cosas: dice en cuántas partes iguales está partido el entero, es decir, el tamaño de cada pedazo. Sumar los denominadores cambiaría el tamaño de los pedazos en mitad de la cuenta.",
      "Con pedazos de distinto tamaño no se suma contando: primero se pasa a un denominador común, el 6. Así, 1/2 = 3/6 y 1/3 = 2/6.",
      "Ya con pedazos iguales, se suman solo los numeradores: 3/6 + 2/6 = 5/6.",
-     "Comprobación sin hacer la cuenta: 1/2 + 1/3 tiene que dar más que 1/2, y 2/5 = 0,4 es menor que 1/2. Ese resultado se descarta solo."], "frac-suma"); }
+     "Comprobación sin hacer la cuenta: 1/2 + 1/3 tiene que dar más que 1/2, y 2/5 = 0,4 es menor que 1/2. Ese resultado se descarta solo."], "frac-suma"), 3); }
 ];
 LESSON_EXERCISES["s2-mult"] = [
-  function(){ var n1 = ri(1, 5), d1 = ri(2, 6), n2 = ri(1, 5), d2 = ri(2, 6); return exFrac("Multiplicar", "Calcula y simplifica: (" + n1 + "/" + d1 + ") · (" + n2 + "/" + d2 + ")", n1 * n2, d1 * d2,
-    ["Multiplicar es directo, sin denominador común, pero lo hago en dos cuentas chicas.", "Arriba por arriba: " + n1 + " · " + n2 + " = " + (n1 * n2), "Abajo por abajo: " + d1 + " · " + d2 + " = " + (d1 * d2), "Junto las dos cuentas: " + (n1 * n2) + "/" + (d1 * d2), "(" + n1 + "/" + d1 + ") · (" + n2 + "/" + d2 + ") = " + fracStr(n1 * n2, d1 * d2)]); },
-  function(){ var n1 = ri(1, 5), d1 = ri(2, 6), n2 = ri(1, 5), d2 = ri(2, 6); return exFrac("Dividir", "Calcula y simplifica: (" + n1 + "/" + d1 + ") ÷ (" + n2 + "/" + d2 + ")", n1 * d2, d1 * n2,
-    ["Dividir es multiplicar por la segunda fracción dada vuelta: solo la segunda.", "Doy vuelta la segunda: (" + n1 + "/" + d1 + ") · (" + d2 + "/" + n2 + ")", "Arriba por arriba: " + n1 + " · " + d2 + " = " + (n1 * d2), "Abajo por abajo: " + d1 + " · " + n2 + " = " + (d1 * n2), "(" + n1 + "/" + d1 + ") ÷ (" + n2 + "/" + d2 + ") = " + fracStr(n1 * d2, d1 * n2)]); },
-  function(){ var p = pick([[3,4],[2,3],[5,6],[3,5],[4,5]]); return exFrac("Fracción de fracción", "¿Cuánto es la mitad de " + p[0] + "/" + p[1] + "? (como fracción simplificada)", p[0], p[1] * 2,
-    ["La mitad de algo es multiplicar por 1/2, pero lo pienso en partes.", "Cada pedazo de 1/" + p[1] + " se parte en 2 pedazos iguales: el entero queda partido en " + p[1] + " · 2 = " + (p[1] * 2) + " pedazos.", "Sigo tomando los mismos " + p[0] + " pedazos, pero ahora cada uno vale 1/" + (p[1] * 2) + ".", p[0] + " pedazos de 1/" + (p[1] * 2) + " son " + p[0] + "/" + (p[1] * 2), "(1/2) · (" + p[0] + "/" + p[1] + ") = " + fracStr(p[0], p[1] * 2)]); },
-  function(){ return exVF("Verdadero o falso", "Para dividir fracciones se da vuelta la primera", false,
-    ["Se da vuelta la segunda, la que está después del ÷. La primera queda como está.", "(3/4) ÷ (1/2) = (3/4) · (2/1) = 3/2"]); },
+  function(){ var n1 = ri(1, 5), d1 = ri(2, 6), n2 = ri(1, 5), d2 = ri(2, 6); return exDif(exFrac("Multiplicar", "Calcula y simplifica: (" + n1 + "/" + d1 + ") · (" + n2 + "/" + d2 + ")", n1 * n2, d1 * d2,
+    ["Multiplicar es directo, sin denominador común, pero lo hago en dos cuentas chicas.", "Arriba por arriba: " + n1 + " · " + n2 + " = " + (n1 * n2), "Abajo por abajo: " + d1 + " · " + d2 + " = " + (d1 * d2), "Junto las dos cuentas: " + (n1 * n2) + "/" + (d1 * d2), "(" + n1 + "/" + d1 + ") · (" + n2 + "/" + d2 + ") = " + fracStr(n1 * n2, d1 * d2)]), gcd(n1 * n2, d1 * d2) > 1 ? 2 : 1); },
+  function(){ var n1 = ri(1, 5), d1 = ri(2, 6), n2 = ri(1, 5), d2 = ri(2, 6); return exDif(exFrac("Dividir", "Calcula y simplifica: (" + n1 + "/" + d1 + ") ÷ (" + n2 + "/" + d2 + ")", n1 * d2, d1 * n2,
+    ["Dividir es multiplicar por la segunda fracción dada vuelta: solo la segunda.", "Doy vuelta la segunda: (" + n1 + "/" + d1 + ") · (" + d2 + "/" + n2 + ")", "Arriba por arriba: " + n1 + " · " + d2 + " = " + (n1 * d2), "Abajo por abajo: " + d1 + " · " + n2 + " = " + (d1 * n2), "(" + n1 + "/" + d1 + ") ÷ (" + n2 + "/" + d2 + ") = " + fracStr(n1 * d2, d1 * n2)]), 2); },
+  function(){ var p = pick([[3,4],[2,3],[5,6],[3,5],[4,5]]); return exDif(exFrac("Fracción de fracción", "¿Cuánto es la mitad de " + p[0] + "/" + p[1] + "? (como fracción simplificada)", p[0], p[1] * 2,
+    ["La mitad de algo es multiplicar por 1/2, pero lo pienso en partes.", "Cada pedazo de 1/" + p[1] + " se parte en 2 pedazos iguales: el entero queda partido en " + p[1] + " · 2 = " + (p[1] * 2) + " pedazos.", "Sigo tomando los mismos " + p[0] + " pedazos, pero ahora cada uno vale 1/" + (p[1] * 2) + ".", p[0] + " pedazos de 1/" + (p[1] * 2) + " son " + p[0] + "/" + (p[1] * 2), "(1/2) · (" + p[0] + "/" + p[1] + ") = " + fracStr(p[0], p[1] * 2)]), 1); },
+  function(){ return exDif(exVF("Verdadero o falso", "Para dividir fracciones se da vuelta la primera", false,
+    ["Se da vuelta la segunda, la que está después del ÷. La primera queda como está.", "(3/4) ÷ (1/2) = (3/4) · (2/1) = 3/2"]), 1); },
   function(){ var f1 = pick([[2,3],[3,4],[1,2],[2,5]]), f2 = pick([[2,3],[3,4],[1,2],[4,5]]);
-    return exFrac("El número que falta", "¿Qué fracción falta?  (" + f1[0] + "/" + f1[1] + ") · ___ = " + fracStr(f1[0] * f2[0], f1[1] * f2[1]) + "  (escríbela simplificada)", f2[0], f2[1],
-    ["Piensa qué fracción, multiplicada por " + f1[0] + "/" + f1[1] + ", da " + fracStr(f1[0] * f2[0], f1[1] * f2[1]) + ".", "(" + f1[0] + "/" + f1[1] + ") · (" + f2[0] + "/" + f2[1] + ") = " + fracStr(f1[0] * f2[0], f1[1] * f2[1])]); },
-  function(){ var p = pick([[3,2,2,3],[5,4,4,5],[2,3,9,4],[4,7,7,8]]); var g = gcd(p[0] * p[2], p[1] * p[3]); return exFrac("Simplificar en cruz", "Calcula simplificando en cruz antes de multiplicar: (" + p[0] + "/" + p[1] + ") · (" + p[2] + "/" + p[3] + ")", p[0] * p[2], p[1] * p[3],
-    ["Primero multiplico sin simplificar, para ver los números que salen.", "Arriba por arriba: " + p[0] + " · " + p[2] + " = " + (p[0] * p[2]), "Abajo por abajo: " + p[1] + " · " + p[3] + " = " + (p[1] * p[3]), "Queda " + (p[0] * p[2]) + "/" + (p[1] * p[3]) + (g > 1 ? ", y divido arriba y abajo por " + g + "." : ", que ya no se puede simplificar."), "(" + p[0] + "/" + p[1] + ") · (" + p[2] + "/" + p[3] + ") = " + fracStr(p[0] * p[2], p[1] * p[3])]); }
+    return exDif(exFrac("El número que falta", "¿Qué fracción falta?  (" + f1[0] + "/" + f1[1] + ") · ___ = " + fracStr(f1[0] * f2[0], f1[1] * f2[1]) + "  (escríbela simplificada)", f2[0], f2[1],
+    ["Piensa qué fracción, multiplicada por " + f1[0] + "/" + f1[1] + ", da " + fracStr(f1[0] * f2[0], f1[1] * f2[1]) + ".", "(" + f1[0] + "/" + f1[1] + ") · (" + f2[0] + "/" + f2[1] + ") = " + fracStr(f1[0] * f2[0], f1[1] * f2[1])]), 2); },
+  function(){ var p = pick([[3,2,2,3],[5,4,4,5],[2,3,9,4],[4,7,7,8]]); var g = gcd(p[0] * p[2], p[1] * p[3]); return exDif(exFrac("Simplificar en cruz", "Calcula simplificando en cruz antes de multiplicar: (" + p[0] + "/" + p[1] + ") · (" + p[2] + "/" + p[3] + ")", p[0] * p[2], p[1] * p[3],
+    ["Primero multiplico sin simplificar, para ver los números que salen.", "Arriba por arriba: " + p[0] + " · " + p[2] + " = " + (p[0] * p[2]), "Abajo por abajo: " + p[1] + " · " + p[3] + " = " + (p[1] * p[3]), "Queda " + (p[0] * p[2]) + "/" + (p[1] * p[3]) + (g > 1 ? ", y divido arriba y abajo por " + g + "." : ", que ya no se puede simplificar."), "(" + p[0] + "/" + p[1] + ") · (" + p[2] + "/" + p[3] + ") = " + fracStr(p[0] * p[2], p[1] * p[3])]), 2); }
 ];
 LESSON_EXERCISES["s3-decimales"] = [
   function(){ var pares = [[3,4],[1,5],[2,5],[3,5],[4,5],[1,8],[3,8],[5,8],[7,10],[9,10]]; var p = pick(pares);
@@ -8108,69 +8324,69 @@ LESSON_EXERCISES["s1-contexto"] = [
 ];
 
 LESSON_EXERCISES["s2-tipos"] = [
-  function(){ var d = pick([3, 4, 5]), n = d + ri(1, 4); return exChoice("Las familias", "La fracción " + n + "/" + d + " es…", "impropia: vale más que 1", "propia: vale menos que 1", "no es una fracción válida",
-    ["El numerador " + n + " es mayor que el denominador " + d + ": tomas más partes de las que completan el entero.", n + "/" + d + " es impropia y vale más que 1."], "frac-simpl"); },
-  function(){ var e = ri(1, 3), d = pick([2, 3, 4, 5]), n = ri(1, d - 1); return exFrac("A impropia", "Escribe el número mixto " + e + " " + n + "/" + d + " como fracción impropia (simplificada)", e * d + n, d,
-    ["Cada entero vale " + d + "/" + d + ": los " + e + " enteros son " + (e * d) + "/" + d + ".", "Sumo la parte suelta: " + (e * d) + "/" + d + " + " + n + "/" + d + " = " + fracStr(e * d + n, d), "La cuenta corta: " + e + " · " + d + " + " + n + " = " + (e * d + n) + " arriba, y el " + d + " queda abajo."], "frac-simpl"); },
-  function(){ var d = pick([3, 4, 5]), n = 2 * d + ri(1, d - 1); return exNum("Los enteros que hay", "En la fracción " + n + "/" + d + ", ¿cuántos enteros completos hay?", 2,
-    ["Divido: " + n + " ÷ " + d + " = 2 y sobra " + (n - 2 * d) + ".", "Hay 2 enteros completos y sobran " + (n - 2 * d) + "/" + d + ": " + n + "/" + d + " = 2 " + (n - 2 * d) + "/" + d + "."], "frac-simpl"); },
-  function(){ var d = pick([3, 4]), r = ri(1, d - 1), e = ri(1, 2), n = e * d + r; return exChoice("A número mixto", n + "/" + d + " escrito como número mixto es…", e + " " + r + "/" + d, e + " " + (r % d === 0 ? 1 : r) + "/" + (d + 1), (e + 1) + " " + r + "/" + d,
-    ["Divido: " + n + " ÷ " + d + " = " + e + " y sobran " + r + ".", "El cociente es el entero y el resto va arriba, sobre el mismo denominador: " + n + "/" + d + " = " + e + " " + r + "/" + d + "."], "frac-simpl"); },
-  function(){ var d = ri(3, 9); return exVF("Verdadero o falso", d + "/" + d + " vale menos que 1", false,
-    ["Si tomas todas las partes, completas el entero: vale exactamente 1.", d + "/" + d + " = 1"], "frac-simpl"); },
-  function(){ var d = pick([2, 3, 4, 6]), n = ri(2, 4); return exNum("Problema real", "¿Cuántos pedazos de 1/" + d + " de metro salen de una cinta de " + n + " metros?", n * d,
-    ["Cada metro se parte en " + d + " pedazos de 1/" + d + ".", n + " metros · " + d + " pedazos por metro = " + (n * d) + " pedazos."], "frac-simpl"); },
-  function(){ var d = ri(4, 12); return exChoice("Vale exactamente 1", "¿Cuál de estas fracciones vale exactamente 1?", d + "/" + d, (d - 1) + "/" + d, (d + 2) + "/" + d,
-    ["Vale 1 la que toma todas las partes: numerador igual al denominador.", d + "/" + d + " = 1. La de " + (d - 1) + "/" + d + " es propia (menos que 1) y la de " + (d + 2) + "/" + d + " es impropia (más que 1)."], "frac-simpl"); }
+  function(){ var d = pick([3, 4, 5]), n = d + ri(1, 4); return exDif(exChoice("Las familias", "La fracción " + n + "/" + d + " es…", "impropia: vale más que 1", "propia: vale menos que 1", "no es una fracción válida",
+    ["El numerador " + n + " es mayor que el denominador " + d + ": tomas más partes de las que completan el entero.", n + "/" + d + " es impropia y vale más que 1."]), 1); },
+  function(){ var e = ri(1, 3), d = pick([2, 3, 4, 5]), n = ri(1, d - 1); return exDif(exFrac("A impropia", "Escribe el número mixto " + e + " " + n + "/" + d + " como fracción impropia (simplificada)", e * d + n, d,
+    ["Cada entero vale " + d + "/" + d + ": los " + e + " enteros son " + (e * d) + "/" + d + ".", "Sumo la parte suelta: " + (e * d) + "/" + d + " + " + n + "/" + d + " = " + fracStr(e * d + n, d), "La cuenta corta: " + e + " · " + d + " + " + n + " = " + (e * d + n) + " arriba, y el " + d + " queda abajo."]), 2); },
+  function(){ var d = pick([3, 4, 5]), n = 2 * d + ri(1, d - 1); return exDif(exNum("Los enteros que hay", "En la fracción " + n + "/" + d + ", ¿cuántos enteros completos hay?", 2,
+    ["Divido: " + n + " ÷ " + d + " = 2 y sobra " + (n - 2 * d) + ".", "Hay 2 enteros completos y sobran " + (n - 2 * d) + "/" + d + ": " + n + "/" + d + " = 2 " + (n - 2 * d) + "/" + d + "."]), 2); },
+  function(){ var d = pick([3, 4]), r = ri(1, d - 1), e = ri(1, 2), n = e * d + r; return exDif(exChoice("A número mixto", n + "/" + d + " escrito como número mixto es…", e + " " + r + "/" + d, e + " " + (r % d === 0 ? 1 : r) + "/" + (d + 1), (e + 1) + " " + r + "/" + d,
+    ["Divido: " + n + " ÷ " + d + " = " + e + " y sobran " + r + ".", "El cociente es el entero y el resto va arriba, sobre el mismo denominador: " + n + "/" + d + " = " + e + " " + r + "/" + d + "."]), 2); },
+  function(){ var d = ri(3, 9); return exDif(exVF("Verdadero o falso", d + "/" + d + " vale menos que 1", false,
+    ["Si tomas todas las partes, completas el entero: vale exactamente 1.", d + "/" + d + " = 1"]), 1); },
+  function(){ var d = pick([2, 3, 4, 6]), n = ri(2, 4); return exDif(exNum("Problema real", "¿Cuántos pedazos de 1/" + d + " de metro salen de una cinta de " + n + " metros?", n * d,
+    ["Cada metro se parte en " + d + " pedazos de 1/" + d + ".", n + " metros · " + d + " pedazos por metro = " + (n * d) + " pedazos."]), 2); },
+  function(){ var d = ri(4, 12); return exDif(exChoice("Vale exactamente 1", "¿Cuál de estas fracciones vale exactamente 1?", d + "/" + d, (d - 1) + "/" + d, (d + 2) + "/" + d,
+    ["Vale 1 la que toma todas las partes: numerador igual al denominador.", d + "/" + d + " = 1. La de " + (d - 1) + "/" + d + " es propia (menos que 1) y la de " + (d + 2) + "/" + d + " es impropia (más que 1)."]), 1); }
 ];
 LESSON_EXERCISES["s2-comparar"] = [
-  function(){ var d = pick([5, 6, 7, 8, 9]), n1 = ri(3, d - 1), n2 = ri(1, n1 - 1); return exChoice("Mismo denominador", "¿Cuál fracción es mayor?", n1 + "/" + d, n2 + "/" + d, "son iguales",
-    ["Los pedazos son del mismo tamaño: gana el que tiene más pedazos.", n1 + "/" + d + " > " + n2 + "/" + d], "frac-simpl"); },
-  function(){ var a = pick([3, 4]), b = a + ri(1, 3); return exChoice("Mismo numerador", "¿Cuál fracción es mayor?", "1/" + a, "1/" + b, "son iguales",
-    ["Se toma un solo pedazo en los dos casos: gana el pedazo más grande.", "Partir en " + a + " deja pedazos más grandes que partir en " + b + ": 1/" + a + " > 1/" + b + "."], "frac-simpl"); },
+  function(){ var d = pick([5, 6, 7, 8, 9]), n1 = ri(3, d - 1), n2 = ri(1, n1 - 1); return exDif(exChoice("Mismo denominador", "¿Cuál fracción es mayor?", n1 + "/" + d, n2 + "/" + d, "son iguales",
+    ["Los pedazos son del mismo tamaño: gana el que tiene más pedazos.", n1 + "/" + d + " > " + n2 + "/" + d]), 1); },
+  function(){ var a = pick([3, 4]), b = a + ri(1, 3); return exDif(exChoice("Mismo numerador", "¿Cuál fracción es mayor?", "1/" + a, "1/" + b, "son iguales",
+    ["Se toma un solo pedazo en los dos casos: gana el pedazo más grande.", "Partir en " + a + " deja pedazos más grandes que partir en " + b + ": 1/" + a + " > 1/" + b + "."]), 1); },
   function(){ var pares = [[2,3,3,5],[3,4,2,3],[1,2,2,5],[4,5,3,4],[5,6,4,5]]; var p = pick(pares); var izq = p[0] * p[3], der = p[1] * p[2]; var mayor = izq > der ? p[0] + "/" + p[1] : p[2] + "/" + p[3]; var menor = izq > der ? p[2] + "/" + p[3] : p[0] + "/" + p[1];
-    return exChoice("Método general", "¿Cuál fracción es mayor?", mayor, menor, "son iguales",
-    ["Multiplico en cruz: " + p[0] + " · " + p[3] + " = " + izq + " contra " + p[1] + " · " + p[2] + " = " + der + ".", "Gana el lado del producto mayor: " + mayor + "."], "frac-simpl"); },
-  function(){ return exVF("Verdadero o falso", "1/5 es mayor que 1/3 porque 5 es mayor que 3", false,
-    ["Es al revés: el denominador mayor parte el entero en más pedazos, y cada pedazo es más chico.", "1/3 > 1/5: un tercio es un pedazo más grande que un quinto."], "frac-simpl"); },
+    return exDif(exChoice("Método general", "¿Cuál fracción es mayor?", mayor, menor, "son iguales",
+    ["Multiplico en cruz: " + p[0] + " · " + p[3] + " = " + izq + " contra " + p[1] + " · " + p[2] + " = " + der + ".", "Gana el lado del producto mayor: " + mayor + "."]), 2); },
+  function(){ return exDif(exVF("Verdadero o falso", "1/5 es mayor que 1/3 porque 5 es mayor que 3", false,
+    ["Es al revés: el denominador mayor parte el entero en más pedazos, y cada pedazo es más chico.", "1/3 > 1/5: un tercio es un pedazo más grande que un quinto."]), 1); },
   function(){ var e = exOrder("Ordenar", "Ordena de menor a mayor: 3/4, 1/4, 1/2  (escríbelas separadas por comas)", [0.25, 0.5, 0.75],
-    ["Los denominadores ya casi coinciden: en cuartos, son 1/4, 2/4 y 3/4.", "De menor a mayor: 1/4, 1/2, 3/4."]); e.orderText = "1/4, 1/2, 3/4"; return e; },
-  function(){ return exVF("Verdadero o falso", "3/4 es mayor que 5/8", true,
-    ["Convierto a octavos: 3/4 = 6/8.", "6/8 > 5/8: sí, 3/4 es mayor."], "frac-simpl"); },
-  function(){ return exChoice("La menor", "¿Cuál de estas fracciones es la menor?", "2/5", "1/2", "2/3",
-    ["En decimales: 2/5 = 0,4 — 1/2 = 0,5 — 2/3 ≈ 0,67.", "La menor es 2/5."], "frac-simpl"); }
+    ["Los denominadores ya casi coinciden: en cuartos, son 1/4, 2/4 y 3/4.", "De menor a mayor: 1/4, 1/2, 3/4."]); e.orderText = "1/4, 1/2, 3/4"; e.dificultad = 2; return e; },
+  function(){ return exDif(exVF("Verdadero o falso", "3/4 es mayor que 5/8", true,
+    ["Convierto a octavos: 3/4 = 6/8.", "6/8 > 5/8: sí, 3/4 es mayor."]), 2); },
+  function(){ return exDif(exChoice("La menor", "¿Cuál de estas fracciones es la menor?", "2/5", "1/2", "2/3",
+    ["En decimales: 2/5 = 0,4 — 1/2 = 0,5 — 2/3 ≈ 0,67.", "La menor es 2/5."]), 2); }
 ];
 LESSON_EXERCISES["s2-cantidad"] = [
-  function(){ var pares = [[3,4,20],[2,3,18],[3,5,30],[1,4,24],[5,6,36],[2,5,25]]; var p = pick(pares); return exNum("Fracción de una cantidad", "¿Cuánto es " + p[0] + "/" + p[1] + " de " + p[2] + "?", p[2] * p[0] / p[1],
-    fracOfSteps(p[0], p[1], p[2]), "frac-mult"); },
-  function(){ var pares = [[1,3,60],[1,4,80],[2,5,50],[1,6,42]]; var p = pick(pares); var usado = p[2] * p[0] / p[1]; return exNum("Lo que queda", "De un tanque de " + p[2] + " litros se usó " + p[0] + "/" + p[1] + ". ¿Cuántos litros quedan?", p[2] - usado,
-    ["Lo usado: " + p[0] + "/" + p[1] + " de " + p[2] + ". Parto el " + p[2] + " en " + p[1] + " partes de " + (p[2] / p[1]) + " y tomo " + p[0] + ": se usaron " + usado + " litros.", "Lo que queda: " + p[2] + " − " + usado + " = " + (p[2] - usado) + " litros."], "frac-mult"); },
-  function(){ var d = pick([3, 4, 5, 6]), v = ri(3, 12); return exNum("Hallar el todo", "Si 1/" + d + " de un número es " + v + ", ¿cuánto es el número entero?", v * d,
-    ["Una parte de " + d + " vale " + v + ": el todo son " + d + " partes iguales.", v + " · " + d + " = " + (v * d)], "frac-mult"); },
-  function(){ var pares = [[15,20],[6,8],[9,12],[10,25],[14,21]]; var p = pick(pares); return exFrac("Qué fracción es", "¿Qué fracción de " + p[1] + " es " + p[0] + "? (escríbela simplificada)", p[0], p[1],
-    ["La fracción es la parte sobre el todo: " + p[0] + "/" + p[1] + ".", "Simplifico: " + p[0] + "/" + p[1] + " = " + fracStr(p[0], p[1])], "frac-mult"); },
+  function(){ var pares = [[3,4,20],[2,3,18],[3,5,30],[1,4,24],[5,6,36],[2,5,25]]; var p = pick(pares); return exDif(exNum("Fracción de una cantidad", "¿Cuánto es " + p[0] + "/" + p[1] + " de " + p[2] + "?", p[2] * p[0] / p[1],
+    fracOfSteps(p[0], p[1], p[2]), "frac-mult"), 2); },
+  function(){ var pares = [[1,3,60],[1,4,80],[2,5,50],[1,6,42]]; var p = pick(pares); var usado = p[2] * p[0] / p[1]; return exDif(exNum("Lo que queda", "De un tanque de " + p[2] + " litros se usó " + p[0] + "/" + p[1] + ". ¿Cuántos litros quedan?", p[2] - usado,
+    ["Lo usado: " + p[0] + "/" + p[1] + " de " + p[2] + ". Parto el " + p[2] + " en " + p[1] + " partes de " + (p[2] / p[1]) + " y tomo " + p[0] + ": se usaron " + usado + " litros.", "Lo que queda: " + p[2] + " − " + usado + " = " + (p[2] - usado) + " litros."]), 2); },
+  function(){ var d = pick([3, 4, 5, 6]), v = ri(3, 12); return exDif(exNum("Hallar el todo", "Si 1/" + d + " de un número es " + v + ", ¿cuánto es el número entero?", v * d,
+    ["Una parte de " + d + " vale " + v + ": el todo son " + d + " partes iguales.", v + " · " + d + " = " + (v * d)]), 2); },
+  function(){ var pares = [[15,20],[6,8],[9,12],[10,25],[14,21]]; var p = pick(pares); return exDif(exFrac("Qué fracción es", "¿Qué fracción de " + p[1] + " es " + p[0] + "? (escríbela simplificada)", p[0], p[1],
+    ["La fracción es la parte sobre el todo: " + p[0] + "/" + p[1] + ".", "Simplifico: " + p[0] + "/" + p[1] + " = " + fracStr(p[0], p[1])]), 2); },
   function(){ var e = exNum("La mitad de la mitad", "¿Cuánto es 1/2 de 1/2? (puedes responder como fracción)", 0.25,
-    ["La mitad de una mitad: parto el entero en 2, y cada mitad en 2: quedan 4 partes iguales.", "Tomo 1 de esas 4 partes: (1/2) · (1/2) = 1/4"]); e.ansText = "1/4"; return e; },
-  function(){ return exVF("Verdadero o falso", "3/4 de 20 es 12", false,
-    ["Parto el 20 en 4 partes de 5 y tomo 3: 3 · 5 = 15.", "3/4 de 20 = 15, no 12."], "frac-mult"); }
+    ["La mitad de una mitad: parto el entero en 2, y cada mitad en 2: quedan 4 partes iguales.", "Tomo 1 de esas 4 partes: (1/2) · (1/2) = 1/4"]); e.ansText = "1/4"; e.dificultad = 1; return e; },
+  function(){ return exDif(exVF("Verdadero o falso", "3/4 de 20 es 12", false,
+    ["Parto el 20 en 4 partes de 5 y tomo 3: 3 · 5 = 15.", "3/4 de 20 = 15, no 12."]), 2); }
 ];
 LESSON_EXERCISES["s2-combinadas"] = [
   function(){ var sets = [[1,2,1,3,3,4],[1,3,1,2,2,5],[2,3,1,4,1,2],[1,2,2,3,1,4]]; var p = pick(sets); var den = p[1] * p[3] * p[5], num = p[0] * p[3] * p[5] + p[1] * p[2] * p[4];
-    return exFrac("Combinada con multiplicación", "Calcula y simplifica: " + p[0] + "/" + p[1] + " + (" + p[2] + "/" + p[3] + ") · (" + p[4] + "/" + p[5] + ")", num, den,
-    ["La multiplicación va primero: (" + p[2] + "/" + p[3] + ") · (" + p[4] + "/" + p[5] + ") = " + fracStr(p[2] * p[4], p[3] * p[5]) + ".", "La cuenta queda " + p[0] + "/" + p[1] + " + " + fracStr(p[2] * p[4], p[3] * p[5]) + ": busco el denominador común y sumo.", p[0] + "/" + p[1] + " + (" + p[2] + "/" + p[3] + ") · (" + p[4] + "/" + p[5] + ") = " + fracStr(num, den)], "frac-suma"); },
+    return exDif(exFrac("Combinada con multiplicación", "Calcula y simplifica: " + p[0] + "/" + p[1] + " + (" + p[2] + "/" + p[3] + ") · (" + p[4] + "/" + p[5] + ")", num, den,
+    ["La multiplicación va primero: (" + p[2] + "/" + p[3] + ") · (" + p[4] + "/" + p[5] + ") = " + fracStr(p[2] * p[4], p[3] * p[5]) + ".", "La cuenta queda " + p[0] + "/" + p[1] + " + " + fracStr(p[2] * p[4], p[3] * p[5]) + ": busco el denominador común y sumo.", p[0] + "/" + p[1] + " + (" + p[2] + "/" + p[3] + ") · (" + p[4] + "/" + p[5] + ") = " + fracStr(num, den)]), 3); },
   function(){ var sets = [[2,3,1,6],[3,4,1,2],[5,6,1,3],[7,8,1,4]]; var p = pick(sets); var m = (p[1] * p[3]) / gcd(p[1], p[3]); var N = p[0] * (m / p[1]) - p[2] * (m / p[3]);
-    return exFrac("Combinada con paréntesis", "Calcula y simplifica: (" + p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3] + ") ÷ 2", N, m * 2,
-    ["El paréntesis primero: convierto al denominador común " + m + ": " + p[0] + "/" + p[1] + " = " + (p[0] * (m / p[1])) + "/" + m + " y " + p[2] + "/" + p[3] + " = " + (p[2] * (m / p[3])) + "/" + m + ".", "Resto adentro: " + fracStr(N, m) + ".", "Dividir por 2 es multiplicar por 1/2: (" + fracStr(N, m) + ") · (1/2) = " + fracStr(N, m * 2)], "frac-suma"); },
+    return exDif(exFrac("Combinada con paréntesis", "Calcula y simplifica: (" + p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3] + ") ÷ 2", N, m * 2,
+    ["El paréntesis primero: convierto al denominador común " + m + ": " + p[0] + "/" + p[1] + " = " + (p[0] * (m / p[1])) + "/" + m + " y " + p[2] + "/" + p[3] + " = " + (p[2] * (m / p[3])) + "/" + m + ".", "Resto adentro: " + fracStr(N, m) + ".", "Dividir por 2 es multiplicar por 1/2: (" + fracStr(N, m) + ") · (1/2) = " + fracStr(N, m * 2)]), 3); },
   function(){ var sets = [[3,4,1,2,1,8],[5,6,1,3,1,6],[2,3,1,6,1,2],[7,8,1,4,1,8]]; var p = pick(sets); var m = 24; var N = p[0] * (m / p[1]) - p[2] * (m / p[3]) + p[4] * (m / p[5]);
-    return exFrac("Cadena de sumas y restas", "Calcula y simplifica: " + p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3] + " + " + p[4] + "/" + p[5], N, m,
-    ["Convierto todo al denominador común 24 de una vez: " + p[0] + "/" + p[1] + " = " + (p[0] * (m / p[1])) + "/24, " + p[2] + "/" + p[3] + " = " + (p[2] * (m / p[3])) + "/24, " + p[4] + "/" + p[5] + " = " + (p[4] * (m / p[5])) + "/24.", "Opero arriba en orden: " + (p[0] * (m / p[1])) + " − " + (p[2] * (m / p[3])) + " + " + (p[4] * (m / p[5])) + " = " + N + ".", "Resultado: " + fracStr(N, m)], "frac-suma"); },
-  function(){ return exVF("Verdadero o falso", "En la cuenta 1/2 + (1/3) · 2, primero se hace la suma", false,
-    ["La multiplicación va antes que la suma, también con fracciones.", "1/2 + (1/3) · 2 = 1/2 + 2/3 = 7/6"], "frac-suma"); },
+    return exDif(exFrac("Cadena de sumas y restas", "Calcula y simplifica: " + p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3] + " + " + p[4] + "/" + p[5], N, m,
+    ["Convierto todo al denominador común 24 de una vez: " + p[0] + "/" + p[1] + " = " + (p[0] * (m / p[1])) + "/24, " + p[2] + "/" + p[3] + " = " + (p[2] * (m / p[3])) + "/24, " + p[4] + "/" + p[5] + " = " + (p[4] * (m / p[5])) + "/24.", "Opero arriba en orden: " + (p[0] * (m / p[1])) + " − " + (p[2] * (m / p[3])) + " + " + (p[4] * (m / p[5])) + " = " + N + ".", "Resultado: " + fracStr(N, m)]), 3); },
+  function(){ return exDif(exVF("Verdadero o falso", "En la cuenta 1/2 + (1/3) · 2, primero se hace la suma", false,
+    ["La multiplicación va antes que la suma, también con fracciones.", "1/2 + (1/3) · 2 = 1/2 + 2/3 = 7/6"]), 1); },
   function(){ var sets = [[2,3,3,4,1,6],[3,5,5,6,1,5],[1,2,4,5,1,10]]; var p = pick(sets); var den = p[1] * p[3] * p[5]; var num = p[0] * p[2] * p[5] - p[4] * p[1] * p[3];
-    return exFrac("Multiplicar y restar", "Calcula y simplifica: (" + p[0] + "/" + p[1] + ") · (" + p[2] + "/" + p[3] + ") − " + p[4] + "/" + p[5], num, den,
-    ["Primero la multiplicación: (" + p[0] + "/" + p[1] + ") · (" + p[2] + "/" + p[3] + ") = " + fracStr(p[0] * p[2], p[1] * p[3]) + ".", "Después la resta con denominador común: " + fracStr(p[0] * p[2], p[1] * p[3]) + " − " + p[4] + "/" + p[5] + " = " + fracStr(num, den)], "frac-mult"); },
-  function(){ return exChoice("El orden", "En la cuenta (2/3 − 1/6) ÷ 2, ¿qué se resuelve primero?", "la resta del paréntesis", "la división por 2", "da igual el orden",
-    ["El paréntesis manda sobre todo lo demás: primero se sabe cuánto vale.", "(2/3 − 1/6) = 1/2, y recién ahí se divide: 1/4."], "frac-suma"); }
+    return exDif(exFrac("Multiplicar y restar", "Calcula y simplifica: (" + p[0] + "/" + p[1] + ") · (" + p[2] + "/" + p[3] + ") − " + p[4] + "/" + p[5], num, den,
+    ["Primero la multiplicación: (" + p[0] + "/" + p[1] + ") · (" + p[2] + "/" + p[3] + ") = " + fracStr(p[0] * p[2], p[1] * p[3]) + ".", "Después la resta con denominador común: " + fracStr(p[0] * p[2], p[1] * p[3]) + " − " + p[4] + "/" + p[5] + " = " + fracStr(num, den)]), 3); },
+  function(){ return exDif(exChoice("El orden", "En la cuenta (2/3 − 1/6) ÷ 2, ¿qué se resuelve primero?", "la resta del paréntesis", "la división por 2", "da igual el orden",
+    ["El paréntesis manda sobre todo lo demás: primero se sabe cuánto vale.", "(2/3 − 1/6) = 1/2, y recién ahí se divide: 1/4."]), 1); }
 ];
 
 LESSON_EXERCISES["s3-dec-operaciones"] = [
@@ -10162,46 +10378,46 @@ function(){ var e = exSteps("Ciencia y valores, paso a paso", "Un instituto deci
 ];
 
 LESSON_EXERCISES["s2-division-resto"] = [
-  function(){ var d = ri(3, 9), q = ri(3, 8), r = ri(1, d - 1), a = d * q + r; return exNum("El resto", "En la división entera " + a + " ÷ " + d + ", ¿cuánto es el resto?", r,
-    ["Qué se pide: el resto, no el cociente. Datos: dividendo " + a + " y divisor " + d + ".", "Busco el múltiplo de " + d + " más grande que no supere a " + a + ": " + d + " · " + q + " = " + (d * q) + ".", "Resto lo repartido: " + a + " − " + (d * q) + " = " + r + ".", "Compruebo: " + d + " · " + q + " + " + r + " = " + a + ", y el resto " + r + " es menor que el divisor " + d + " ✓"]); },
-  function(){ var d = ri(3, 9), q = ri(3, 9), a = d * q; return exNum("El cociente exacto", "La división " + a + " ÷ " + d + " es exacta. ¿Cuánto es el cociente?", q,
-    ["Exacta quiere decir resto 0: busco qué número multiplicado por " + d + " da " + a + ".", d + " · " + q + " = " + a + ", así que el cociente es " + q + ".", "Error habitual: dar el divisor como respuesta. El cociente es el factor que falta, no el que está."]); },
-  function(){ var pares = [[12, "1, 2, 3, 4, 6 y 12"], [10, "1, 2, 5 y 10"], [18, "1, 2, 3, 6, 9 y 18"], [20, "1, 2, 4, 5, 10 y 20"]]; var p = pick(pares); return exChoice("Divisores", "Los divisores de " + p[0] + " son…", p[1], "solo los pares", "infinitos, como los múltiplos",
-    ["Un divisor divide exacto, con resto 0, y un número tiene una cantidad finita de divisores.", "Los múltiplos sí son infinitos: no confundir las dos direcciones."]); },
-  function(){ return exVF("Verdadero o falso", "En una división entera, el resto puede ser mayor que el divisor", false,
-    ["Si el resto fuera mayor o igual que el divisor, entraría una vuelta más de reparto: el cociente estaba corto.", "Regla sin excepción: resto < divisor, siempre."]); },
-  function(){ var d = ri(3, 8), q = ri(4, 9), r = ri(1, d - 1); return exNum("Reconstruir el dividendo", "Una división tiene divisor " + d + ", cociente " + q + " y resto " + r + ". ¿Cuánto vale el dividendo?", d * q + r,
-    ["La identidad manda: dividendo = divisor · cociente + resto.", d + " · " + q + " + " + r + " = " + (d * q) + " + " + r + " = " + (d * q + r) + ".", "Con esta identidad se comprueba cualquier división entera."]); },
-  function(){ var d = ri(4, 9), q = ri(3, 7), a = d * q + ri(1, d - 1); return exChoice("¿Cuál es exacta?", "¿Cuál de estas divisiones tiene resto 0?", a - (a % d) + " ÷ " + d, a + " ÷ " + d, (a + 1) + " ÷ " + d,
-    ["La exacta es la que reparte sin sobrar: el dividendo es un múltiplo del divisor.", "En las otras dos el resto es " + (a % d) + " y " + ((a + 1) % d) + ": sobra algo, así que no son exactas."]); }
+  function(){ var d = ri(3, 9), q = ri(3, 8), r = ri(1, d - 1), a = d * q + r; return exDif(exNum("El resto", "En la división entera " + a + " ÷ " + d + ", ¿cuánto es el resto?", r,
+    ["Qué se pide: el resto, no el cociente. Datos: dividendo " + a + " y divisor " + d + ".", "Busco el múltiplo de " + d + " más grande que no supere a " + a + ": " + d + " · " + q + " = " + (d * q) + ".", "Resto lo repartido: " + a + " − " + (d * q) + " = " + r + ".", "Compruebo: " + d + " · " + q + " + " + r + " = " + a + ", y el resto " + r + " es menor que el divisor " + d + " ✓"]), 2); },
+  function(){ var d = ri(3, 9), q = ri(3, 9), a = d * q; return exDif(exNum("El cociente exacto", "La división " + a + " ÷ " + d + " es exacta. ¿Cuánto es el cociente?", q,
+    ["Exacta quiere decir resto 0: busco qué número multiplicado por " + d + " da " + a + ".", d + " · " + q + " = " + a + ", así que el cociente es " + q + ".", "Error habitual: dar el divisor como respuesta. El cociente es el factor que falta, no el que está."]), 1); },
+  function(){ var pares = [[12, "1, 2, 3, 4, 6 y 12"], [10, "1, 2, 5 y 10"], [18, "1, 2, 3, 6, 9 y 18"], [20, "1, 2, 4, 5, 10 y 20"]]; var p = pick(pares); return exDif(exChoice("Divisores", "Los divisores de " + p[0] + " son…", p[1], "solo los pares", "infinitos, como los múltiplos",
+    ["Un divisor divide exacto, con resto 0, y un número tiene una cantidad finita de divisores.", "Los múltiplos sí son infinitos: no confundir las dos direcciones."]), 1); },
+  function(){ return exDif(exVF("Verdadero o falso", "En una división entera, el resto puede ser mayor que el divisor", false,
+    ["Si el resto fuera mayor o igual que el divisor, entraría una vuelta más de reparto: el cociente estaba corto.", "Regla sin excepción: resto < divisor, siempre."]), 1); },
+  function(){ var d = ri(3, 8), q = ri(4, 9), r = ri(1, d - 1); return exDif(exNum("Reconstruir el dividendo", "Una división tiene divisor " + d + ", cociente " + q + " y resto " + r + ". ¿Cuánto vale el dividendo?", d * q + r,
+    ["La identidad manda: dividendo = divisor · cociente + resto.", d + " · " + q + " + " + r + " = " + (d * q) + " + " + r + " = " + (d * q + r) + ".", "Con esta identidad se comprueba cualquier división entera."]), 2); },
+  function(){ var d = ri(4, 9), q = ri(3, 7), a = d * q + ri(1, d - 1); return exDif(exChoice("¿Cuál es exacta?", "¿Cuál de estas divisiones tiene resto 0?", a - (a % d) + " ÷ " + d, a + " ÷ " + d, (a + 1) + " ÷ " + d,
+    ["La exacta es la que reparte sin sobrar: el dividendo es un múltiplo del divisor.", "En las otras dos el resto es " + (a % d) + " y " + ((a + 1) % d) + ": sobra algo, así que no son exactas."]), 2); }
 ];
 LESSON_EXERCISES["s2-primos-mcd-mcm"] = [
-  function(){ var pares = [[12, 18, 6], [8, 12, 4], [15, 25, 5], [16, 24, 8], [9, 12, 3]]; var p = pick(pares); return exNum("El MCD", "Calcula el MCD de " + p[0] + " y " + p[1] + " descomponiendo en primos.", p[2],
-    ["Qué se pide: el divisor más grande que comparten los dos.", "Descompongo cada uno en primos y me quedo con los factores comunes, con el exponente menor.", "El resultado es " + p[2] + ": divide a " + p[0] + " y a " + p[1] + ", y ningún divisor común más grande existe.", "Error habitual: dar el MCM cuando se pide el MCD. El MCD tiene que ser menor o igual que los dos números."]); },
-  function(){ var pares = [[4, 6, 12], [3, 5, 15], [6, 8, 24], [4, 10, 20], [9, 6, 18]]; var p = pick(pares); return exNum("El MCM", "Calcula el MCM de " + p[0] + " y " + p[1] + " descomponiendo en primos.", p[2],
-    ["Qué se pide: el múltiplo más chico que comparten los dos.", "Descompongo y tomo todos los primos que aparecen, con el exponente mayor.", "El resultado es " + p[2] + ": tanto " + p[0] + " como " + p[1] + " lo dividen exacto.", "Control rápido: MCD · MCM = " + p[0] + " · " + p[1] + ". Si tu MCD y tu MCM no cumplen eso, alguno está mal."]); },
-  function(){ return exFrac("Simplificar con el MCD", "Simplifica 12/18 dividiendo por el MCD de 12 y 18.", 2, 3,
-    ["El MCD de 12 y 18 es 6: 12 = 2² · 3 y 18 = 2 · 3², lo común con el exponente menor es 2 · 3.", "Divido arriba y abajo por 6: 12 ÷ 6 = 2 y 18 ÷ 6 = 3.", "2 y 3 no comparten divisores: la fracción quedó irreducible en un solo paso."]); },
-  function(){ return exFrac("Sumar con el MCM", "Calcula: 1/4 + 1/6 (usa el MCM como denominador común).", 5, 12,
-    ["El denominador común más chico es el MCM(4, 6) = 12.", "Convierto: 1/4 = 3/12 y 1/6 = 2/12.", "Sumo numeradores: 3 + 2 = 5. Resultado: 5/12, ya irreducible.", "Error habitual: sumar 1 + 1 arriba y 4 + 6 abajo. Los denominadores no se suman: se igualan."]); },
-  function(){ return exVF("Verdadero o falso", "El número 1 es un número primo", false,
-    ["Primo es tener exactamente dos divisores: el 1 y el mismo número.", "El 1 tiene un solo divisor (él mismo): no es primo ni compuesto, es un caso aparte."]); },
-  function(){ return exChoice("Descomposición", "La descomposición en primos de 18 es…", "2 · 3²", "2 · 9", "3 · 6",
-    ["Descomponer es llegar hasta primos: el 9 y el 6 todavía se pueden partir.", "18 ÷ 2 = 9 y 9 = 3 · 3: queda 2 · 3². Comprobación: 2 · 9 = 18 ✓"]); }
+  function(){ var pares = [[12, 18, 6], [8, 12, 4], [15, 25, 5], [16, 24, 8], [9, 12, 3]]; var p = pick(pares); return exDif(exNum("El MCD", "Calcula el MCD de " + p[0] + " y " + p[1] + " descomponiendo en primos.", p[2],
+    ["Qué se pide: el divisor más grande que comparten los dos.", "Descompongo cada uno en primos y me quedo con los factores comunes, con el exponente menor.", "El resultado es " + p[2] + ": divide a " + p[0] + " y a " + p[1] + ", y ningún divisor común más grande existe.", "Error habitual: dar el MCM cuando se pide el MCD. El MCD tiene que ser menor o igual que los dos números."]), 2); },
+  function(){ var pares = [[4, 6, 12], [3, 5, 15], [6, 8, 24], [4, 10, 20], [9, 6, 18]]; var p = pick(pares); return exDif(exNum("El MCM", "Calcula el MCM de " + p[0] + " y " + p[1] + " descomponiendo en primos.", p[2],
+    ["Qué se pide: el múltiplo más chico que comparten los dos.", "Descompongo y tomo todos los primos que aparecen, con el exponente mayor.", "El resultado es " + p[2] + ": tanto " + p[0] + " como " + p[1] + " lo dividen exacto.", "Control rápido: MCD · MCM = " + p[0] + " · " + p[1] + ". Si tu MCD y tu MCM no cumplen eso, alguno está mal."]), 2); },
+  function(){ return exDif(exFrac("Simplificar con el MCD", "Simplifica 12/18 dividiendo por el MCD de 12 y 18.", 2, 3,
+    ["El MCD de 12 y 18 es 6: 12 = 2² · 3 y 18 = 2 · 3², lo común con el exponente menor es 2 · 3.", "Divido arriba y abajo por 6: 12 ÷ 6 = 2 y 18 ÷ 6 = 3.", "2 y 3 no comparten divisores: la fracción quedó irreducible en un solo paso."]), 2); },
+  function(){ return exDif(exFrac("Sumar con el MCM", "Calcula: 1/4 + 1/6 (usa el MCM como denominador común).", 5, 12,
+    ["El denominador común más chico es el MCM(4, 6) = 12.", "Convierto: 1/4 = 3/12 y 1/6 = 2/12.", "Sumo numeradores: 3 + 2 = 5. Resultado: 5/12, ya irreducible.", "Error habitual: sumar 1 + 1 arriba y 4 + 6 abajo. Los denominadores no se suman: se igualan."]), 2); },
+  function(){ return exDif(exVF("Verdadero o falso", "El número 1 es un número primo", false,
+    ["Primo es tener exactamente dos divisores: el 1 y el mismo número.", "El 1 tiene un solo divisor (él mismo): no es primo ni compuesto, es un caso aparte."]), 1); },
+  function(){ return exDif(exChoice("Descomposición", "La descomposición en primos de 18 es…", "2 · 3²", "2 · 9", "3 · 6",
+    ["Descomponer es llegar hasta primos: el 9 y el 6 todavía se pueden partir.", "18 ÷ 2 = 9 y 9 = 3 · 3: queda 2 · 3². Comprobación: 2 · 9 = 18 ✓"]), 2); }
 ];
 LESSON_EXERCISES["s2-negativas"] = [
-  function(){ return exFrac("Sumar con signo", "Calcula: −2/3 + 1/4", -5, 12,
-    ["Denominador común: MCM(3, 4) = 12. Convierto sin tocar los signos: −2/3 = −8/12 y 1/4 = 3/12.", "Sumo los numeradores con su signo: −8 + 3 = −5.", "Resultado: −5/12. En la recta queda a la izquierda del 0: el negativo pesó más. ✓"]); },
-  function(){ return exFrac("Restar y pasar el cero", "Calcula: 1/2 − 3/4", -1, 4,
-    ["Denominador común 4: 1/2 = 2/4.", "Resto: 2 − 3 = −1. Resultado: −1/4.", "Un resultado negativo es válido: 1/2 es menor que 3/4, así que la resta cruza el 0. Error habitual: dar vuelta la resta para que dé positivo."]); },
-  function(){ return exFrac("Multiplicar con signo", "Calcula: (−2/3) · (3/4)", -1, 2,
-    ["Signo primero: signos distintos, resultado negativo.", "Valores: multiplico arriba y abajo simplificando el 3 cruzado: 2/4 = 1/2.", "Resultado: −1/2."]); },
-  function(){ return exFrac("Dividir con signo", "Calcula: (−3/5) ÷ (−9/10)", 2, 3,
-    ["Dividir es multiplicar por el recíproco: (−3/5) · (10/9). El divisor nunca puede ser cero: su recíproco no existiría.", "Signo: iguales, resultado positivo.", "Cuenta: 30/45, simplifico por 15: 2/3."]); },
-  function(){ return exVF("Verdadero o falso", "Los tres números −2/3, (−2)/3 y 2/(−3) son el mismo número", true,
-    ["El signo puede vivir adelante, en el numerador o en el denominador sin cambiar el valor.", "Distinto es (−2)/(−3): con los dos signos adentro, el resultado es positivo, +2/3."]); },
-  function(){ return exFrac("Restar una negativa", "Calcula: 1/2 − (−1/4)", 3, 4,
-    ["Restar una fracción negativa es sumar su opuesta: 1/2 + 1/4.", "Denominador común 4: 2/4 + 1/4 = 3/4.", "Error habitual: restar igual que si fuera positiva y dar 1/4. El doble signo se convierte antes de operar."]); }
+  function(){ return exDif(exFrac("Sumar con signo", "Calcula: −2/3 + 1/4", -5, 12,
+    ["Denominador común: MCM(3, 4) = 12. Convierto sin tocar los signos: −2/3 = −8/12 y 1/4 = 3/12.", "Sumo los numeradores con su signo: −8 + 3 = −5.", "Resultado: −5/12. En la recta queda a la izquierda del 0: el negativo pesó más. ✓"]), 3); },
+  function(){ return exDif(exFrac("Restar y pasar el cero", "Calcula: 1/2 − 3/4", -1, 4,
+    ["Denominador común 4: 1/2 = 2/4.", "Resto: 2 − 3 = −1. Resultado: −1/4.", "Un resultado negativo es válido: 1/2 es menor que 3/4, así que la resta cruza el 0. Error habitual: dar vuelta la resta para que dé positivo."]), 2); },
+  function(){ return exDif(exFrac("Multiplicar con signo", "Calcula: (−2/3) · (3/4)", -1, 2,
+    ["Signo primero: signos distintos, resultado negativo.", "Valores: multiplico arriba y abajo simplificando el 3 cruzado: 2/4 = 1/2.", "Resultado: −1/2."]), 3); },
+  function(){ return exDif(exFrac("Dividir con signo", "Calcula: (−3/5) ÷ (−9/10)", 2, 3,
+    ["Dividir es multiplicar por el recíproco: (−3/5) · (10/9). El divisor nunca puede ser cero: su recíproco no existiría.", "Signo: iguales, resultado positivo.", "Cuenta: 30/45, simplifico por 15: 2/3."]), 3); },
+  function(){ return exDif(exVF("Verdadero o falso", "Los tres números −2/3, (−2)/3 y 2/(−3) son el mismo número", true,
+    ["El signo puede vivir adelante, en el numerador o en el denominador sin cambiar el valor.", "Distinto es (−2)/(−3): con los dos signos adentro, el resultado es positivo, +2/3."]), 1); },
+  function(){ return exDif(exFrac("Restar una negativa", "Calcula: 1/2 − (−1/4)", 3, 4,
+    ["Restar una fracción negativa es sumar su opuesta: 1/2 + 1/4.", "Denominador común 4: 2/4 + 1/4 = 3/4.", "Error habitual: restar igual que si fuera positiva y dar 1/4. El doble signo se convierte antes de operar."]), 3); }
 ];
 LESSON_EXERCISES["cbc-an2-edo"] = [
   function(){ return exFrac("Área entre curvas", "El área encerrada entre y = x e y = x², entre sus cortes, es…", 1, 6,
@@ -11200,7 +11416,7 @@ function renderGrafoPiloto(){
       if(!m.criterios.diasSesiones) f.push("practicar en 2 días distintos (va " + d.dias + ")");
       if(!m.criterios.sesionReciente) f.push("que tu sesión más reciente llegue a 80%");
       if(!m.criterios.tipos) f.push("sumar tipos de ejercicio (van " + d.tipos + " de 3)");
-      if(!m.criterios.dificultad) f.push("sumar intentos de dificultad 2 o más (van " + d.dificultadAlta + " de 4; las rondas de clase todavía no registran dificultad, salen de Práctica y Exámenes)");
+      if(!m.criterios.dificultad) f.push("sumar intentos de dificultad 2 o más (van " + d.dificultadAlta + " de 4; salen de las rondas de estas clases y también de Práctica y Exámenes)");
       if(f.length) falta = '<div class="small faint">Para dominarla falta: ' + f.join("; ") + ".</div>";
     }
     return '<div style="padding:9px 0; border-bottom:1px solid var(--line);"><div class="row"><strong>' + esc(n.name) + '</strong><span class="grow"></span><span class="small faint">' + m.t + '</span></div>' +
