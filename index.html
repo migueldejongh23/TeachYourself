@@ -141,6 +141,17 @@
   .hoy-week .wn{ font-size:13px; font-weight:600; color:var(--ink-3); text-transform:uppercase; letter-spacing:.06em; min-width:84px; }
   .hoy-week .wt{ font-weight:600; font-size:18px; }
   .hoy-week .wc{ margin-left:auto; font-size:15px; color:var(--ink-3); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .hoy-weeks-more{
+    margin-top:12px; border:1px solid var(--line-2); border-radius:12px;
+    max-height:220px; overflow-y:auto; overflow-x:hidden; background:#fff;
+    scrollbar-width:thin; scrollbar-color:var(--line-2) transparent;
+    overscroll-behavior:contain;
+  }
+  .hoy-weeks-more::-webkit-scrollbar{ width:8px; }
+  .hoy-weeks-more::-webkit-scrollbar-thumb{ background:var(--line-2); border-radius:99px; }
+  .hoy-weeks-more::-webkit-scrollbar-track{ background:transparent; }
+  .hoy-weeks-more .hoy-week{ padding-left:12px; padding-right:12px; }
+  .hoy-weeks-more .hoy-week:last-child{ border-bottom:none; }
 
   /* ---------- Courses list ---------- */
   .week-head{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin:34px 0 4px; padding-bottom:8px; border-bottom:1px solid var(--ink); }
@@ -5219,12 +5230,17 @@ function renderHoy(){
   var exBtn = $("#hoy-exam");
   if(exBtn) exBtn.addEventListener("click", function(){ showView("quiz"); setQuizTab("examenes"); openExam(6); });
   var hw = $("#hoy-weeks");
-  hw.innerHTML = WEEKS.map(function(w){
+  function hoyWeekBtn(w){
     var ls = LESSONS.filter(function(l){ return l.week === w.n; });
     var done = ls.filter(function(l){ return state.lessonsDone[l.id]; }).length;
     return '<button class="hoy-week" data-week="' + w.n + '"><span class="wn">Semana ' + w.n + '</span>' +
       '<span class="wt">' + esc(w.title) + '</span><span class="wc">' + done + '/' + ls.length + ' clases</span></button>';
-  }).join("");
+  }
+  var hoyFirst = WEEKS.slice(0, 8).map(hoyWeekBtn).join("");
+  var hoyRest = WEEKS.slice(8);
+  hw.innerHTML = hoyFirst + (hoyRest.length ?
+    '<div class="hoy-weeks-more" tabindex="0" aria-label="Semanas 9 en adelante: desplázate dentro de este cuadro para verlas">' +
+    hoyRest.map(hoyWeekBtn).join("") + '</div>' : "");
   $$("#hoy-weeks .hoy-week").forEach(function(b){
     b.addEventListener("click", function(){ showView("clases"); });
   });
