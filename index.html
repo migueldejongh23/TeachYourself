@@ -753,7 +753,7 @@
       </details>
       <details style="margin-top:14px;">
         <summary class="small" style="cursor:pointer;">Pruebas de la Fase B (grafo de habilidades)</summary>
-        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad (la declaración del generador en AN_GEN_META manda sobre la habilidad que traiga el intento; si el generador no se puede resolver, el intento no se atribuye a ninguna habilidad), y la dificultad declarada por cada generador. Incluye también la etapa de Álgebra A: las 26 subhabilidades de las 6 clases, con la misma atribución autoritativa por generador (AL_GEN_META) y la misma dificultad declarada por generador; y su corrección de dominio: las tres subhabilidades que tenían solo 2 generadores (operaciones con matrices, sistemas con parámetro e intersecciones de cónicas) sumaron generadores nuevos y distintos que las evalúan de verdad, así que las pruebas comprueban que cada una tiene al menos 3 generadores y alcanza Dominada con evidencia sintética válida construida con la dificultad real de sus generadores. E incluye la etapa de Física 03: las 25 subhabilidades de las 7 clases, con la misma atribución autoritativa por generador (FI_GEN_META), la misma dificultad declarada por generador, las dependencias entre materias justificadas (los productos escalar y vectorial de Álgebra como base de las operaciones con vectores en Física) y la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores y tope de 12 o más intentos cada una, sin haber necesitado generadores nuevos). Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
+        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad (la declaración del generador en AN_GEN_META manda sobre la habilidad que traiga el intento; si el generador no se puede resolver, el intento no se atribuye a ninguna habilidad), y la dificultad declarada por cada generador. Incluye también la etapa de Álgebra A: las 26 subhabilidades de las 6 clases, con la misma atribución autoritativa por generador (AL_GEN_META) y la misma dificultad declarada por generador; y su corrección de dominio: las tres subhabilidades que tenían solo 2 generadores (operaciones con matrices, sistemas con parámetro e intersecciones de cónicas) sumaron generadores nuevos y distintos que las evalúan de verdad, así que las pruebas comprueban que cada una tiene al menos 3 generadores y alcanza Dominada con evidencia sintética válida construida con la dificultad real de sus generadores. E incluye la etapa de Física 03: las 25 subhabilidades de las 7 clases, con la misma atribución autoritativa por generador (FI_GEN_META), la misma dificultad declarada por generador, las dependencias entre materias justificadas (los productos escalar y vectorial de Álgebra como base de las operaciones con vectores en Física) y la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores y tope de 12 o más intentos cada una, sin haber necesitado generadores nuevos), más el dominio sintético de cada una de las 25 subhabilidades por separado: la evidencia de cada prueba se construye desde sus generadores reales y FI_GEN_META, con la dificultad declarada por cada generador y el tipo que sirve una instancia real suya, respetando el tope de 5 por generador y sin que esa evidencia domine ninguna otra habilidad; en las tres habilidades con un único generador de dificultad alta (componentes de vectores, movimiento circular y el teorema de la energía cinética) se verifica expresamente que 4 intentos de ese generador cuentan sin superar su tope de 5. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
         <button class="btn" id="run-graph-tests">Correr las pruebas del grafo</button>
         <div class="small" id="graph-test-results" style="margin-top:10px;"></div>
       </details>
@@ -6984,6 +6984,78 @@ function runSkillGraphTests(){
     }
     return out;
   }
+  /* Conjunto de dominio para UNA habilidad de Física construido solo
+     desde sus generadores reales y desde FI_GEN_META, sin tipos ni
+     dificultades inventados:
+     - Los generadores son los índices reales que FI_GEN_META declara
+       para la habilidad en cada clase de la etapa, y cada uno se
+       sirve de verdad (sirve): la instancia servida tiene que traer
+       la misma habilidad y la misma dificultad que la tabla declara.
+     - El tipo de cada intento es el tipo que sirve esa instancia
+       (e.type) y su dificultad es la declarada por su generador en
+       FI_GEN_META: ningún intento lleva una dificultad artificial.
+     - Los generadores de respuesta abierta (kind "open") no entran:
+       un intento abierto no es evidencia puntuable (isOpenAttempt),
+       así que no pueden formar parte de un conjunto de dominio.
+     - El reparto respeta el tope real de 5 intentos por generador:
+       primero se aseguran 4 intentos de dificultad 2 o más rotando
+       entre los generadores altos de la habilidad (si hay uno solo,
+       los 4 salen de él, sin pasar de su tope de 5) y después se
+       completa hasta 12 rotando entre todos los puntuables.
+     - La forma cumple los criterios reales: 12 intentos, 11 bien
+       (91,7% total), dos días y dos sesiones, la sesión reciente con
+       5 de 6 (83,3%). El único fallo cae en un intento que no es por
+       pasos, para que el conjunto no dependa del detalle de etapas.
+     Devuelve { set, entradas, conteo } o { error } si la habilidad no
+     puede construir evidencia válida con su banco real. */
+  function evidenciaFi(skill){
+    var entradas = [], error = null;
+    FI_LESSONS.forEach(function(lid){
+      (FI_GEN_META[lid] || []).forEach(function(m, gi){
+        if(error || m[0] !== skill) return;
+        var gen = (LESSON_EXERCISES[lid] || [])[gi];
+        if(!gen){ error = skill + ": FI_GEN_META declara " + lid + "#g" + gi + " pero el banco de la clase no tiene ese generador"; return; }
+        var e = sirve(gen);
+        if(!e){ error = skill + ": el generador " + lid + "#g" + gi + " no sirvió una instancia válida"; return; }
+        if(e.skill !== skill){ error = skill + ": el generador " + lid + "#g" + gi + " sirvió la habilidad " + JSON.stringify(e.skill) + " y FI_GEN_META declara " + skill; return; }
+        if(e.dificultad !== m[1]){ error = skill + ": el generador " + lid + "#g" + gi + " sirvió dificultad " + JSON.stringify(e.dificultad) + " y FI_GEN_META declara " + m[1]; return; }
+        if(e.kind === "open") return;
+        entradas.push({ lid:lid, gi:gi, dif:m[1], tipo:e.type, kind:e.kind });
+      });
+    });
+    if(error) return { error:error };
+    if(entradas.length < 3) return { error:skill + ": solo tiene " + entradas.length + " generadores puntuables (sin contar los abiertos) y no puede repartir 12 intentos con el tope de 5 por generador y 3 tipos distintos" };
+    var altos = [];
+    entradas.forEach(function(en, i){ if(en.dif >= 2) altos.push(i); });
+    if(!altos.length) return { error:skill + ": ningún generador puntuable declara dificultad 2 o más en FI_GEN_META, así que el criterio de dificultad alta sería inalcanzable" };
+    var conteo = entradas.map(function(){ return 0; });
+    var elegidos = [];
+    function tomar(idx){ conteo[idx]++; elegidos.push(idx); }
+    var difAlta = 0, vuelta = 0, trabado = 0;
+    while(difAlta < 4){
+      if(altos.every(function(i){ return conteo[i] >= 5; })) return { error:skill + ": los generadores de dificultad 2 o más llegan al tope de 5 antes de aportar los 4 intentos de dificultad alta" };
+      var idxA = altos[vuelta % altos.length]; vuelta++;
+      if(conteo[idxA] >= 5){ if(++trabado > 100) return { error:skill + ": no se pudo repartir la dificultad alta sin superar el tope de 5 por generador" }; continue; }
+      tomar(idxA); difAlta++;
+    }
+    var cursor = 0, guardia = 0;
+    while(elegidos.length < 12 && guardia++ < 1000){
+      var idx = cursor % entradas.length; cursor++;
+      if(conteo[idx] >= 5) continue;
+      tomar(idx);
+    }
+    if(elegidos.length < 12) return { error:skill + ": no se pudieron construir 12 intentos puntuables sin superar el tope de 5 por generador" };
+    var falloEn = -1;
+    for(var f = 6; f < elegidos.length; f++){ if(entradas[elegidos[f]].kind !== "steps"){ falloEn = f; break; } }
+    if(falloEn < 0) falloEn = elegidos.length - 1;
+    var set = elegidos.map(function(idxE, pos){
+      var en = entradas[idxE], dia2 = pos >= 6;
+      var extra = { kind:en.kind };
+      if(en.kind === "steps") extra.pasos = [{ primero:true, reintentos:0, ok:true }, { primero:true, reintentos:0, ok:true }];
+      return att(1000 + pos * 10, dia2 ? "2026-11-11" : "2026-11-10", dia2 ? "s-dia2" : "s-dia1", en.lid, skill, en.tipo, en.lid + "#g" + en.gi, pos !== falloEn, en.dif, extra);
+    });
+    return { set:set, entradas:entradas, conteo:conteo };
+  }
   check("Integridad del grafo: todos los ids referenciados existen (nodos, prerrequisitos y clases)", function(){
     var ids = Object.keys(SKILL_GRAPH);
     for(var i = 0; i < ids.length; i++){
@@ -7903,34 +7975,103 @@ function runSkillGraphTests(){
     }
     return true;
   });
-  check("Física: dominio sintético válido en una subhabilidad por clase (7 clases), sin dominar con evidencia de otra", function(){
-    /* Los generadores de cada conjunto son los que FI_GEN_META
-       declara para la habilidad objetivo en su clase. */
-    var objetivos = [
-      ["cbc-fis1-magnitudes", "fi-vectores-operaciones", [6, 8, 9, 13, 15]],
-      ["cbc-fis1-estatica", "fi-estatica-reacciones", [0, 1, 5, 8, 11, 14]],
-      ["cbc-fis1-cinematica1d", "fi-cinematica-caida-tiro-vertical", [2, 3, 10, 11, 12]],
-      ["cbc-fis1-cinematica2d", "fi-tiro-oblicuo", [0, 5, 6, 7, 8, 9]],
-      ["cbc-fis2-dinamica", "fi-gravitacion-orbitas", [6, 7, 8, 16]],
-      ["cbc-fis2-energia", "fi-energia-conservacion", [1, 4, 9, 11, 12]],
-      ["cbc-fis2-hidrostatica", "fi-hidrostatica-arquimedes-flotacion", [3, 8, 9, 10, 14, 16]]
-    ];
-    for(var t = 0; t < objetivos.length; t++){
-      var lid = objetivos[t][0], skill = objetivos[t][1], gens = objetivos[t][2];
-      var set = conjuntoDominioAn(lid, skill, gens);
+  check("Física: dominio sintético válido en las 25 subhabilidades fi- (evidencia construida desde FI_GEN_META y los tipos reales de cada generador), sin dominar otra habilidad", function(){
+    /* Las 25 habilidades de la etapa, una por una: para cada una se
+       construye su evidencia con evidenciaFi, que usa solo los
+       índices reales de sus generadores, la dificultad declarada por
+       cada uno en FI_GEN_META y el tipo que sirve una instancia real
+       de ese generador. Nada de dificultad 2 puesta a mano en todos
+       los intentos ni de tipos inventados. */
+    var fiIds = Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id].etapa === "fisica"; });
+    if(fiIds.length !== 25) return "la etapa debería tener 25 habilidades y tiene " + fiIds.length;
+    for(var t = 0; t < fiIds.length; t++){
+      var skill = fiIds[t];
+      var r = evidenciaFi(skill);
+      if(r.error) return r.error;
+      var set = r.set;
+      if(set.length < 12) return skill + ": el conjunto construido tiene " + set.length + " intentos y el dominio exige al menos 12 puntuables";
+      /* Cada intento respeta lo declarado: su generador es uno de los
+         de la habilidad según FI_GEN_META, su dificultad es la de ese
+         generador y ningún generador pasa del tope de 5. */
+      var porGen = {};
+      for(var i = 0; i < set.length; i++){
+        var a = set[i], gm = /^(.+)#g(\d+)$/.exec(a.gen || "");
+        if(!gm) return skill + ": un intento no trae un generador válido (" + a.gen + ")";
+        var meta = (FI_GEN_META[gm[1]] || [])[+gm[2]];
+        if(!meta || meta[0] !== skill) return skill + ": el intento de " + a.gen + " no corresponde a un generador que FI_GEN_META declare para esta habilidad";
+        if(a.dificultad !== meta[1]) return skill + ": el intento de " + a.gen + " lleva dificultad " + JSON.stringify(a.dificultad) + " y FI_GEN_META declara " + meta[1] + " para ese generador";
+        porGen[a.gen] = (porGen[a.gen] || 0) + 1;
+        if(porGen[a.gen] > 5) return skill + ": el generador " + a.gen + " aporta " + porGen[a.gen] + " intentos y supera el tope de 5";
+      }
+      /* La evidencia que el motor reconoce para la habilidad es
+         exactamente el conjunto: 12 intentos puntuables, ni uno
+         perdido por el tope ni por no ser puntuable. */
+      var ev = evidenciaDeHabilidad(skill, set);
+      if(ev.length !== set.length) return skill + ": la evidencia reconocida es " + ev.length + " intentos y el conjunto construido tiene " + set.length;
       var m = masteryDeHabilidad(skill, set, {});
       if(m.k !== "dominada") return skill + " quedó en " + m.k + " con criterios " + JSON.stringify(m.criterios) + " y detalle " + JSON.stringify(m.detalle);
-      var sinDifAlta = set.map(function(a){ var c = Object.assign({}, a); c.dificultad = 1; return c; });
+      if(!m.criterios.intentos || !m.criterios.precision || !m.criterios.diasSesiones || !m.criterios.sesionReciente || !m.criterios.tipos || !m.criterios.dificultad) return skill + ": algún criterio real quedó sin cumplir: " + JSON.stringify(m.criterios);
+      if(m.detalle.total < 12) return skill + ": la evidencia puntuable es " + m.detalle.total + " y no llega a los 12 del dominio";
+      if(m.detalle.precision < 0.85) return skill + ": la precisión total es " + m.detalle.precision + " y no llega al 85%";
+      if(m.detalle.dias < 2 || m.detalle.sesiones < 2) return skill + ": la evidencia no se reparte en dos sesiones de días distintos (días " + m.detalle.dias + ", sesiones " + m.detalle.sesiones + ")";
+      if(m.detalle.precisionSesion < 0.80) return skill + ": la sesión más reciente acierta " + m.detalle.precisionSesion + " y no llega al 80%";
+      if(m.detalle.tipos < 3) return skill + ": la evidencia usa " + m.detalle.tipos + " tipos reales de ejercicio y el dominio exige al menos 3";
+      if(m.detalle.dificultadAlta < 4) return skill + ": solo " + m.detalle.dificultadAlta + " intentos son de dificultad 2 o más según FI_GEN_META y el dominio exige 4";
+      /* Sin la dificultad real no hay dominio: la misma evidencia con
+         todo en dificultad 1 tiene que perder el criterio. */
+      var sinDifAlta = set.map(function(x){ var c = Object.assign({}, x); c.dificultad = 1; return c; });
       var m2 = masteryDeHabilidad(skill, sinDifAlta, {});
       if(m2.criterios.dificultad) return skill + ": con toda la evidencia en dificultad 1 el criterio de dificultad debería fallar";
       if(m2.k === "dominada") return skill + ": se marcó dominada faltándole el criterio de dificultad";
-      for(var o = 0; o < objetivos.length; o++){
-        if(objetivos[o][1] === skill) continue;
-        var otra = masteryDeHabilidad(objetivos[o][1], set, {});
-        if(otra.detalle.total !== 0) return "la evidencia de " + skill + " contó también para " + objetivos[o][1] + ": ninguna habilidad se domina con evidencia de otra";
+      /* Atribución cruzada: esta evidencia no cuenta para ninguna
+         otra habilidad del grafo, fi- o no. La suma de la evidencia
+         de todo el grafo sobre el conjunto es exactamente el
+         conjunto: cada intento cuenta una sola vez. */
+      var suma = 0;
+      Object.keys(SKILL_GRAPH).forEach(function(id){ suma += evidenciaDeHabilidad(id, set).length; });
+      if(suma !== set.length) return "la evidencia de " + skill + " sumó " + suma + " conteos en todo el grafo y debería sumar exactamente " + set.length + " (uno por intento)";
+      for(var o = 0; o < fiIds.length; o++){
+        if(fiIds[o] === skill) continue;
+        if(evidenciaDeHabilidad(fiIds[o], set).length !== 0) return "la evidencia de " + skill + " contó también para " + fiIds[o] + ": ninguna habilidad se domina con evidencia de otra";
+        if(masteryDeHabilidad(fiIds[o], set, {}).k === "dominada") return "la evidencia de " + skill + " alcanzó para dominar también " + fiIds[o];
       }
-      var vista = masteryDeHabilidad(skill, [], (function(){ var d = {}; d[lid] = "2026-11-10"; return d; })());
-      if(vista.k !== "vista") return skill + ": con la clase vista y sin evidencia debería quedar vista y quedó " + vista.k;
+      /* Solo la clase vista, sin evidencia, nunca domina. */
+      var nodo = graphNode(skill);
+      var doneVista = {}; doneVista[nodo.lessons[0]] = "2026-11-10";
+      var vista = masteryDeHabilidad(skill, [], doneVista);
+      if(vista.k !== "vista") return skill + ": con su clase vista y sin evidencia debería quedar vista y quedó " + vista.k;
+    }
+    return true;
+  });
+  check("Física: las tres habilidades con un único generador de dificultad alta cuentan 4 intentos suyos sin superar el tope de 5", function(){
+    /* fi-vectores-componentes, fi-movimiento-circular y
+       fi-energia-cinetica-teorema tienen, según FI_GEN_META, un solo
+       generador de dificultad 2 o más. El criterio de 4 intentos de
+       dificultad alta solo puede salir de ese generador, y su tope
+       es 5: esta prueba verifica expresamente que la evidencia de
+       dominio de cada una trae al menos 4 intentos de ese generador,
+       que ninguno supera el tope y que toda su dificultad alta viene
+       de ahí. */
+    var casos = ["fi-vectores-componentes", "fi-movimiento-circular", "fi-energia-cinetica-teorema"];
+    for(var t = 0; t < casos.length; t++){
+      var skill = casos[t], altosMeta = [];
+      FI_LESSONS.forEach(function(lid){
+        (FI_GEN_META[lid] || []).forEach(function(mta, gi){ if(mta[0] === skill && mta[1] >= 2) altosMeta.push(lid + "#g" + gi); });
+      });
+      if(altosMeta.length !== 1) return skill + " debería tener exactamente 1 generador de dificultad 2 o más en FI_GEN_META y tiene " + altosMeta.length + " (" + altosMeta.join(", ") + ")";
+      var r = evidenciaFi(skill);
+      if(r.error) return r.error;
+      var delAlto = r.set.filter(function(x){ return x.gen === altosMeta[0]; });
+      if(delAlto.length < 4) return skill + ": la evidencia trae " + delAlto.length + " intentos de su único generador de dificultad alta (" + altosMeta[0] + ") y el criterio exige 4";
+      if(delAlto.length > 5) return skill + ": la evidencia trae " + delAlto.length + " intentos de " + altosMeta[0] + " y supera su tope de 5";
+      var ev = evidenciaDeHabilidad(skill, r.set);
+      var altaEv = ev.filter(function(x){ return typeof x.dificultad === "number" && x.dificultad >= 2; });
+      if(altaEv.length < 4) return skill + ": la evidencia reconocida tiene " + altaEv.length + " intentos de dificultad alta y el criterio exige 4";
+      for(var i = 0; i < altaEv.length; i++){
+        if(altaEv[i].gen !== altosMeta[0]) return skill + ": un intento de dificultad alta vino de " + altaEv[i].gen + " y no de su único generador alto " + altosMeta[0];
+      }
+      var m = masteryDeHabilidad(skill, r.set, {});
+      if(m.k !== "dominada" || !m.criterios.dificultad) return skill + " no alcanzó Dominada apoyándose en su único generador de dificultad alta: quedó en " + m.k + " con detalle " + JSON.stringify(m.detalle);
     }
     return true;
   });
