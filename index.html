@@ -717,6 +717,11 @@
       <div id="dominio-list"></div>
     </div>
     <div class="prog-section">
+      <h2>Habilidades de fracciones (grafo, piloto)</h2>
+      <p class="small faint">Las habilidades de la semana de fracciones y cómo se relacionan: cada una puede estar pendiente, vista (viste la clase, sin practicar), practicada o dominada. Dominada sale solo de tus ejercicios con corrección objetiva: 12 o más intentos que cuentan (máximo 5 por cada generador registrado; en los exámenes el registro agrupa por semana, así que cuentan hasta 5 por semana de examen), 85% o más de aciertos, en 2 o más sesiones en días distintos, con 80% o más en tu sesión más reciente, en 3 o más tipos de ejercicio y con 4 o más intentos de dificultad 2 o más. Ver una clase nunca marca una habilidad como dominada. Si una habilidad está bloqueada, acá dice qué prerrequisito le falta.</p>
+      <div id="graph-list"></div>
+    </div>
+    <div class="prog-section">
       <h2>Errores para repasar</h2>
       <p class="small faint">Las clases donde más fallaste y los errores recientes quedan registrados acá para trabajar sobre ellos, no para esconderlos.</p>
       <div id="errores-list"></div>
@@ -745,6 +750,12 @@
         <p class="small faint" style="margin:8px 0;">Batería separada de la Fase A: corre todos los generadores de ejercicios muchas veces comprobando que siempre se puede servir una instancia válida, recompute las respuestas de las familias donde se pueden derivar sin confiar en el generador (operaciones entre fracciones desde el propio enunciado, con aritmética exacta, y numéricos con la respuesta también en texto) y verifica las correcciones de la auditoría: los ejercicios abiertos quedan en el historial pero no cuentan como evidencia de dominio, y los de pasos guardan su detalle por etapa. Lo que no se puede recompute (la corrección del resto de enunciados y soluciones) no se presenta como validado por estas pruebas. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
         <button class="btn" id="run-engine-tests">Correr las pruebas del motor</button>
         <div class="small" id="engine-test-results" style="margin-top:10px;"></div>
+      </details>
+      <details style="margin-top:14px;">
+        <summary class="small" style="cursor:pointer;">Pruebas de la Fase B (grafo de habilidades, piloto de fracciones)</summary>
+        <p class="small faint" style="margin:8px 0;">Batería del piloto del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
+        <button class="btn" id="run-graph-tests">Correr las pruebas del grafo</button>
+        <div class="small" id="graph-test-results" style="margin-top:10px;"></div>
       </details>
     </div>
     <div class="prog-section">
@@ -1142,7 +1153,20 @@ function isValidDateStr(x){
 function isNonNegInt(x){ return typeof x === "number" && isFinite(x) && Math.floor(x) === x && x >= 0; }
 function isShortStr(x, max){ return typeof x === "string" && x.length <= (max || 500); }
 function knownLessonId(id){ return typeof LESSONS !== "undefined" && !!lessonById(id); }
-function knownSkillId(id){ return typeof SKILLS !== "undefined" && !!skillById(id); }
+function knownSkillId(id){
+  /* Fase B (Skill Graph, piloto de fracciones): además de las 9
+     habilidades de SKILLS, son ids válidos los nodos de SKILL_GRAPH
+     (las subhabilidades nuevas de fracciones: frac-concepto,
+     frac-mcd-mcm, etc.). Los ids históricos (frac-simpl, frac-suma,
+     frac-mult y los demás de SKILLS) siguen valiendo exactamente
+     igual: los respaldos viejos importan y validan como antes, y los
+     intentos nuevos con ids del grafo también validan. SKILL_GRAPH se
+     define junto a SKILLS; el typeof protege las llamadas anteriores
+     a esa definición durante la carga. */
+  if(typeof SKILLS !== "undefined" && !!skillById(id)) return true;
+  if(typeof SKILL_GRAPH !== "undefined" && SKILL_GRAPH && Object.prototype.hasOwnProperty.call(SKILL_GRAPH, id)) return true;
+  return false;
+}
 function validateCountsMap(map, campo){
   /* Mapas id -> { ok, mal } (lessonEx): ids de clase existentes y conteos
      enteros no negativos. */
@@ -6232,6 +6256,448 @@ function lessonById(id){ for(var i = 0; i < LESSONS.length; i++) if(LESSONS[i].i
 /* Exámenes: qué temas entran por semana */
 var EXAM_SKILLS = { 1:["signos"], 2:["frac-simpl","frac-suma","frac-mult"], 3:["decimales","porcentaje"], 4:["potencias","raices"], 5:["ecuaciones"], 6:["signos","frac-suma","porcentaje","potencias","ecuaciones"], 7:["ecuaciones","potencias"], 8:["ecuaciones","potencias","raices"] };
 
+/* ================= Fase B · Skill Graph (piloto: fracciones de Pre-CBC) =================
+   Modelo de datos y decisiones:
+   - SKILL_GRAPH es el registro de nodos del grafo. Cada nodo:
+     { name, desc, lessons:[ids de clase que lo enseñan],
+       prereqs:[ids de habilidad], piloto:true/false }.
+     Los ids de las habilidades que ya existían en SKILLS y en el
+     historial de intentos (frac-simpl, frac-suma, frac-mult, signos)
+     se reutilizan tal cual: son nodos del grafo con el mismo id, así
+     ningún respaldo viejo deja de validar (knownSkillId acepta los
+     ids de SKILLS y los de SKILL_GRAPH). Las subhabilidades nuevas
+     (frac-concepto, frac-divresto, frac-tipos, frac-mcd-mcm,
+     frac-comparar, frac-negativas, frac-cantidad, frac-combinadas)
+     son ids nuevos y estables, registrados acá y aceptados por
+     knownSkillId desde esta fase.
+   - Alcance: SOLO el piloto de fracciones (las 11 clases de la
+     semana 2). signos entra como nodo previo externo (es de la
+     semana 1) porque fracciones negativas depende de él de verdad;
+     las demás habilidades de SKILLS no tienen grafo todavía.
+   - Prerrequisitos: solo dependencias pedagógicas reales, es decir,
+     cuando el procedimiento de la habilidad usa directamente el de
+     su prerrequisito:
+       frac-tipos      ← frac-concepto      (clasificar propias,
+                          impropias y mixtos es hablar del concepto)
+       frac-mcd-mcm    ← frac-divresto      (MCD y MCM se construyen
+                          sobre divisores, múltiplos y la división
+                          con resto)
+       frac-simpl      ← frac-mcd-mcm       (simplificar es dividir
+                          numerador y denominador por el MCD; el
+                          generador de la habilidad lo dice así)
+       frac-comparar   ← frac-simpl         (comparar por denominador
+                          común exige producir fracciones
+                          equivalentes, lo que enseña esa clase)
+       frac-suma       ← frac-mcd-mcm       (el denominador común de
+                          la suma con distinto denominador es el MCM)
+       frac-suma       ← frac-simpl         (hay que saber llevar
+                          fracciones a denominador común y dejar el
+                          resultado simplificado)
+       frac-negativas  ← signos, frac-suma, frac-mult
+                          (operar fracciones con signo usa la regla
+                          de signos y las dos operaciones)
+       frac-cantidad   ← frac-mult          (la fracción de una
+                          cantidad es una multiplicación, y hallar
+                          el todo es la división asociada)
+       frac-combinadas ← frac-suma, frac-mult
+                          (una cuenta combinada es, por definición,
+                          sumas/restas y multiplicaciones/divisiones)
+     No se agregaron otras relaciones: multiplicar fracciones, por
+     ejemplo, NO lleva prerrequisito de simplificar, porque el
+     procedimiento es directo y no lo necesita.
+   - Vinculación clase → habilidad: cada clase del piloto es la clase
+     principal de exactamente un nodo (campo lessons), así ninguna
+     clase del piloto queda sin habilidades y la atribución de
+     evidencia no se reparte entre dos nodos. Vinculación
+     generador → habilidad: cada ejercicio generado ya declara su
+     habilidad (ex.skill, con LESSON_SKILL como respaldo al servir);
+     la batería runSkillGraphTests comprueba que todo generador del
+     piloto produce ejercicios sanos cuya habilidad resuelta existe.
+   - Evidencia de un nodo (qué intentos cuentan), calculada desde el
+     registro de intentos existente, sin tocar cómo se registra:
+       1. Solo intentos puntuables: quedan fuera los abiertos
+          (isOpenAttempt, autoevaluación) y los steps completados
+          con reintentos (isStepsRetryAttempt), igual que en los
+          agregados de la Fase A.
+       2. Un intento de ronda (trae lesson) cuenta para el nodo dueño
+          de esa clase, sea cual sea la etiqueta de habilidad que el
+          generador haya puesto: los generadores de la semana 2
+          etiquetan con las habilidades gruesas históricas
+          (frac-simpl, frac-suma, frac-mult) también en clases cuyo
+          nodo es una subhabilidad (en s2-fraccion se etiqueta
+          frac-simpl, pero el ejercicio evalúa frac-concepto). Si la
+          clase pertenece a otro nodo, el intento NO cuenta para este
+          aunque la etiqueta coincida: no hay doble conteo.
+       3. Un intento sin clase del piloto (práctica de SKILLS o
+          examen, lesson null u otra clase) cuenta para el nodo cuyo
+          id coincide con su skill.
+   - Tres estados por habilidad, separados y en este orden de fuerza:
+     dominada (evidencia completa, ver criterios), practicada (hay
+     evidencia puntuable pero no alcanza el dominio), vista (alguna
+     clase del nodo figura vista en lessonsDone y todavía no hay
+     evidencia) y pendiente (ni vista ni evidencia). Marcar una clase
+     como completada NUNCA produce dominio: solo mueve a "vista".
+   - Criterios de DOMINADA (deben cumplirse TODOS), computados sobre
+     la evidencia ya filtrada y con el tope por generador aplicado
+     ANTES de contar (de cada generador cuentan como máximo sus 5
+     primeros intentos puntuables, en orden cronológico):
+       a. 12 o más intentos puntuables.
+       b. Precisión total de 85% o más.
+       c. Intentos en 2 o más sesiones y en 2 o más días calendario
+          distintos (sesiones en días distintos: dos sesiones el
+          mismo día no alcanzan).
+       d. Precisión de 80% o más en la sesión más reciente (la sesión
+          del intento puntuable más nuevo de la evidencia).
+       e. 3 o más tipos de ejercicio distintos (campo tipo).
+       f. 4 o más intentos con dificultad 2 o más (escala 1 a 3).
+     Cómo se computa cada criterio con los datos que hay hoy:
+       - El tope por generador usa el campo gen tal como se registra:
+         en rondas es "clase#gN" (un generador concreto); en práctica
+         es "habilidad#nivelN" (agrupa por nivel, no por generador) y
+         en exámenes es "examen-semanaN" (agrupa TODAS las preguntas
+         de los exámenes de esa semana: como máximo 5 intentos de
+         examen por semana cuentan para el dominio). Es lo que el
+         registro permite distinguir sin inventar datos.
+       - La dificultad (criterio f): en las rondas de clase el campo
+         dificultad se registra null salvo que el ejercicio la
+         declare, y hoy ningún generador de ronda la declara; la
+         práctica de SKILLS registra el nivel (1 a 3) y los exámenes
+         registran 2. Consecuencia real con los datos actuales: el
+         criterio f solo puede satisfacerse con intentos de práctica
+         o de examen, que etiquetan las habilidades gruesas
+         (frac-simpl, frac-suma, frac-mult, signos). Las
+         subhabilidades nuevas, cuya evidencia hoy viene solo de
+         rondas de clase con dificultad null, pueden llegar a
+         practicada pero NO a dominada hasta que las rondas registren
+         dificultad (asignarla por generador es una decisión
+         pendiente de revisión, no se inventó un valor). El cálculo
+         no rellena ese hueco: dificultad null nunca cuenta como 2.
+       - La sesión más reciente (criterio d) se toma de la evidencia
+         ya filtrada y con tope: si esa sesión tiene pocos intentos,
+         su precisión manda igual.
+*/
+var SKILL_GRAPH = {
+  "signos": { name:"Números con signo", desc:"Regla de signos de la semana 1: el prerrequisito externo del piloto.", lessons:["s1-suma"], prereqs:[], piloto:false },
+  "frac-concepto": { name:"Qué es una fracción", desc:"Partes de un todo, la raya como división y fracciones mayores que 1.", lessons:["s2-fraccion"], prereqs:[], piloto:true },
+  "frac-divresto": { name:"División con resto, divisores y múltiplos", desc:"Repartir cuando no da exacto y el vocabulario que sostiene a MCD y MCM.", lessons:["s2-division-resto"], prereqs:[], piloto:true },
+  "frac-tipos": { name:"Propias, impropias y número mixto", desc:"Las tres familias según su tamaño y cómo pasar de una escritura a la otra.", lessons:["s2-tipos"], prereqs:["frac-concepto"], piloto:true },
+  "frac-mcd-mcm": { name:"Primos, MCD y MCM", desc:"Descomposición en primos y los procedimientos del máximo común divisor y el mínimo común múltiplo.", lessons:["s2-primos-mcd-mcm"], prereqs:["frac-divresto"], piloto:true },
+  "frac-simpl": { name:"Equivalentes y simplificar fracciones", desc:"La misma cantidad con otros números y cómo llegar a la fracción irreducible dividiendo por el MCD.", lessons:["s2-equivalentes"], prereqs:["frac-mcd-mcm"], piloto:true },
+  "frac-comparar": { name:"Comparar y ordenar fracciones", desc:"Qué fracción es mayor: mismo denominador, mismo numerador, producto cruzado y denominador común.", lessons:["s2-comparar"], prereqs:["frac-simpl"], piloto:true },
+  "frac-suma": { name:"Sumar y restar fracciones", desc:"Denominador común con el MCM y la operación, con el resultado simplificado.", lessons:["s2-suma"], prereqs:["frac-mcd-mcm", "frac-simpl"], piloto:true },
+  "frac-mult": { name:"Multiplicar y dividir fracciones", desc:"Directo al multiplicar; dar vuelta la segunda al dividir.", lessons:["s2-mult"], prereqs:[], piloto:true },
+  "frac-negativas": { name:"Fracciones negativas", desc:"Operar fracciones con signo usando la regla de signos y las operaciones con fracciones.", lessons:["s2-negativas"], prereqs:["signos", "frac-suma", "frac-mult"], piloto:true },
+  "frac-cantidad": { name:"Fracción de una cantidad", desc:"Cuánto es una fracción de un número, cuánto queda y cómo hallar el todo sabiendo una parte.", lessons:["s2-cantidad"], prereqs:["frac-mult"], piloto:true },
+  "frac-combinadas": { name:"Operaciones combinadas con fracciones", desc:"Sumas, restas, multiplicaciones y divisiones en una sola cuenta, en orden.", lessons:["s2-combinadas"], prereqs:["frac-suma", "frac-mult"], piloto:true }
+};
+/* Clases del piloto: las 11 de la semana 2 (fracciones de Pre-CBC). */
+var PILOT_LESSONS = ["s2-fraccion", "s2-division-resto", "s2-tipos", "s2-primos-mcd-mcm", "s2-equivalentes", "s2-comparar", "s2-suma", "s2-mult", "s2-negativas", "s2-cantidad", "s2-combinadas"];
+function graphNode(id){ return (typeof SKILL_GRAPH !== "undefined" && SKILL_GRAPH && SKILL_GRAPH[id]) || null; }
+function prereqsDe(id){ var n = graphNode(id); return n ? n.prereqs.slice() : []; }
+function duenoDeClase(){
+  /* Mapa clase -> nodo dueño, construido desde los lessons de cada
+     nodo. Cada clase del piloto tiene exactamente un dueño. */
+  var m = {};
+  Object.keys(SKILL_GRAPH).forEach(function(id){
+    SKILL_GRAPH[id].lessons.forEach(function(lid){ m[lid] = id; });
+  });
+  return m;
+}
+function ordenHabilidades(){
+  /* Orden topológico del grafo (Kahn): cada habilidad aparece después
+     de todos sus prerrequisitos. Devuelve null si hubiera un ciclo o
+     un prerrequisito inexistente. */
+  var ids = Object.keys(SKILL_GRAPH);
+  var grado = {}, salientes = {};
+  ids.forEach(function(id){ grado[id] = 0; salientes[id] = []; });
+  for(var i = 0; i < ids.length; i++){
+    var ps = SKILL_GRAPH[ids[i]].prereqs;
+    for(var j = 0; j < ps.length; j++){
+      if(!graphNode(ps[j])) return null;
+      grado[ids[i]]++;
+      salientes[ps[j]].push(ids[i]);
+    }
+  }
+  var cola = ids.filter(function(id){ return grado[id] === 0; });
+  var orden = [];
+  while(cola.length){
+    var n = cola.shift();
+    orden.push(n);
+    salientes[n].forEach(function(m){ grado[m]--; if(grado[m] === 0) cola.push(m); });
+  }
+  return orden.length === ids.length ? orden : null;
+}
+function evidenciaDeHabilidad(id, attempts){
+  /* Intentos puntuables que son evidencia de la habilidad, con el
+     tope de 5 por generador aplicado (ver el comentario del modelo).
+     attempts por defecto es el registro real del estado. */
+  var lista = Array.isArray(attempts) ? attempts : (state && Array.isArray(state.attempts) ? state.attempts : []);
+  var duenos = duenoDeClase();
+  var cruda = lista.filter(function(a){
+    if(!a || typeof a !== "object") return false;
+    if(isOpenAttempt(a) || isStepsRetryAttempt(a)) return false;
+    if(a.lesson && duenos[a.lesson]) return duenos[a.lesson] === id;
+    return a.skill === id;
+  });
+  cruda.sort(function(x, y){ return (x.ts || 0) - (y.ts || 0); });
+  var porGen = {}, out = [];
+  cruda.forEach(function(a){
+    var g = typeof a.gen === "string" && a.gen ? a.gen : "(sin generador)";
+    porGen[g] = (porGen[g] || 0) + 1;
+    if(porGen[g] <= 5) out.push(a);
+  });
+  return out;
+}
+var MASTERY_MIN = { intentos:12, precision:0.85, dias:2, sesiones:2, precisionSesion:0.80, tipos:3, dificultadAlta:4 };
+function masteryDeHabilidad(id, attempts, lessonsDone){
+  /* Estado de una habilidad del grafo desde la evidencia. attempts y
+     lessonsDone son inyectables para las pruebas; por defecto salen
+     del estado real. Nunca usa lessonsDone para el dominio: solo
+     distingue "vista" de "pendiente" cuando no hay evidencia. */
+  var done = isPlainObj(lessonsDone) ? lessonsDone : (state && isPlainObj(state.lessonsDone) ? state.lessonsDone : {});
+  var node = graphNode(id);
+  var ev = evidenciaDeHabilidad(id, attempts);
+  var total = ev.length, ok = 0, dias = {}, sesiones = {}, tipos = {}, difAlta = 0;
+  var ultimaSesion = null, ultimoTs = -1;
+  ev.forEach(function(a){
+    if(a.ok) ok++;
+    if(typeof a.fecha === "string" && a.fecha) dias[a.fecha] = true;
+    if(typeof a.session === "string" && a.session) sesiones[a.session] = true;
+    if(typeof a.tipo === "string" && a.tipo) tipos[a.tipo] = true;
+    if(typeof a.dificultad === "number" && a.dificultad >= 2) difAlta++;
+    if((a.ts || 0) >= ultimoTs){ ultimoTs = a.ts || 0; ultimaSesion = a.session; }
+  });
+  var sesOk = 0, sesTot = 0;
+  if(ultimaSesion){
+    ev.forEach(function(a){ if(a.session === ultimaSesion){ sesTot++; if(a.ok) sesOk++; } });
+  }
+  var precision = total ? ok / total : 0;
+  var precisionSesion = sesTot ? sesOk / sesTot : 0;
+  var criterios = {
+    intentos: total >= MASTERY_MIN.intentos,
+    precision: total > 0 && precision >= MASTERY_MIN.precision,
+    diasSesiones: Object.keys(dias).length >= MASTERY_MIN.dias && Object.keys(sesiones).length >= MASTERY_MIN.sesiones,
+    sesionReciente: sesTot > 0 && precisionSesion >= MASTERY_MIN.precisionSesion,
+    tipos: Object.keys(tipos).length >= MASTERY_MIN.tipos,
+    dificultad: difAlta >= MASTERY_MIN.dificultadAlta
+  };
+  var dominada = criterios.intentos && criterios.precision && criterios.diasSesiones && criterios.sesionReciente && criterios.tipos && criterios.dificultad;
+  var vista = !!node && node.lessons.some(function(lid){ return !!done[lid]; });
+  var k = dominada ? "dominada" : (total > 0 ? "practicada" : (vista ? "vista" : "pendiente"));
+  var t = { dominada:"Dominada", practicada:"Practicada: falta demostrar dominio", vista:"Vista: la clase se vio, falta practicar", pendiente:"Pendiente" }[k];
+  return { k:k, t:t, criterios:criterios,
+    detalle:{ total:total, ok:ok, precision:precision, dias:Object.keys(dias).length, sesiones:Object.keys(sesiones).length,
+      tipos:Object.keys(tipos).length, dificultadAlta:difAlta, precisionSesion:precisionSesion, ultimaSesion:ultimaSesion } };
+}
+function estadoHabilidad(id){ return masteryDeHabilidad(id, null, null); }
+function bloqueosDe(id, attempts, lessonsDone){
+  /* Prerrequisitos directos de la habilidad que todavía no están
+     dominados: lo que bloquea avanzar a ella. */
+  return prereqsDe(id).filter(function(p){ return masteryDeHabilidad(p, attempts, lessonsDone).k !== "dominada"; });
+}
+function bloqueosEnCadena(id, attempts, lessonsDone){
+  /* Todos los prerrequisitos (directos y en cadena) no dominados. */
+  var vistos = {}, out = [];
+  (function rec(x){
+    prereqsDe(x).forEach(function(p){
+      if(vistos[p]) return;
+      vistos[p] = true;
+      if(masteryDeHabilidad(p, attempts, lessonsDone).k !== "dominada") out.push(p);
+      rec(p);
+    });
+  })(id);
+  return out;
+}
+function habilidadesPendientes(attempts, lessonsDone){
+  /* Habilidades del piloto sin dominar, en orden topológico, cada una
+     con sus bloqueos directos: el mapa de qué falta y qué lo frena. */
+  var orden = ordenHabilidades() || Object.keys(SKILL_GRAPH);
+  return orden.filter(function(id){ return SKILL_GRAPH[id].piloto; })
+    .map(function(id){
+      var m = masteryDeHabilidad(id, attempts, lessonsDone);
+      return m.k === "dominada" ? null : { id:id, estado:m.k, bloqueos:bloqueosDe(id, attempts, lessonsDone) };
+    }).filter(Boolean);
+}
+if(window.TutorData){
+  window.TutorData.SKILL_GRAPH = SKILL_GRAPH;
+  window.TutorData.PILOT_LESSONS = PILOT_LESSONS;
+  window.TutorData.masteryDeHabilidad = masteryDeHabilidad;
+  window.TutorData.estadoHabilidad = estadoHabilidad;
+  window.TutorData.bloqueosDe = bloqueosDe;
+  window.TutorData.bloqueosEnCadena = bloqueosEnCadena;
+  window.TutorData.habilidadesPendientes = habilidadesPendientes;
+  window.TutorData.ordenHabilidades = ordenHabilidades;
+  window.TutorData.evidenciaDeHabilidad = evidenciaDeHabilidad;
+}
+
+/* ================= Pruebas de la Fase B (Skill Graph, piloto) =================
+   Batería separada de la Fase A y de la del motor: integridad del
+   grafo (ids, prerrequisitos, orden topológico, sin ciclos),
+   vinculación de clases y generadores del piloto, evaluabilidad de
+   las habilidades nuevas con el sistema de intentos existente y el
+   cálculo de dominio con conjuntos sintéticos de intentos (cumple
+   todo → dominada; falta un criterio → practicada; solo clase vista
+   → vista). Las pruebas que tocan el estado global trabajan sobre
+   uno de prueba y restauran el real al terminar. */
+function runSkillGraphTests(){
+  var results = [];
+  function check(name, fn){
+    try{ var r = fn(); results.push({ name:name, ok: r === true, detail: typeof r === "string" ? r : "" }); }
+    catch(e){ results.push({ name:name, ok:false, detail:String(e && e.message || e) }); }
+  }
+  function att(ts, fecha, session, lesson, skill, tipo, gen, ok, dif, extra){
+    var a = { ts:ts, fecha:fecha, session:session, lesson:lesson, skill:skill, tipo:tipo, gen:gen, dada:"x", esperada:"y", ok:ok, modo:"ronda", dificultad:dif, kind:"frac" };
+    if(extra) Object.keys(extra).forEach(function(k){ a[k] = extra[k]; });
+    return a;
+  }
+  /* Conjunto que cumple TODOS los criterios de dominio para la clase
+     dada: 12 intentos, 11 bien (91,7%), 2 días y 2 sesiones, última
+     sesión 5/6 (83,3%), 3 tipos, dificultad 2 en todos, 6 generadores
+     con 2 intentos cada uno (bajo el tope de 5). */
+  function conjuntoDominio(lesson, skill){
+    var tipos = ["Tipo A", "Tipo B", "Tipo C"], out = [], i, g;
+    for(i = 0; i < 6; i++){ g = lesson + "#g" + (i % 3); out.push(att(1000 + i, "2026-11-10", "s-dia1", lesson, skill, tipos[i % 3], g, true, 2)); }
+    for(i = 0; i < 6; i++){ g = lesson + "#g" + (3 + (i % 3)); out.push(att(2000 + i, "2026-11-11", "s-dia2", lesson, skill, tipos[i % 3], g, i < 5, 2)); }
+    return out;
+  }
+  check("Integridad del grafo: todos los ids referenciados existen (nodos, prerrequisitos y clases)", function(){
+    var ids = Object.keys(SKILL_GRAPH);
+    for(var i = 0; i < ids.length; i++){
+      var n = SKILL_GRAPH[ids[i]];
+      if(!knownSkillId(ids[i])) return "el nodo " + ids[i] + " no es un id de habilidad válido";
+      if(!n.lessons.length) return "el nodo " + ids[i] + " no tiene clases vinculadas";
+      for(var j = 0; j < n.lessons.length; j++) if(!lessonById(n.lessons[j])) return "el nodo " + ids[i] + " apunta a una clase inexistente: " + n.lessons[j];
+      for(var k = 0; k < n.prereqs.length; k++){
+        if(!graphNode(n.prereqs[k])) return ids[i] + " tiene un prerrequisito que no es nodo del grafo: " + n.prereqs[k];
+        if(n.prereqs[k] === ids[i]) return ids[i] + " es prerrequisito de sí mismo";
+      }
+    }
+    return true;
+  });
+  check("Sin ciclos: existe un orden topológico y cada prerrequisito va antes que su habilidad", function(){
+    var orden = ordenHabilidades();
+    if(!orden) return "ordenHabilidades devolvió null: hay un ciclo o un prerrequisito irresoluble";
+    if(orden.length !== Object.keys(SKILL_GRAPH).length) return "el orden no cubre todos los nodos";
+    var pos = {}; orden.forEach(function(id, i){ pos[id] = i; });
+    var mal = null;
+    Object.keys(SKILL_GRAPH).forEach(function(id){
+      SKILL_GRAPH[id].prereqs.forEach(function(p){ if(pos[p] >= pos[id]) mal = p + " no va antes que " + id; });
+    });
+    return mal || true;
+  });
+  check("Ninguna clase del piloto queda sin habilidades: las 11 clases de fracciones tienen nodo dueño y banco de ejercicios", function(){
+    var duenos = duenoDeClase();
+    var semana2 = LESSONS.filter(function(l){ return l.week === 2; }).map(function(l){ return l.id; });
+    if(semana2.length !== PILOT_LESSONS.length) return "la semana 2 tiene " + semana2.length + " clases y el piloto declara " + PILOT_LESSONS.length;
+    for(var i = 0; i < PILOT_LESSONS.length; i++){
+      var lid = PILOT_LESSONS[i];
+      if(semana2.indexOf(lid) < 0) return lid + " no es una clase de la semana 2";
+      if(!duenos[lid]) return "la clase " + lid + " no tiene habilidad asociada";
+      if(!Array.isArray(LESSON_EXERCISES[lid]) || !LESSON_EXERCISES[lid].length) return "la clase " + lid + " no tiene banco de generadores";
+    }
+    return true;
+  });
+  check("Los generadores del piloto apuntan a habilidades válidas (barrido de ejercicios servidos)", function(){
+    var mal = [];
+    PILOT_LESSONS.forEach(function(lid){
+      (LESSON_EXERCISES[lid] || []).forEach(function(gen, gi){
+        for(var r = 0; r < 25 && !mal.length; r++){
+          var e = null;
+          for(var t = 0; t < 8 && !e; t++){ var cand = null; try{ cand = gen(); }catch(err){ cand = null; } if(lexExerciseSane(cand)) e = cand; }
+          if(!e){ mal.push(lid + "#g" + gi + " no sirvió una instancia válida"); break; }
+          var sk = e.skill || LESSON_SKILL[lid];
+          if(!sk || !knownSkillId(sk)) mal.push(lid + "#g" + gi + " produjo un ejercicio con habilidad inválida: " + sk);
+        }
+      });
+    });
+    if(mal.length) return mal[0];
+    ["signos", "frac-simpl", "frac-suma", "frac-mult"].forEach(function(id){
+      var sk = skillById(id);
+      for(var nv = 1; nv <= 3 && !mal.length; nv++) for(var r2 = 0; r2 < 25; r2++){
+        var g = sk.gen(nv);
+        if(!g || typeof g.q !== "string" || typeof g.ans !== "number" || !isFinite(g.ans)) mal.push("el generador de práctica de " + id + " (nivel " + nv + ") devolvió algo inválido");
+      }
+    });
+    return mal.length ? mal[0] : true;
+  });
+  check("Los ids históricos siguen válidos y las subhabilidades nuevas se pueden registrar y respaldar", function(){
+    ["signos", "frac-simpl", "frac-suma", "frac-mult", "decimales", "porcentaje", "potencias", "raices", "ecuaciones"].forEach(function(id){
+      if(!knownSkillId(id)) throw new Error("el id histórico " + id + " dejó de ser válido");
+    });
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      var a = recordAttempt({ lesson:"s2-primos-mcd-mcm", skill:"frac-mcd-mcm", tipo:"MCD", gen:"s2-primos-mcd-mcm#g0", dada:"6", esperada:"6", ok:true, modo:"ronda", dificultad:null, kind:"num" });
+      if(!a || a.skill !== "frac-mcd-mcm") return "recordAttempt no conservó la subhabilidad";
+      if(!state.skillAgg["frac-mcd-mcm"] || state.skillAgg["frac-mcd-mcm"].total !== 1) return "skillAgg no agregó el intento de la subhabilidad";
+      var bad = validateStateShape(state);
+      if(bad) return "el estado con la subhabilidad no valida: " + bad;
+      var parsed = parseBackup(serializeBackup(state));
+      if(!parsed.ok) return "el respaldo con la subhabilidad no se pudo importar: " + parsed.error;
+      if(!parsed.state.skillAgg["frac-mcd-mcm"]) return "el respaldo importado perdió el agregado de la subhabilidad";
+      return true;
+    } finally { state = snapState; }
+  });
+  check("Dominio con conjunto sintético completo: cumple todos los criterios → dominada", function(){
+    var m = masteryDeHabilidad("frac-suma", conjuntoDominio("s2-suma", "frac-suma"), {});
+    if(m.k !== "dominada") return "quedó en " + m.k + " con criterios " + JSON.stringify(m.criterios) + " y detalle " + JSON.stringify(m.detalle);
+    return true;
+  });
+  check("Dominio: falta un criterio (todo en un solo día) → practicada, no dominada", function(){
+    var set = conjuntoDominio("s2-suma", "frac-suma").map(function(a){ var c = Object.assign({}, a); if(c.ts >= 2000){ c.fecha = "2026-11-10"; c.session = "s-dia1b"; } return c; });
+    var m = masteryDeHabilidad("frac-suma", set, {});
+    if(m.criterios.diasSesiones) return "el criterio de días/sesiones debería fallar con un solo día";
+    if(m.k !== "practicada") return "quedó en " + m.k + " en vez de practicada";
+    return true;
+  });
+  check("Dominio: la dificultad null de las rondas no cuenta como dificultad 2 (criterio sin satisfacer → practicada)", function(){
+    var set = conjuntoDominio("s2-suma", "frac-suma").map(function(a){ var c = Object.assign({}, a); c.dificultad = null; return c; });
+    var m = masteryDeHabilidad("frac-suma", set, {});
+    if(m.criterios.dificultad) return "la dificultad null contó como alta";
+    if(m.k === "dominada") return "se marcó dominada sin ningún intento de dificultad 2 o más";
+    return true;
+  });
+  check("Dominio: el tope de 5 por generador se aplica (14 intentos de un solo generador no alcanzan)", function(){
+    var set = [], i;
+    for(i = 0; i < 7; i++) set.push(att(1000 + i, "2026-11-10", "s-dia1", "s2-suma", "frac-suma", "Tipo " + (i % 3), "s2-suma#g0", true, 2));
+    for(i = 0; i < 7; i++) set.push(att(2000 + i, "2026-11-11", "s-dia2", "s2-suma", "frac-suma", "Tipo " + (i % 3), "s2-suma#g0", true, 2));
+    var m = masteryDeHabilidad("frac-suma", set, {});
+    if(m.detalle.total !== 5) return "la evidencia con tope debería ser 5 y fue " + m.detalle.total;
+    if(m.k === "dominada") return "se marcó dominada contando más de 5 intentos de un generador";
+    return true;
+  });
+  check("Dominio: abiertos y steps con reintentos no son evidencia (12 abiertos no practican la habilidad)", function(){
+    var set = [], i;
+    for(i = 0; i < 12; i++) set.push(att(1000 + i, "2026-11-10", "s-dia1", "s2-suma", "frac-suma", "Respuesta abierta", "s2-suma#g9", true, 2, { kind:"open" }));
+    set.push(att(3000, "2026-11-11", "s-dia2", "s2-suma", "frac-suma", "Suma paso a paso", "s2-suma#g7", false, 2, { kind:"steps", pasos:[{ primero:false, reintentos:1, ok:true }, { primero:true, reintentos:0, ok:true }] }));
+    var m = masteryDeHabilidad("frac-suma", set, {});
+    if(m.detalle.total !== 0) return "la evidencia puntuable debería ser 0 y fue " + m.detalle.total;
+    if(m.k !== "pendiente") return "quedó en " + m.k + " en vez de pendiente";
+    return true;
+  });
+  check("Estados separados: solo clase vista → vista; la clase vista nunca domina por sí sola", function(){
+    var m = masteryDeHabilidad("frac-suma", [], { "s2-suma":"2026-11-10" });
+    if(m.k !== "vista") return "sin intentos y con la clase vista quedó en " + m.k;
+    var m2 = masteryDeHabilidad("frac-suma", [], {});
+    if(m2.k !== "pendiente") return "sin clase vista ni intentos quedó en " + m2.k;
+    return true;
+  });
+  check("Bloqueos: el grafo dice qué prerrequisitos frenan cada habilidad y se liberan al dominarlos", function(){
+    var sin = bloqueosDe("frac-suma", [], {});
+    if(sin.indexOf("frac-mcd-mcm") < 0 || sin.indexOf("frac-simpl") < 0) return "frac-suma debería estar bloqueada por frac-mcd-mcm y frac-simpl: " + JSON.stringify(sin);
+    var cadena = bloqueosEnCadena("frac-combinadas", [], {});
+    if(cadena.indexOf("frac-mcd-mcm") < 0 || cadena.indexOf("frac-divresto") < 0) return "la cadena de frac-combinadas debería llegar hasta frac-divresto: " + JSON.stringify(cadena);
+    var ev = conjuntoDominio("s2-primos-mcd-mcm", "frac-simpl").concat(conjuntoDominio("s2-equivalentes", "frac-simpl"));
+    var con = bloqueosDe("frac-suma", ev, {});
+    if(con.length) return "con MCD/MCM y simplificar dominados, frac-suma sigue bloqueada por: " + JSON.stringify(con);
+    var pend = habilidadesPendientes([], {});
+    if(pend.length !== Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id].piloto; }).length) return "sin progreso deberían estar pendientes las 11 habilidades del piloto y hay " + pend.length;
+    return true;
+  });
+  return results;
+}
+if(window.TutorData) window.TutorData.runSkillGraphTests = runSkillGraphTests;
+
 /* ================= Navegación y Menú ================= */
 var currentPlayer = null;
 function stopPlayer(){ if(currentPlayer){ currentPlayer.destroy(); currentPlayer = null; } }
@@ -10715,6 +11181,32 @@ function dominioDe(l){
   if(tot > 0) return { k:"practica", t:"Empezada" };
   return { k:"pendiente", t:"Pendiente" };
 }
+function renderGrafoPiloto(){
+  var gl = $("#graph-list"); if(!gl) return;
+  var orden = ordenHabilidades() || Object.keys(SKILL_GRAPH);
+  var ids = orden.filter(function(id){ return SKILL_GRAPH[id].piloto; });
+  gl.innerHTML = ids.map(function(id){
+    var n = SKILL_GRAPH[id];
+    var m = masteryDeHabilidad(id, null, null);
+    var d = m.detalle;
+    var evTxt = d.total ? d.ok + " bien de " + d.total + " intentos que cuentan · " + d.dias + (d.dias === 1 ? " día" : " días") + " · " + d.tipos + (d.tipos === 1 ? " tipo" : " tipos") : "sin intentos que cuenten todavía";
+    var bloq = bloqueosDe(id, null, null);
+    var bloqTxt = (m.k !== "dominada" && bloq.length) ? '<div class="small faint">Bloqueada por: ' + bloq.map(function(b){ return esc(SKILL_GRAPH[b] ? SKILL_GRAPH[b].name : b); }).join(", ") + " (todavía no dominadas).</div>" : "";
+    var falta = "";
+    if(m.k === "practicada"){
+      var f = [];
+      if(!m.criterios.intentos) f.push("llegar a 12 intentos que cuentan (van " + d.total + ")");
+      if(!m.criterios.precision) f.push("subir la precisión a 85% (va " + Math.round(d.precision * 100) + "%)");
+      if(!m.criterios.diasSesiones) f.push("practicar en 2 días distintos (va " + d.dias + ")");
+      if(!m.criterios.sesionReciente) f.push("que tu sesión más reciente llegue a 80%");
+      if(!m.criterios.tipos) f.push("sumar tipos de ejercicio (van " + d.tipos + " de 3)");
+      if(!m.criterios.dificultad) f.push("sumar intentos de dificultad 2 o más (van " + d.dificultadAlta + " de 4; las rondas de clase todavía no registran dificultad, salen de Práctica y Exámenes)");
+      if(f.length) falta = '<div class="small faint">Para dominarla falta: ' + f.join("; ") + ".</div>";
+    }
+    return '<div style="padding:9px 0; border-bottom:1px solid var(--line);"><div class="row"><strong>' + esc(n.name) + '</strong><span class="grow"></span><span class="small faint">' + m.t + '</span></div>' +
+      '<div class="small faint">' + evTxt + '</div>' + falta + bloqTxt + '</div>';
+  }).join("");
+}
 function renderProgreso(){
   var ai = $("#attempts-info");
   if(ai){
@@ -10788,6 +11280,7 @@ function renderProgreso(){
       b.addEventListener("click", function(){ openLesson(b.getAttribute("data-repaso")); });
     });
   })();
+  renderGrafoPiloto();
   $("#exam-history").innerHTML = state.exams.length ?
     '<table class="hist"><thead><tr><th>Fecha</th><th>Examen</th><th>Aciertos</th><th>Nota</th></tr></thead><tbody>' +
     state.exams.slice().reverse().map(function(e){
@@ -10882,6 +11375,14 @@ $("#reset-all").addEventListener("click", function(){
     var rs = runEngineTests();
     var pas = rs.filter(function(r){ return r.ok; }).length;
     if(engOut) engOut.innerHTML = rs.map(function(r){
+      return '<div style="padding:6px 0; border-bottom:1px solid var(--line);">' + (r.ok ? "✓" : "✗") + " " + esc(r.name) + (r.detail ? ' <span class="faint">· ' + esc(r.detail) + "</span>" : "") + "</div>";
+    }).join("") + '<p style="margin-top:8px;"><strong>' + pas + " de " + rs.length + " pruebas pasaron.</strong></p>";
+  });
+  var graphBtn = $("#run-graph-tests"), graphOut = $("#graph-test-results");
+  if(graphBtn) graphBtn.addEventListener("click", function(){
+    var rs = runSkillGraphTests();
+    var pas = rs.filter(function(r){ return r.ok; }).length;
+    if(graphOut) graphOut.innerHTML = rs.map(function(r){
       return '<div style="padding:6px 0; border-bottom:1px solid var(--line);">' + (r.ok ? "✓" : "✗") + " " + esc(r.name) + (r.detail ? ' <span class="faint">· ' + esc(r.detail) + "</span>" : "") + "</div>";
     }).join("") + '<p style="margin-top:8px;"><strong>' + pas + " de " + rs.length + " pruebas pasaron.</strong></p>";
   });
