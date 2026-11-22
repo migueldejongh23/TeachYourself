@@ -2835,6 +2835,81 @@ function runEngineTests(){
     }
     return true;
   });
+  check("Regresión Fase 2 Pre-CBC: en los pasos de p7-ruffini aparece la tabla de Ruffini ejecutada con su comprobación y la factorización completa de un cúbico", function(){
+    var les = lessonById("p7-ruffini");
+    if(!les) return "no está la clase p7-ruffini";
+    if(!les.steps || les.steps.length < 7) return "la clase debería tener al menos 7 pasos y tiene " + (les.steps || []).length;
+    var txt = JSON.stringify(les.steps);
+    var claves = ["1, −1, −6, 0", "(x − 1)(x² − x − 6)", "p/q", "(x − 1)(x − 2)(x − 3)", "a = −2"];
+    for(var i = 0; i < claves.length; i++)
+      if(txt.indexOf(claves[i]) < 0) return "falta «" + claves[i] + "» en los pasos de p7-ruffini";
+    return true;
+  });
+  check("Regresión Fase 2 Pre-CBC: en los pasos de p10-sistemas aparece un Gauss 3×3 resuelto completo con sustitución hacia atrás y los tres finales leídos en la escalonada", function(){
+    var les = lessonById("p10-sistemas");
+    if(!les) return "no está la clase p10-sistemas";
+    if(!les.steps || les.steps.length < 7) return "la clase debería tener al menos 7 pasos y tiene " + (les.steps || []).length;
+    var txt = JSON.stringify(les.steps);
+    var claves = ["−7z = −21", "sustitución hacia atrás", "(1, 2, 3)", "0 = 0", "0 = 1"];
+    for(var i = 0; i < claves.length; i++)
+      if(txt.indexOf(claves[i]) < 0) return "falta «" + claves[i] + "» en los pasos de p10-sistemas";
+    return true;
+  });
+  check("Regresión Fase 2 Pre-CBC: en los pasos de p7-cuadratica y p8-cuadratica-f aparece completar el cuadrado ejecutado y la forma vértice obtenida con ese método", function(){
+    var c1 = lessonById("p7-cuadratica"), c2 = lessonById("p8-cuadratica-f");
+    if(!c1) return "no está la clase p7-cuadratica";
+    if(!c2) return "no está la clase p8-cuadratica-f";
+    if(!c1.steps || c1.steps.length < 7) return "p7-cuadratica debería tener al menos 7 pasos y tiene " + (c1.steps || []).length;
+    if(!c2.steps || c2.steps.length < 6) return "p8-cuadratica-f debería tener al menos 6 pasos y tiene " + (c2.steps || []).length;
+    var t1 = JSON.stringify(c1.steps), t2 = JSON.stringify(c2.steps);
+    var k1 = ["completar el cuadrado", "(b/2)²", "(x + 3)² = 4", "Bhaskara"];
+    for(var i = 0; i < k1.length; i++)
+      if(t1.indexOf(k1[i]) < 0) return "falta «" + k1[i] + "» en los pasos de p7-cuadratica";
+    var k2 = ["completando el cuadrado", "(x − 2)² − 1", "2(x + 2)² − 3"];
+    for(var j = 0; j < k2.length; j++)
+      if(t2.indexOf(k2[j]) < 0) return "falta «" + k2[j] + "» en los pasos de p8-cuadratica-f";
+    return true;
+  });
+  check("Regresión Fase 2 Pre-CBC: en los pasos de p8-exp-log aparecen los dos tipos de ecuaciones resueltas con verificación de dominio", function(){
+    var les = lessonById("p8-exp-log");
+    if(!les) return "no está la clase p8-exp-log";
+    if(!les.steps || les.steps.length < 7) return "la clase debería tener al menos 7 pasos y tiene " + (les.steps || []).length;
+    var txt = JSON.stringify(les.steps);
+    var claves = ["2^(x + 1) = 8", "3ˣ = 20", "log₂(x) + log₂(x − 2) = 3", "se descarta"];
+    for(var i = 0; i < claves.length; i++)
+      if(txt.indexOf(claves[i]) < 0) return "falta «" + claves[i] + "» en los pasos de p8-exp-log";
+    return true;
+  });
+  check("Regresión Fase 2 Pre-CBC: los generadores nuevos de ruffini, sistemas, cuadrática, cuadrática-f y exp-log sirven ejercicios sanos y declaran su dificultad por instancia", function(){
+    var casos = { "p7-ruffini":[2, 3], "p10-sistemas":[3, 2], "p7-cuadratica":[2, 3], "p8-cuadratica-f":[2, 3], "p8-exp-log":[2, 3] };
+    for(var lid in casos){
+      var banco = LESSON_EXERCISES[lid] || [];
+      if(banco.length !== 8) return lid + " tiene " + banco.length + " generadores y debería tener 8 (6 originales más 2 nuevos al final)";
+      for(var gi = 6; gi < 8; gi++){
+        for(var r = 0; r < 40; r++){
+          var e = null; try{ e = banco[gi](); }catch(err){}
+          if(!lexExerciseSane(e)) return lid + "#g" + gi + " sirvió un ejercicio que no pasa la validación reforzada";
+          if(e.dificultad !== casos[lid][gi - 6]) return lid + "#g" + gi + " sirvió dificultad " + JSON.stringify(e.dificultad) + " y debería declarar " + casos[lid][gi - 6];
+        }
+      }
+    }
+    return true;
+  });
+  check("Regresión Fase 2 Pre-CBC: los 6 generadores originales de cada banco remediado se conservan (siguen sirviendo ejercicios sanos y sin dificultad declarada)", function(){
+    var lids = ["p7-ruffini", "p10-sistemas", "p7-cuadratica", "p8-cuadratica-f", "p8-exp-log"];
+    for(var li = 0; li < lids.length; li++){
+      var banco = LESSON_EXERCISES[lids[li]] || [];
+      if(banco.length < 6) return lids[li] + " perdió generadores: tiene " + banco.length;
+      for(var gi = 0; gi < 6; gi++){
+        for(var r = 0; r < 10; r++){
+          var e = null; try{ e = banco[gi](); }catch(err){}
+          if(!lexExerciseSane(e)) return lids[li] + "#g" + gi + " (original) sirvió un ejercicio que no pasa la validación reforzada";
+          if(typeof e.dificultad !== "undefined" && e.dificultad !== null) return lids[li] + "#g" + gi + " (original) cambió: ahora declara dificultad " + e.dificultad;
+        }
+      }
+    }
+    return true;
+  });
   return results;
 }
 window.TutorData = { migrateV1toV2: migrateV1toV2, validateStateShape: validateStateShape, serializeBackup: serializeBackup, parseBackup: parseBackup, importBackupText: importBackupText, recordAttempt: recordAttempt, patronParaBajar: patronParaBajar, runPhaseATests: runPhaseATests, runEngineTests: runEngineTests, isOpenAttempt: isOpenAttempt, isStepsRetryAttempt: isStepsRetryAttempt, writeVerified: writeVerified, saveState: saveState, loadState: loadState, computeSkillAgg: computeSkillAgg, skillAggSummary: skillAggSummary, ATTEMPTS_CAP: ATTEMPTS_CAP, getState: function(){ return state; }, getSessionId: function(){ return currentSessionId; } };
@@ -4569,23 +4644,36 @@ LESSONS.push(
   ] },
 { id:"p7-ruffini", week:7, title:"Polinomios y la regla de Ruffini", desc:"Grado, operaciones, división de polinomios y el teorema del resto: contenido directo de Álgebra A, Unidad 1.",
   steps:[
-    { v:"POLINOMIO", vc:"blue", i:"Un polinomio es una suma de términos con potencias de x: P(x) = 2x³ − 5x² + x − 7. Su grado es el exponente más grande con coeficiente distinto de cero: acá, 3.",
-      r:"Cada término es coeficiente por potencia de x. El término sin x es el término independiente.",
-      s:"Evaluar un polinomio es reemplazar la x por un número: P(2) = 2 · 8 − 5 · 4 + 2 − 7 = −9. Ese número, el valor en un punto, es la pieza que conecta con Ruffini.",
-      b:[ {k:"ink", t:"P(x) = 2x³ − 5x² + x − 7, grado 3", c:"blue"}, {k:"ink", t:"P(2) = −9", c:"green"} ] },
-    { v:"RUFFINI", vc:"black", i:"Ruffini divide un polinomio por (x − a) sin hacer la división larga: se bajan los coeficientes, se multiplica por a y se suma, en cadena.",
-      r:"Para dividir P(x) = x³ − 2x² − 5x + 6 por (x − 1): coeficientes 1, −2, −5, 6; con a = 1 la cadena da cociente x² − x − 6 y resto 0.",
-      s:"Que el resto dé 0 significa algo enorme: (x − 1) es un factor de P(x), o sea que x = 1 es una raíz del polinomio. Ruffini no solo divide: caza raíces.",
+    { v:"POLINOMIO Y DIVISIÓN", vc:"blue", i:"Un polinomio es una suma de términos con potencias de x: P(x) = 2x³ − 5x² + x − 7. Su grado es el exponente más grande con coeficiente distinto de cero: acá, 3. Dividir P(x) por otro polinomio es buscar un cociente Q(x) y un resto R(x) tales que P(x) = divisor · Q(x) + R(x), con el grado del resto menor que el grado del divisor.",
+      r:"Cada término es coeficiente por potencia de x. El término sin x es el término independiente. Evaluar un polinomio es reemplazar la x por un número: P(2) = 2 · 8 − 5 · 4 + 2 − 7 = −9.",
+      s:"Si el divisor es (x − a), de grado 1, el resto tiene grado menor que 1: el resto es un número, nunca un polinomio. Esa división corta es la que la regla de Ruffini hace en segundos, y es la llave para cazar raíces.",
+      b:[ {k:"ink", t:"P(x) = 2x³ − 5x² + x − 7, grado 3", c:"blue"}, {k:"ink", t:"P(x) = (x − a) · Q(x) + resto, y el resto es un número", c:"green"} ] },
+    { v:"LA TABLA DE RUFFINI, PASO A PASO", vc:"black", i:"Problema: dividir P(x) = x³ − 2x² − 5x + 6 por (x − 1). Ruffini sirve solo para divisores de la forma (x − a); acá a = 1. Se escriben los coeficientes en orden y completos: 1, −2, −5, 6. Se baja el primero: 1. Se multiplica por a: 1 · 1 = 1, y se suma al siguiente coeficiente: −2 + 1 = −1.",
+      r:"Sigue la cadena: 1 · (−1) = −1, y −5 + (−1) = −6. Después 1 · (−6) = −6, y 6 + (−6) = 0. La fila de abajo quedó: 1, −1, −6, 0.",
+      s:"Por qué funciona: es la división larga abreviada. Multiplicar por a y sumar reproduce, coeficiente a coeficiente, exactamente las mismas cuentas que la división escrita completa, sin arrastrar las x.",
       b:[ {k:"flow", items:[
           { l:"Coeficientes", t:"1, −2, −5, 6 con a = 1", c:"" },
-          { l:"La cadena", t:"bajo, multiplico por 1, sumo", c:"blue" },
-          { l:"Resultado", t:"cociente x² − x − 6, resto 0", c:"green" },
-          { l:"Entonces", t:"P(x) = (x − 1)(x² − x − 6) y 1 es raíz", c:"green" } ]} ] },
-    { v:"TEOREMA DEL RESTO", vc:"orange", i:"El teorema del resto dice que el resto de dividir P(x) por (x − a) es exactamente P(a). Por eso, si P(a) = 0, a es raíz y (x − a) es factor.",
-      r:"P(a) = 0 ⇔ (x − a) divide a P(x). Las raíces racionales candidatas son p/q, con p divisor del término independiente y q divisor del coeficiente principal. Si el coeficiente principal es 1, las candidatas son los divisores enteros del término independiente.",
-      s:"Para cazar raíces de x³ − 2x² − 5x + 6 se prueban los divisores de 6: 1 funcionó. El cociente x² − x − 6 se factoriza como (x + 2)(x − 3): las raíces completas son 1, −2 y 3.",
-      b:[ {k:"ink", t:"P(x) = (x − 1)(x + 2)(x − 3)", c:"green"}, {k:"ink", t:"raíces: 1, −2 y 3", c:"blue"} ] },
-    { v:"CIERRA", vc:"black", i:"Polinomio, grado, Ruffini para dividir y cazar raíces, y el teorema del resto que une las dos cosas.",
+          { l:"Paso 1", t:"bajo el 1: 1 · 1 = 1 y −2 + 1 = −1", c:"blue" },
+          { l:"Paso 2", t:"1 · (−1) = −1 y −5 + (−1) = −6", c:"blue" },
+          { l:"Paso 3", t:"1 · (−6) = −6 y 6 + (−6) = 0", c:"blue" },
+          { l:"Fila de abajo", t:"1, −1, −6, 0", c:"green" } ]} ] },
+    { v:"LEER EL RESULTADO Y COMPROBAR", vc:"orange", i:"La fila de abajo se lee así: todos los números menos el último son los coeficientes del cociente, que tiene un grado menos que P: Q(x) = x² − x − 6. El último número es el resto: 0.",
+      r:"Comprobación: cociente por divisor más resto tiene que devolver P. (x − 1)(x² − x − 6) = x³ − x² − 6x − x² + x + 6 = x³ − 2x² − 5x + 6. Coincide con P(x): la división está bien.",
+      s:"Que el resto dé 0 significa algo enorme: (x − 1) es un factor de P(x), o sea que x = 1 es una raíz del polinomio. Ruffini no solo divide: caza raíces.",
+      b:[ {k:"ink", t:"cociente x² − x − 6, resto 0", c:"green"}, {k:"ink", t:"(x − 1)(x² − x − 6) + 0 = x³ − 2x² − 5x + 6", c:"blue"} ] },
+    { v:"TEOREMA DEL RESTO Y DEL FACTOR", vc:"black", i:"El teorema del resto dice que el resto de dividir P(x) por (x − a) es exactamente P(a): no hace falta dividir para saberlo, alcanza con evaluar. Y el teorema del factor agrega: si P(a) = 0, entonces (x − a) es un factor de P(x) y a es una raíz.",
+      r:"P(a) = 0 ⇔ (x − a) divide a P(x). En el ejemplo: P(1) = 1 − 2 − 5 + 6 = 0, y por eso el resto de la tabla dio 0: son la misma cuenta vista de dos maneras.",
+      s:"Para buscar raíces racionales de un polinomio con coeficientes enteros: toda raíz racional es p/q, con p divisor del término independiente y q divisor del coeficiente principal. Si el coeficiente principal es 1, las candidatas son los divisores enteros del término independiente.",
+      b:[ {k:"ink", t:"resto de dividir por (x − a) = P(a)", c:"blue"}, {k:"ink", t:"si P(a) = 0, (x − a) es factor", c:"green"} ] },
+    { v:"FACTORIZAR UN CÚBICO, COMPLETO", vc:"orange", i:"Problema: factorizar P(x) = x³ − 6x² + 11x − 6. Las candidatas son los divisores de 6: ±1, ±2, ±3, ±6. Pruebo a = 1: P(1) = 1 − 6 + 11 − 6 = 0. Es raíz: (x − 1) es factor.",
+      r:"Ruffini con a = 1 sobre los coeficientes 1, −6, 11, −6: bajo 1, multiplico y sumo y queda −5, multiplico y sumo y queda 6, multiplico y sumo y queda 0. El cociente es x² − 5x + 6, que se factoriza como (x − 2)(x − 3). Factorización completa: P(x) = (x − 1)(x − 2)(x − 3).",
+      s:"Comprobación evaluando en cada raíz: P(2) = 8 − 24 + 22 − 6 = 0 y P(3) = 27 − 54 + 33 − 6 = 0. Y si el coeficiente principal no fuera 1, las candidatas serían fracciones p/q: en 2x³ − 3x² − 3x + 2, por ejemplo, la raíz 1/2 existe porque q puede ser 2, el coeficiente principal.",
+      b:[ {k:"ink", t:"P(x) = (x − 1)(x − 2)(x − 3)", c:"green"}, {k:"ink", t:"raíces 1, 2 y 3: P(1) = P(2) = P(3) = 0", c:"blue"} ] },
+    { v:"ERRORES FRECUENTES", vc:"black", i:"Tres errores que arruinan la tabla. Primero: olvidar los coeficientes cero de los términos que faltan. Para dividir x³ + 6 por (x − 1), los coeficientes son 1, 0, 0, 6: si falta un 0, toda la cadena se corre y el resultado corresponde a otro polinomio.",
+      r:"Segundo: usar a con el signo cambiado. Dividir por (x + 2) es dividir por (x − (−2)): vale a = −2, no 2. Tercero: creer que el resto puede ser un polinomio: al dividir por (x − a), el resto es siempre un número.",
+      s:"Control rápido antes de entregar: el cociente tiene un grado menos que P, y la comprobación (x − a) · Q(x) + resto debe devolver P(x) término a término.",
+      b:[ {k:"ink", t:"x³ + 6 → coeficientes 1, 0, 0, 6", c:"orange"}, {k:"ink", t:"dividir por (x + 2): a = −2", c:"blue"} ] },
+    { v:"CIERRA", vc:"black", i:"Polinomio, grado, la tabla de Ruffini ejecutada para dividir y cazar raíces, y los teoremas del resto y del factor que unen las dos cosas.",
       r:"Este contenido vuelve tal cual en Álgebra A, Unidad 1: allá se suma el teorema fundamental del álgebra, que garantiza que un polinomio de grado n tiene n raíces complejas contadas con multiplicidad.",
       s:"La próxima clase resuelve la ecuación cuadrática completa: con factorización cuando se puede, y con Bhaskara siempre.",
       b:[ {k:"ink", t:"P(a) = 0 → (x − a) es factor", c:"green"} ] }
@@ -4611,6 +4699,22 @@ LESSONS.push(
           { l:"D > 0", t:"dos soluciones reales distintas", c:"green" },
           { l:"D = 0", t:"una solución real doble", c:"blue" },
           { l:"D < 0", t:"ninguna solución real", c:"orange" } ]} ] },
+    { v:"COMPLETAR EL CUADRADO: LA IDEA", vc:"black", i:"Hay un tercer camino para resolver cuadráticas, y es el que explica a los otros dos: completar el cuadrado. La idea: x² + bx no es un cuadrado perfecto, pero casi. Como (x + b/2)² = x² + bx + (b/2)², sumando (b/2)² a x² + bx se obtiene un cuadrado perfecto: (x + b/2)².",
+      r:"El porqué geométrico: x² es un cuadrado de lado x, y bx son dos rectángulos de x por b/2 pegados a dos de sus lados. La figura casi cierra un cuadrado mayor, de lado x + b/2: falta solo la esquinita, un cuadradito de lado b/2 que vale (b/2)². Ese es exactamente el número que se suma.",
+      s:"Condición para aplicarlo tal cual: el coeficiente de x² debe ser 1. Si no lo es, primero se divide toda la ecuación por a, o se saca a de factor común, y recién después se completa.",
+      b:[ {k:"ink", t:"x² + bx + (b/2)² = (x + b/2)²", c:"blue"}, {k:"ink", t:"lo que falta es la esquina: (b/2)²", c:"green"} ] },
+    { v:"COMPLETAR EL CUADRADO, EJECUTADO", vc:"orange", i:"Problema: resolver x² + 6x + 5 = 0 completando el cuadrado. Acá b = 6, así que (b/2)² = 3² = 9. Paso el 5 a la derecha: x² + 6x = −5. Sumo 9 en los dos lados: x² + 6x + 9 = 4. El lado izquierdo es el cuadrado perfecto: (x + 3)² = 4.",
+      r:"Saco raíz en los dos lados, con los dos signos: x + 3 = 2 o x + 3 = −2. Las soluciones son x = −1 y x = −5. Comprobación: (−1)² + 6 · (−1) + 5 = 1 − 6 + 5 = 0, y (−5)² + 6 · (−5) + 5 = 25 − 30 + 5 = 0.",
+      s:"La conexión con Bhaskara: la fórmula general no es un truco aparte. Es este mismo procedimiento hecho una sola vez sobre la ecuación general ax² + bx + c = 0: se divide por a, se completa el cuadrado con (b/(2a))², se saca raíz y se despeja, y lo que queda escrito es x = (−b ± √(b² − 4ac)) / (2a).",
+      b:[ {k:"flow", items:[
+          { l:"Paso el término suelto", t:"x² + 6x = −5", c:"" },
+          { l:"Sumo (b/2)² = 9 a ambos lados", t:"x² + 6x + 9 = 4", c:"blue" },
+          { l:"Es un cuadrado", t:"(x + 3)² = 4", c:"blue" },
+          { l:"Raíz con ± y soluciones", t:"x = −1 y x = −5", c:"green" } ]} ] },
+    { v:"ERRORES FRECUENTES AL COMPLETAR", vc:"black", i:"El error clásico al completar el cuadrado: sumar (b/2)² de un solo lado. Si sumas 9 solo a la izquierda, la igualdad se rompe: lo que se suma de un lado se suma también del otro.",
+      r:"Segundo error: olvidar el ± al sacar la raíz de (x + 3)² = 4. Sin el ± se pierde una de las dos soluciones: la mitad de la respuesta.",
+      s:"Y el tercero: completar sin que el coeficiente de x² sea 1. Con 2x² + 8x, el número a sumar no sale de b = 8: primero se divide por 2 o se saca el 2 de factor común, y se completa sobre x² + 4x.",
+      b:[ {k:"ink", t:"sumar (b/2)² de un solo lado rompe la igualdad", c:"orange"}, {k:"ink", t:"al sacar raíz, el ± no es opcional", c:"blue"} ] },
     { v:"CIERRA", vc:"black", i:"Cuadrática completa: factorizar si se puede, Bhaskara siempre, y el discriminante para saber qué esperar antes de la cuenta.",
       r:"El vértice de la parábola asociada está en x = −b/(2a): vuelve en la clase de función cuadrática.",
       s:"Con esto cierra el álgebra de la Práctica 0. La próxima semana abre el tema central de Análisis: las funciones.",
@@ -4674,10 +4778,18 @@ LESSONS.push(
       r:"El eje de simetría es la vertical x = −b/(2a): la parábola es un espejo de sí misma respecto de esa recta.",
       s:"Las raíces de esta parábola son 1 y 3 (factoriza como (x − 1)(x − 3)), y fíjate: el vértice x = 2 es justo el punto medio entre 1 y 3. La simetría no es un detalle: es la estructura.",
       b:[ {k:"ink", t:"vértice de x² − 4x + 3: (2, −1)", c:"green"}, {k:"ink", t:"raíces 1 y 3, punto medio 2", c:"blue"} ] },
-    { v:"FORMA VÉRTICE", vc:"orange", i:"Toda cuadrática se puede escribir como a(x − h)² + k, donde (h, k) es el vértice. Esa escritura se obtiene completando el cuadrado y deja el dibujo a la vista.",
-      r:"f(x) = x² − 4x + 3 = (x − 2)² − 1: el vértice (2, −1) se lee directo de la fórmula.",
-      s:"Completar el cuadrado es una técnica que vuelve en integrales y en cónicas: aprenderla acá, con calma, paga tres veces.",
-      b:[ {k:"ink", t:"x² − 4x + 3 = (x − 2)² − 1", c:"green"} ] },
+    { v:"FORMA VÉRTICE, COMPLETANDO EL CUADRADO", vc:"orange", i:"Toda cuadrática se puede escribir como a(x − h)² + k, donde (h, k) es el vértice, y esa escritura se obtiene completando el cuadrado. Con f(x) = x² − 4x + 3: miro x² − 4x, con b = −4, y calculo (b/2)² = (−2)² = 4. Sumo y resto 4 para no cambiar la función: f(x) = (x² − 4x + 4) − 4 + 3.",
+      r:"El paréntesis es el cuadrado perfecto: (x − 2)². Queda f(x) = (x − 2)² − 1, obtenida completando el cuadrado. De esa forma se lee todo sin cuentas nuevas: vértice (2, −1), eje de simetría x = 2, y como a = 1 es positivo, el valor extremo es un mínimo y vale −1.",
+      s:"Comprobación contra la fórmula del vértice: h = −b/(2a) = 4/2 = 2 y k = f(2) = 4 − 8 + 3 = −1. Coincide. Y desarrollando la forma: (x − 2)² − 1 = x² − 4x + 4 − 1 = x² − 4x + 3: es la misma función.",
+      b:[ {k:"ink", t:"x² − 4x + 3 = (x − 2)² − 1, completando el cuadrado", c:"green"}, {k:"ink", t:"vértice (2, −1), eje x = 2, mínimo −1", c:"blue"} ] },
+    { v:"COMPLETAR EL CUADRADO CUANDO a NO ES 1", vc:"black", i:"Con f(x) = 2x² + 8x + 5, el 2 manda: primero se saca de factor común en los términos con x: f(x) = 2(x² + 4x) + 5. Adentro del paréntesis, b = 4 y (b/2)² = 4. Sumo 4 adentro: f(x) = 2(x² + 4x + 4) + 5 − 8.",
+      r:"Ojo con la compensación: sumar 4 adentro del paréntesis suma 2 · 4 = 8 en total, porque todo el paréntesis está multiplicado por 2. Por eso afuera se resta 8, no 4. Queda f(x) = 2(x + 2)² − 3: vértice (−2, −3), eje x = −2, y mínimo −3 porque a = 2 es positivo.",
+      s:"Comprobación con la fórmula del vértice: h = −b/(2a) = −8/4 = −2 y f(−2) = 8 − 16 + 5 = −3. Coincide. Olvidar el factor a al compensar es el error que más se repite en esta técnica.",
+      b:[ {k:"ink", t:"2x² + 8x + 5 = 2(x + 2)² − 3", c:"green"}, {k:"ink", t:"sumar 4 adentro suma 8 en total: afuera se resta 8", c:"orange"} ] },
+    { v:"ERRORES FRECUENTES", vc:"orange", i:"Primero: leer el vértice con el signo de h cambiado. En (x − 2)² − 1, el vértice es (2, −1), no (−2, −1): la forma es (x − h)², y ese menos ya viene en la escritura. Lo que aparece restando adentro es h con su signo verdadero.",
+      r:"Segundo: sumar (b/2)² de un solo lado al pasar a la forma vértice. En una función no hay dos lados de una igualdad: lo que se suma se resta en la misma expresión, y si hay un factor a multiplicando el paréntesis, la compensación se multiplica por ese a.",
+      s:"Control final en dos direcciones: desarrolla la forma vértice y llega a la expresión original, y compara el vértice leído con el de la fórmula −b/(2a). Si las dos cuentas coinciden, la forma está bien.",
+      b:[ {k:"ink", t:"(x − h)²: el vértice lleva h, no −h", c:"orange"}, {k:"ink", t:"lo que se suma adentro se compensa afuera", c:"blue"} ] },
     { v:"CIERRA", vc:"black", i:"Parábola: signo de a para la apertura, vértice en −b/(2a), raíces por Bhaskara y forma vértice para leer todo de una.",
       r:"Optimización en Análisis empieza acá: el vértice es el primer máximo/mínimo que resuelves en tu vida.",
       s:"La próxima clase presenta las dos funciones que crecen distinto: la exponencial y su inversa, el logaritmo.",
@@ -4697,6 +4809,18 @@ LESSONS.push(
       r:"El logaritmo baja un nivel cada operación: la multiplicación se vuelve suma, la potencia se vuelve multiplicación. Para eso se inventó.",
       s:"Ejemplo: log(1000) en base 10 es 3, y log(100 · 10) = log 100 + log 10 = 2 + 1 = 3. Las dos cuentas cuentan lo mismo desde lados opuestos.",
       b:[ {k:"ink", t:"log(a · b) = log a + log b", c:"blue"}, {k:"ink", t:"log(aⁿ) = n · log a", c:"green"} ] },
+    { v:"ECUACIONES EXPONENCIALES", vc:"black", i:"Resolver una ecuación exponencial es despejar una x que está en el exponente. La condición de partida es la de la definición: la base debe ser positiva y distinta de 1. Primer camino, igualar bases: si los dos lados son potencias de la misma base, los exponentes son iguales. Ejemplo completo: 2^(x + 1) = 8. Como 8 = 2³, queda x + 1 = 3, y x = 2. Comprobación: 2^(2 + 1) = 2³ = 8.",
+      r:"Segundo camino, cuando las bases no se pueden igualar: aplicar logaritmo a los dos lados. Ejemplo completo: 3ˣ = 20. Ninguna potencia entera de 3 da 20, así que tomo logaritmo y despejo: x = log₃(20) = ln 20 / ln 3 ≈ 2,73. Comprobación: 3^2,73 ≈ 20.",
+      s:"La estrategia se lee en el enunciado: si el otro lado es una potencia conocida de la base (8 de 2, 27 de 3, 25 de 5), se igualan las bases; si no, el logaritmo despeja el exponente bajándolo a multiplicación con la propiedad log(aⁿ) = n · log a.",
+      b:[ {k:"ink", t:"2^(x + 1) = 8 = 2³ → x = 2", c:"green"}, {k:"ink", t:"3ˣ = 20 → x = ln 20 / ln 3 ≈ 2,73", c:"blue"} ] },
+    { v:"ECUACIONES LOGARÍTMICAS Y EL DOMINIO", vc:"orange", i:"En una ecuación logarítmica la x está adentro del logaritmo, y manda una regla previa: el argumento debe ser positivo, porque el logaritmo de cero o de un negativo no existe. El procedimiento: anotar el dominio, juntar los logaritmos con las propiedades hasta dejar uno solo, pasar a la forma exponencial, resolver, y verificar cada candidato contra el dominio.",
+      r:"Ejemplo completo: log₂(x) + log₂(x − 2) = 3. Dominio: x mayor que 0 y x − 2 mayor que 0, o sea x mayor que 2. Junto con la propiedad del producto: log₂(x(x − 2)) = 3. Paso a la forma exponencial: x(x − 2) = 2³ = 8. Queda x² − 2x − 8 = 0, que se factoriza como (x − 4)(x + 2) = 0: los candidatos son x = 4 y x = −2.",
+      s:"Verificación de dominio: x = −2 no cumple x mayor que 2, y de hecho log₂(−2) no existe: se descarta como solución extraña. Queda x = 4. Comprobación en la ecuación original: log₂(4) + log₂(2) = 2 + 1 = 3. Correcto.",
+      b:[ {k:"ink", t:"dominio primero: x > 2", c:"orange"}, {k:"ink", t:"x = 4 sirve · x = −2 se descarta por dominio", c:"green"} ] },
+    { v:"ERRORES FRECUENTES", vc:"black", i:"El error más repetido: repartir el logaritmo sobre una suma. log(a + b) no es log a + log b: la propiedad vale para el producto. Contraejemplo: log₂(4 + 4) = log₂(8) = 3, pero log₂(4) + log₂(4) = 2 + 2 = 4. No coinciden.",
+      r:"Segundo: olvidar verificar el dominio y entregar soluciones extrañas, como el −2 del ejemplo anterior. La ecuación transformada puede tener más soluciones que la original: el filtro es el dominio.",
+      s:"Tercero: confundir la base. log₂(8) = 3 porque 2³ = 8, pero log₈(2) = 1/3 porque 8^(1/3) = 2. La base es el número que se eleva: leerla mal cambia toda la cuenta.",
+      b:[ {k:"ink", t:"log(a + b) ≠ log a + log b", c:"orange"}, {k:"ink", t:"sin dominio verificado, la respuesta puede incluir extrañas", c:"blue"} ] },
     { v:"CIERRA", vc:"black", i:"Exponencial: multiplica a ritmo constante, nunca se anula. Logaritmo: su inversa, pregunta por el exponente y solo acepta positivos.",
       r:"El número e y el logaritmo natural (ln) son la versión que Análisis usa en serio: aparecen en derivadas e integrales de la Unidad 1 en adelante.",
       s:"Queda una clase de funciones: componer funciones y desarmarlas con la inversa.",
@@ -4854,18 +4978,34 @@ LESSONS.push(
           { l:"Se cruzan en un punto", t:"solución única (SCD)", c:"green" },
           { l:"Paralelas", t:"sin solución (SI)", c:"orange" },
           { l:"La misma recta", t:"infinitas soluciones (SCI)", c:"blue" } ]} ] },
-    { v:"MÉTODOS", vc:"black", i:"Tres métodos clásicos para 2×2: sustitución (despejar y reemplazar), igualación (igualar los despejes) y reducción (sumar las ecuaciones para eliminar una incógnita).",
-      r:"Ejemplo por reducción: x + y = 5 y x − y = 1. Sumando: 2x = 6, x = 3; y después y = 2.",
-      s:"Ningún método es el correcto: se elige según la forma del sistema. Lo que no cambia es la verificación: reemplazar la solución en las dos ecuaciones originales.",
-      b:[ {k:"ink", t:"x + y = 5, x − y = 1 → x = 3, y = 2", c:"green"} ] },
-    { v:"GAUSS 3×3", vc:"orange", i:"Con tres incógnitas manda la eliminación de Gauss: usar una ecuación para eliminar una incógnita de las demás, en cadena, hasta dejar el sistema triangular y despejar de atrás hacia adelante.",
-      r:"Las operaciones permitidas no cambian las soluciones: intercambiar ecuaciones, multiplicar una por un número no nulo y sumarle un múltiplo de otra.",
-      s:"Gauss es un algoritmo: pasos fijos, sin inspiración. En Álgebra A se hace con matrices, y en Pensamiento Computacional se reconoce como el mismo espíritu: un procedimiento finito y preciso.",
+    { v:"MÉTODOS 2×2", vc:"black", i:"Tres métodos clásicos para 2×2: sustitución (despejar y reemplazar), igualación (igualar los despejes) y reducción (sumar o restar las ecuaciones para eliminar una incógnita). Ningún método es el correcto: se elige según la forma del sistema.",
+      r:"Ejemplo por reducción: x + y = 5 y x − y = 1. Sumando las ecuaciones, la y se cancela: 2x = 6, así que x = 3. Reemplazando en la primera: 3 + y = 5, de donde y = 2.",
+      s:"Comprobación en las dos ecuaciones originales: 3 + 2 = 5 y 3 − 2 = 1. Cumple las dos: (3, 2) es la solución. La verificación se hace siempre en las originales, no en las transformadas.",
+      b:[ {k:"ink", t:"x + y = 5, x − y = 1 → x = 3, y = 2", c:"green"}, {k:"ink", t:"comprobación: 3 + 2 = 5 y 3 − 2 = 1", c:"blue"} ] },
+    { v:"GAUSS 3×3, EJECUTADO", vc:"orange", i:"Problema: resolver x + y + z = 6, 2x − y + z = 3, x + 2y − z = 2. La idea de Gauss: usar una ecuación para eliminar una incógnita de las demás, en cadena, hasta dejar el sistema escalonado (triangular). Las operaciones permitidas son intercambiar ecuaciones, multiplicar una por un número no nulo y sumarle a una ecuación un múltiplo de otra.",
+      r:"Elimino la x de la segunda y de la tercera usando la primera. A la segunda le resto 2 veces la primera: −3y − z = −9. A la tercera le resto la primera: y − 2z = −4. Después elimino la y de la tercera: a 3 veces la tercera le sumo la segunda: −7z = −21.",
+      s:"Por qué las operaciones no cambian la solución: cada una es reversible (lo que se sumó se puede restar; lo que se multiplicó por un número no nulo se puede dividir), así que el sistema nuevo tiene exactamente las mismas soluciones que el original. La forma escalonada quedó: x + y + z = 6; −3y − z = −9; −7z = −21.",
       b:[ {k:"flow", items:[
-          { l:"Sistema 3×3", t:"tres ecuaciones, tres incógnitas", c:"" },
-          { l:"Elimino en cadena", t:"queda triangular", c:"blue" },
-          { l:"Despejo hacia atrás", t:"de la última a la primera", c:"green" } ]} ] },
-    { v:"CIERRA", vc:"black", i:"Sistemas: buscar el punto común. Tres métodos para 2×2, Gauss para todo lo demás, y tres finales posibles que hay que saber nombrar.",
+          { l:"Original", t:"x + y + z = 6 · 2x − y + z = 3 · x + 2y − z = 2", c:"" },
+          { l:"Elimino x", t:"E2 − 2·E1: −3y − z = −9 · E3 − E1: y − 2z = −4", c:"blue" },
+          { l:"Elimino y", t:"3·E3 + E2: −7z = −21", c:"blue" },
+          { l:"Escalonada", t:"x + y + z = 6 · −3y − z = −9 · −7z = −21", c:"green" } ]} ] },
+    { v:"SUSTITUCIÓN HACIA ATRÁS Y COMPROBACIÓN", vc:"black", i:"De la última ecuación: −7z = −21, así que z = 3. Ese valor sube a la segunda: −3y − 3 = −9, de donde −3y = −6 e y = 2. Y sube a la primera: x + 2 + 3 = 6, así que x = 1.",
+      r:"Comprobación en las tres ecuaciones originales: 1 + 2 + 3 = 6; 2 · 1 − 2 + 3 = 3; 1 + 2 · 2 − 3 = 2. Cumple las tres: la solución es (1, 2, 3).",
+      s:"Esto es la sustitución hacia atrás, y el orden importa: se despeja de la última ecuación a la primera porque la última ya tiene una sola incógnita. Saltear la comprobación en las tres es dejar el ejercicio a mitad de camino.",
+      b:[ {k:"ink", t:"z = 3 → y = 2 → x = 1", c:"green"}, {k:"ink", t:"(1, 2, 3) cumple las tres ecuaciones originales", c:"blue"} ] },
+    { v:"LOS TRES FINALES, LEÍDOS EN LA ESCALONADA", vc:"blue", i:"La escalonada anuncia el final antes de despejar. Si cada incógnita termina con su ecuación, hay solución única, como en el ejemplo anterior. Si una ecuación se vuelve 0 = 0, esa ecuación no aporta nada y queda una variable libre: hay infinitas soluciones.",
+      r:"Mini ejemplo de infinitas: con x + y + z = 6 y x − y = 0, donde la tercera ecuación era el doble de otra y se volvió 0 = 0, la z queda libre: z = 0 da la solución (3, 3, 0) y z = 2 da (2, 2, 2), y todo valor intermedio también sirve.",
+      s:"Mini ejemplo de ninguna: si dos ecuaciones dicen x + y + z = 6 y x + y + z = 7, al restarlas queda 0 = 1, un absurdo: no hay solución. La regla de lectura es: 0 = 0 avisa infinitas; 0 = un número distinto de cero avisa ninguna.",
+      b:[ {k:"flow", items:[
+          { l:"Cada incógnita con su ecuación", t:"solución única (SCD)", c:"green" },
+          { l:"Aparece 0 = 0", t:"infinitas soluciones, una variable libre (SCI)", c:"blue" },
+          { l:"Aparece 0 = 1", t:"sin solución (SI)", c:"orange" } ]} ] },
+    { v:"ERRORES FRECUENTES", vc:"black", i:"Primero: perder el signo al restar ecuaciones. Restar una ecuación cambia el signo de cada uno de sus términos: si la ecuación restada tiene −y, al restarla aparece +y. Conviene escribir la operación al costado, término a término, en vez de hacerla de memoria.",
+      r:"Segundo: eliminar la misma incógnita dos veces sin avanzar. Cada ronda de eliminación apunta a una incógnita nueva en las ecuaciones que quedan debajo: si la segunda ronda vuelve a eliminar la x, el sistema nunca queda triangular.",
+      s:"Tercero: comprobar en una sola ecuación. Una terna puede cumplir dos ecuaciones y fallar en la tercera: la comprobación es en todas las originales, siempre.",
+      b:[ {k:"ink", t:"restar cambia el signo de cada término restado", c:"orange"}, {k:"ink", t:"comprobar en todas las ecuaciones originales", c:"green"} ] },
+    { v:"CIERRA", vc:"black", i:"Sistemas: buscar el punto común. Tres métodos para 2×2, Gauss ejecutado para 3×3, y tres finales posibles que se leen en la escalonada y hay que saber nombrar.",
       r:"La próxima y última clase del bloque: inecuaciones, intervalos y módulo, el lenguaje de las soluciones que no son un punto.",
       s:"Ese lenguaje es el que usan Análisis y Álgebra para escribir casi todas sus respuestas.",
       b:[ {k:"ink", t:"SCD: una · SCI: infinitas · SI: ninguna", c:"green"} ] }
@@ -12369,7 +12509,13 @@ LESSON_EXERCISES["p7-ruffini"] = [
   function(){ return exVF("Verdadero o falso", "Si P(3) = 0, entonces (x − 3) es un factor de P(x)", true, ["Es el teorema del resto: el resto de dividir P(x) por (x − 3) es P(3).", "Si ese resto es 0, la división es exacta y (x − 3) divide a P(x)."]); },
   function(){ return exChoice("Ruffini", "La regla de Ruffini sirve para dividir un polinomio por…", "(x − a)", "cualquier polinomio", "un número cualquiera", ["Ruffini es el atajo para divisores de la forma (x − a).", "Para otros divisores se usa la división larga de polinomios."]); },
   function(){ return exChoice("Raíces del ejemplo", "El polinomio (x − 1)(x + 2)(x − 3) tiene como raíces…", "1, −2 y 3", "−1, 2 y −3", "1, 2 y 3", ["Cada factor (x − a) aporta la raíz a: el factor se anula cuando x = a.", "Ojo con los signos: (x + 2) se anula en x = −2."]); },
-  function(){ var a = ri(2, 4); return exNum("Teorema del resto", "Al dividir P(x) = x² + 1 por (x − " + a + "), el resto es P(" + a + "). ¿Cuánto vale?", a * a + 1, ["El resto de dividir por (x − a) es exactamente P(a), sin hacer la división.", "P(" + a + ") = " + a + "² + 1 = " + (a * a + 1)]); }
+  function(){ var a = ri(2, 4); return exNum("Teorema del resto", "Al dividir P(x) = x² + 1 por (x − " + a + "), el resto es P(" + a + "). ¿Cuánto vale?", a * a + 1, ["El resto de dividir por (x − a) es exactamente P(a), sin hacer la división.", "P(" + a + ") = " + a + "² + 1 = " + (a * a + 1)]); },
+  function(){ var a = pick([1, 2, -1, -2]); var A = ri(-4, 4), B = ri(-5, 5), C = ri(-6, 6); var b1 = A + a, b2 = B + a * b1, r = C + a * b2; function term(v, s){ if(v === 0) return ""; var c = (Math.abs(v) === 1 && s !== "") ? "" : Math.abs(v); return (v < 0 ? " − " : " + ") + c + s; } var P = "x³" + term(A, "x²") + term(B, "x") + term(C, ""); var Q = "x²" + term(b1, "x") + term(b2, ""); return exDif(exSteps("Ruffini completo", "Aplica la regla de Ruffini para dividir P(x) = " + P + " por (x " + (a < 0 ? "+ " + Math.abs(a) : "− " + a) + "). Completa la fila de abajo de la tabla, número a número.",
+    [ exNum("Bajo y sumo", "Bajas el primer coeficiente, lo multiplicas por a y lo sumas al segundo coeficiente. ¿Qué número queda en la fila de abajo?", b1, ["Los coeficientes van en orden y completos, y a es " + fmtN(a) + ".", "Bajo el 1, multiplico por a y sumo: el primer número de abajo es " + fmtN(b1) + "."]),
+      exNum("Sigo la cadena", "Multiplicas ese resultado por a y lo sumas al tercer coeficiente. ¿Qué número sigue en la fila de abajo?", b2, ["La cadena es siempre igual: multiplicar por a y sumar al siguiente coeficiente.", "El segundo número de abajo es " + fmtN(b2) + "."]),
+      exNum("El resto", "Multiplicas por a una última vez y sumas al término independiente. ¿Cuánto es el resto de la división?", r, ["El último número de la fila de abajo es el resto, y es un número, no un polinomio.", "El resto es " + fmtN(r) + " y el cociente es " + Q + "."]) ],
+    ["La tabla completa: coeficientes 1, " + fmtN(A) + ", " + fmtN(B) + ", " + fmtN(C) + " con a = " + fmtN(a) + ".", "La fila de abajo es 1, " + fmtN(b1) + ", " + fmtN(b2) + ", " + fmtN(r) + ": cociente " + Q + " y resto " + fmtN(r) + ".", "Comprobación: divisor por cociente más resto devuelve P(x)."]), 2); },
+  function(){ var rs = pick([[1, 2, 3], [1, -2, 3], [-1, 2, 3], [1, 2, -3], [2, -1, -3], [-2, 1, 4]]); var r1 = rs[0], r2 = rs[1], r3 = rs[2]; var s1 = r1 + r2 + r3, s2 = r1 * r2 + r1 * r3 + r2 * r3, s3 = r1 * r2 * r3; function term(v, s){ if(v === 0) return ""; var c = (Math.abs(v) === 1 && s !== "") ? "" : Math.abs(v); return (v < 0 ? " − " : " + ") + c + s; } var P = "x³" + term(-s1, "x²") + term(s2, "x") + term(-s3, ""); function fac(r){ return r < 0 ? "(x + " + Math.abs(r) + ")" : "(x − " + r + ")"; } function facInv(r){ return r < 0 ? "(x − " + Math.abs(r) + ")" : "(x + " + r + ")"; } var ok = fac(r1) + fac(r2) + fac(r3); return exDif(exChoice("Factorizar un cúbico", "La factorización completa de P(x) = " + P + " es…", ok, facInv(r1) + facInv(r2) + facInv(r3), fac(r1) + fac(r2) + fac(r3 + 1), ["Busco raíces entre los divisores del término independiente: el coeficiente principal es 1, así que las candidatas son los enteros p/q con q = 1.", "P(" + fmtN(r1) + ") = 0, así que " + fac(r1) + " es un factor; divido con Ruffini y el cociente cuadrático se sigue factorizando.", "La factorización completa es " + ok + ": las raíces son " + fmtN(r1) + ", " + fmtN(r2) + " y " + fmtN(r3) + ", y cada una anula a P."]), 3); }
 ];
 LESSON_EXERCISES["p7-cuadratica"] = [
   function(){ return exChoice("Por factores", "Las soluciones de (x − 2)(x + 5) = 0 son…", "x = 2 y x = −5", "x = −2 y x = 5", "x = 2 y x = 5", ["Un producto da cero solo si algún factor es cero: x − 2 = 0 o x + 5 = 0.", "Cada factor se iguala a cero por separado."]); },
@@ -12377,7 +12523,12 @@ LESSON_EXERCISES["p7-cuadratica"] = [
   function(){ return exChoice("Leer el discriminante", "Si el discriminante de una cuadrática es negativo, la ecuación tiene…", "ninguna solución real", "dos soluciones reales", "una solución doble", ["D menor que 0: la raíz de un negativo no existe en los reales.", "Las soluciones existen, pero son complejas: tema de Álgebra A."]); },
   function(){ return exVF("Verdadero o falso", "Si D = 0, la ecuación cuadrática tiene dos soluciones reales distintas", false, ["Con D = 0 las dos ramas de Bhaskara coinciden: hay una sola solución, doble.", "Dos distintas pide D mayor que 0."]); },
   function(){ return exChoice("Bhaskara", "En x = (−b ± √(b² − 4ac)) / (2a), el símbolo ± significa que…", "hay dos ramas: una con suma y otra con resta", "el resultado es aproximado", "se puede elegir el signo que uno quiera al final", ["Cada rama da una solución: por eso una cuadrática tiene hasta dos soluciones.", "Se calculan las dos por separado y se verifican en la ecuación."]); },
-  function(){ var a = ri(2, 5); return exNum("El vértice", "La parábola y = x² − " + (2 * a) + "x + 3 tiene su vértice en x = −b/(2a). ¿Cuánto vale ese x?", a, ["b es −" + (2 * a) + ": −b/(2a) = " + (2 * a) + "/2.", "El vértice está en x = " + a + ", el punto medio entre las raíces."]); }
+  function(){ var a = ri(2, 5); return exNum("El vértice", "La parábola y = x² − " + (2 * a) + "x + 3 tiene su vértice en x = −b/(2a). ¿Cuánto vale ese x?", a, ["b es −" + (2 * a) + ": −b/(2a) = " + (2 * a) + "/2.", "El vértice está en x = " + a + ", el punto medio entre las raíces."]); },
+  function(){ var m = pick([2, 3, 4, -2, -3]); var k = ri(1, 3); var b = 2 * m, c = m * m - k * k; var mayor = -m + k, menor = -m - k; function term(v, s){ if(v === 0) return ""; var c = (Math.abs(v) === 1 && s !== "") ? "" : Math.abs(v); return (v < 0 ? " − " : " + ") + c + s; } var ec = "x²" + term(b, "x") + term(c, ""); var paren = m < 0 ? "(x − " + Math.abs(m) + ")²" : "(x + " + m + ")²"; return exDif(exSteps("Completar el cuadrado para resolver", "Resuelve completando el cuadrado: " + ec + " = 0.",
+    [ exNum("El número que completa", "¿Cuánto vale (b/2)², el número que hay que sumar en ambos lados para completar el cuadrado?", m * m, ["b es " + fmtN(b) + ": la mitad es " + fmtN(m) + ", y su cuadrado es " + (m * m) + ".", "Sumando " + (m * m) + " en ambos lados, el trinomio se vuelve un cuadrado perfecto."]),
+      exNum("La raíz mayor", "Completado el cuadrado queda " + paren + " = " + (k * k) + ". ¿Cuál es la raíz mayor de la ecuación?", mayor, ["Saco raíz con los dos signos y despejo: salen dos raíces.", "Las raíces son " + fmtN(menor) + " y " + fmtN(mayor) + ": la mayor es " + fmtN(mayor) + "."]) ],
+    ["Se suma (b/2)² = " + (m * m) + " en ambos lados y queda " + paren + " = " + (k * k) + ".", "Saco raíz con ± y despejo: las soluciones son " + fmtN(menor) + " y " + fmtN(mayor) + ".", "Comprobación: " + fmtN(mayor) + "² + (" + fmtN(b) + ") · " + fmtN(mayor) + term(c, "") + " = " + (mayor * mayor + b * mayor + c) + ", como debe dar una raíz."]), 2); },
+  function(){ var m = pick([2, 3, -2, -3, 4]); var c = ri(-6, 8); var b = 2 * m, k = c - m * m; function term(v, s){ if(v === 0) return ""; var c = (Math.abs(v) === 1 && s !== "") ? "" : Math.abs(v); return (v < 0 ? " − " : " + ") + c + s; } var f = "x²" + term(b, "x") + term(c, ""); var paren = m < 0 ? "(x − " + Math.abs(m) + ")²" : "(x + " + m + ")²"; var ok = "(" + fmtN(-m) + ", " + fmtN(k) + ")"; return exDif(exChoice("Forma vértice completando el cuadrado", "Al completar el cuadrado en f(x) = " + f + ", la forma vértice tiene su vértice en…", ok, "(" + fmtN(m) + ", " + fmtN(k) + ")", "(" + fmtN(-m) + ", " + fmtN(c + m * m) + ")", ["Completo el cuadrado: f(x) = " + paren + term(k, "") + ".", "En la forma (x − h)² + k el vértice es (h, k), con el signo de h leído al revés de la escritura.", "El vértice es " + ok + "."]), 3); }
 ];
 LESSON_EXERCISES["p8-funcion"] = [
   function(){ return exChoice("La definición", "Para que una regla sea una función, cada entrada debe tener…", "una única salida", "al menos una salida, pueden ser varias", "una salida distinta de todas las demás", ["La palabra clave de la definición es único: una entrada, una sola salida.", "Que dos entradas compartan salida sí puede pasar: eso no rompe la definición."]); },
@@ -12401,7 +12552,9 @@ LESSON_EXERCISES["p8-cuadratica-f"] = [
   function(){ return exVF("Verdadero o falso", "El vértice de una parábola está en el punto medio entre sus raíces", true, ["El eje de simetría pasa por el vértice y queda a igual distancia de las dos raíces.", "Por eso, conocidas las raíces, el vértice sale promediando."]); },
   function(){ return exChoice("Forma vértice", "La expresión (x − 3)² + 2 corresponde a una parábola con vértice en…", "(3, 2)", "(−3, 2)", "(3, −2)", ["En la forma a(x − h)² + k, el vértice es (h, k) y se lee directo.", "Ojo: (x − 3) significa h = 3, con el signo cambiado respecto de la escritura."]); },
   function(){ return exChoice("Discriminante y cortes", "Si el discriminante de una cuadrática es mayor que 0, su parábola corta al eje x…", "dos veces", "una vez", "ninguna vez", ["Las raíces de la ecuación son los cortes con el eje x.", "D mayor que 0: dos raíces, dos cortes. D = 0: un toque. D menor: ninguno."]); },
-  function(){ var a = ri(2, 6); return exNum("Evaluar la parábola", "Si f(x) = x² − 1, ¿cuánto vale f(" + a + ")?", a * a - 1, ["Reemplazo: " + a + "² − 1.", a + "² = " + (a * a) + ", menos 1: " + (a * a - 1)]); }
+  function(){ var a = ri(2, 6); return exNum("Evaluar la parábola", "Si f(x) = x² − 1, ¿cuánto vale f(" + a + ")?", a * a - 1, ["Reemplazo: " + a + "² − 1.", a + "² = " + (a * a) + ", menos 1: " + (a * a - 1)]); },
+  function(){ var a = ri(2, 5); var c = ri(-4, 9); var k = c - a * a; function term(v, s){ if(v === 0) return ""; var c = (Math.abs(v) === 1 && s !== "") ? "" : Math.abs(v); return (v < 0 ? " − " : " + ") + c + s; } var f = "x² − " + (2 * a) + "x" + term(c, ""); var ok = "(" + a + ", " + fmtN(k) + ")"; return exDif(exChoice("Leer el vértice", "La parábola f(x) = " + f + " tiene su vértice en…", ok, "(" + fmtN(-a) + ", " + fmtN(k) + ")", "(" + a + ", " + fmtN(c) + ")", ["Por la fórmula: h = −b/(2a) = " + (2 * a) + "/2 = " + a + ", y k = f(" + a + ") = " + fmtN(k) + ".", "Completando el cuadrado da lo mismo: f(x) = (x − " + a + ")²" + term(k, "") + ".", "El vértice es " + ok + "."]), 2); },
+  function(){ var h = pick([-2, -1, 1, 2, 3]); var k = ri(-4, 4); var b = -4 * h, c = 2 * h * h + k; function term(v, s){ if(v === 0) return ""; var c = (Math.abs(v) === 1 && s !== "") ? "" : Math.abs(v); return (v < 0 ? " − " : " + ") + c + s; } var f = "2x²" + term(b, "x") + term(c, ""); var paren = h < 0 ? "(x + " + Math.abs(h) + ")²" : "(x − " + h + ")²"; var ok = "vértice (" + fmtN(h) + ", " + fmtN(k) + "), con mínimo " + fmtN(k); return exDif(exChoice("Vértice y extremo con a distinto de 1", "Pasando a la forma vértice completando el cuadrado, f(x) = " + f + " tiene…", ok, "vértice (" + fmtN(-h) + ", " + fmtN(k) + "), con mínimo " + fmtN(k), "vértice (" + fmtN(h) + ", " + fmtN(k) + "), con máximo " + fmtN(k), ["Saco el 2 de factor común en los términos con x y completo el cuadrado adentro, compensando afuera: f(x) = 2" + paren + term(k, "") + ".", "Se lee directo de la forma: vértice (" + fmtN(h) + ", " + fmtN(k) + "), y como a = 2 es positivo, el extremo es un mínimo que vale " + fmtN(k) + ".", "Comprobación con la fórmula: h = −b/(2a) = " + fmtN(h) + " y f(" + fmtN(h) + ") = " + fmtN(k) + "."]), 3); }
 ];
 LESSON_EXERCISES["p8-exp-log"] = [
   function(){ var a = ri(2, 4), e = ri(2, 3); return exNum("Exponencial", "¿Cuánto vale " + a + " elevado a " + e + "?", Math.pow(a, e), ["Es multiplicar " + a + " por sí mismo " + e + " veces.", "El resultado es " + Math.pow(a, e)]); },
@@ -12409,7 +12562,9 @@ LESSON_EXERCISES["p8-exp-log"] = [
   function(){ return exVF("Verdadero o falso", "Existe el logaritmo de un número negativo", false, ["El dominio del logaritmo son solo los positivos.", "Ninguna potencia de una base positiva da un número negativo o cero."]); },
   function(){ return exChoice("Propiedades", "log(100 · 10) en base 10 se puede calcular como…", "log 100 + log 10 = 2 + 1 = 3", "log 100 · log 10 = 2", "log 100 − log 10 = 1", ["El logaritmo de un producto es la suma de los logaritmos.", "Y log 1000 en base 10 es 3, porque 10³ = 1000: las dos cuentas coinciden."]); },
   function(){ return exVF("Verdadero o falso", "La función exponencial 3ˣ puede valer 0 para algún x", false, ["Su imagen son solo los positivos: se acerca a 0 en el infinito pero nunca lo toca.", "Esa es su asíntota horizontal: y = 0."]); },
-  function(){ return exNum("Logaritmo en base 10", "¿Cuánto vale log₁₀(10000)?", 4, ["Pregunta a qué potencia elevo el 10 para obtener 10000.", "10⁴ = 10000: el logaritmo es 4, la cantidad de ceros."]); }
+  function(){ return exNum("Logaritmo en base 10", "¿Cuánto vale log₁₀(10000)?", 4, ["Pregunta a qué potencia elevo el 10 para obtener 10000.", "10⁴ = 10000: el logaritmo es 4, la cantidad de ceros."]); },
+  function(){ var base = pick([2, 3, 5]); var e = ri(3, 5); var d = ri(1, e - 1); var val = Math.pow(base, e); var x = e - d; return exDif(exNum("Ecuación exponencial", "Resuelve la ecuación " + base + "^(x + " + d + ") = " + val + ". ¿Cuánto vale x?", x, ["Igualo las bases: " + val + " es " + base + "^" + e + ", así que la ecuación queda " + base + "^(x + " + d + ") = " + base + "^" + e + ".", "Con la misma base, los exponentes son iguales: x + " + d + " = " + e + ", de donde x = " + x + ".", "Comprobación: " + base + "^(" + x + " + " + d + ") = " + base + "^" + e + " = " + val + "."]), 2); },
+  function(){ var caso = pick([[1, 1, 2, -1], [2, 3, 4, -2], [3, 2, 4, -1]]); var cc = caso[0], e = caso[1], r = caso[2], desc = caso[3]; var pot = Math.pow(2, e); return exDif(exNum("Ecuación logarítmica con dominio", "Resuelve log₂(x) + log₂(x − " + cc + ") = " + e + ", verificando el dominio. ¿Cuál es la única solución válida?", r, ["Dominio: x mayor que 0 y x − " + cc + " mayor que 0, o sea x mayor que " + cc + ".", "Junto los logaritmos con la propiedad del producto: log₂(x(x − " + cc + ")) = " + e + ", y en forma exponencial: x(x − " + cc + ") = 2^" + e + " = " + pot + ".", "La cuadrática da x = " + r + " y x = " + fmtN(desc) + ". La segunda se descarta: no cumple el dominio. La única solución es " + r + "."]), 3); }
 ];
 LESSON_EXERCISES["p8-compuesta"] = [
   function(){ return exNum("Componer", "Si f(x) = x² y g(x) = x + 1, ¿cuánto vale f(g(2))?", 9, ["De adentro hacia afuera: primero g(2) = 3.", "Después f(3) = 3² = 9."]); },
@@ -12473,7 +12628,18 @@ LESSON_EXERCISES["p10-sistemas"] = [
   function(){ return exVF("Verdadero o falso", "En el método de Gauss se puede multiplicar una ecuación por 0 para simplificarla", false, ["Multiplicar por 0 borra la ecuación y cambia el sistema.", "Las operaciones válidas usan números no nulos: intercambiar, escalar por no nulo y sumar múltiplos."]); },
   function(){ return exChoice("Los nombres", "Un sistema con una única solución se llama…", "compatible determinado (SCD)", "compatible indeterminado (SCI)", "incompatible (SI)", ["SCD: compatible porque tiene solución, determinado porque es una sola.", "SCI: infinitas. SI: ninguna. Esas siglas salen en todos los parciales de Álgebra."]); },
   function(){ return exNum("Por reducción", "En el sistema 2x + y = 8, x − y = 1, ¿cuánto vale x?", 3, ["Sumo: 3x = 9, x = 3.", "Después y = 8 − 2 · 3 = 2."]); },
-  function(){ return exChoice("Verificar", "La forma correcta de cerrar un sistema resuelto es…", "reemplazar la solución en las ecuaciones originales", "repetir el cálculo con otro método siempre", "dejarlo si los números se ven redondos", ["La verificación es en las ecuaciones originales, no en las transformadas.", "Si cumple las dos, la solución es la del sistema."]); }
+  function(){ return exChoice("Verificar", "La forma correcta de cerrar un sistema resuelto es…", "reemplazar la solución en las ecuaciones originales", "repetir el cálculo con otro método siempre", "dejarlo si los números se ven redondos", ["La verificación es en las ecuaciones originales, no en las transformadas.", "Si cumple las dos, la solución es la del sistema."]); },
+  function(){ var x0 = ri(1, 3), y0 = ri(1, 3), z0 = ri(1, 3); var s1 = x0 + y0 + z0, s2 = 2 * x0 - y0 + z0, s3 = x0 + 2 * y0 - z0; return exDif(exSteps("Gauss 3×3 por pasos", "Resuelve por eliminación de Gauss el sistema: x + y + z = " + s1 + "; 2x − y + z = " + s2 + "; x + 2y − z = " + s3 + ". Primero elimina la x de la segunda y la tercera ecuación, después la y de la tercera, y despeja hacia atrás.",
+    [ exNum("La z de la escalonada", "Tras eliminar en cadena, la última ecuación de la escalonada es −7z = " + fmtN(-7 * z0) + ". ¿Cuánto vale z?", z0, ["E2 − 2·E1 elimina la x de la segunda; E3 − E1, la de la tercera; 3·E3 + E2 elimina la y de la tercera.", "La escalonada termina en −7z = " + fmtN(-7 * z0) + ", así que z = " + z0 + "."]),
+      exNum("La y hacia atrás", "Con ese valor de z, la segunda ecuación de la escalonada, −3y − z = " + fmtN(-3 * y0 - z0) + ", da el valor de y. ¿Cuánto vale y?", y0, ["Sustitución hacia atrás: el valor de z sube a la ecuación anterior y se despeja y.", "y = " + y0 + "."]),
+      exNum("La x hacia atrás", "Con y y z ya conocidos, la primera ecuación x + y + z = " + s1 + " da el valor de x. ¿Cuánto vale x?", x0, ["El último despeje es el de la primera ecuación, con las otras dos incógnitas ya reemplazadas.", "x = " + x0 + ". La terna solución es (" + x0 + ", " + y0 + ", " + z0 + ")."]) ],
+    ["La escalonada es: x + y + z = " + s1 + "; −3y − z = " + fmtN(-3 * y0 - z0) + "; −7z = " + fmtN(-7 * z0) + ".", "Sustitución hacia atrás: z = " + z0 + ", después y = " + y0 + ", después x = " + x0 + ".", "Comprobación: la terna (" + x0 + ", " + y0 + ", " + z0 + ") cumple las tres ecuaciones originales."]), 3); },
+  function(){ var caso = pick([
+      { esc:"0 = 0, y queda una incógnita sin ecuación propia", ok:"infinitas soluciones: compatible indeterminado (SCI)", sol:["En la escalonada, 0 = 0 no aporta información: sobra una incógnita, que queda libre.", "Con una variable libre hay infinitas ternas que cumplen el sistema: es un compatible indeterminado (SCI)."] },
+      { esc:"0 = 5", ok:"ninguna solución: incompatible (SI)", sol:["0 = 5 es un absurdo: ninguna terna puede cumplir esa ecuación.", "Si la escalonada produce 0 = un número distinto de cero, el sistema es incompatible (SI)."] },
+      { esc:"−7z = −21, con una ecuación para cada incógnita", ok:"una única solución: compatible determinado (SCD)", sol:["Cada incógnita tiene su ecuación en la escalonada: se despeja hacia atrás y sale una sola terna.", "Eso es un sistema compatible determinado (SCD)."] } ]);
+    var otras = ["infinitas soluciones: compatible indeterminado (SCI)", "ninguna solución: incompatible (SI)", "una única solución: compatible determinado (SCD)"].filter(function(t){ return t !== caso.ok; });
+    return exDif(exChoice("Clasificar por la escalonada", "Al aplicar Gauss a un sistema 3×3, la forma escalonada termina con " + caso.esc + ". El sistema tiene…", caso.ok, otras[0], otras[1], caso.sol), 2); }
 ];
 LESSON_EXERCISES["p10-inecuaciones"] = [
   function(){ return exChoice("La trampa", "Al resolver −3x mayor que 9, se obtiene…", "x menor que −3", "x mayor que −3", "x menor que 3", ["Dividir por un negativo da vuelta la desigualdad: −3x > 9 pasa a x < −3.", "El giro es la única diferencia con una ecuación."]); },
