@@ -2570,6 +2570,133 @@ function runEngineTests(){
     }
     return true;
   });
+  /* ---- Regresión de la Fase 2, Entrega 4 de Análisis (auditoría 21/11/2026) ---- */
+  check("Regresión Fase 2 Análisis: en los pasos de cbc-an1-funciones aparecen los axiomas de cuerpo con la demostración de a · 0 = 0, la prueba de la irracionalidad de √2 y la densidad", function(){
+    var les = lessonById("cbc-an1-funciones");
+    if(!les) return "no está la clase cbc-an1-funciones";
+    if(!les.steps || les.steps.length < 8) return "la clase debería tener al menos 8 pasos y tiene " + (les.steps || []).length;
+    var txt = JSON.stringify(les.steps);
+    var claves = ["conmutatividad", "distributividad", "a · 0 = 0", "p² = 2q²", "mínima expresión", "siempre hay un racional", "1,415"];
+    for(var i = 0; i < claves.length; i++)
+      if(txt.indexOf(claves[i]) < 0) return "falta «" + claves[i] + "» en los pasos de cbc-an1-funciones";
+    return true;
+  });
+  check("Regresión Fase 2 Análisis: en los pasos de cbc-an1-sucesiones aparecen las subsucesiones con el ejemplo de (−1)ⁿ y el criterio de Cauchy", function(){
+    var les = lessonById("cbc-an1-sucesiones");
+    if(!les) return "no está la clase cbc-an1-sucesiones";
+    if(!les.steps || les.steps.length < 6) return "la clase debería tener al menos 6 pasos y tiene " + (les.steps || []).length;
+    var txt = JSON.stringify(les.steps);
+    var claves = ["subsucesión", "índices pares", "(−1)ⁿ", "criterio de Cauchy", "N = 100"];
+    for(var i = 0; i < claves.length; i++)
+      if(txt.indexOf(claves[i]) < 0) return "falta «" + claves[i] + "» en los pasos de cbc-an1-sucesiones";
+    return true;
+  });
+  check("Regresión Fase 2 Análisis: en los pasos de cbc-an2-estudio aparecen Weierstrass con el procedimiento de candidatos y un estudio completo desarrollado", function(){
+    var les = lessonById("cbc-an2-estudio");
+    if(!les) return "no está la clase cbc-an2-estudio";
+    if(!les.steps || les.steps.length < 18) return "la clase debería tener al menos 18 pasos y tiene " + (les.steps || []).length;
+    var txt = JSON.stringify(les.steps);
+    var claves = ["Weierstrass", "los puntos críticos interiores y los extremos del intervalo", "f(5) = 25 − 20 + 3 = 8", "x²/(x − 1)", "f''(x) = 2/(x − 1)³", "no hay punto de inflexión"];
+    for(var i = 0; i < claves.length; i++)
+      if(txt.indexOf(claves[i]) < 0) return "falta «" + claves[i] + "» en los pasos de cbc-an2-estudio";
+    return true;
+  });
+  check("Regresión Fase 2 Análisis: los generadores nuevos de funciones, sucesiones y estudio sirven ejercicios sanos y declaran su entrada de AN_GEN_META", function(){
+    var casos = { "cbc-an1-funciones":[18, [["an-funciones-propiedades", 2], ["an-funciones-propiedades", 3]]], "cbc-an1-sucesiones":[17, [["an-sucesiones-limite", 3], ["an-sucesiones-limite", 2]]], "cbc-an2-estudio":[26, [["an-estudio-extremos", 3], ["an-estudio-completo", 3]]] };
+    for(var lid in casos){
+      var banco = LESSON_EXERCISES[lid] || [], meta = AN_GEN_META[lid] || [];
+      var base = casos[lid][0], nuevos = casos[lid][1];
+      if(banco.length !== base + 2) return lid + " tiene " + banco.length + " generadores y debería tener " + (base + 2) + " (" + base + " originales más 2 nuevos al final)";
+      if(meta.length !== banco.length) return lid + ": AN_GEN_META declara " + meta.length + " generadores y el banco tiene " + banco.length;
+      for(var gi = base; gi < banco.length; gi++){
+        if(meta[gi][0] !== nuevos[gi - base][0] || meta[gi][1] !== nuevos[gi - base][1])
+          return lid + "#g" + gi + " debería declarar " + JSON.stringify(nuevos[gi - base]) + " en AN_GEN_META y declara " + JSON.stringify(meta[gi]);
+        for(var r = 0; r < 40; r++){
+          var e = null; try{ e = banco[gi](); }catch(err){}
+          if(!lexExerciseSane(e)) return lid + "#g" + gi + " sirvió un ejercicio que no pasa la validación reforzada";
+          if(e.skill !== meta[gi][0]) return lid + "#g" + gi + " sirvió habilidad " + JSON.stringify(e.skill) + " y AN_GEN_META declara " + meta[gi][0];
+          if(e.dificultad !== meta[gi][1]) return lid + "#g" + gi + " sirvió dificultad " + JSON.stringify(e.dificultad) + " y AN_GEN_META declara " + meta[gi][1];
+        }
+      }
+    }
+    return true;
+  });
+  check("Regresión Fase 2 Análisis: los generadores originales de funciones (18), sucesiones (17) y estudio (26) conservan su entrada de AN_GEN_META intacta y en su posición", function(){
+    var originales = {
+      "cbc-an1-funciones": [["an-funciones-dominio",2],["an-funciones-dominio",2],["an-funciones-comp-inv",2],["an-funciones-comp-inv",2],["an-funciones-asintotas",1],["an-funciones-asintotas",2],["an-funciones-asintotas",1],["an-funciones-asintotas",2],["an-funciones-exp-log",1],["an-funciones-exp-log",1],["an-funciones-exp-log",1],["an-funciones-trig",1],["an-funciones-trig",2],["an-funciones-propiedades",1],["an-funciones-propiedades",2],["an-funciones-propiedades",1],["an-funciones-comp-inv",2],["an-funciones-propiedades",3]],
+      "cbc-an1-sucesiones": [["an-sucesiones-termino",1],["an-sucesiones-termino",1],["an-sucesiones-limite",2],["an-sucesiones-limite",2],["an-sucesiones-limite",1],["an-sucesiones-limite",2],["an-sucesiones-limite",2],["an-sucesiones-monotonia",1],["an-sucesiones-termino",2],["an-sucesiones-termino",2],["an-sucesiones-sumas",2],["an-sucesiones-limite",1],["an-sucesiones-monotonia",1],["an-sucesiones-monotonia",1],["an-sucesiones-limite",2],["an-sucesiones-monotonia",3],["an-sucesiones-limite",3]],
+      "cbc-an2-estudio": [["an-estudio-crecimiento",2],["an-estudio-extremos",1],["an-estudio-extremos",1],["an-estudio-concavidad",2],["an-estudio-concavidad",1],["an-estudio-crecimiento",1],["an-estudio-completo",3],["an-optimizacion",3],["an-optimizacion",3],["an-optimizacion",3],["an-taylor",2],["an-taylor",1],["an-aprox-lineal",2],["an-aprox-lineal",1],["an-aprox-lineal",2],["an-newton",2],["an-newton",1],["an-estudio-extremos",3],["an-asintotas-oblicuas",2],["an-asintotas-oblicuas",2],["an-asintotas-oblicuas",2],["an-asintotas-oblicuas",2],["an-asintotas-oblicuas",3],["an-asintotas-oblicuas",1],["an-asintotas-oblicuas",2],["an-asintotas-oblicuas",3]]
+    };
+    for(var lid in originales){
+      var banco = LESSON_EXERCISES[lid] || [], meta = AN_GEN_META[lid] || [];
+      var n = originales[lid].length;
+      if(banco.length < n) return lid + " perdió generadores: tiene " + banco.length;
+      if(meta.length < n) return lid + " perdió entradas de AN_GEN_META: tiene " + meta.length;
+      for(var gi = 0; gi < n; gi++){
+        if(meta[gi][0] !== originales[lid][gi][0] || meta[gi][1] !== originales[lid][gi][1])
+          return lid + "#g" + gi + " cambió su meta original: era " + JSON.stringify(originales[lid][gi]) + " y ahora es " + JSON.stringify(meta[gi]);
+      }
+    }
+    return true;
+  });
+  /* ---- Regresión de la Fase 2, Entrega 5 de Análisis (auditoría 21/11/2026) ---- */
+  check("Regresión Fase 2 Análisis: en los pasos de cbc-an2-integrales aparecen las propiedades de la integral definida, una sustitución desarrollada con cambio de límites y una por partes con su fórmula derivada de la regla del producto", function(){
+    var les = lessonById("cbc-an2-integrales");
+    if(!les) return "no está la clase cbc-an2-integrales";
+    if(!les.steps || les.steps.length < 20) return "la clase debería tener al menos 20 pasos y tiene " + (les.steps || []).length;
+    var txt = JSON.stringify(les.steps);
+    var claves = ["linealidad", "Aditividad respecto del intervalo", "al intercambiar los límites cambia el signo", "5/2", "cambio de límites", "ln 2", "regla del producto", "∫ u dv = u·v − ∫ v du", "la integral reaparece", "eˣ·(sen x − cos x)/2"];
+    for(var i = 0; i < claves.length; i++)
+      if(txt.indexOf(claves[i]) < 0) return "falta «" + claves[i] + "» en los pasos de cbc-an2-integrales";
+    return true;
+  });
+  check("Regresión Fase 2 Análisis: en los pasos de cbc-an2-series aparecen la condición necesaria con su contraejemplo, un ejemplo completo por criterio (comparación, cociente y raíz) y la guía de decisión", function(){
+    var les = lessonById("cbc-an2-series");
+    if(!les) return "no está la clase cbc-an2-series";
+    if(!les.steps || les.steps.length < 15) return "la clase debería tener al menos 15 pasos y tiene " + (les.steps || []).length;
+    var txt = JSON.stringify(les.steps);
+    var claves = ["contrarrecíproco", "n/(n + 1)", "el recíproco es falso", "1/(n² + 1)", "comparación por límite", "2ⁿ/n!", "2/3", "qué criterio probar primero"];
+    for(var i = 0; i < claves.length; i++)
+      if(txt.indexOf(claves[i]) < 0) return "falta «" + claves[i] + "» en los pasos de cbc-an2-series";
+    return true;
+  });
+  check("Regresión Fase 2 Análisis: los generadores nuevos de integrales y series sirven ejercicios sanos y declaran su entrada de AN_GEN_META", function(){
+    var casos = { "cbc-an2-integrales":[33, [["an-integrales-metodos", 3], ["an-integrales-metodos", 3]]], "cbc-an2-series":[18, [["an-series-criterios", 3], ["an-series-criterios", 2]]] };
+    for(var lid in casos){
+      var banco = LESSON_EXERCISES[lid] || [], meta = AN_GEN_META[lid] || [];
+      var base = casos[lid][0], nuevos = casos[lid][1];
+      if(banco.length !== base + 2) return lid + " tiene " + banco.length + " generadores y debería tener " + (base + 2) + " (" + base + " originales más 2 nuevos al final)";
+      if(meta.length !== banco.length) return lid + ": AN_GEN_META declara " + meta.length + " generadores y el banco tiene " + banco.length;
+      for(var gi = base; gi < banco.length; gi++){
+        if(meta[gi][0] !== nuevos[gi - base][0] || meta[gi][1] !== nuevos[gi - base][1])
+          return lid + "#g" + gi + " debería declarar " + JSON.stringify(nuevos[gi - base]) + " en AN_GEN_META y declara " + JSON.stringify(meta[gi]);
+        for(var r = 0; r < 40; r++){
+          var e = null; try{ e = banco[gi](); }catch(err){}
+          if(!lexExerciseSane(e)) return lid + "#g" + gi + " sirvió un ejercicio que no pasa la validación reforzada";
+          if(e.skill !== meta[gi][0]) return lid + "#g" + gi + " sirvió habilidad " + JSON.stringify(e.skill) + " y AN_GEN_META declara " + meta[gi][0];
+          if(e.dificultad !== meta[gi][1]) return lid + "#g" + gi + " sirvió dificultad " + JSON.stringify(e.dificultad) + " y AN_GEN_META declara " + meta[gi][1];
+        }
+      }
+    }
+    return true;
+  });
+  check("Regresión Fase 2 Análisis: los generadores originales de integrales (33) y series (18) conservan su entrada de AN_GEN_META intacta y en su posición", function(){
+    var originales = {
+      "cbc-an2-integrales": [["an-integral-barrow",1],["an-integrales-primitivas",1],["an-integrales-metodos",1],["an-integral-barrow",1],["an-integrales-aplicaciones",1],["an-integrales-primitivas",1],["an-riemann",2],["an-riemann",1],["an-riemann",1],["an-riemann",1],["an-integrales-aplicaciones",2],["an-integrales-aplicaciones",1],["an-integrales-aplicaciones",1],["an-integrales-aplicaciones",1],["an-integrales-aplicaciones",1],["an-integrales-aplicaciones",1],["an-integrales-aplicaciones",1],["an-integral-barrow",2],["an-integrales-metodos",3],["an-integrales-aplicaciones",2],["an-integral-barrow",1],["an-integrales-metodos",2],["an-integral-barrow",3],["an-impropias",2],["an-impropias",1],["an-impropias",2],["an-impropias",2],["an-impropias",2],["an-impropias",2],["an-impropias",1],["an-impropias",2],["an-impropias",2],["an-impropias",3]],
+      "cbc-an2-series": [["an-series-sumas",2],["an-series-sumas",2],["an-series-sumas",2],["an-series-criterios",1],["an-series-criterios",1],["an-series-criterios",2],["an-series-criterios",1],["an-series-criterios",2],["an-series-alternadas",2],["an-series-absoluta",1],["an-series-alternadas",2],["an-series-potencias",2],["an-series-potencias",1],["an-series-potencias",2],["an-series-potencias",1],["an-series-potencias",3],["an-series-absoluta",1],["an-series-criterios",3]]
+    };
+    for(var lid in originales){
+      var banco = LESSON_EXERCISES[lid] || [], meta = AN_GEN_META[lid] || [];
+      var n = originales[lid].length;
+      if(banco.length < n) return lid + " perdió generadores: tiene " + banco.length;
+      if(meta.length < n) return lid + " perdió entradas de AN_GEN_META: tiene " + meta.length;
+      for(var gi = 0; gi < n; gi++){
+        if(meta[gi][0] !== originales[lid][gi][0] || meta[gi][1] !== originales[lid][gi][1])
+          return lid + "#g" + gi + " cambió su meta original: era " + JSON.stringify(originales[lid][gi]) + " y ahora es " + JSON.stringify(meta[gi]);
+      }
+    }
+    return true;
+  });
   return results;
 }
 window.TutorData = { migrateV1toV2: migrateV1toV2, validateStateShape: validateStateShape, serializeBackup: serializeBackup, parseBackup: parseBackup, importBackupText: importBackupText, recordAttempt: recordAttempt, patronParaBajar: patronParaBajar, runPhaseATests: runPhaseATests, runEngineTests: runEngineTests, isOpenAttempt: isOpenAttempt, isStepsRetryAttempt: isStepsRetryAttempt, writeVerified: writeVerified, saveState: saveState, loadState: loadState, computeSkillAgg: computeSkillAgg, skillAggSummary: skillAggSummary, ATTEMPTS_CAP: ATTEMPTS_CAP, getState: function(){ return state; }, getSessionId: function(){ return currentSessionId; } };
@@ -5090,6 +5217,22 @@ LESSONS.push(
           { l:"Inyectiva", t:"no repite salidas", c:"blue" },
           { l:"Sobreyectiva", t:"alcanza todo el codominio", c:"blue" },
           { l:"Biyectiva", t:"las dos: tiene inversa", c:"green" } ]} ] },
+    { v:"AXIOMAS DE CUERPO: LAS REGLAS DEL JUEGO", vc:"blue", i:"Qué problema resuelven: todo lo que se hace en Análisis (despejar, factorizar, cancelar, pasar términos) no son trucos sueltos: son consecuencias de unas pocas reglas que cumplen la suma y el producto en R, los axiomas de cuerpo. Son el punto de partida: no se demuestran, se aceptan, y todo lo demás se construye sobre ellos. Dicho en lenguaje simple, para todos los reales a, b y c: conmutatividad, a + b = b + a y a · b = b · a (el orden no cambia el resultado); asociatividad, (a + b) + c = a + (b + c) y (a · b) · c = a · (b · c) (el agrupamiento no cambia el resultado); distributividad, a · (b + c) = a · b + a · c (el producto reparte sobre la suma).",
+      r:"Y las reglas de identidad: neutros, a + 0 = a y a · 1 = a (el 0 y el 1 no alteran); inverso aditivo, para cada a existe −a con a + (−a) = 0; inverso multiplicativo, para cada a ≠ 0 existe 1/a con a · (1/a) = 1. La condición a ≠ 0 no es un detalle: el 0 no tiene inverso multiplicativo, y de ahí sale que dividir por cero no está definido.",
+      s:"Ejemplo de uso completo, una identidad que se usa sin pensar: a · 0 = 0 para todo a. Demostración desde los axiomas, paso a paso. Paso 1: 0 = 0 + 0, porque el 0 es el neutro de la suma. Paso 2: multiplico por a y aplico la distributividad: a · 0 = a · (0 + 0) = a · 0 + a · 0. Paso 3: sumo en ambos lados el opuesto de a · 0, que existe por el axioma del inverso aditivo: a · 0 + (−(a · 0)) = (a · 0 + a · 0) + (−(a · 0)). Paso 4: a la izquierda queda 0, y a la derecha, reagrupando con la asociatividad, queda a · 0 + 0 = a · 0. Conclusión: 0 = a · 0. Comprobación con números: 5 · 0 = 0 y (−3) · 0 = 0. Error frecuente: creer que los axiomas se demuestran con ejemplos; un ejemplo comprueba un caso, y la demostración con axiomas vale para todos los reales a la vez.",
+      b:[ {k:"flow", items:[
+          { l:"Suma y producto", t:"conmutan y asocian: el orden y el agrupamiento no cambian el resultado", c:"blue" },
+          { l:"Distributividad", t:"a · (b + c) = a · b + a · c", c:"blue" },
+          { l:"Neutros e inversos", t:"0 y 1 no alteran · −a anula a · 1/a invierte a a, si a ≠ 0", c:"green" },
+          { l:"Teorema de muestra", t:"a · 0 = 0, demostrado desde los axiomas", c:"green" } ]} ] },
+    { v:"IRRACIONALES: LOS QUE NO SON FRACCIÓN", vc:"orange", i:"Un número real es irracional si no puede escribirse como cociente p/q de dos enteros con q ≠ 0. Su expresión decimal es infinita y no periódica: no entra en ningún ciclo que se repita. El problema que resuelve reconocerlos: la recta real no se agota en las fracciones; hay puntos de la recta que ninguna fracción alcanza exactamente, y el cálculo trabaja con ellos todo el tiempo.",
+      r:"La prueba clásica, completa: √2 no es racional. Se demuestra por contradicción: se supone lo contrario y se llega a algo imposible. Supongamos que √2 = p/q con p y q enteros, q ≠ 0, y la fracción en su mínima expresión, es decir, p y q sin factores comunes. Elevando al cuadrado: p² = 2q². Entonces p² es par, y eso obliga a que p sea par (si p fuera impar, p² sería impar). Escribo p = 2k: queda 4k² = 2q², o sea q² = 2k². Con el mismo argumento, q² es par y q también es par. Contradicción: p y q resultaron ambos pares, así que p/q no estaba en su mínima expresión. La suposición era falsa: √2 no es racional.",
+      s:"Dónde viven en la recta: √2 ≈ 1,41421356... está entre 1,41 y 1,42, y más fino, entre 1,414 y 1,415. Otros irracionales conocidos: π ≈ 3,14159..., e ≈ 2,71828..., √3 ≈ 1,73205... y el número de oro (1 + √5)/2 ≈ 1,61803... Comprobación de la ubicación de √2 sin calculadora: 1,41² = 1,9881 < 2 y 1,42² = 2,0164 > 2, así que 1,41 < √2 < 1,42. Errores frecuentes: creer que un decimal largo ya es irracional (0,333... es periódico, es 1/3, racional), y escribir √2 = 1,41 como si fuera exacto: 1,41 es una aproximación racional, no el número.",
+      b:[ {k:"ink", t:"√2, π, e, √3: decimales infinitos no periódicos", c:"green"}, {k:"ink", t:"prueba por contradicción: p² = 2q² obliga a p y q pares", c:"blue"} ] },
+    { v:"DENSIDAD: ENTRE DOS REALES SIEMPRE HAY MÁS", vc:"green", i:"La propiedad de densidad dice que entre dos reales distintos, no importa lo cerca que estén, siempre hay un racional y también un irracional. En la recta no hay dos puntos pegados sin nada en el medio: no existe el real siguiente a otro real. El problema que resuelve: garantiza que cualquier real se puede aproximar por racionales con el error que se quiera, que es la base de trabajar con decimales y con límites.",
+      r:"Ejemplo numérico concreto, entre 1,41 y 1,42. Un racional: el promedio de los extremos, (1,41 + 1,42)/2 = 1,415, que es racional porque es un decimal finito: 1,415 = 283/200. Un irracional: el propio √2, porque 1,41 < √2 < 1,42, como se comprobó en el paso anterior con los cuadrados. Procedimiento general para hallar un racional entre a y b: tomar el promedio (a + b)/2 si los extremos son racionales, o intercalar un decimal con más cifras que quede estrictamente entre los dos. Para hallar un irracional: ubicar un irracional conocido acotándolo con cuadrados, como se hizo con √2, o tomar un racional r del intervalo y sumarle un irracional lo bastante chico para no salir del intervalo.",
+      s:"Comprobación: 1,41 < 1,415 < 1,42 y 1,41 < 1,41421356... < 1,42: los dos candidatos están estrictamente adentro. Y el proceso no termina: entre 1,41 y 1,415 hay otros, y entre esos otros, infinitos más. Errores frecuentes: creer que entre dos racionales solo hay racionales (también hay irracionales, como √2 entre 1,41 y 1,42), y creer que dos decimales que difieren en la última cifra son vecinos sin nada entre ellos: 1,41 y 1,42 difieren en 0,01 y ese hueco contiene infinitos reales.",
+      b:[ {k:"ink", t:"entre 1,41 y 1,42: el racional 1,415 y el irracional √2", c:"green"}, {k:"ink", t:"densidad: ningún real tiene un real siguiente", c:"blue"} ] },
     { v:"CIERRA", vc:"black", i:"Unidad 1 dominada en su mapa: funciones formales con sus asíntotas, reales con supremo e ínfimo, y la clasificación que decide si hay inversa.",
       r:"Evaluación: en la Cátedra Única, el primer parcial cubre funciones, reales, sucesiones y límites, derivadas y estudio de funciones; en Palacios Puebla arranca con reales, funciones y límites. El corte varía por cátedra.",
       s:"La próxima clase es la Unidad 2: sucesiones, el primer límite de la carrera.",
@@ -5109,6 +5252,17 @@ LESSONS.push(
       r:"El número e nace de un límite, como π nació de la geometría. Es la constante del crecimiento continuo.",
       s:"Advertencia de cursada: algunas cátedras recortan sucesiones y series de los parciales aunque figuran en el programa. Se confirma en la cátedra asignada, no se estudia a ciegas.",
       b:[ {k:"ink", t:"(1 + 1/n)ⁿ → e ≈ 2,718", c:"green"} ] },
+    { v:"SUBSUCESIONES: LA MISMA FILA, SALTEADA", vc:"blue", i:"Una subsucesión de (aₙ) se forma eligiendo términos con índices estrictamente crecientes: se eligen índices n₁ < n₂ < n₃ < ... y la subsucesión es a(n₁), a(n₂), a(n₃)... No se puede repetir un índice ni volver atrás: la subsucesión respeta el orden de la fila original. Ejemplos concretos: de a(n) = 1/n, la subsucesión de índices pares 2, 4, 6... es 1/2, 1/4, 1/6...; la de índices 1, 10, 100, 1000... es 1, 1/10, 1/100, 1/1000... El problema que resuelven: permiten estudiar la convergencia por partes y, sobre todo, refutarla con poco trabajo.",
+      r:"El teorema clave: si una sucesión converge a L, entonces toda subsucesión suya converge al mismo L. La justificación intuitiva: si desde algún término en adelante todos los términos de la fila están cerca de L, los términos elegidos, que son algunos de esos mismos términos y aparecen cada vez más adelante, también están cerca de L. Una subsucesión no puede escaparse a otro límite si la fila entera se pega a L.",
+      s:"Su uso principal es el contrapositivo: si dos subsucesiones tienen límites distintos, la sucesión no converge. Ejemplo completo: a(n) = (−1)ⁿ, que es −1, 1, −1, 1... La subsucesión de índices pares es a(2) = 1, a(4) = 1, a(6) = 1... constante 1: tiende a 1. La de índices impares es a(1) = −1, a(3) = −1, a(5) = −1... constante −1: tiende a −1. Como 1 ≠ −1, la sucesión (−1)ⁿ no converge. Comprobación: si convergiera a algún L, por el teorema las dos subsucesiones tenderían a ese mismo L, y no lo hacen. Errores frecuentes: creer que si una subsucesión converge, la sucesión converge (falso: acá la de pares converge y la sucesión no), y armar subsucesiones con índices que no crecen, lo que ya no es una subsucesión.",
+      b:[ {k:"flow", items:[
+          { l:"Índices pares de (−1)ⁿ", t:"1, 1, 1... tiende a 1", c:"blue" },
+          { l:"Índices impares de (−1)ⁿ", t:"−1, −1, −1... tiende a −1", c:"orange" },
+          { l:"Límites distintos", t:"la sucesión no converge", c:"green" } ]} ] },
+    { v:"CRITERIO DE CAUCHY: CONVERGER SIN CONOCER EL LÍMITE", vc:"green", i:"El criterio de Cauchy dice que una sucesión de reales converge si y solo si sus términos se acercan entre sí tanto como se quiera a partir de algún lugar: para todo margen ε > 0 existe un lugar N tal que, si m y n son ambos mayores o iguales que N, entonces |a(m) − a(n)| < ε. En lenguaje simple: llegado un punto, la fila deja de dispersarse; todos los términos posteriores forman un grupo apretado, cuyo diámetro se hace tan chico como se pida avanzando más. El problema que resuelve: permite garantizar que una sucesión converge sin conocer su límite, sin tener que adivinar a qué número tiende.",
+      r:"Ejemplo numérico de una que lo cumple: a(n) = 1/n. Con el margen ε = 0,01 basta tomar N = 100: si m, n ≥ 100, entonces 1/m ≤ 0,01 y 1/n ≤ 0,01, y la diferencia cumple |1/m − 1/n| < 0,01. Con un margen diez veces menor, ε = 0,001, basta avanzar hasta N = 1000: siempre hay un lugar desde donde el grupo es tan apretado como se pida. Ejemplo de una que no lo cumple: (−1)ⁿ. Sus términos pares e impares quedan siempre a distancia |1 − (−1)| = 2 entre sí, por lejos que se avance: con el margen ε = 1 no existe ningún N que funcione, y el criterio falla, como debe ser, porque la sucesión no converge.",
+      s:"La equivalencia con la convergencia vale en R por la completitud de la recta, la misma propiedad de la Unidad 1: en R no hay huecos donde un grupo cada vez más apretado pueda quedar sin límite. Error frecuente y grave: creer que alcanza con que los términos consecutivos se acerquen. La sucesión de sumas 1 + 1/2 + 1/3 + ... + 1/n tiene términos consecutivos que difieren en 1/(n + 1), que tiende a 0, pero no es de Cauchy y no converge: crece sin tope. El criterio exige que se acerquen todos los pares de términos posteriores, no solo los vecinos. Para qué sirve en la práctica: es la herramienta para probar convergencia de sucesiones definidas por recurrencia o por sumas, donde el límite no se conoce de antemano, y es la base del criterio de convergencia de las series que vienen más adelante en la materia.",
+      b:[ {k:"ink", t:"de Cauchy: el diámetro del grupo de términos se hace tan chico como se pida", c:"green"}, {k:"ink", t:"en R, ser de Cauchy equivale a converger", c:"blue"} ] },
     { v:"CIERRA", vc:"black", i:"Sucesiones: listas con término general, límites con su álgebra, indeterminaciones que se resuelven mirando los términos mayores, y el número e.",
       r:"La próxima clase traslada el límite de las sucesiones a las funciones: la Unidad 3.",
       s:"Quien domina la idea de tender a un valor tiene medio Análisis adentro: todo lo demás es esa idea con disfraces nuevos.",
@@ -5256,6 +5410,22 @@ LESSONS.push(
           { l:"Arranque lejos", t:"otra raíz, salto enorme o no converge", c:"orange" },
           { l:"Ciclo", t:"oscila entre valores sin acercarse", c:"orange" },
           { l:"Raíz múltiple", t:"converge, pero lento (lineal)", c:"blue" } ]} ] },
+    { v:"EXTREMOS ABSOLUTOS EN INTERVALOS CERRADOS", vc:"blue", i:"Hasta acá los extremos eran locales: el mejor valor en un entorno chico. El extremo absoluto es el mejor valor en todo un intervalo: el máximo absoluto es el mayor valor que toma f en el intervalo, y el mínimo absoluto, el menor. El teorema de Weierstrass garantiza que existen, con dos condiciones exactas: si f es continua en un intervalo cerrado y acotado [a, b], entonces f alcanza su máximo y su mínimo absolutos en ese intervalo: hay puntos del intervalo donde toma esos valores. El problema que resuelve: convierte la búsqueda del mejor valor en una comparación finita, porque los candidatos son pocos.",
+      r:"El procedimiento completo, en orden. Paso 1: hallar los puntos críticos interiores, los x del interior del intervalo donde f'(x) = 0 o f' no existe. Paso 2: armar la lista de candidatos: los puntos críticos interiores y los extremos del intervalo, a y b. Paso 3: evaluar f en todos los candidatos. Paso 4: comparar los valores: el mayor es el máximo absoluto y el menor, el mínimo absoluto, y se dice también en qué punto se alcanza cada uno. Nada fuera de esa lista puede ser extremo absoluto: adentro del intervalo, un extremo donde la derivada existe obliga a f' = 0 por Fermat, y si el punto no es interior, es un borde.",
+      s:"Ejemplo completo con números: f(x) = x² − 4x + 3 en [0, 5]. Derivada: f'(x) = 2x − 4, que se anula en x = 2, el único crítico interior. Candidatos: 0, 2 y 5. Valores: f(0) = 3, f(2) = 4 − 8 + 3 = −1, f(5) = 25 − 20 + 3 = 8. Comparando: el mínimo absoluto es −1, alcanzado en el crítico x = 2, y el máximo absoluto es 8, alcanzado en el borde x = 5. El detalle clave: el máximo absoluto no está en un crítico, está en un extremo del intervalo, y de hecho f'(5) = 6 ≠ 0. Comprobación: el gráfico es una parábola con vértice en (2, −1) que sube hacia ambos lados; en el borde derecho llega a 8, más alto que en el borde izquierdo, donde vale 3: coincide. Errores frecuentes: buscar solo entre los críticos y perder el extremo que está en un borde; aplicar el procedimiento en un intervalo abierto o infinito, donde Weierstrass no garantiza nada (en (0, 5) el valor 8 sería el supremo pero no se alcanzaría); y responder con el punto x en vez del valor de f cuando se pregunta por el extremo.",
+      b:[ {k:"flow", items:[
+          { l:"Candidatos", t:"críticos interiores y los dos bordes del intervalo", c:"blue" },
+          { l:"Evaluar y comparar", t:"f(0) = 3 · f(2) = −1 · f(5) = 8", c:"" },
+          { l:"Mínimo absoluto", t:"−1 en x = 2, un crítico", c:"green" },
+          { l:"Máximo absoluto", t:"8 en x = 5, un borde, no un crítico", c:"green" } ]} ] },
+    { v:"ESTUDIO COMPLETO: UN EJEMPLO DE PRINCIPIO A FIN", vc:"green", i:"El ejemplo integrador de la unidad: el estudio completo de f(x) = x²/(x − 1), etapa por etapa y en el orden en que se trabaja en un parcial. Etapa 1, dominio: el denominador no puede anularse, x − 1 ≠ 0, así que el dominio es R con el 1 excluido. Etapa 2, asíntotas. Vertical: en x = 1, donde los límites laterales se disparan (por izquierda a −∞ y por derecha a +∞). Horizontal no hay: el grado de arriba supera al de abajo. Oblicua: dividiendo, x² = (x − 1)(x + 1) + 1, así que f(x) = x + 1 + 1/(x − 1): la asíntota oblicua es y = x + 1, y la curva viene por encima de ella para x > 1 y por debajo para x < 1, según el signo de 1/(x − 1).",
+      r:"Etapa 3, crecimiento y extremos con el signo de la derivada. La derivada es f'(x) = x(x − 2)/(x − 1)²: el denominador es un cuadrado, positivo donde existe, así que el signo lo manda el numerador. Críticos: x = 0 y x = 2. Signo de f': positivo en (−∞, 0), negativo en (0, 1) y en (1, 2), positivo en (2, ∞). Entonces f crece hasta x = 0, decrece en cada tramo hasta x = 2 y vuelve a crecer. Extremos: máximo local en x = 0 con f(0) = 0, y mínimo local en x = 2 con f(2) = 4. El detalle que solo se ve en el estudio completo: el máximo local vale 0 y el mínimo local vale 4; el máximo es menor que el mínimo, algo imposible en una función continua en todo R, y posible acá porque la asíntota vertical parte el gráfico en dos ramas que no se comunican.",
+      s:"Etapa 4, concavidad e inflexión con el signo de la segunda derivada. La segunda derivada es f''(x) = 2/(x − 1)³: negativa en (−∞, 1), cóncava hacia abajo, y positiva en (1, ∞), cóncava hacia arriba. La concavidad cambia en x = 1, pero no hay punto de inflexión: el 1 no pertenece al dominio y no hay punto de la curva ahí. Etapa 5, el gráfico con todos los datos: la rama izquierda viene desde −∞ pegada a la recta y = x + 1 por debajo, sube, pasa por el origen, que es su máximo local (0, 0), y después baja disparándose a −∞ al acercarse a x = 1 por la izquierda. La rama derecha baja desde +∞ junto a la asíntota vertical, alcanza su mínimo local en (2, 4) y después sube pegándose a y = x + 1 por encima. Comprobación de coherencia: f(2) = 4/1 = 4 y f(0) = 0, y en x = 3, f(3) = 9/2 = 4,5, mayor que el mínimo 4 y ya cerca de la oblicua, que en 3 vale 4: la rama sube desde el mínimo acercándose a la recta. Errores frecuentes en un estudio completo: declarar inflexión donde la función no está definida, unir las dos ramas cruzando la asíntota vertical al dibujar, y olvidar la posición de la curva respecto de la asíntota oblicua.",
+      b:[ {k:"flow", items:[
+          { l:"Dominio y asíntotas", t:"R sin el 1 · vertical x = 1 · oblicua y = x + 1", c:"blue" },
+          { l:"Extremos", t:"máximo local (0, 0) · mínimo local (2, 4)", c:"" },
+          { l:"Concavidad", t:"abajo en (−∞, 1) · arriba en (1, ∞) · sin inflexión", c:"orange" },
+          { l:"Gráfico", t:"dos ramas separadas por la asíntota vertical", c:"green" } ]} ] },
     { v:"CIERRA", vc:"black", i:"Unidad 5: la derivada como herramienta de estudio completo, la optimización como aplicación, Taylor y la aproximación lineal como aproximaciones con error controlado, y Newton-Raphson para cazar raíces que no tienen fórmula.",
       r:"La próxima clase invierte la derivada: la integral.",
       s:"Estudio de funciones y Taylor suelen abrir el segundo parcial en la Cátedra Única, seguidos por integrales y series.",
@@ -5355,6 +5525,46 @@ LESSONS.push(
           { l:"2 · Como límite", t:"escribir la definición antes de calcular", c:"blue" },
           { l:"3 · Barrow y límite", t:"la integral común primero, el límite después", c:"" },
           { l:"4 · Concluir", t:"converge a un valor, o diverge", c:"green" } ]} ] },
+    { v:"PROPIEDADES DE LA INTEGRAL DEFINIDA", vc:"blue", i:"La integral definida obedece cinco propiedades que salen de su lectura como área y que permiten calcular integrales sin tener la primitiva a mano. 1) Linealidad: la integral de una suma es la suma de las integrales, y una constante que multiplica sale afuera: ∫(f + g) = ∫f + ∫g y ∫(k·f) = k·∫f; en áreas, sumar alturas suma áreas y estirar todas las alturas por k estira el área por k. 2) Aditividad respecto del intervalo: si c está entre a y b, ∫ₐᵇ f = ∫ₐᶜ f + ∫ᶜᵇ f; en áreas, partir la región en dos pedazos con un corte vertical no cambia el área total. 3) Comparación: si f(x) ≤ g(x) en todo [a, b], entonces ∫ₐᵇ f ≤ ∫ₐᵇ g; en áreas, una curva que va siempre por debajo encierra un área menor o igual. 4) Intervalo vacío: ∫ₐᵃ f = 0; un área de ancho cero no vale nada. 5) Límites intercambiados: al intercambiar los límites cambia el signo; es la convención que hace que la aditividad funcione también cuando los extremos vienen al revés.",
+      r:"Condiciones: las cinco valen para funciones integrables en el intervalo. La comparación exige además a ≤ b, el intervalo recorrido en el sentido usual: con los límites al revés, la desigualdad se invierte junto con el signo.",
+      s:"Para qué sirven: la linealidad deja separar una integral en pedazos conocidos; la aditividad deja partir donde la función cambia de fórmula (un valor absoluto, una función por tramos); la comparación acota una integral que no se sabe calcular comparándola con una que sí. Errores frecuentes: repartir la integral sobre un producto o un cociente (la linealidad es solo para sumas y restas: ∫(f·g) no es ∫f·∫g), y partir el intervalo en un punto sin cuidar en qué orden quedan los límites de cada pedazo.",
+      b:[ {k:"ink", t:"linealidad: ∫(f + g) = ∫f + ∫g y ∫(k·f) = k·∫f", c:"green"}, {k:"ink", t:"aditividad: ∫ₐᵇ f = ∫ₐᶜ f + ∫ᶜᵇ f, con c entre a y b", c:"green"}, {k:"ink", t:"∫ₐᵃ f = 0 · al intercambiar los límites cambia el signo · f ≤ g ⇒ ∫f ≤ ∫g", c:"blue"} ] },
+    { v:"PROPIEDADES EN ACCIÓN: UN EJEMPLO SIN PRIMITIVA DIRECTA", vc:"black", i:"Ejemplo completo: calcular la integral de |x − 1| entre 0 y 3 usando las propiedades, sin buscar una primitiva de la función con valor absoluto, que no tiene una sola fórmula en todo el intervalo. Paso 1, dónde cambia la fórmula: |x − 1| es 1 − x cuando x ≤ 1 y es x − 1 cuando x ≥ 1; el punto de corte es x = 1. Paso 2, aditividad: parto el intervalo en 1 y la integral es la suma de dos integrales, la de (1 − x) entre 0 y 1 más la de (x − 1) entre 1 y 3. Paso 3, cada pedazo sí tiene primitiva inmediata y sale por Barrow con linealidad: la primera es [x − x²/2]₀¹ = 1 − 1/2 = 1/2; la segunda es [x²/2 − x]₁³ = (9/2 − 3) − (1/2 − 1) = 3/2 + 1/2 = 2. Paso 4, sumo los pedazos: 1/2 + 2 = 5/2.",
+      r:"Comprobación geométrica, sin integrales: la gráfica de |x − 1| sobre [0, 3] forma dos triángulos, uno de base 1 y altura 1, de área 1/2, y otro de base 2 y altura 2, de área 2. Total 5/2: coincide. La comprobación por geometría es posible porque la integral definida de una función no negativa es el área, la lectura que justifica cada propiedad.",
+      s:"El procedimiento general que deja el ejemplo: cuando la función cambia de fórmula dentro del intervalo (valor absoluto, función por tramos, un máximo o un mínimo), no se integra de una vez: se parte el intervalo con la aditividad en los puntos de cambio y se integra cada pedazo con su fórmula. Error frecuente: integrar |x − 1| como si fuera x − 1 en todo el intervalo; da [x²/2 − x]₀³ = 3/2, que no puede ser el área bajo una función no negativa que llega a valer 2 en un tramo de ancho 2.",
+      b:[ {k:"flow", items:[
+          { l:"Corte", t:"x = 1: ahí |x − 1| cambia de fórmula", c:"blue" },
+          { l:"Aditividad", t:"la de (1 − x) entre 0 y 1, más la de (x − 1) entre 1 y 3", c:"" },
+          { l:"Cada pedazo", t:"1/2 + 2", c:"" },
+          { l:"Total", t:"5/2, confirmado por los dos triángulos", c:"green" } ]} ] },
+    { v:"SUSTITUCIÓN DESARROLLADA", vc:"blue", i:"Qué problema resuelve: integrar una composición, una función aplicada sobre otra, cuando la primitiva no es inmediata. Por qué funciona: la sustitución es la regla de la cadena leída al revés; si F es primitiva de f, la derivada de F(g(x)) es f(g(x))·g'(x), así que el integrando f(g(x))·g'(x) tiene por primitiva F(g(x)). Cómo se reconoce que conviene: hay una función de adentro g(x) y, multiplicando afuera, aparece su derivada g'(x), o algo que difiere de ella solo en una constante, que se acomoda con la linealidad. Procedimiento completo: 1) elegir u = g(x), la función de adentro; 2) calcular du = g'(x) dx; 3) reescribir toda la integral en la variable u, sin que quede ninguna x suelta; 4) integrar en u, que ahora es una integral inmediata; 5) volver a x reemplazando u por g(x), y agregar la constante.",
+      r:"Ejemplo completo, paso a paso: la integral de 2x·√(x² + 4). La función de adentro es x² + 4 y su derivada, 2x, está multiplicando: el patrón exacto. Pongo u = x² + 4, entonces du = 2x dx y la integral se reescribe entera como la de √u. Esa sí es inmediata: (2/3)·u^(3/2) + C. Vuelvo a x: el resultado es (2/3)·(x² + 4)^(3/2) + C.",
+      s:"Comprobación, la obligatoria de esta unidad: derivo el resultado. La derivada de (2/3)·(x² + 4)^(3/2) es (2/3)·(3/2)·(x² + 4)^(1/2)·2x = 2x·√(x² + 4): vuelve el integrando exacto ✓. Errores frecuentes: dejar una x mezclada con las u a mitad de camino (la integral en u no puede contener x), olvidar el du y seguir como si dx fuera du, y no volver a x al final de una indefinida: la respuesta tiene que quedar en la variable original.",
+      b:[ {k:"flow", items:[
+          { l:"Señal", t:"composición con la derivada de adentro multiplicando", c:"blue" },
+          { l:"Cambio", t:"u = x² + 4 · du = 2x dx", c:"blue" },
+          { l:"En u", t:"la integral de √u da (2/3)·u^(3/2) + C", c:"" },
+          { l:"Vuelta a x", t:"(2/3)·(x² + 4)^(3/2) + C, y se comprueba derivando", c:"green" } ]} ] },
+    { v:"SUSTITUCIÓN EN UNA DEFINIDA: EL CAMBIO DE LÍMITES", vc:"black", i:"En una integral definida hay dos caminos correctos. Camino A: hacer la sustitución en la indefinida, volver a x y recién ahí aplicar Barrow. Camino B, el corto: cambiar también los límites a la variable u y no volver nunca a x. Ejemplo completo por el camino B: la integral de 2x/(x² + 1) entre 0 y 1. Pongo u = x² + 1 y du = 2x dx, que está completo en el integrando. Los límites se transforman con la misma u: si x = 0, u = 0² + 1 = 1; si x = 1, u = 1² + 1 = 2. La integral queda la de 1/u entre 1 y 2, inmediata: [ln u]₁² = ln 2 − ln 1 = ln 2 ≈ 0,693.",
+      r:"Comprobación por el camino A: una primitiva en x del integrando es ln(x² + 1), porque su derivada es 2x/(x² + 1); Barrow en x da ln(1² + 1) − ln(0² + 1) = ln 2 − 0 = ln 2. Los dos caminos dan lo mismo, como tienen que dar: el cambio de límites no cambia el valor, cambia el trabajo.",
+      s:"El error que el camino B castiga: cambiar la variable y dejar los límites viejos en x, evaluando ln u entre 0 y 1, lo que acá llevaría a un ln 0, un disparate. La regla es tajante: variable nueva, límites nuevos; variable vieja, límites viejos; mezclar es el error. Otro error de la misma familia: hacer el cambio de límites y además volver a x al final, contando el cambio dos veces.",
+      b:[ {k:"flow", items:[
+          { l:"u y du", t:"u = x² + 1 · du = 2x dx", c:"blue" },
+          { l:"Límites nuevos", t:"x = 0 da u = 1 · x = 1 da u = 2", c:"blue" },
+          { l:"En u", t:"la integral de 1/u entre 1 y 2 es ln 2 ≈ 0,693", c:"green" },
+          { l:"Comprobación", t:"Barrow en x con ln(x² + 1): también ln 2", c:"green" } ]} ] },
+    { v:"POR PARTES DESARROLLADA", vc:"orange", i:"Qué problema resuelve: integrar un producto de dos funciones de familias distintas (un polinomio por una exponencial, un polinomio por una trigonométrica, un logaritmo solo) cuando no hay composición que deshacer. La fórmula sale de la regla del producto en dos líneas: la derivada de u·v es u'·v + u·v'; integrando los dos lados queda u·v = ∫ u'·v dx + ∫ u·v' dx, y despejando uno de los términos sale la fórmula de partes. Cómo elegir: u es el factor que se simplifica al derivarlo (un polinomio baja de grado, un logaritmo se vuelve 1/x) y dv es el factor que se sabe integrar sin problema (una exponencial o una trigonométrica). La idea del trueque: se cambia la integral original por otra más simple; si la nueva es más difícil que la original, la elección está al revés.",
+      r:"Ejemplo completo: la integral de x·cos x. Elijo u = x, porque al derivarla queda 1, y dv = cos x dx, porque su integral es inmediata: v = sen x. Aplico la fórmula: x·sen x − ∫ sen x dx = x·sen x + cos x + C. Comprobación derivando: la derivada de x·sen x + cos x es sen x + x·cos x − sen x = x·cos x: vuelve el integrando ✓.",
+      s:"Condiciones y errores frecuentes: el método no exige hipótesis raras, exige una buena elección. Errores típicos: elegir u como el factor que al derivarse se complica (con u = cos x en el ejemplo, la integral nueva trae x² y es peor); olvidar el signo menos de la fórmula; y en una definida, olvidar que el término u·v también se evalúa entre los límites, no solo la integral que queda.",
+      b:[ {k:"ink", t:"de la regla del producto, integrando y despejando: ∫ u dv = u·v − ∫ v du", c:"green"}, {k:"ink", t:"u: lo que se simplifica al derivar · dv: lo que se sabe integrar", c:"blue"} ] },
+    { v:"POR PARTES DOS VECES: LA INTEGRAL REAPARECE", vc:"black", i:"Hay productos donde una sola aplicación no alcanza porque la integral nueva es del mismo tipo que la original. El caso modelo: I es la integral de eˣ·sen x. Aplico partes con u = sen x y dv = eˣ dx: queda I = eˣ·sen x − ∫ eˣ·cos x dx. La nueva integral es del mismo estilo, así que aplico partes otra vez, con el mismo criterio de elección (u trigonométrica, dv exponencial): la integral de eˣ·cos x es eˣ·cos x + ∫ eˣ·sen x dx = eˣ·cos x + I, porque la integral reaparece: es la I original. Sustituyo: I = eˣ·sen x − eˣ·cos x − I. Ahora I está en los dos lados y se despeja como en una ecuación: 2I = eˣ·(sen x − cos x), y entonces I = eˣ·(sen x − cos x)/2 + C.",
+      r:"Comprobación derivando el resultado: la derivada de eˣ·(sen x − cos x)/2 es (1/2)·[eˣ·(sen x − cos x) + eˣ·(cos x + sen x)] = (1/2)·eˣ·2·sen x = eˣ·sen x ✓. La exponencial se deriva a sí misma y la derivada de (sen x − cos x) es (cos x + sen x): los términos en cos x se cancelan y queda el integrando.",
+      s:"La lógica del truco: la integral no se resolvió integrando, se resolvió planteando una ecuación donde la incógnita es la propia integral. Errores frecuentes: cambiar el criterio de elección en la segunda aplicación (si en la segunda se elige u = eˣ, el procedimiento deshace lo hecho y vuelve al punto de partida); perder el signo menos al sustituir, que convierte el −I en +I y arruina el despeje; y agregar la constante C a mitad de camino, antes de despejar: la C se suma una sola vez, al final.",
+      b:[ {k:"flow", items:[
+          { l:"Primera aplicación", t:"I = eˣ·sen x − ∫ eˣ·cos x dx", c:"blue" },
+          { l:"Segunda aplicación", t:"∫ eˣ·cos x dx = eˣ·cos x + I", c:"blue" },
+          { l:"Despeje", t:"I = eˣ·sen x − eˣ·cos x − I, o sea 2I = eˣ·(sen x − cos x)", c:"" },
+          { l:"Resultado", t:"I = eˣ·(sen x − cos x)/2 + C, verificado derivando", c:"green" } ]} ] },
     { v:"CIERRA", vc:"black", i:"Unidad 6 completa: primitiva con su constante y su caso excluido n = −1; la integral definida como límite de sumas de Riemann, con Barrow para el valor exacto cuando hay primitiva; sustitución y por partes como métodos; las integrales impropias definidas como límites, de las dos especies, con las integrales p como referencia; y las aplicaciones con el planteo antes que la cuenta: área entre curvas, volúmenes de revolución por discos, arandelas y capas, y longitud de curvas.",
       r:"Queda la última unidad del programa: las series.",
       s:"En el final de la materia, la integral aparece combinada con estudio de funciones y con aplicaciones: un ejercicio típico pide plantear el volumen o la longitud y recién después resolver la integral que resulta. Quien plantea mal el radio o el integrando pierde el ejercicio aunque integre perfecto.",
@@ -5449,6 +5659,41 @@ LESSONS.push(
           { l:"Paso 2 · Extremo x = 1", t:"Σ1/n armónica: diverge, queda afuera", c:"orange" },
           { l:"Paso 3 · Extremo x = −1", t:"armónica alternada: converge por Leibniz, entra", c:"green" },
           { l:"Intervalo", t:"[−1, 1)", c:"green" } ]} ] },
+    { v:"LA CONDICIÓN NECESARIA, EN SERIO", vc:"blue", i:"La condición necesaria de convergencia, con su porqué: si la serie Σaₙ converge a un número S, sus sumas parciales Sₙ tienden a S, y también Sₙ₋₁ tiende a S; como el término es la diferencia de dos sumas parciales consecutivas, aₙ = Sₙ − Sₙ₋₁, su límite es S − S = 0. O sea: si la serie converge, el término general tiende a 0. La forma útil en la práctica es el contrarrecíproco, que es lógicamente equivalente: si el término general no tiende a 0, la serie diverge. Ese chequeo va primero siempre, porque es el más barato: un límite de sucesiones decide la divergencia sin sumar nada.",
+      r:"Ejemplo completo: la serie de término general n/(n + 1). Dividiendo numerador y denominador por n queda 1/(1 + 1/n), que tiende a 1/(1 + 0) = 1. El término no tiende a 0: tiende a 1. Por el contrarrecíproco de la condición necesaria, la serie diverge. Comprobación directa: cada término vale al menos 1/2 (para n ≥ 1, n/(n + 1) ≥ 1/2), así que la suma parcial Sₙ es al menos n/2 y crece sin tope: las sumas parciales confirman la divergencia.",
+      s:"La advertencia que no se negocia: el recíproco es falso. Que el término general tienda a 0 no alcanza para concluir convergencia: la serie armónica Σ1/n tiene término general 1/n, que tiende a 0, y sin embargo diverge, como ya mostró esta clase con el criterio integral y con el agrupamiento de bloques que superan 1/2. La condición necesaria sirve para descartar, nunca para confirmar: quien la usa al revés aprueba series divergentes. Error hermano: creer que si el término tiende a 0 cada vez más rápido la serie converge; la velocidad no entra en la condición, entra en los criterios que siguen.",
+      b:[ {k:"ink", t:"si Σaₙ converge, entonces aₙ tiende a 0 · contrarrecíproco: si aₙ no tiende a 0, la serie diverge", c:"green"}, {k:"ink", t:"el recíproco es falso: la armónica cumple la condición y diverge", c:"orange"} ] },
+    { v:"COMPARACIÓN: EJEMPLO COMPLETO", vc:"black", i:"El criterio de comparación, enunciado completo: para series de términos no negativos, si 0 ≤ aₙ ≤ bₙ para todo n (alcanza desde algún n en adelante) y la serie de bₙ converge, entonces la de aₙ converge; y si 0 ≤ bₙ ≤ aₙ y la de bₙ diverge, entonces la de aₙ diverge. La lógica es la de las cotas: una suma de términos más chicos que los de una suma finita no puede explotar. Ejemplo completo: la serie de término general 1/(n² + 1). Paso 1, los términos son positivos ✓. Paso 2, acoto: n² + 1 > n², así que 1/(n² + 1) < 1/n² para todo n. Paso 3, la serie mayor es conocida: la de 1/n² converge, porque es la p-serie con p = 2 > 1, ya decidida en esta clase por el criterio integral. Paso 4, conclusión: por comparación, la serie de 1/(n² + 1) converge.",
+      r:"Comprobación numérica con las primeras sumas parciales: la tercera suma parcial de la serie es 1/2 + 1/5 + 1/10 = 0,8, y la de la serie de 1/n² es 1 + 1/4 + 1/9 ≈ 1,361. La serie menor va por debajo de la mayor término a término y en las sumas parciales, como el criterio describe; y como la mayor se frena en π²/6 ≈ 1,64, la menor también tiene que frenarse. La comparación no da el valor de la suma: da la convergencia, que es lo que se preguntó.",
+      s:"Condiciones y errores frecuentes: el criterio exige términos no negativos; con signos mezclados hay que pasar primero por el valor absoluto. El error clásico es comparar en el sentido equivocado: que una serie sea menor que una divergente no dice nada (debajo de algo que explota cabe todo), y que sea mayor que una convergente tampoco. La desigualdad solo decide cuando apunta contra la serie conocida correcta: menor que una convergente, o mayor que una divergente.",
+      b:[ {k:"flow", items:[
+          { l:"Términos", t:"1/(n² + 1) > 0 para todo n", c:"blue" },
+          { l:"Cota", t:"1/(n² + 1) < 1/n²", c:"blue" },
+          { l:"Serie patrón", t:"la de 1/n² converge (p = 2, criterio integral)", c:"" },
+          { l:"Conclusión", t:"la serie de 1/(n² + 1) converge por comparación", c:"green" } ]} ] },
+    { v:"COMPARACIÓN POR LÍMITE: EJEMPLO COMPLETO", vc:"blue", i:"Comparar con desigualdades a veces obliga a forzar cotas incómodas. La comparación por límite, o por equivalencia, trabaja con el comportamiento para n grande: si aₙ y bₙ son positivos y el límite del cociente aₙ/bₙ es un número finito y positivo, las dos series convergen o divergen juntas, porque para n grande sus términos son casi proporcionales. Ejemplo completo: la serie de término general 1/(n·√n). Paso 1, reescribo el término con potencias: n·√n = n¹·n^(1/2) = n^(3/2), así que el término es 1/n^(3/2). Paso 2, elijo como serie patrón la p-serie con p = 3/2, de término bₙ = 1/n^(3/2). Paso 3, el cociente aₙ/bₙ vale 1 para todo n, y su límite es 1, finito y positivo. Paso 4, la patrón converge porque p = 3/2 > 1. Conclusión: por comparación por límite, la serie de 1/(n·√n) converge.",
+      r:"Cuándo es la herramienta justa: cuando el término es un cociente de polinomios o de raíces de polinomios, porque para n grande solo mandan los términos de mayor grado y la serie se comporta como una p-serie. La equivalencia práctica: 1/(n·√n) es 1/n^(3/2) con otro disfraz, y el criterio convierte ese parecido en una conclusión rigurosa.",
+      s:"Errores frecuentes: si el límite del cociente da 0 o infinito, la versión simple del criterio no concluye en los dos sentidos (con límite 0 solo pasa la convergencia de la mayor a la menor; con límite infinito, la divergencia de la menor a la mayor), y hay que decirlo así en vez de afirmar que no decide, sin más. Otro error: elegir mal la patrón, quedándose con un grado de menos; la p que manda es la del término dominante, la que sale de simplificar el cociente para n grande.",
+      b:[ {k:"flow", items:[
+          { l:"Reescritura", t:"n·√n = n^(3/2): el término es 1/n^(3/2)", c:"blue" },
+          { l:"Cociente", t:"aₙ/bₙ tiende a 1, finito y positivo", c:"blue" },
+          { l:"Patrón", t:"p-serie con p = 3/2 > 1: converge", c:"" },
+          { l:"Conclusión", t:"la serie converge por comparación por límite", c:"green" } ]} ] },
+    { v:"COCIENTE Y RAÍZ: EJEMPLOS COMPLETOS", vc:"black", i:"El criterio del cociente con un ejemplo completo: la serie de término general 2ⁿ/n!. Paso 1, escribo el término siguiente: aₙ₊₁ = 2ⁿ⁺¹/(n + 1)!. Paso 2, armo el cociente y simplifico: aₙ₊₁/aₙ = (2ⁿ⁺¹/2ⁿ)·(n!/(n + 1)!) = 2/(n + 1), porque (n + 1)! = (n + 1)·n! y las potencias se restan. Paso 3, el límite: 2/(n + 1) tiende a 0. Paso 4, conclusión: el límite L = 0 es menor que 1, así que por el criterio del cociente la serie converge, y converge absolutamente, porque el criterio se aplica sobre los valores absolutos. La intuición: el factorial crece más rápido que cualquier exponencial de base fija, y el cociente lo mide.",
+      r:"El criterio de la raíz con su ejemplo completo: la serie de término general ((2n + 1)/(3n))ⁿ. Paso 1, el término es una potencia n-ésima, así que la raíz n-ésima lo desnuda: la raíz n-ésima del término es (2n + 1)/(3n), sin la potencia. Paso 2, el límite: dividiendo numerador y denominador por n queda (2 + 1/n)/3, que tiende a 2/3. Paso 3, conclusión: L = 2/3 es menor que 1, así que por el criterio de la raíz la serie converge. La diferencia de trabajo es clara: el cociente con esta serie sería una cuenta pesada; la raíz la resolvió en una línea, porque el término ya venía elevado a n.",
+      s:"Condiciones y el límite de los dos criterios: cociente y raíz deciden si L < 1 (converge absolutamente) o si L > 1 (diverge), y no deciden si L = 1. El caso L = 1 no es raro: la armónica y la serie de 1/n² dan las dos L = 1 en ambos criterios, una diverge y la otra converge. Cuando L = 1 hay que cambiar de herramienta, típicamente a comparación. Errores frecuentes: simplificar mal el factorial en el cociente (olvidar que (n + 1)! aporta el factor (n + 1) completo) y aplicar la raíz cuando el término no es una potencia n-ésima limpia.",
+      b:[ {k:"flow", items:[
+          { l:"Cociente", t:"2ⁿ/n!: el cociente tiende a 0 < 1, converge", c:"green" },
+          { l:"Raíz", t:"((2n + 1)/(3n))ⁿ: la raíz n-ésima tiende a 2/3 < 1, converge", c:"green" },
+          { l:"Si L = 1", t:"ninguno de los dos decide: cambiar de criterio", c:"orange" } ]} ] },
+    { v:"GUÍA DE DECISIÓN: QUÉ CRITERIO PROBAR PRIMERO", vc:"green", i:"El orden de ataque ante una serie nueva, de lo barato a lo específico. Chequeo cero, siempre primero: ¿el término general tiende a 0? Si no tiende a 0, la serie diverge por la condición necesaria y no hay nada más que hacer. Si tiende a 0, la forma del término manda qué criterio probar primero: si hay factoriales o potencias del tipo aⁿ multiplicando, el primer intento es el criterio del cociente, porque el cociente simplifica factoriales y potencias; si todo el término está elevado a n, el primer intento es el criterio de la raíz, que deshace esa potencia de una vez; si el término es un cociente de polinomios, o con raíces de polinomios, el primer intento es la comparación por límite contra la p-serie con p igual a la diferencia de grados (grado de abajo menos grado de arriba, contando las raíces como medios grados); si la serie es alternada, primero se estudia la de valores absolutos con todo lo anterior y, si esa diverge, se prueba Leibniz.",
+      r:"Mini ejemplo de elección: la serie de término general n/(n³ + 1). El chequeo cero pasa: el término tiende a 0. No hay factoriales ni una potencia n-ésima completa: hay un cociente de polinomios, así que la guía manda comparación por límite. El grado de abajo es 3 y el de arriba es 1: comparo con la p-serie de p = 3 − 1 = 2, de término 1/n². El cociente entre los términos es n³/(n³ + 1), que tiende a 1, finito y positivo, y la p-serie con p = 2 converge: la serie converge. La elección del criterio salió de mirar la forma, no de probar todos.",
+      s:"La guía es un orden de intento, no una garantía: un criterio puede no decidir (el cociente con L = 1, una comparación que no cierra) y entonces se pasa al siguiente de la lista. Lo que la guía elimina es el tanteo a ciegas: cada forma de término tiene su herramienta natural, y reconocer la forma es la mitad del ejercicio. En los parciales, la otra mitad es justificar la conclusión con el criterio nombrado y su hipótesis verificada.",
+      b:[ {k:"flow", items:[
+          { l:"Chequeo cero", t:"¿el término tiende a 0? Si no, diverge por la condición necesaria", c:"blue" },
+          { l:"Factoriales o aⁿ", t:"cociente", c:"blue" },
+          { l:"Todo elevado a n", t:"raíz", c:"blue" },
+          { l:"Cociente de polinomios", t:"comparación por límite con la p-serie", c:"green" } ]} ] },
     { v:"CIERRA", vc:"black", i:"Series: sumas infinitas juzgadas por sus sumas parciales, con la geométrica como modelo y los criterios como herramientas. La unidad completa: comparación, cociente y raíz para términos positivos; el criterio integral, que ata la serie a una integral impropia y decide sin dar el valor; Leibniz para las alternadas, con su estimación del error; la distinción entre convergencia absoluta, la fuerte que permite reordenar, y condicional; y las series de potencias, con radio calculado por cociente o raíz e intervalo que solo se cierra tras estudiar los dos extremos por separado.",
       r:"Con esta unidad cierra el programa completo de Análisis Matemático A, las 7 unidades del Plan 2023.",
       s:"Advertencia ya conocida: sucesiones y series entran o salen de los parciales según la cátedra y el cuatrimestre; del final integrador no se sale nunca.",
@@ -12097,7 +12342,16 @@ LESSON_EXERCISES["cbc-an1-funciones"] = [
     ["No es inyectiva porque hay entradas distintas con la misma salida: por ejemplo f(−2) = 4 = f(2). Una función inyectiva jamás repite salidas.",
      "Gráficamente es la prueba de la recta horizontal: la recta y = 4 corta a la parábola en dos puntos, x = −2 y x = 2.",
      "Si se restringe el dominio a x ≥ 0, la función se vuelve estrictamente creciente en ese tramo, no repite salidas y sí tiene inversa.",
-     "Esa inversa es f⁻¹(x) = √x, con dominio x ≥ 0: es la mitad derecha de la parábola reflejada sobre la recta y = x. La otra restricción posible, x ≤ 0, daría la inversa −√x."]); }
+     "Esa inversa es f⁻¹(x) = √x, con dominio x ≥ 0: es la mitad derecha de la parábola reflejada sobre la recta y = x. La otra restricción posible, x ≤ 0, daría la inversa −√x."]); },
+  function(){ return exChoice("Densidad: un irracional entre dos decimales", "Entre 1,41 y 1,42 está el número irracional √2. ¿Cómo se comprueba sin calculadora que √2 cae justo entre esos dos decimales?", "porque 1,41² = 1,9881 < 2 y 1,42² = 2,0164 > 2: elevar al cuadrado conserva el orden entre positivos", "porque 1,415, el promedio de los dos, es irracional", "porque todo decimal que cae entre 1,41 y 1,42 es irracional", ["Elevar al cuadrado conserva el orden entre números positivos: de 1,41² < (√2)² < 1,42² se sigue 1,41 < √2 < 1,42.", "El promedio 1,415 también está entre los dos, pero es racional: es un decimal finito, 283/200. Ese es el contenido de la densidad: entre dos reales distintos siempre hay un racional y también un irracional."]); },
+  function(){ var e = exSteps("La irracionalidad de √2 paso a paso", "Demuestra que √2 es irracional por contradicción, en etapas: se supone que √2 = p/q con p y q enteros, q ≠ 0, y la fracción en su mínima expresión.",
+    [ exChoice("Etapa 1 · La paridad de p", "Elevando al cuadrado queda p² = 2q², así que p² es par. ¿Qué se concluye sobre p?", "p es par: si p fuera impar, su cuadrado también sería impar", "p es divisible por 4", "no se puede concluir nada sobre p", ["Un cuadrado par solo puede venir de una base par: si p fuera impar, p = 2k + 1 y p² = 4k² + 4k + 1 sería impar."]),
+      exChoice("Etapa 2 · La paridad de q", "Escribiendo p = 2k y reemplazando en p² = 2q² queda 4k² = 2q², es decir q² = 2k². ¿Qué se concluye ahora?", "q también es par: q² es par, y un cuadrado par viene de una base par", "q es impar", "k tiene que valer 1", ["q² = 2k² dice que q² es el doble de un entero, o sea par: con el mismo argumento de la etapa anterior, q es par."]),
+      exChoice("Etapa 3 · La contradicción", "Resultó que p y q son ambos pares. ¿Por qué eso termina la demostración?", "porque contradice que p/q estaba en su mínima expresión: la suposición de que √2 es racional es falsa", "porque entonces p/q vale exactamente 1", "porque 2 no tiene raíz cuadrada real", ["Si p y q son pares, la fracción se puede simplificar por 2: no estaba en su mínima expresión, contra lo supuesto. La única salida es que la suposición inicial era falsa: √2 no es un cociente de enteros."]) ],
+    ["Se supone lo contrario de lo que se quiere probar: √2 = p/q en su mínima expresión, y de ahí p² = 2q².",
+     "De p² = 2q² sale que p es par, y escribiendo p = 2k sale que q también es par.",
+     "Pero p y q pares contradicen la mínima expresión: la suposición se cae y √2 es irracional. Es una prueba por contradicción: suponer, operar y chocar contra la hipótesis."]);
+    e.ansText = "√2 es irracional"; return e; }
 ];
 LESSON_EXERCISES["cbc-an1-sucesiones"] = [
   function(){ var p = ri(2, 4), q = ri(1, 6), k = ri(4, 7); return exNum("Término general", "En la sucesión a(n) = " + p + "n + " + q + ", ¿cuánto vale el término número " + k + "?", p * k + q, ["Reemplazo n por " + k + " en el término general: " + p + " · " + k + " + " + q + ".", "Da " + (p * k + q) + ". El término general es la fórmula que genera toda la lista de una vez."]); },
@@ -12128,7 +12382,16 @@ LESSON_EXERCISES["cbc-an1-sucesiones"] = [
     ["Los términos alternan: −1, 1, −1, 1... Hay dos valores que se repiten para siempre, a distancia 2 entre sí.",
      "Si la sucesión convergiera a un límite L, desde algún término en adelante todos los términos tendrían que quedar a menos de, por ejemplo, 0,5 de L.",
      "Pero los términos valen 1 y −1 alternadamente, y ningún número L puede estar a menos de 0,5 de 1 y de −1 a la vez, porque 1 y −1 distan 2.",
-     "Contradicción: la sucesión no converge. Diverge por oscilación, que es distinto de escaparse a infinito."]); }
+     "Contradicción: la sucesión no converge. Diverge por oscilación, que es distinto de escaparse a infinito."]); },
+  function(){ var e = exSteps("Divergencia por subsucesiones", "Prueba que la sucesión a(n) = (−1)ⁿ no converge, usando dos subsucesiones: cada etapa se revisa antes de seguir.",
+    [ exNum("Etapa 1 · La subsucesión de los pares", "La subsucesión de índices pares es a(2), a(4), a(6)... ¿Cuánto vale cada uno de sus términos?", 1, ["(−1) elevado a un exponente par es 1: a(2) = a(4) = a(6) = 1. La subsucesión es constante."]),
+      exNum("Etapa 2 · La subsucesión de los impares", "La subsucesión de índices impares es a(1), a(3), a(5)... ¿Cuánto vale cada uno de sus términos?", -1, ["(−1) elevado a un exponente impar es −1: a(1) = a(3) = a(5) = −1. También es constante."]),
+      exChoice("Etapa 3 · La conclusión", "La subsucesión de pares tiende a 1 y la de impares tiende a −1. ¿Qué se concluye sobre a(n)?", "no converge: si convergiera, todas sus subsucesiones tenderían al mismo límite", "converge a 0, el promedio de los dos valores", "converge, porque cada subsucesión converge por separado", ["El teorema dice que si la sucesión converge a L, toda subsucesión converge a ese mismo L. Acá hay dos subsucesiones con límites 1 y −1, distintos: ningún L sirve para las dos."]) ],
+    ["La subsucesión de índices pares de (−1)ⁿ es constante 1: tiende a 1.",
+     "La subsucesión de índices impares es constante −1: tiende a −1.",
+     "Dos subsucesiones con límites distintos fuerzan la conclusión: (−1)ⁿ no converge. Que una sola subsucesión converja no alcanzaría para afirmar convergencia: es la diferencia de límites lo que refuta."]);
+    e.ansText = "(−1)ⁿ no converge"; return e; },
+  function(){ var o = pick([{ s:"a(n) = 1/n", r:"sí es de Cauchy: con N = 100, dos términos cualesquiera desde ahí difieren en menos de 0,01", sol:"Si m, n ≥ 100, entonces 1/m y 1/n son menores o iguales que 0,01 y su diferencia es menor que 0,01. Con un margen menor basta tomar N más grande: los términos se aprietan tanto como se pida." }, { s:"a(n) = (−1)ⁿ", r:"no es de Cauchy: los términos pares e impares quedan siempre a distancia 2", sol:"Por lejos que se avance, un término par vale 1 y uno impar vale −1: la distancia entre ellos es 2. Con el margen 1 no existe ningún N que funcione." }, { s:"a(n) = n", r:"no es de Cauchy: los términos se separan cada vez más entre sí", sol:"Entre el término n y el término 2n hay distancia n, que crece sin tope: ningún margen fijo se cumple desde algún lugar en adelante." }]); return exChoice("El criterio de Cauchy", "El criterio de Cauchy afirma que una sucesión converge si y solo si sus términos se acercan entre sí tanto como se quiera desde algún lugar en adelante. Para " + o.s + ", el criterio…", o.r, o.r.indexOf("sí es") === 0 ? "no es de Cauchy: los términos pares e impares quedan siempre a distancia 2" : "sí es de Cauchy: con N = 100, dos términos cualesquiera desde ahí difieren en menos de 0,01", o.r.indexOf("se separan") >= 0 ? "no es de Cauchy: los términos pares e impares quedan siempre a distancia 2" : "no es de Cauchy: los términos se separan cada vez más entre sí", [o.sol, "El criterio sirve para garantizar convergencia sin conocer el límite: alcanza con que el grupo de términos posteriores se apriete por debajo de cualquier margen. Y exige todos los pares de términos, no solo los consecutivos."]); }
 ];
 LESSON_EXERCISES["cbc-an1-limites"] = [
   function(){ var a = ri(2, 5); return exNum("Indeterminación 0/0 factorizando", "El límite de (x² − " + (a * a) + ")/(x − " + a + ") cuando x tiende a " + a + " es…", 2 * a, ["Sustituir da 0/0: hay que trabajar la expresión. Diferencia de cuadrados: x² − " + (a * a) + " = (x − " + a + ")(x + " + a + ").", "Cancelo el factor (x − " + a + "), válido porque en el límite x se acerca a " + a + " sin ser " + a + ", y queda x + " + a + ", que en " + a + " vale " + (2 * a) + "."]); },
@@ -12252,7 +12515,26 @@ LESSON_EXERCISES["cbc-an2-estudio"] = [
     ["La definición manda: y = mx + n es asíntota en +∞ si la distancia vertical f(x) − (mx + n) tiende a 0. La pendiente m sola solo dice que la curva crece como una recta de esa inclinación; no dice a qué altura va esa recta ni si la distancia se achica.",
      "El procedimiento completo es: m = límite de f(x)/x; con esa m, n = límite de (f(x) − mx), en el mismo infinito; y hay recta solo si los dos límites existen y son finitos, con m ≠ 0 (si m = 0, la recta sería horizontal).",
      "Contraejemplo: f(x) = x + √x tiene m = límite de (1 + 1/√x) = 1, pero n = límite de √x = +∞: la distancia entre la curva y cualquier recta de pendiente 1 crece sin tope, y no hay asíntota oblicua.",
-     "Conclusión: m sin n es medio chequeo. La verificación final es siempre la de la definición: f(x) − (mx + n) tiene que tender a 0."]); }
+     "Conclusión: m sin n es medio chequeo. La verificación final es siempre la de la definición: f(x) − (mx + n) tiene que tender a 0."]); },
+  function(){ var o = pick([{ f:"x² − 4x + 3", d:"2x − 4", a:0, b:5, c:2, fa:3, fc:-1, fb:8, maxV:8, maxX:5, minV:-1, minX:2 }, { f:"x² − 6x + 5", d:"2x − 6", a:0, b:4, c:3, fa:5, fc:-4, fb:-3, maxV:5, maxX:0, minV:-4, minX:3 }]);
+    var e = exSteps("Extremos absolutos en un intervalo cerrado", "Halla los extremos absolutos de f(x) = " + o.f + " en el intervalo [" + o.a + ", " + o.b + "] con el procedimiento de Weierstrass: candidatos, evaluación y comparación.",
+    [ exNum("Etapa 1 · El punto crítico interior", "La derivada es f'(x) = " + o.d + ". ¿En qué x interior al intervalo se anula?", o.c, ["El único crítico interior sale de f'(x) = 0. Los candidatos a extremo absoluto son ese crítico y los dos extremos del intervalo."]),
+      exNum("Etapa 2 · Evaluar en un borde", "¿Cuánto vale f(" + o.b + "), el valor en el borde derecho del intervalo?", o.fb, ["Los bordes también son candidatos: Weierstrass garantiza que el extremo absoluto se alcanza, y puede estar en un extremo del intervalo sin ser un punto crítico."]),
+      exChoice("Etapa 3 · Comparar y concluir", "Los valores en los candidatos son f(" + o.a + ") = " + fmtN(o.fa) + ", f(" + o.c + ") = " + fmtN(o.fc) + " y f(" + o.b + ") = " + fmtN(o.fb) + ". ¿Cuál es la conclusión correcta?", "el máximo absoluto es " + fmtN(o.maxV) + ", alcanzado en el borde x = " + o.maxX + ", y el mínimo absoluto es " + fmtN(o.minV) + ", alcanzado en el crítico x = " + o.minX, "el máximo absoluto es " + fmtN(o.fc) + ", alcanzado en el crítico x = " + o.c + ", porque los extremos absolutos siempre se alcanzan en puntos críticos", "no se puede concluir: hay que evaluar también la segunda derivada en cada borde", ["Comparando los tres valores: el mayor es " + fmtN(o.maxV) + " y está en un borde del intervalo, no en el crítico; el menor es " + fmtN(o.minV) + " y está en el crítico. Saltear los bordes es el error clásico de este procedimiento."]) ],
+    ["Por Weierstrass, f continua en un intervalo cerrado alcanza su máximo y su mínimo absolutos: existen y están entre los candidatos.",
+     "Candidatos: el crítico interior x = " + o.c + " y los bordes x = " + o.a + " y x = " + o.b + ".",
+     "Valores: f(" + o.a + ") = " + fmtN(o.fa) + ", f(" + o.c + ") = " + fmtN(o.fc) + ", f(" + o.b + ") = " + fmtN(o.fb) + ".",
+     "Comparando: máximo absoluto " + fmtN(o.maxV) + " en el borde x = " + o.maxX + " (ahí f' no se anula: no es un crítico) y mínimo absoluto " + fmtN(o.minV) + " en el crítico x = " + o.minX + "."]);
+    e.ansText = "máximo absoluto " + fmtN(o.maxV) + " en x = " + o.maxX + ", mínimo absoluto " + fmtN(o.minV) + " en x = " + o.minX; return e; },
+  function(){ var e = exSteps("Estudio completo por pasos: una racional", "Haz el estudio completo de f(x) = x²/(x − 1) en etapas: dominio y asíntotas, extremos y concavidad.",
+    [ exNum("Etapa 1 · La asíntota vertical", "El dominio excluye el valor que anula el denominador x − 1. ¿En qué x está la asíntota vertical?", 1, ["x − 1 = 0 da x = 1: ahí los límites laterales se disparan, a −∞ por izquierda y a +∞ por derecha."]),
+      exNum("Etapa 2 · El mínimo local", "La derivada es f'(x) = x(x − 2)/(x − 1)² y hay un mínimo local en x = 2. ¿Cuánto vale f(2)?", 4, ["f(2) = 2²/(2 − 1) = 4/1 = 4. El máximo local está en x = 0 y vale f(0) = 0: el máximo local es menor que el mínimo local, porque la asíntota vertical separa el gráfico en dos ramas."]),
+      exChoice("Etapa 3 · Concavidad e inflexión", "La segunda derivada es f''(x) = 2/(x − 1)³: negativa para x < 1 y positiva para x > 1, así que la concavidad cambia en x = 1. ¿Hay punto de inflexión en x = 1?", "no: el 1 no pertenece al dominio, así que no hay punto de la curva donde cambie la concavidad", "sí: todo cambio de concavidad es un punto de inflexión", "sí, y el punto es (1, 0)", ["La inflexión es un punto de la curva donde cambia la concavidad. En x = 1 la función no está definida: hay cambio de concavidad entre ramas, pero ningún punto de inflexión."]) ],
+    ["Dominio: todos los reales menos el 1. Asíntotas: vertical x = 1 y oblicua y = x + 1, porque f(x) = x + 1 + 1/(x − 1); horizontal no hay.",
+     "Derivada: f'(x) = x(x − 2)/(x − 1)², con críticos en 0 y 2. Crece en (−∞, 0) y en (2, ∞), decrece en (0, 1) y en (1, 2). Máximo local (0, 0) y mínimo local (2, 4).",
+     "Segunda derivada: f''(x) = 2/(x − 1)³. Cóncava hacia abajo en (−∞, 1) y hacia arriba en (1, ∞), sin punto de inflexión porque el cambio ocurre fuera del dominio.",
+     "Gráfico: dos ramas separadas por la asíntota vertical; la izquierda sube hasta (0, 0) y baja a −∞ junto a x = 1, y la derecha baja desde +∞ hasta (2, 4) y sube pegándose a la oblicua."]);
+    e.ansText = "máximo local 0 en x = 0, mínimo local 4 en x = 2, sin inflexión"; return e; }
 ];
 LESSON_EXERCISES["cbc-an2-integrales"] = [
   function(){ return exNum("Barrow", "La integral definida de 2x entre 0 y 3, con primitiva x², vale F(3) − F(0). ¿Cuánto da?", 9, ["F(3) = 9 y F(0) = 0: la resta da 9.", "Es el área bajo la recta 2x entre 0 y 3: un triángulo de base 3 y altura 6."]); },
@@ -12323,7 +12605,24 @@ LESSON_EXERCISES["cbc-an2-integrales"] = [
     ["Infinito no es un número: no se puede reemplazar t por infinito en la primitiva −1/x ni operar con ese símbolo como si fuera un extremo común. Barrow vale entre extremos finitos.",
      "La definición reemplaza el extremo infinito por un extremo finito variable: la integral entre 1 e infinito es el límite cuando t tiende a infinito de la integral común entre 1 y t.",
      "Esa integral común sí sale por Barrow: con la primitiva −1/x vale (−1/t) − (−1/1) = 1 − 1/t.",
-     "Recién al final se toma el límite: 1 − 1/t tiende a 1. Como el límite existe y es finito, la integral converge y vale 1. Si el límite fuera infinito o no existiera, la conclusión sería que diverge y no tiene valor."]); }
+     "Recién al final se toma el límite: 1 − 1/t tiende a 1. Como el límite existe y es finito, la integral converge y vale 1. Si el límite fuera infinito o no existiera, la conclusión sería que diverge y no tiene valor."]); },
+  function(){ var e = exSteps("Sustitución completa paso a paso", "Calcula la integral de 2x · (x² + 1)³ entre 0 y 1 en etapas, con la sustitución u = x² + 1: la variable nueva pide límites nuevos.",
+    [ exChoice("Etapa 1 · La sustitución", "Con u = x² + 1, el diferencial du es…", "2x dx: justo el factor que acompaña en el integrando", "2 dx", "3(x² + 1)² dx", ["du es la derivada de u por dx: (x² + 1)' = 2x. Que el integrando traiga ese 2x multiplicando es la señal de la sustitución."]),
+      exNum("Etapa 2 · Los nuevos límites", "Cuando x llega a 1, la variable u = x² + 1 llega a…", 2, ["u(1) = 1² + 1 = 2. El límite inferior también cambia: u(0) = 1. Con límites nuevos no hace falta volver a x."]),
+      exNum("Etapa 3 · El resultado", "La integral se convierte en la de u³ entre 1 y 2. ¿Cuánto vale?", 3.75, ["La primitiva de u³ es u⁴/4: evaluada entre 1 y 2 da 16/4 − 1/4 = 15/4 = 3,75."]) ],
+    ["El integrando es una composición, (x² + 1)³, con la derivada de lo de adentro, 2x, multiplicando: el patrón exacto de la sustitución.",
+     "Con u = x² + 1 y du = 2x dx, y cambiando los límites (x = 0 da u = 1; x = 1 da u = 2), la integral queda la de u³ entre 1 y 2.",
+     "Barrow en u: 16/4 − 1/4 = 15/4 = 3,75.",
+     "Comprobación por el otro camino: una primitiva en x es (x² + 1)⁴/4, y evaluada entre 0 y 1 da 16/4 − 1/4 = 15/4. Coincide."]);
+    e.ansText = "15/4 = 3,75"; return e; },
+  function(){ var e = exSteps("Por partes completa paso a paso", "Calcula la integral de x · sen x entre 0 y π en etapas, por partes: primero se elige quién es u y quién es dv.",
+    [ exChoice("Etapa 1 · La elección", "La elección que simplifica es…", "u = x y dv = sen x dx: u se vuelve 1 al derivar y sen x se integra sin problema", "u = sen x y dv = x dx: la integral nueva queda más simple", "u = x · sen x y dv = dx", ["u se elige entre lo que se simplifica al derivar: x baja a 1. dv se elige entre lo que se sabe integrar: sen x dx da v = −cos x. Con la elección al revés, la integral nueva trae x² y es peor."]),
+      exNum("Etapa 2 · El término u·v entre los límites", "Con u = x y v = −cos x, el término [−x · cos x] evaluado entre 0 y π vale, con 4 decimales…", 3.1416, ["En π: −π · cos π = −π · (−1) = π ≈ 3,1416. En 0: −0 · cos 0 = 0. La resta da π."]),
+      exNum("Etapa 3 · La integral que queda", "Después de partes queda sumar la integral de cos x entre 0 y π. ¿Cuánto vale?", 0, ["La primitiva de cos x es sen x: sen π − sen 0 = 0 − 0 = 0."]) ],
+    ["Por partes con u = x y dv = sen x dx: du = dx y v = −cos x. La fórmula da [−x · cos x] entre 0 y π, más la integral de cos x entre 0 y π.",
+     "El término evaluado vale π − 0 = π, y la integral que queda vale 0: la integral total es π ≈ 3,1416.",
+     "Comprobación: la función sen x − x · cos x es una primitiva del integrando, porque su derivada es cos x − cos x + x · sen x = x · sen x. Y Barrow con ella da (0 + π) − (0 − 0) = π. Coincide."]);
+    e.ansText = "π ≈ 3,1416"; return e; }
 ];
 LESSON_EXERCISES["cbc-an2-series"] = [
   function(){ var k = pick([2, 3, 4]); return exFrac("Geométrica de razón 1/k", "La serie geométrica con primer término 1/" + k + " y razón 1/" + k + " suma…", 1, k - 1, ["La suma de una geométrica convergente es primer término sobre (1 − razón): (1/" + k + ")/(1 − 1/" + k + ").", "Eso es (1/" + k + ")/(" + (k - 1) + "/" + k + ") = 1/" + (k - 1) + ". Converge porque |razón| = 1/" + k + " < 1."]); },
@@ -12361,7 +12660,23 @@ LESSON_EXERCISES["cbc-an2-series"] = [
     ["El término general 1/n tiende a 0, así que el criterio del término general no la descarta: hay que mirar las sumas parciales.",
      "Agrupando: 1/3 + 1/4 > 1/2; 1/5 + 1/6 + 1/7 + 1/8 > 1/2; el siguiente bloque de 8 términos también supera 1/2, y hay infinitos bloques.",
      "Las sumas parciales superan cualquier número sumando medios: crecen sin tope, luego la serie diverge.",
-     "Conclusión: que el término tienda a 0 es condición necesaria pero no suficiente para converger. La misma idea, con integrales, es el criterio integral: ∫1/x diverge y la serie lo acompaña."]); }
+     "Conclusión: que el término tienda a 0 es condición necesaria pero no suficiente para converger. La misma idea, con integrales, es el criterio integral: ∫1/x diverge y la serie lo acompaña."]); },
+  function(){ var k = pick([2, 4, 5]); var e = exSteps("Elegir y aplicar el criterio paso a paso", "Estudia la serie de término general " + k + "ⁿ/n! en etapas: primero se elige el criterio según la forma del término, después se aplica.",
+    [ exChoice("Etapa 1 · La elección del criterio", "El término general trae un factorial y una potencia de base fija. El primer criterio a probar es…", "el del cociente: el cociente entre términos consecutivos simplifica el factorial y la potencia", "el de la raíz: todo el término está elevado a n", "la comparación por límite con una p-serie: es un cociente de polinomios", ["La guía de decisión: factoriales o potencias de base fija llaman al cociente; la raíz es para términos que son una potencia n-ésima completa; la comparación por límite, para cocientes de polinomios."]),
+      exFrac("Etapa 2 · El límite del cociente", "El cociente entre el término siguiente y el actual es " + k + "/(n + 1). ¿A qué número tiende cuando n crece? Escríbelo como fracción (un entero vale, por ejemplo, 0).", 0, 1, ["El numerador es fijo y el denominador crece sin tope: el cociente tiende a 0."]),
+      exChoice("Etapa 3 · La conclusión", "Como el límite del cociente es 0, menor que 1, la serie…", "converge absolutamente", "diverge", "el criterio no decide", ["Límite menor que 1: convergencia absoluta. Igual a 1 no decidiría; mayor que 1 daría divergencia."]) ],
+    ["La forma manda: " + k + "ⁿ/n! combina una potencia de base fija con un factorial, y el criterio del cociente simplifica los dos de una vez: (n + 1)! = (n + 1) · n! y el cociente de las potencias da " + k + ".",
+     "El cociente entre términos consecutivos es " + k + "/(n + 1), que tiende a 0 cuando n crece.",
+     "Como 0 < 1, por el criterio del cociente la serie converge absolutamente. El factorial le gana a cualquier exponencial de base fija."]);
+    e.ansText = "converge absolutamente"; return e; },
+  function(){ var o = pick([{ t:"n/(n + 1)", lim:1, calc:"dividiendo numerador y denominador por n queda 1/(1 + 1/n), que tiende a 1" }, { t:"(2n)/(n + 3)", lim:2, calc:"dividiendo numerador y denominador por n queda 2/(1 + 3/n), que tiende a 2" }, { t:"(3n + 1)/(n + 1)", lim:3, calc:"dividiendo numerador y denominador por n queda (3 + 1/n)/(1 + 1/n), que tiende a 3" }, { t:"n²/(n² + 1)", lim:1, calc:"dividiendo numerador y denominador por n² queda 1/(1 + 1/n²), que tiende a 1" }]);
+    var e = exSteps("Divergencia por la condición necesaria paso a paso", "Estudia la serie de término general " + o.t + " en etapas, empezando por el chequeo más barato de todos.",
+    [ exNum("Etapa 1 · El límite del término general", "¿A qué número tiende el término general " + o.t + " cuando n crece?", o.lim, ["Se divide numerador y denominador por la potencia mayor de n: " + o.calc + "."]),
+      exChoice("Etapa 2 · La conclusión", "El término general tiende a " + o.lim + ", que no es 0. Entonces la serie…", "diverge, por el contrarrecíproco de la condición necesaria", "converge, porque el término general es finito", "converge por Leibniz", ["Si una serie converge, su término general tiene que tender a 0. Como acá tiende a " + o.lim + ", la convergencia es imposible: la serie diverge sin necesidad de ningún criterio más."]) ],
+    ["El chequeo cero de la guía de decisión: antes de comparar, derivar cocientes o sacar raíces, se mira el límite del término general.",
+     "El término general " + o.t + " tiende a " + o.lim + ": " + o.calc + ".",
+     "Como el límite no es 0, el contrarrecíproco de la condición necesaria decide solo: la serie diverge."]);
+    e.ansText = "diverge por la condición necesaria"; return e; }
 ];
 LESSON_EXERCISES["cbc-al1-conjuntos-complejos"] = [
   function(){ return exChoice("Conjuntos", "La intersección de dos conjuntos es el conjunto de elementos que están…", "en los dos a la vez", "en alguno de los dos", "fuera de los dos", ["Intersección: en ambos. Unión: en alguno. Complemento: fuera.", "Los diagramas de Venn dibujan estas tres operaciones."]); },
@@ -13854,12 +14169,18 @@ LESSON_EXERCISES["cbc-an2-edo"] = [
    generador contra su exigencia; ningún nivel se infló para cumplir
    el criterio de dominio, y cada banco conserva generadores de nivel
    1 que no cuentan como dificultad alta):
-   - cbc-an1-funciones (18): 8 de nivel 1, 9 de nivel 2, 1 de nivel 3.
+   - cbc-an1-funciones (20): 8 de nivel 1, 10 de nivel 2, 2 de nivel 3.
+     Los dos últimos (g18 y g19) llegaron en la Fase 2 de la
+     remediación: la densidad con un irracional ubicado por cuadrados
+     y la irracionalidad de √2 demostrada por etapas.
      Ej.: nivel 1, la asíntota vertical se lee del denominador (g4);
      nivel 2, el dominio con raíz y denominador pide dos condiciones
      a la vez (g0); nivel 3, el abierto de inyectividad exige
      justificar y construir la inversa restringida (g17).
-   - cbc-an1-sucesiones (17): 7/8/2. Ej.: nivel 1, evaluar el término
+   - cbc-an1-sucesiones (19): 7/9/3. Los dos últimos (g17 y g18)
+     llegaron en la Fase 2 de la remediación: la divergencia de
+     (−1)ⁿ por subsucesiones, por etapas, y el criterio de Cauchy
+     aplicado a casos. Ej.: nivel 1, evaluar el término
      general en un n (g0); nivel 2, el límite de un cociente dividiendo
      por la mayor potencia (g2); nivel 3, el punto fijo de una
      recurrencia combina límite, planteo y despeje (g15).
@@ -13871,41 +14192,48 @@ LESSON_EXERCISES["cbc-an2-edo"] = [
      nivel 1, el exponente que resulta al derivar una potencia (g1);
      nivel 2, la cadena con el seno (g2); nivel 3, el abierto que
      deriva x² desde la definición (g17).
-   - cbc-an2-estudio (26): 8/11/7. Ej.: nivel 1, el criterio de la
+   - cbc-an2-estudio (28): 8/11/9. Los dos últimos (g26 y g27)
+     llegaron en la Fase 2 de la remediación: los extremos absolutos
+     en un intervalo cerrado por el procedimiento de candidatos y un
+     estudio completo por etapas de una racional. Ej.: nivel 1, el criterio de la
      segunda derivada se reconoce (g2); nivel 2, la concavidad pide
      anular f'' y simplificar (g3); nivel 3, el estudio completo (g6),
      las optimizaciones (g7 a g9) y la oblicua paso a paso (g22)
      combinan procedimientos.
-   - cbc-an2-integrales (33): 18/12/3. Los 1 son reconocimientos y
+   - cbc-an2-integrales (35): 18/12/5. Los 1 son reconocimientos y
      evaluaciones directas con la primitiva dada. Ej.: nivel 1, Barrow
      con primitiva dada (g0); nivel 2, la suma de Riemann por derecha
      (g6) y las impropias por la definición como límite (g23, g25 a
-     g28); nivel 3, integración por partes con Barrow (g18) y los
-     abiertos (g22, g32).
+     g28); nivel 3, integración por partes con Barrow (g18), los
+     abiertos (g22, g32) y la sustitución completa y la por partes
+     completa agregadas al final en la Fase 2 (g33, g34).
    - cbc-an2-edo (18): 6/9/3. Los generadores g0 a g5 y g15 son de
      áreas entre curvas: evalúan an-integrales-aplicaciones aunque
      vivan en esta clase (atribución por la habilidad declarada, no
      por la clase). Ej.: nivel 1, el primer paso de separar variables
      (g8); nivel 2, la EDO con condición inicial (g6); nivel 3, la
      separable con radicales (g10) y la separable paso a paso (g16).
-   - cbc-an2-series (18): 7/9/2. Ej.: nivel 1, la p-serie se decide por
+   - cbc-an2-series (20): 7/10/3. Ej.: nivel 1, la p-serie se decide por
      la regla (g4); nivel 2, la suma de la geométrica con la fórmula
-     (g0); nivel 3, radio e intervalo paso a paso con los dos extremos
-     estudiados (g15) y el abierto de la armónica (g17). */
+     (g0) y la divergencia por la condición necesaria paso a paso,
+     agregada al final en la Fase 2 (g19); nivel 3, radio e intervalo
+     paso a paso con los dos extremos estudiados (g15), el abierto de
+     la armónica (g17) y elegir y aplicar el criterio, agregado al
+     final en la Fase 2 (g18). */
 var AN_GEN_META = {
   "cbc-an1-funciones": [
     ["an-funciones-dominio", 2], ["an-funciones-dominio", 2], ["an-funciones-comp-inv", 2], ["an-funciones-comp-inv", 2],
     ["an-funciones-asintotas", 1], ["an-funciones-asintotas", 2], ["an-funciones-asintotas", 1], ["an-funciones-asintotas", 2],
     ["an-funciones-exp-log", 1], ["an-funciones-exp-log", 1], ["an-funciones-exp-log", 1], ["an-funciones-trig", 1],
     ["an-funciones-trig", 2], ["an-funciones-propiedades", 1], ["an-funciones-propiedades", 2], ["an-funciones-propiedades", 1],
-    ["an-funciones-comp-inv", 2], ["an-funciones-propiedades", 3]
+    ["an-funciones-comp-inv", 2], ["an-funciones-propiedades", 3], ["an-funciones-propiedades", 2], ["an-funciones-propiedades", 3]
   ],
   "cbc-an1-sucesiones": [
     ["an-sucesiones-termino", 1], ["an-sucesiones-termino", 1], ["an-sucesiones-limite", 2], ["an-sucesiones-limite", 2],
     ["an-sucesiones-limite", 1], ["an-sucesiones-limite", 2], ["an-sucesiones-limite", 2], ["an-sucesiones-monotonia", 1],
     ["an-sucesiones-termino", 2], ["an-sucesiones-termino", 2], ["an-sucesiones-sumas", 2], ["an-sucesiones-limite", 1],
     ["an-sucesiones-monotonia", 1], ["an-sucesiones-monotonia", 1], ["an-sucesiones-limite", 2], ["an-sucesiones-monotonia", 3],
-    ["an-sucesiones-limite", 3]
+    ["an-sucesiones-limite", 3], ["an-sucesiones-limite", 3], ["an-sucesiones-limite", 2]
   ],
   "cbc-an1-limites": [
     ["an-limites-calculo", 2], ["an-limites-calculo", 2], ["an-limites-calculo", 2], ["an-limites-calculo", 2],
@@ -13928,7 +14256,7 @@ var AN_GEN_META = {
     ["an-aprox-lineal", 2], ["an-aprox-lineal", 1], ["an-aprox-lineal", 2], ["an-newton", 2],
     ["an-newton", 1], ["an-estudio-extremos", 3], ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 2],
     ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 3], ["an-asintotas-oblicuas", 1],
-    ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 3]
+    ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 3], ["an-estudio-extremos", 3], ["an-estudio-completo", 3]
   ],
   "cbc-an2-integrales": [
     ["an-integral-barrow", 1], ["an-integrales-primitivas", 1], ["an-integrales-metodos", 1], ["an-integral-barrow", 1],
@@ -13939,14 +14267,14 @@ var AN_GEN_META = {
     ["an-integral-barrow", 1], ["an-integrales-metodos", 2], ["an-integral-barrow", 3], ["an-impropias", 2],
     ["an-impropias", 1], ["an-impropias", 2], ["an-impropias", 2], ["an-impropias", 2],
     ["an-impropias", 2], ["an-impropias", 1], ["an-impropias", 2], ["an-impropias", 2],
-    ["an-impropias", 3]
+    ["an-impropias", 3], ["an-integrales-metodos", 3], ["an-integrales-metodos", 3]
   ],
   "cbc-an2-series": [
     ["an-series-sumas", 2], ["an-series-sumas", 2], ["an-series-sumas", 2], ["an-series-criterios", 1],
     ["an-series-criterios", 1], ["an-series-criterios", 2], ["an-series-criterios", 1], ["an-series-criterios", 2],
     ["an-series-alternadas", 2], ["an-series-absoluta", 1], ["an-series-alternadas", 2], ["an-series-potencias", 2],
     ["an-series-potencias", 1], ["an-series-potencias", 2], ["an-series-potencias", 1], ["an-series-potencias", 3],
-    ["an-series-absoluta", 1], ["an-series-criterios", 3]
+    ["an-series-absoluta", 1], ["an-series-criterios", 3], ["an-series-criterios", 3], ["an-series-criterios", 2]
   ],
   "cbc-an2-edo": [
     ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2],
