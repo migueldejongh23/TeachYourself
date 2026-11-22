@@ -2902,6 +2902,62 @@ function runEngineTests(){
     }
     return true;
   });
+/* ---- Regresión de la segunda parte de la auditoría de la Entrega 5 de PC:
+   los códigos modelo DENTRO de las soluciones de los ejercicios abiertos
+   también tienen que ser Python real multilínea, no comprimido con ; ---- */
+  check("Regresión Fase 2 PC (auditoría, 2ª parte): los códigos modelo de las soluciones abiertas de datos, escribir y funciones son Python multilínea indentado, sin punto y coma ni sentencias tras la cabecera", function(){
+    function codigosModelo(lid){
+      var banco = LESSON_EXERCISES[lid] || [], out = [];
+      banco.forEach(function(gen){
+        for(var r = 0; r < 10; r++){
+          var e = null; try{ e = gen(); }catch(err){}
+          if(!e || e.kind !== "open" || !Array.isArray(e.sol)) continue;
+          e.sol.forEach(function(s){
+            if(typeof s !== "string") return;
+            if(!/^(Código|Solución) modelo:/.test(s) || s.indexOf("def ") < 0) return;
+            if(out.indexOf(s) < 0) out.push(s);
+          });
+        }
+      });
+      return out;
+    }
+    var cabecera = /^(def|for|while|if|elif|else|with|try|except|finally)\b/;
+    var trasCabecera = /\b(def|for|while|if|elif|else|with|try)\b[^:\n]*:\s+\S/;
+    var porClase = { "cbc-pc2-datos": codigosModelo("cbc-pc2-datos"), "cbc-pc-escribir": codigosModelo("cbc-pc-escribir"), "cbc-pc2-funciones": codigosModelo("cbc-pc2-funciones") };
+    if(porClase["cbc-pc2-datos"].length !== 0) return "cbc-pc2-datos no debería tener códigos modelo en soluciones abiertas y tiene " + porClase["cbc-pc2-datos"].length;
+    if(porClase["cbc-pc-escribir"].length !== 3) return "cbc-pc-escribir debería tener 3 códigos modelo en soluciones abiertas y tiene " + porClase["cbc-pc-escribir"].length;
+    if(porClase["cbc-pc2-funciones"].length !== 1) return "cbc-pc2-funciones debería tener 1 código modelo en soluciones abiertas y tiene " + porClase["cbc-pc2-funciones"].length;
+    var todos = porClase["cbc-pc-escribir"].concat(porClase["cbc-pc2-funciones"]);
+    var defs = ["def mayor(lista):", "def aprobadas(notas):", "def total_gastos(nombre_archivo):", "def es_par(n):"];
+    var junto = todos.join("\n");
+    for(var di = 0; di < defs.length; di++)
+      if(junto.indexOf(defs[di]) < 0) return "falta el código modelo «" + defs[di] + "» en las soluciones abiertas";
+    for(var ci = 0; ci < todos.length; ci++){
+      var s = todos[ci];
+      var corte = s.indexOf("\n");
+      if(corte < 0) return "un código modelo sigue en una sola línea: «" + s.slice(0, 90) + "»";
+      var codigo = s.slice(corte + 1);
+      if(codigo.indexOf(";") >= 0) return "un código modelo usa punto y coma para comprimir sentencias: «" + codigo.slice(0, 90) + "»";
+      var lineas = codigo.split("\n");
+      if(lineas.length < 2) return "un código modelo no es multilínea: «" + codigo.slice(0, 90) + "»";
+      for(var ni = 0; ni < lineas.length; ni++){
+        var ln = lineas[ni];
+        if(!ln.trim()) continue;
+        if(trasCabecera.test(ln)) return "una línea de código modelo trae una sentencia en la misma línea que su cabecera: «" + ln + "»";
+        var indent = ln.length - ln.replace(/^ +/, "").length;
+        if(indent % 4 !== 0) return "la línea «" + ln + "» de un código modelo no está indentada en múltiplos de 4 espacios";
+        if(cabecera.test(ln.trim())){
+          if(!/:$/.test(ln.trim())) return "la cabecera compuesta «" + ln.trim() + "» de un código modelo no termina la línea con dos puntos";
+          var sig = null;
+          for(var nj = ni + 1; nj < lineas.length; nj++){ if(lineas[nj].trim()){ sig = lineas[nj]; break; } }
+          if(!sig) return "la cabecera «" + ln.trim() + "» de un código modelo no tiene cuerpo";
+          var indSig = sig.length - sig.replace(/^ +/, "").length;
+          if(indSig <= indent) return "el cuerpo de «" + ln.trim() + "» en un código modelo no está indentado respecto de su cabecera";
+        }
+      }
+    }
+    return true;
+  });
   check("Regresión Fase 2 Pre-CBC: en los pasos de p7-ruffini aparece la tabla de Ruffini ejecutada con su comprobación y la factorización completa de un cúbico", function(){
     var les = lessonById("p7-ruffini");
     if(!les) return "no está la clase p7-ruffini";
@@ -14074,7 +14130,7 @@ function(){ var b = ri(2, 9), h = ri(2, 9); return exNum("Llamar con argumentos"
   function(){ return exChoice("Los paradigmas", "Usar map y filter para transformar y seleccionar colecciones, en lugar de escribir ciclos con instrucciones paso a paso, corresponde al paradigma…", "funcional", "imperativo puro", "de hardware",
     ["El paradigma funcional trabaja aplicando funciones a colecciones; el imperativo describe instrucciones en orden, una por una.", "Python es multiparadigma: la misma materia usa los dos estilos según el problema."]); },
   function(){ return exOpen("Respuesta abierta", "Escribe una función en Python que reciba un número y devuelva True si es par y False si no lo es. Después explica, en una o dos frases, qué hace cada línea y cómo se la llamaría desde el programa principal.",
-    ["Solución modelo: def es_par(n): return n % 2 == 0.", "La línea del return combina todo: n % 2 calcula el resto de dividir por 2, y la comparación == 0 produce el booleano que se devuelve. No hace falta un if con dos return: la comparación ya es el valor buscado.", "La llamada sería, por ejemplo, es_par(7), que devuelve False, y ese resultado puede guardarse en una variable o usarse dentro de una condición.", "Criterio de corrección: la función recibe el número como parámetro (no lo pide con input adentro) y devuelve el booleano con return (no lo imprime)."]); }
+    ["Solución modelo:\ndef es_par(n):\n    return n % 2 == 0", "La línea del return combina todo: n % 2 calcula el resto de dividir por 2, y la comparación == 0 produce el booleano que se devuelve. No hace falta un if con dos return: la comparación ya es el valor buscado.", "La llamada sería, por ejemplo, es_par(7), que devuelve False, y ese resultado puede guardarse en una variable o usarse dentro de una condición.", "Criterio de corrección: la función recibe el número como parámetro (no lo pide con input adentro) y devuelve el booleano con return (no lo imprime)."]); }
 ];
 LESSON_EXERCISES["cbc-pc2-datos"] = [
   function(){ return exChoice("El diccionario", "Un diccionario en Python guarda…", "pares clave-valor", "solo números ordenados", "texto sin estructura", ["Se accede por la clave, no por la posición: como un índice de agenda.", "La lista accede por posición; el diccionario, por clave."]); },
@@ -15212,12 +15268,12 @@ function(){ var listas = [[2, 5, 8, 1, 4], [7, 3, 6, 10, 2], [1, 1, 4, 9, 12]], 
   function(){ return exVF("Verdadero o falso", "En Python, escribir print dentro de una función y devolver con return son intercambiables: el programa puede seguir usando el valor en ambos casos", false,
     ["Lo impreso solo se ve en pantalla; lo devuelto con return sigue existiendo como valor para el resto del programa.", "Es la confusión que la clase marca desde el primer programa: print muestra, return entrega."]); },
   function(){ return exOpen("Respuesta abierta", "Escribe una función en Python que reciba una lista de números y devuelva el mayor de todos. Explica tu plan en una frase antes del código y cómo la comprobarías con un ejemplo.",
-    ["Plan modelo: recorrer la lista guardando en una variable el mayor visto hasta el momento, y devolver esa variable al final.", "Código modelo: def mayor(lista): m = lista[0]; for n in lista: if n > m: m = n; return m.", "La inicialización importa: m arranca en el primer elemento, no en 0, porque si todos los números fueran negativos, un 0 inicial sería un «mayor» falso que no está en la lista.", "Comprobación: mayor([3, 9, 4]) debe dar 9; la traza es m = 3, después m = 9, el 4 no lo supera, devuelve 9."]); },
+    ["Plan modelo: recorrer la lista guardando en una variable el mayor visto hasta el momento, y devolver esa variable al final.", "Código modelo:\ndef mayor(lista):\n    m = lista[0]\n    for n in lista:\n        if n > m:\n            m = n\n    return m", "La inicialización importa: m arranca en el primer elemento, no en 0, porque si todos los números fueran negativos, un 0 inicial sería un «mayor» falso que no está en la lista.", "Comprobación: mayor([3, 9, 4]) debe dar 9; la traza es m = 3, después m = 9, el 4 no lo supera, devuelve 9."]); },
   function(){ return exOpen("Respuesta abierta", "Escribe una función que reciba una lista de notas y devuelva una lista nueva solo con las notas aprobadas (6 o más). Explica qué hace cada parte y qué devuelve con la lista [4, 7, 9, 5].",
-    ["Plan modelo: crear una lista vacía, recorrer las notas, agregar a la lista nueva las que cumplan la condición, y devolver la lista al final.", "Código modelo: def aprobadas(notas): r = []; for n in notas: if n >= 6: r.append(n); return r.", "Con [4, 7, 9, 5] devuelve [7, 9]: el 4 y el 5 no cumplen la condición y quedan afuera.", "Es el patrón de filter escrito a mano: la misma idea que la clase trabajó con filter, pero construida paso a paso. El append va dentro del if, y el return fuera del for."]); },
+    ["Plan modelo: crear una lista vacía, recorrer las notas, agregar a la lista nueva las que cumplan la condición, y devolver la lista al final.", "Código modelo:\ndef aprobadas(notas):\n    r = []\n    for n in notas:\n        if n >= 6:\n            r.append(n)\n    return r", "Con [4, 7, 9, 5] devuelve [7, 9]: el 4 y el 5 no cumplen la condición y quedan afuera.", "Es el patrón de filter escrito a mano: la misma idea que la clase trabajó con filter, pero construida paso a paso. El append va dentro del if, y el return fuera del for."]); },
   function(){ return exOpen("Escribir un programa con archivo", "Escribe un programa completo en Python que lea el archivo gastos.txt, que guarda un gasto por línea, y devuelva el gasto total usando una función total_gastos(nombre_archivo). Explica tu plan en una frase antes del código y cómo lo comprobarías con un archivo de ejemplo.",
     ["Plan modelo: abrir el archivo con with open, recorrer línea por línea convirtiendo cada una a número con int, acumular en una variable que arranca en 0 y devolver el acumulador al final.",
-     "Código modelo: def total_gastos(nombre_archivo): total = 0; with open(nombre_archivo) as f: for linea in f: total = total + int(linea); return total.",
+     "Código modelo:\ndef total_gastos(nombre_archivo):\n    total = 0\n    with open(nombre_archivo) as f:\n        for linea in f:\n            total = total + int(linea)\n    return total",
      "El int es obligatorio: cada línea entra como string, y sin convertir, la suma concatenaría textos en vez de sumar números. El return va fuera del with y del for, cuando el recorrido ya terminó.",
      "Comprobación: con un archivo de ejemplo que contenga 100, 250 y 50, uno por línea, total_gastos debe devolver 400; la traza del acumulador es 0, 100, 350 y 400."]); }
 ];
