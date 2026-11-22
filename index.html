@@ -152,7 +152,9 @@
   .hoy-week .wc{ margin-left:auto; font-size:15px; color:var(--ink-3); white-space:nowrap; font-variant-numeric:tabular-nums; }
 
   /* ---------- Courses list ---------- */
-  .week-head{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin:34px 0 4px; padding-bottom:8px; border-bottom:1px solid var(--ink); }
+  .week-head{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin:34px 0 4px; padding-bottom:8px; border-bottom:1px solid var(--ink); scroll-margin-top:84px; transition:background-color .45s ease; }
+  /* Resaltado temporal al llegar desde un botón de semana de Hoy */
+  .week-head.week-flash{ background:var(--soft); }
   .week-head .wn{ font-size:13px; font-weight:600; color:var(--ink-3); text-transform:uppercase; letter-spacing:.07em; }
   .lesson-row{
     display:flex; gap:16px; align-items:center; width:100%; text-align:left;
@@ -491,6 +493,14 @@
     font-size:13px; font-weight:650; display:flex; align-items:center; justify-content:center; flex:none;
   }
   .stage-instr{ font-size:19px; line-height:1.55; margin:12px 0 4px; max-width:none; width:100%; color:var(--ink); }
+  /* La instrucción y la regla de cada paso usan la misma lógica de color
+     por signo que el resto del tutor (colorizePlain en buildStep). */
+  .stage-instr .num-neg, .stage-step .sc-rule .num-neg{ color:var(--orange); }
+  .stage-instr .num-pos, .stage-step .sc-rule .num-pos{ color:var(--blue); }
+  .stage-instr .num-zero, .stage-step .sc-rule .num-zero{ color:var(--ink); }
+  .stage-instr .num.is-result, .stage-step .sc-rule .num.is-result{ text-decoration:underline; text-decoration-color:var(--green); text-decoration-thickness:3px; text-underline-offset:5px; }
+  .stage-instr .num-zero.is-result, .stage-step .sc-rule .num-zero.is-result{ color:var(--green); text-decoration:none; }
+  .voice-note{ font-size:12.5px; line-height:1.45; color:var(--ink-3); margin-top:-4px; }
   .stage-blocks{ margin-top:6px; width:100%; display:flex; flex-direction:column; gap:12px; }
   .stage-blocks .flow{ margin-left:0; width:100%; }
   .stage-blocks .sc-instr{ margin-left:0; }
@@ -646,7 +656,7 @@
           <button class="btn solid" id="pr-check">Revisar</button>
           <button class="btn" id="pr-skip">Otro ejercicio</button>
         </div>
-        <div class="feedback" id="pr-feedback"></div>
+        <div class="feedback" id="pr-feedback" aria-live="polite"></div>
         <div class="solsteps" id="pr-solution"></div>
         <div class="row" style="margin-top:16px;">
           <button class="btn" id="pr-show-sol">Ver la solución paso a paso</button>
@@ -667,7 +677,7 @@
           <button class="btn solid" id="exam-submit">Entregar y corregir</button>
           <button class="btn" id="exam-cancel">Salir sin entregar</button>
         </div>
-        <div id="exam-result" style="display:none;">
+        <div id="exam-result" style="display:none;" aria-live="polite">
           <div class="score-big" id="exam-score"></div>
           <p style="text-align:center;" id="exam-verdict"></p>
         </div>
@@ -736,7 +746,7 @@
         <button class="btn" id="backup-import-btn">Importar respaldo</button>
         <button class="btn" id="backup-restore-pre" style="display:none;">Restaurar la copia anterior a la última importación</button>
         <input type="file" id="backup-file" accept=".json,application/json" style="display:none;" />
-        <span class="small" id="backup-msg"></span>
+        <span class="small" id="backup-msg" aria-live="polite"></span>
       </div>
       <p class="small" id="storage-warn" style="display:none; color:var(--red); margin-top:10px;">No se pudo guardar en este navegador (sin espacio o almacenamiento bloqueado). Tu progreso sigue en memoria en esta pestaña, pero exporta un respaldo ahora para no perderlo al cerrarla.</p>
       <details style="margin-top:14px;">
@@ -753,7 +763,7 @@
       </details>
       <details style="margin-top:14px;">
         <summary class="small" style="cursor:pointer;">Pruebas de la Fase B (grafo de habilidades)</summary>
-        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad (la declaración del generador en AN_GEN_META manda sobre la habilidad que traiga el intento; si el generador no se puede resolver, el intento no se atribuye a ninguna habilidad), y la dificultad declarada por cada generador. Incluye también la etapa de Álgebra A: las 26 subhabilidades de las 6 clases, con la misma atribución autoritativa por generador (AL_GEN_META) y la misma dificultad declarada por generador; y su corrección de dominio: las tres subhabilidades que tenían solo 2 generadores (operaciones con matrices, sistemas con parámetro e intersecciones de cónicas) sumaron generadores nuevos y distintos que las evalúan de verdad, así que las pruebas comprueban que cada una tiene al menos 3 generadores y alcanza Dominada con evidencia sintética válida construida con la dificultad real de sus generadores. E incluye la etapa de Física 03: las 25 subhabilidades de las 7 clases, con la misma atribución autoritativa por generador (FI_GEN_META), la misma dificultad declarada por generador, las dependencias entre materias justificadas (los productos escalar y vectorial de Álgebra como base de las operaciones con vectores en Física) y la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores y tope de 12 o más intentos cada una), más el dominio sintético de cada una de las 25 subhabilidades por separado: la evidencia de cada prueba se construye desde sus generadores reales y FI_GEN_META, con la dificultad declarada por cada generador y el tipo que sirve una instancia real suya, respetando el tope de 5 por generador y sin que esa evidencia domine ninguna otra habilidad; en las dos habilidades con un único generador de dificultad alta (movimiento circular y el teorema de la energía cinética) se verifica expresamente que 4 intentos de ese generador cuentan sin superar su tope de 5; componentes de vectores salió de esa lista en la Fase 2 de la remediación, porque el banco de magnitudes sumó al final un segundo generador suyo de dificultad 2. E incluye la etapa de Pensamiento Computacional: las 15 subhabilidades de las 5 clases, con la misma atribución autoritativa por generador (PC_GEN_META), la misma dificultad declarada por generador y solo dependencias dentro de la materia (la traza de ciclos sobre la traza secuencial y la lógica booleana; escribir código desde cero sobre trazar los programas modelo y sobre map y filter), la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores puntuables y capacidad de 12 o más intentos cada una) y el dominio sintético de cada una de las 15 subhabilidades por separado, construido desde sus generadores reales y PC_GEN_META con la dificultad declarada por cada generador y el tipo que sirve una instancia real suya, respetando el tope de 5 por generador y sin que esa evidencia domine ninguna otra habilidad; el banco de algoritmos sumó dos generadores nuevos al final (aplicar los conceptos de algoritmo, datos y programa a casos en etapas), porque su subhabilidad de conceptos solo tenía generadores de reconocimiento de nivel 1 y el criterio de dificultad alta era inalcanzable sin ellos; en las tres habilidades con un único generador puntuable de dificultad alta (la tabla de verdad, la función sin return y la tupla inmutable) se verifica expresamente que 4 intentos de ese generador cuentan sin superar su tope de 5. E incluye la etapa de ICSE: las 18 subhabilidades de las 6 clases, con la misma atribución autoritativa por generador (ICSE_GEN_META), la misma dificultad declarada por generador y solo las dependencias que el contenido evalúa como tales (los conceptos de la Unidad 1 que las unidades históricas y el análisis de políticas públicas aplican, la dictadura como ruptura del empate y la transición como su salida, y la Convertibilidad como el caso argentino de la globalización), la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores puntuables y capacidad de 12 o más intentos cada una) y el dominio sintético de cada una de las 18 subhabilidades por separado, construido desde sus generadores reales e ICSE_GEN_META con la dificultad declarada por cada generador y el tipo que sirve una instancia real suya, respetando el tope de 5 por generador y sin que esa evidencia domine ninguna otra habilidad; el banco de contemporánea sumó dos generadores nuevos al final (aplicar la distinción entre globalización e integración regional a casos), porque su subhabilidad de globalización solo tenía generadores de reconocimiento de nivel 1 y el criterio de dificultad alta era inalcanzable sin ellos; en las ocho habilidades con un único generador puntuable de dificultad alta se verifica expresamente que 4 intentos de ese generador cuentan sin superar su tope de 5; Estado, legitimidad y dominación y la dictadura y el terrorismo de Estado salieron de esa lista en la Fase 2 de la remediación, porque sus bancos sumaron al final un segundo generador puntuable de dificultad alta cada uno. E incluye la etapa de IPC: las 13 subhabilidades de las 5 clases, con la misma atribución autoritativa por generador (IPC_GEN_META), la misma dificultad declarada por generador y solo las dependencias que el contenido evalúa como tales (el lenguaje y la lógica como base de las ciencias formales y de la falsación, el inductivismo como el problema al que Popper responde, y Kuhn y Lakatos como respuestas y contrastes sucesivos), la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores puntuables y capacidad de 12 o más intentos cada una; el banco de lenguaje sumó tres generadores nuevos al final en la Fase 2 de la remediación) y el dominio sintético de cada una de las 13 subhabilidades por separado, construido desde sus generadores reales e IPC_GEN_META con la dificultad declarada por cada generador y el tipo que sirve una instancia real suya, respetando el tope de 5 por generador y sin que esa evidencia domine ninguna otra habilidad; en la habilidad con un único generador puntuable de dificultad alta (el ordenamiento cronológico de la secuencia institucional) se verifica expresamente que 4 intentos de ese generador cuentan sin superar su tope de 5; lenguaje y niveles del signo salió de esa lista en la Fase 2 de la remediación, porque el banco de lenguaje sumó al final un segundo generador suyo puntuable de dificultad 2. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
+        <p class="small faint" style="margin:8px 0;">Batería del grafo: integridad (todos los ids existen, sin ciclos, con orden topológico), vinculación de las 11 clases de fracciones y de sus generadores, evaluabilidad de las subhabilidades nuevas con el registro de intentos y respaldos existentes, y el cálculo de dominio con conjuntos sintéticos de intentos (cumple todo, falta un criterio, solo clase vista, tope por generador, abiertos y pasos con reintentos fuera de la evidencia). Incluye la etapa de Análisis A: las 42 subhabilidades de las 8 clases, la atribución sin duplicación en clases multihabilidad (la declaración del generador en AN_GEN_META manda sobre la habilidad que traiga el intento; si el generador no se puede resolver, el intento no se atribuye a ninguna habilidad), y la dificultad declarada por cada generador. Incluye también la etapa de Álgebra A: las 26 subhabilidades de las 6 clases, con la misma atribución autoritativa por generador (AL_GEN_META) y la misma dificultad declarada por generador; y su corrección de dominio: las tres subhabilidades que tenían solo 2 generadores (operaciones con matrices, sistemas con parámetro e intersecciones de cónicas) sumaron generadores nuevos y distintos que las evalúan de verdad, así que las pruebas comprueban que cada una tiene al menos 3 generadores y alcanza Dominada con evidencia sintética válida construida con la dificultad real de sus generadores. E incluye la etapa de Física 03: las 25 subhabilidades de las 7 clases, con la misma atribución autoritativa por generador (FI_GEN_META), la misma dificultad declarada por generador, las dependencias entre materias justificadas (los productos escalar y vectorial de Álgebra como base de las operaciones con vectores en Física) y la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores y tope de 12 o más intentos cada una), más el dominio sintético de cada una de las 25 subhabilidades por separado: la evidencia de cada prueba se construye desde sus generadores reales y FI_GEN_META, con la dificultad declarada por cada generador y el tipo que sirve una instancia real suya, respetando el tope de 5 por generador y sin que esa evidencia domine ninguna otra habilidad; movimiento circular y el teorema de la energía cinética, que dependían de un único generador de dificultad alta, sumaron un segundo generador puntuable de dificultad 2 cada una con el paquete 1 de la auditoría exhaustiva, y se verifica que alcanzan Dominada sin superar el tope de 5 por generador; componentes de vectores salió de esa lista en la Fase 2 de la remediación, porque el banco de magnitudes sumó al final un segundo generador suyo de dificultad 2. E incluye la etapa de Pensamiento Computacional: las 15 subhabilidades de las 5 clases, con la misma atribución autoritativa por generador (PC_GEN_META), la misma dificultad declarada por generador y solo dependencias dentro de la materia (la traza de ciclos sobre la traza secuencial y la lógica booleana; escribir código desde cero sobre trazar los programas modelo y sobre map y filter), la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores puntuables y capacidad de 12 o más intentos cada una) y el dominio sintético de cada una de las 15 subhabilidades por separado, construido desde sus generadores reales y PC_GEN_META con la dificultad declarada por cada generador y el tipo que sirve una instancia real suya, respetando el tope de 5 por generador y sin que esa evidencia domine ninguna otra habilidad; el banco de algoritmos sumó dos generadores nuevos al final (aplicar los conceptos de algoritmo, datos y programa a casos en etapas), porque su subhabilidad de conceptos solo tenía generadores de reconocimiento de nivel 1 y el criterio de dificultad alta era inalcanzable sin ellos; en la habilidad que queda con un único generador puntuable de dificultad alta (la tupla inmutable; la tabla de verdad y la función sin return sumaron un segundo generador puntuable de dificultad 2 cada una con el paquete 1 de la auditoría exhaustiva) se verifica expresamente que 4 intentos de ese generador cuentan sin superar su tope de 5. E incluye la etapa de ICSE: las 18 subhabilidades de las 6 clases, con la misma atribución autoritativa por generador (ICSE_GEN_META), la misma dificultad declarada por generador y solo las dependencias que el contenido evalúa como tales (los conceptos de la Unidad 1 que las unidades históricas y el análisis de políticas públicas aplican, la dictadura como ruptura del empate y la transición como su salida, y la Convertibilidad como el caso argentino de la globalización), la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores puntuables y capacidad de 12 o más intentos cada una) y el dominio sintético de cada una de las 18 subhabilidades por separado, construido desde sus generadores reales e ICSE_GEN_META con la dificultad declarada por cada generador y el tipo que sirve una instancia real suya, respetando el tope de 5 por generador y sin que esa evidencia domine ninguna otra habilidad; el banco de contemporánea sumó dos generadores nuevos al final (aplicar la distinción entre globalización e integración regional a casos), porque su subhabilidad de globalización solo tenía generadores de reconocimiento de nivel 1 y el criterio de dificultad alta era inalcanzable sin ellos; en las cinco habilidades con un único generador puntuable de dificultad alta se verifica expresamente que 4 intentos de ese generador cuentan sin superar su tope de 5; Estado, legitimidad y dominación y la dictadura y el terrorismo de Estado salieron de esa lista en la Fase 2 de la remediación, porque sus bancos sumaron al final un segundo generador puntuable de dificultad alta cada uno, y los actores sociopolíticos, la cadena de la ISI y la reforma de 1994 salieron con el paquete 1 de la auditoría exhaustiva, por la misma vía. E incluye la etapa de IPC: las 13 subhabilidades de las 5 clases, con la misma atribución autoritativa por generador (IPC_GEN_META), la misma dificultad declarada por generador y solo las dependencias que el contenido evalúa como tales (el lenguaje y la lógica como base de las ciencias formales y de la falsación, el inductivismo como el problema al que Popper responde, y Kuhn y Lakatos como respuestas y contrastes sucesivos), la comprobación de cobertura de dominio para todas sus habilidades (al menos 3 generadores puntuables y capacidad de 12 o más intentos cada una; el banco de lenguaje sumó tres generadores nuevos al final en la Fase 2 de la remediación) y el dominio sintético de cada una de las 13 subhabilidades por separado, construido desde sus generadores reales e IPC_GEN_META con la dificultad declarada por cada generador y el tipo que sirve una instancia real suya, respetando el tope de 5 por generador y sin que esa evidencia domine ninguna otra habilidad; en la habilidad con un único generador puntuable de dificultad alta (el ordenamiento cronológico de la secuencia institucional) se verifica expresamente que 4 intentos de ese generador cuentan sin superar su tope de 5; lenguaje y niveles del signo salió de esa lista en la Fase 2 de la remediación, porque el banco de lenguaje sumó al final un segundo generador suyo puntuable de dificultad 2. Cierra la batería la comprobación de cobertura del paquete 1 de la auditoría exhaustiva: toda habilidad del grafo CBC tiene al menos 2 generadores distintos de dificultad 2 o más según los GEN_META, para que el criterio de dominio de dificultad alta no sea inalcanzable ni dependa de un único generador en ninguna habilidad. Las pruebas que tocan el estado trabajan sobre uno de prueba y restauran el tuyo al terminar.</p>
         <button class="btn" id="run-graph-tests">Correr las pruebas del grafo</button>
         <div class="small" id="graph-test-results" style="margin-top:10px;"></div>
       </details>
@@ -763,7 +773,7 @@
       <p class="small faint">Borra todo el progreso guardado en este navegador.</p>
       <div class="row">
         <button class="btn danger" id="reset-all">Borrar todo mi progreso</button>
-        <span class="small" id="reset-msg"></span>
+        <span class="small" id="reset-msg" aria-live="polite"></span>
       </div>
     </div>
   </section>
@@ -810,6 +820,7 @@
         <input type="checkbox" data-role="voice" />
         Voz que lee los pasos
       </label>
+      <span class="voice-note" data-role="voice-note" hidden>Esta clase no tiene audio: algún paso no tiene grabación.</span>
       <div class="set-legend" aria-label="Cómo leer los colores y las flechas">
         <span class="tl-item"><span class="tl-num" style="color:#ea580c;">−3</span> negativo</span>
         <span class="tl-item"><span class="tl-num" style="color:#2563eb;">3</span> positivo</span>
@@ -1373,6 +1384,19 @@ function loadState(){
       state = emptyStateV2();
     }
   }
+  /* Integridad de ids tras aceptar el estado, por cualquiera de las
+     dos vías (v2 o migración v1): la vía básica (basicStateShapeOk)
+     no comprueba que las clases existan, así que un estado de un
+     formato viejo o un respaldo ajeno puede traer ids fantasma en
+     lessonsDone y lessonEx que inflan conteos como «clases
+     terminadas» sin corresponder a ninguna clase real. Se conservan
+     solo los ids que existen en LESSONS; ningún otro campo se toca:
+     attempts, skillAgg, exams y el resto del progreso válido quedan
+     enteros. */
+  ["lessonsDone", "lessonEx"].forEach(function(campo){
+    if(!isPlainObj(state[campo])) return;
+    Object.keys(state[campo]).forEach(function(id){ if(!knownLessonId(id)) delete state[campo][id]; });
+  });
   state.visits[todayISO()] = true;
   saveState();
 }
@@ -1834,6 +1858,61 @@ function runPhaseATests(){
       if(sum.ok + sum.mal !== sum.total) return "el agregado quedó inconsistente tras el recorte";
       if(sum.ultimaFecha !== todayISO()) return "el agregado perdió la última fecha de evidencia";
       if(sum.sesiones !== 1 || sum.dias !== 1) return "el agregado perdió sesiones o días de evidencia";
+      return true;
+    } finally { state = snapState; }
+  });
+  check("Carga por la vía básica: los ids fantasma de lessonsDone y lessonEx se descartan y el progreso válido se conserva entero", function(){
+    var snap = snapStorage();
+    try{
+      var semilla = {
+        version: STATE_VERSION,
+        lessonsDone: { "s1-signos":"2026-11-10", "clase-fantasma":"2026-11-10" },
+        lessonEx: { "s1-signos":{ ok:3, mal:1 }, "clase-fantasma":{ ok:9, mal:9 } },
+        skills: { signos:{ ok:2, mal:1, nivel:1, racha:0 } },
+        exams: [ { week:1, nota:8, aciertos:5, total:6, fecha:"2026-11-11" } ],
+        visits: { "2026-11-10":true },
+        errorLog: [],
+        attempts: [ { ts:1760000000000, fecha:"2026-11-12", session:"s-fantasma", lesson:"s2-fraccion", skill:"frac-suma", tipo:"Suma", gen:"s2-fraccion#g0", dada:"5/6", esperada:"5/6", ok:true, modo:"ronda", dificultad:2 } ],
+        skillAgg: { "frac-suma": { total:2, ok:2, mal:0, sesiones:{ "s-x":true }, dias:{ "2026-11-12":true }, ultimaFecha:"2026-11-12", ultimoTs:2 } },
+        started: "2026-11-10"
+      };
+      /* La semilla no pasa la validación estricta (trae una clase
+         inexistente en lessonsDone) pero sí la forma básica: es
+         exactamente el hueco que esta prueba vigila. */
+      if(!validateStateShape(semilla)) return "la semilla debía fallar la validación estricta para probar la vía básica";
+      if(!basicStateShapeOk(semilla)) return "la semilla no cumple la forma básica";
+      localStorage.setItem(LS_KEY, JSON.stringify(semilla));
+      state = null;
+      loadState();
+      if(!state) return "no se cargó ningún estado";
+      if("clase-fantasma" in state.lessonsDone) return "el id fantasma quedó en lessonsDone";
+      if("clase-fantasma" in state.lessonEx) return "el id fantasma quedó en lessonEx";
+      if(state.lessonsDone["s1-signos"] !== "2026-11-10") return "se perdió la clase válida de lessonsDone";
+      if(!state.lessonEx["s1-signos"] || state.lessonEx["s1-signos"].ok !== 3 || state.lessonEx["s1-signos"].mal !== 1) return "se perdieron los conteos de la clase válida";
+      if(state.attempts.length !== 1 || state.attempts[0].gen !== "s2-fraccion#g0") return "se perdieron intentos al filtrar";
+      if(!state.skillAgg["frac-suma"] || state.skillAgg["frac-suma"].total !== 2 || state.skillAgg["frac-suma"].ok !== 2) return "se perdieron los agregados por habilidad al filtrar";
+      if(state.exams.length !== 1 || state.exams[0].nota !== 8) return "se perdieron exámenes al filtrar";
+      if(!state.skills.signos || state.skills.signos.ok !== 2) return "se perdieron las habilidades planas al filtrar";
+      return true;
+    } finally { restoreStorage(snap); }
+  });
+  check("Mi progreso: la precisión y los ejercicios correctos suman los agregados completos (las rondas CBC también cuentan)", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      state.skills = { signos:{ ok:2, mal:1, nivel:1, racha:0 } };
+      state.skillAgg = {
+        signos: { total:3, ok:2, mal:1, sesiones:{}, dias:{}, ultimaFecha:"", ultimoTs:0 },
+        "an-limites-calculo": { total:5, ok:4, mal:1, sesiones:{}, dias:{}, ultimaFecha:"", ultimoTs:0 }
+      };
+      var tp = totalesProgreso();
+      if(tp.ok !== 6 || tp.mal !== 2 || tp.total !== 8) return "los totales no suman los agregados de las habilidades CBC: ok=" + tp.ok + " mal=" + tp.mal + " total=" + tp.total;
+      /* Historia anterior al registro de intentos en una habilidad
+         plana: vive solo en state.skills, con más intentos que su
+         skillAgg; no se pierde ni se duplica. */
+      state.skills = { signos:{ ok:10, mal:2, nivel:2, racha:0 } };
+      var tp2 = totalesProgreso();
+      if(tp2.ok !== 14 || tp2.mal !== 3 || tp2.total !== 17) return "la historia previa de las habilidades planas se perdió o se duplicó: ok=" + tp2.ok + " mal=" + tp2.mal + " total=" + tp2.total;
       return true;
     } finally { state = snapState; }
   });
@@ -2426,7 +2505,7 @@ function runEngineTests(){
     if(!grN(1e15, "1000000000000000000000/1000000").ok) return "una fracción gigante equivalente fue rechazada";
     return true;
   });
-  check("Barrido del comparador: la respuesta esperada de cada ejercicio servido se acepta en su camino (los 1.210 generadores)", function(){
+  check("Barrido del comparador: la respuesta esperada de cada ejercicio servido se acepta en su camino (los 1.237 generadores)", function(){
     function formatoPropio(e){
       if(e.kind === "frac") return e.fn + "/" + e.fd;
       if(e.kind === "num") return String(e.ans);
@@ -2777,7 +2856,7 @@ function runEngineTests(){
     return true;
   });
   check("Regresión Fase 2 Física: los generadores nuevos de magnitudes, cinemática 1D y energía sirven ejercicios sanos y declaran su entrada de FI_GEN_META", function(){
-    var casos = { "cbc-fis1-magnitudes":21, "cbc-fis1-cinematica1d":21, "cbc-fis2-energia":20 };
+    var casos = { "cbc-fis1-magnitudes":21, "cbc-fis1-cinematica1d":21, "cbc-fis2-energia":21 };
     if(typeof FI_GEN_META === "undefined") return "no está FI_GEN_META";
     for(var lid in casos){
       var banco = LESSON_EXERCISES[lid] || [], meta = FI_GEN_META[lid] || [];
@@ -2834,11 +2913,11 @@ function runEngineTests(){
     return true;
   });
   check("Regresión Fase 2 Álgebra: los generadores nuevos de matrices y vectores sirven ejercicios sanos y declaran su entrada de AL_GEN_META", function(){
-    var casos = { "cbc-al2-matrices":[22, 25], "cbc-al1-vectores":[19, 22] };
+    var casos = { "cbc-al2-matrices":[22, 25], "cbc-al1-vectores":[19, 23] };
     if(typeof AL_GEN_META === "undefined") return "no está AL_GEN_META";
     for(var lid in casos){
       var banco = LESSON_EXERCISES[lid] || [], meta = AL_GEN_META[lid] || [];
-      if(banco.length !== casos[lid][1]) return lid + " tiene " + banco.length + " generadores y debería tener " + casos[lid][1] + " (" + casos[lid][0] + " originales más 3 nuevos al final)";
+      if(banco.length !== casos[lid][1]) return lid + " tiene " + banco.length + " generadores y debería tener " + casos[lid][1] + " (" + casos[lid][0] + " originales más " + (casos[lid][1] - casos[lid][0]) + " nuevos al final)";
       if(meta.length !== banco.length) return lid + ": AL_GEN_META declara " + meta.length + " generadores y el banco tiene " + banco.length;
       for(var gi = casos[lid][0]; gi < banco.length; gi++){
         for(var r = 0; r < 40; r++){
@@ -2953,11 +3032,11 @@ function runEngineTests(){
     return true;
   });
   check("Regresión Fase 2 Análisis: los generadores nuevos de funciones, sucesiones y estudio sirven ejercicios sanos y declaran su entrada de AN_GEN_META", function(){
-    var casos = { "cbc-an1-funciones":[18, [["an-funciones-propiedades", 2], ["an-funciones-propiedades", 3]]], "cbc-an1-sucesiones":[17, [["an-sucesiones-limite", 3], ["an-sucesiones-limite", 2]]], "cbc-an2-estudio":[26, [["an-estudio-extremos", 3], ["an-estudio-completo", 3]]] };
+    var casos = { "cbc-an1-funciones":[18, [["an-funciones-propiedades", 2], ["an-funciones-propiedades", 3], ["an-funciones-exp-log", 2], ["an-funciones-exp-log", 3], ["an-funciones-trig", 2]]], "cbc-an1-sucesiones":[17, [["an-sucesiones-limite", 3], ["an-sucesiones-limite", 2], ["an-sucesiones-monotonia", 2], ["an-sucesiones-sumas", 3]]], "cbc-an2-estudio":[26, [["an-estudio-extremos", 3], ["an-estudio-completo", 3], ["an-estudio-crecimiento", 3], ["an-estudio-concavidad", 2], ["an-taylor", 3], ["an-newton", 3]]] };
     for(var lid in casos){
       var banco = LESSON_EXERCISES[lid] || [], meta = AN_GEN_META[lid] || [];
       var base = casos[lid][0], nuevos = casos[lid][1];
-      if(banco.length !== base + 2) return lid + " tiene " + banco.length + " generadores y debería tener " + (base + 2) + " (" + base + " originales más 2 nuevos al final)";
+      if(banco.length !== base + nuevos.length) return lid + " tiene " + banco.length + " generadores y debería tener " + (base + nuevos.length) + " (" + base + " originales más " + nuevos.length + " nuevos al final)";
       if(meta.length !== banco.length) return lid + ": AN_GEN_META declara " + meta.length + " generadores y el banco tiene " + banco.length;
       for(var gi = base; gi < banco.length; gi++){
         if(meta[gi][0] !== nuevos[gi - base][0] || meta[gi][1] !== nuevos[gi - base][1])
@@ -3012,11 +3091,11 @@ function runEngineTests(){
     return true;
   });
   check("Regresión Fase 2 Análisis: los generadores nuevos de integrales y series sirven ejercicios sanos y declaran su entrada de AN_GEN_META", function(){
-    var casos = { "cbc-an2-integrales":[33, [["an-integrales-metodos", 3], ["an-integrales-metodos", 3]]], "cbc-an2-series":[18, [["an-series-criterios", 3], ["an-series-criterios", 2]]] };
+    var casos = { "cbc-an2-integrales":[33, [["an-integrales-metodos", 3], ["an-integrales-metodos", 3], ["an-integrales-primitivas", 2], ["an-integrales-primitivas", 3], ["an-riemann", 2]]], "cbc-an2-series":[18, [["an-series-criterios", 3], ["an-series-criterios", 2], ["an-series-absoluta", 2], ["an-series-absoluta", 3]]] };
     for(var lid in casos){
       var banco = LESSON_EXERCISES[lid] || [], meta = AN_GEN_META[lid] || [];
       var base = casos[lid][0], nuevos = casos[lid][1];
-      if(banco.length !== base + 2) return lid + " tiene " + banco.length + " generadores y debería tener " + (base + 2) + " (" + base + " originales más 2 nuevos al final)";
+      if(banco.length !== base + nuevos.length) return lid + " tiene " + banco.length + " generadores y debería tener " + (base + nuevos.length) + " (" + base + " originales más " + nuevos.length + " nuevos al final)";
       if(meta.length !== banco.length) return lid + ": AN_GEN_META declara " + meta.length + " generadores y el banco tiene " + banco.length;
       for(var gi = base; gi < banco.length; gi++){
         if(meta[gi][0] !== nuevos[gi - base][0] || meta[gi][1] !== nuevos[gi - base][1])
@@ -3089,11 +3168,11 @@ function runEngineTests(){
   });
   check("Regresión Fase 2 ICSE: los generadores nuevos de conceptos y empate sirven ejercicios sanos y declaran su entrada de ICSE_GEN_META", function(){
     if(typeof ICSE_GEN_META === "undefined") return "no está ICSE_GEN_META";
-    var casos = { "cbc-icse1-conceptos":[17, [["icse-conceptos-estado-legitimidad", 3], ["icse-conceptos-regimen-tipologias", 2]]], "cbc-icse4-empate":[17, [["icse-empate-proscripcion", 3], ["icse-dictadura-terrorismo", 2]]] };
+    var casos = { "cbc-icse1-conceptos":[17, [["icse-conceptos-estado-legitimidad", 3], ["icse-conceptos-regimen-tipologias", 2], ["icse-conceptos-sociedad-actores", 2]]], "cbc-icse4-empate":[17, [["icse-empate-proscripcion", 3], ["icse-dictadura-terrorismo", 2]]] };
     for(var lid in casos){
       var banco = LESSON_EXERCISES[lid] || [], meta = ICSE_GEN_META[lid] || [];
       var base = casos[lid][0], nuevos = casos[lid][1];
-      if(banco.length !== base + 2) return lid + " tiene " + banco.length + " generadores y debería tener " + (base + 2) + " (" + base + " originales más 2 nuevos al final)";
+      if(banco.length !== base + nuevos.length) return lid + " tiene " + banco.length + " generadores y debería tener " + (base + nuevos.length) + " (" + base + " originales más " + nuevos.length + " nuevos al final)";
       if(meta.length !== banco.length) return lid + ": ICSE_GEN_META declara " + meta.length + " generadores y el banco tiene " + banco.length;
       for(var gi = base; gi < banco.length; gi++){
         if(meta[gi][0] !== nuevos[gi - base][0] || meta[gi][1] !== nuevos[gi - base][1])
@@ -3561,6 +3640,200 @@ function runEngineTests(){
         renderExamGrid();
       }catch(e){}
     }
+  });
+  check("Exámenes de banco (semanas 9 a 22): openExam(15) arma 6 preguntas num/frac de los bancos reales de la semana sin repetir generador, y el corrector real registra los intentos con la clase y el generador reales y calcula la nota", function(){
+    var snapState = state;
+    var snapExam = examCurrent;
+    var snapSaveFailed = saveFailed;
+    var rawLS = null; try{ rawLS = localStorage.getItem(LS_KEY); }catch(e){}
+    var snapQs = "", snapTitle = "", snapBox = "";
+    try{ snapQs = $("#exam-qs").innerHTML; snapTitle = $("#exam-title").textContent; snapBox = $("#exam-box").style.display; }catch(e){}
+    try{
+      state = emptyStateV2();
+      openExam(15);
+      if(!examCurrent || examCurrent.week !== 15) return "openExam(15) no dejó armado el examen de la semana 15";
+      var qs = examCurrent.qs;
+      if(qs.length !== 6) return "el examen de la semana 15 debería tener 6 preguntas y tiene " + qs.length;
+      var gensVistos = {};
+      for(var i = 0; i < qs.length; i++){
+        var q = qs[i];
+        var les = lessonById(q.lesson);
+        if(!les || les.week !== 15) return "la pregunta " + (i + 1) + " no es de una clase de la semana 15: " + q.lesson;
+        if(q.kind !== "num" && q.kind !== "frac") return "la pregunta " + (i + 1) + " es de kind " + q.kind + " y el corrector de exámenes solo evalúa num o frac";
+        var gm = typeof q.gen === "string" ? q.gen.match(/^(.+)#g(\d+)$/) : null;
+        if(!gm || gm[1] !== q.lesson || !LESSON_EXERCISES[q.lesson] || !LESSON_EXERCISES[q.lesson][+gm[2]]) return "la pregunta " + (i + 1) + " no conserva un generador real de su clase: " + q.gen;
+        if(gensVistos[q.gen]) return "el examen repite el generador " + q.gen;
+        gensVistos[q.gen] = true;
+        if(typeof q.data.ans !== "number" || !isFinite(q.data.ans)) return "la pregunta " + (i + 1) + " no trae una respuesta numérica finita";
+      }
+      /* Respuesta por el DOM real y el click real en Entregar: las 4
+         primeras bien (el valor exacto de la respuesta esperada) y
+         las 2 últimas mal (la esperada corrida en 7, fuera de toda
+         tolerancia del comparador). */
+      for(var j = 0; j < qs.length; j++){
+        var inp = $('input[data-qi="' + j + '"]');
+        if(!inp) return "no se renderizó el input de la pregunta " + (j + 1);
+        inp.value = j < 4 ? String(qs[j].data.ans) : String(qs[j].data.ans + 7);
+      }
+      $("#exam-submit").click();
+      if(state.exams.length !== 1) return "el examen de banco no quedó guardado en state.exams";
+      var ex = state.exams[0];
+      if(ex.week !== 15 || ex.aciertos !== 4 || ex.total !== 6 || ex.nota !== 7) return "nota o aciertos incorrectos en el examen de banco (nota " + ex.nota + ", aciertos " + ex.aciertos + ", total " + ex.total + ")";
+      if(Object.keys(state.skills).length !== 0) return "el examen de banco sumó a las habilidades planas, y su evidencia es la del grafo CBC";
+      if(state.attempts.length !== 6) return "el examen de banco no registró los 6 intentos";
+      if(!Array.isArray(ex.detalle) || ex.detalle.length !== 6) return "el examen de la semana 15 debería guardar el detalle completo: todas sus preguntas se atribuyen a habilidades del grafo";
+      for(var k = 0; k < 6; k++){
+        var att = state.attempts[k];
+        if(!att || att.modo !== "examen" || att.lesson !== qs[k].lesson || att.gen !== qs[k].gen || att.skill !== qs[k].skill || att.kind !== qs[k].kind || att.ok !== (k < 4))
+          return "el intento " + (k + 1) + " del examen de banco no quedó registrado con la clase y el generador reales";
+        var atrib = habilidadDeIntento(att);
+        if(!atrib || atrib !== att.skill || !knownSkillId(atrib)) return "el intento " + (k + 1) + " no se atribuye a la habilidad del grafo de su generador (atribuyó a " + atrib + ")";
+        if(ex.detalle[k].skill !== atrib || ex.detalle[k].ok !== (k < 4)) return "el detalle de la pregunta " + (k + 1) + " no guarda la habilidad atribuida";
+      }
+      /* Semanas con bancos casi sin ejercicios numéricos: el examen
+         trae las preguntas que hay, sin repetir generador ni
+         inventar preguntas de otro tipo. La semana 13 tiene un solo
+         generador elegible en toda la semana (p13-linea-tiempo) y la
+         22 tiene cuatro (todos de cbc-ipc0-historia). */
+      openExam(13);
+      if(!examCurrent || examCurrent.qs.length !== 1) return "el examen de la semana 13 debería tener 1 pregunta y tiene " + (examCurrent ? examCurrent.qs.length : "ninguna");
+      if(examCurrent.qs[0].lesson !== "p13-linea-tiempo") return "la pregunta de la semana 13 no salió de p13-linea-tiempo, su único banco con un generador numérico";
+      openExam(22);
+      if(!examCurrent || examCurrent.qs.length !== 4) return "el examen de la semana 22 debería tener 4 preguntas y tiene " + (examCurrent ? examCurrent.qs.length : "ninguna");
+      var gens22 = {};
+      for(var m = 0; m < examCurrent.qs.length; m++){
+        if(examCurrent.qs[m].lesson !== "cbc-ipc0-historia") return "una pregunta de la semana 22 no salió de cbc-ipc0-historia, el único banco con ejercicios numéricos de la semana";
+        if(gens22[examCurrent.qs[m].gen]) return "el examen de la semana 22 repite el generador " + examCurrent.qs[m].gen;
+        gens22[examCurrent.qs[m].gen] = true;
+      }
+      return true;
+    } finally {
+      state = snapState;
+      examCurrent = snapExam;
+      setSaveFailed(snapSaveFailed);
+      try{ if(rawLS === null) localStorage.removeItem(LS_KEY); else localStorage.setItem(LS_KEY, rawLS); }catch(e){}
+      try{
+        $("#exam-qs").innerHTML = snapQs;
+        $("#exam-title").textContent = snapTitle;
+        $("#exam-box").style.display = snapBox;
+        $("#exam-result").style.display = "none";
+        $("#exam-submit").style.display = "inline-flex";
+        renderExamGrid();
+      }catch(e){}
+    }
+  });
+  check("Hoy: la semana del examen ofrecido sigue el progreso (primera semana con clases sin terminar; la 22 si están todas terminadas)", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      if(semanaExamenActual() !== 1) return "sin ninguna clase terminada debería ofrecer la semana 1 y ofrece la " + semanaExamenActual();
+      LESSONS.filter(function(l){ return l.week === 1; }).forEach(function(l){ state.lessonsDone[l.id] = "2026-11-12"; });
+      if(semanaExamenActual() !== 2) return "con la semana 1 terminada debería ofrecer la semana 2 y ofrece la " + semanaExamenActual();
+      LESSONS.forEach(function(l){ state.lessonsDone[l.id] = "2026-11-12"; });
+      if(semanaExamenActual() !== 22) return "con todas las clases terminadas debería ofrecer la semana 22 y ofrece la " + semanaExamenActual();
+      return true;
+    } finally {
+      state = snapState;
+    }
+  });
+  check("Accesibilidad (paquete 3): la retroalimentación de práctica, de examen, de la ronda de la clase y de respaldo se anuncia con aria-live polite", function(){
+    if($("#pr-feedback").getAttribute("aria-live") !== "polite") return "el contenedor de retroalimentación de práctica no tiene aria-live polite";
+    if($("#exam-result").getAttribute("aria-live") !== "polite") return "el contenedor de resultado de examen no tiene aria-live polite";
+    if($("#backup-msg").getAttribute("aria-live") !== "polite") return "el mensaje de respaldo no tiene aria-live polite";
+    var snapState = state;
+    var rawLS = null; try{ rawLS = localStorage.getItem(LS_KEY); }catch(e){}
+    var mount = document.createElement("div");
+    try{
+      state = emptyStateV2();
+      document.body.appendChild(mount);
+      startLessonExercises(lessonById("s1-signos"), mount);
+      var fb = $("#lex-fb", mount);
+      if(!fb) return "la ronda montada no creó su contenedor de retroalimentación";
+      if(fb.getAttribute("aria-live") !== "polite") return "la retroalimentación de la ronda no tiene aria-live polite";
+      return true;
+    } finally {
+      state = snapState;
+      try{ if(rawLS === null) localStorage.removeItem(LS_KEY); else localStorage.setItem(LS_KEY, rawLS); }catch(e){}
+      if(mount.parentNode) mount.parentNode.removeChild(mount);
+    }
+  });
+  check("Color en los pasos (paquete 3): buildStep coloriza por signo la instrucción y la regla del paso con un reproductor real", function(){
+    var prevVoz = null; try{ prevVoz = localStorage.getItem(VOICE_KEY); localStorage.setItem(VOICE_KEY, "0"); }catch(e){}
+    var mount = document.createElement("div");
+    var player = null;
+    try{
+      document.body.appendChild(mount);
+      player = createPlayer(mount, {
+        id: "prueba-color-p3", title: "Prueba", subtitle: "",
+        steps: [{ v:"Piensa", vc:"black", i:"El opuesto de −4 es 4.", r:"Restar −4 es sumar 4, y 0 no cambia.", s:"Explicación de prueba.", b:[{ k:"ink", t:"−4 + 4 = 0" }] }],
+        finishLabel: "Terminado", onFinish: function(){}, onBack: function(){}
+      });
+      var instr = $(".stage-instr", mount), rule = $(".sc-rule", mount);
+      if(!instr || !rule) return "el paso montado no tiene instrucción ni regla";
+      var negI = $(".num-neg", instr);
+      if(!negI || negI.textContent !== "−4") return "la instrucción no colorizó el −4 como negativo";
+      if(!$(".num-pos", instr)) return "la instrucción no colorizó el 4 como positivo";
+      var negR = $(".num-neg", rule);
+      if(!negR || negR.textContent !== "−4") return "la regla no colorizó el −4 como negativo";
+      if(!$(".num-zero", rule)) return "la regla no marcó el 0 como cero";
+      if(instr.textContent.indexOf("El opuesto de") !== 0) return "la colorización alteró el texto de la instrucción";
+      return true;
+    } finally {
+      if(player) player.destroy();
+      if(mount.parentNode) mount.parentNode.removeChild(mount);
+      try{ if(prevVoz === null) localStorage.removeItem(VOICE_KEY); else localStorage.setItem(VOICE_KEY, prevVoz); }catch(e){}
+    }
+  });
+  check("Hoy (paquete 3): el botón de una semana muestra Clases, llega al encabezado de esa semana y lo resalta", function(){
+    var snapState = state;
+    try{
+      state = emptyStateV2();
+      showView("hoy");
+      var btn = null;
+      $$("#hoy-weeks .hoy-week").forEach(function(b){ if(b.getAttribute("data-week") === "3") btn = b; });
+      if(!btn) return "Hoy no ofrece el botón de la semana 3";
+      btn.click();
+      if(!$("#view-clases").classList.contains("on")) return "el botón no mostró la vista Clases";
+      var head = document.getElementById("week-head-3");
+      if(!head) return "la lista de clases no tiene el encabezado de la semana 3";
+      if(!head.classList.contains("week-flash")) return "el encabezado de la semana 3 no quedó resaltado tras el clic";
+      head.classList.remove("week-flash");
+      return true;
+    } finally {
+      state = snapState;
+      try{ showView("hoy"); }catch(e){}
+    }
+  });
+  check("Regresión auditoría (evidencia): el tope de 5 por generador conserva los 5 intentos más recientes, no los más viejos, y el dominio se puede alcanzar después de fallos viejos", function(){
+    /* Habilidad an-limites-calculo en la clase multihabilidad
+       cbc-an1-limites: la atribución sale de AN_GEN_META por
+       generador (g0, g1 y g2 son suyos, de dificultad 2; g8 es de
+       an-continuidad). El generador g0 junta 5 fallos viejos y 6
+       aciertos recientes: si el tope conservara los primeros 5, la
+       evidencia de g0 serían los 5 fallos y el dominio quedaría
+       bloqueado para siempre por ese generador; con el tope
+       corregido entran sus 5 aciertos más recientes. */
+    function attR(ts, fecha, sesion, gen, tipo, ok){
+      return { lesson:"cbc-an1-limites", skill:null, gen:gen, tipo:tipo, ok:ok, ts:ts, fecha:fecha, session:sesion, dificultad:2, kind:"num", modo:"ronda", dada:"1", esperada:"1" };
+    }
+    var L = "cbc-an1-limites", set = [], i;
+    for(i = 0; i < 5; i++) set.push(attR(1000 + i, "2026-11-10", "s-vieja", L + "#g0", "Límite directo", false));
+    for(i = 0; i < 6; i++) set.push(attR(2000 + i, "2026-11-11", "s-nueva", L + "#g0", "Límite directo", true));
+    for(i = 0; i < 5; i++) set.push(attR(1500 + i, "2026-11-10", "s-vieja", L + "#g1", "Límite con raíz", true));
+    for(i = 0; i < 5; i++) set.push(attR(2010 + i, "2026-11-11", "s-nueva", L + "#g2", "Límite en el infinito", true));
+    for(i = 0; i < 3; i++) set.push(attR(3000 + i, "2026-11-11", "s-nueva", L + "#g8", "Continuidad en un punto", true));
+    var ev = evidenciaDeHabilidad("an-limites-calculo", set);
+    if(ev.length !== 15) return "la evidencia debería tener 15 intentos (5 por generador, con el tope aplicado) y tiene " + ev.length;
+    var deG0 = ev.filter(function(a){ return a.gen === L + "#g0"; });
+    if(deG0.length !== 5) return "el tope de g0 debería dejar exactamente 5 intentos y dejó " + deG0.length;
+    if(!deG0.every(function(a){ return a.ok; })) return "la evidencia de g0 incluye un fallo viejo: el tope sigue conservando los intentos más viejos y no los recientes";
+    if(Math.min.apply(null, deG0.map(function(a){ return a.ts; })) !== 2001) return "la evidencia de g0 no son sus 5 intentos más recientes: debería empezar en el ts 2001 (el acierto de ts 2000 queda fuera por el tope)";
+    var otra = evidenciaDeHabilidad("an-continuidad", set);
+    if(otra.length !== 3) return "los intentos del generador de otra habilidad se vieron afectados: la evidencia de an-continuidad debería ser 3 y es " + otra.length;
+    if(ev.some(function(a){ return a.gen === L + "#g8"; })) return "un intento del generador de an-continuidad contó también para an-limites-calculo";
+    var m = masteryDeHabilidad("an-limites-calculo", set, {});
+    if(m.k !== "dominada") return "con los aciertos recientes dentro del tope, la habilidad debería alcanzar Dominada y quedó en " + m.k + " con detalle " + JSON.stringify(m.detalle);
+    return true;
   });
   return results;
 }
@@ -8066,7 +8339,7 @@ var EXAM_SKILLS = { 1:["signos"], 2:["frac-simpl","frac-suma","frac-mult"], 3:["
    - Criterios de DOMINADA (deben cumplirse TODOS), computados sobre
      la evidencia ya filtrada y con el tope por generador aplicado
      ANTES de contar (de cada generador cuentan como máximo sus 5
-     primeros intentos puntuables, en orden cronológico):
+     intentos puntuables más recientes, en orden cronológico):
        a. 12 o más intentos puntuables.
        b. Precisión total de 85% o más.
        c. Intentos en 2 o más sesiones y en 2 o más días calendario
@@ -8128,20 +8401,29 @@ var EXAM_SKILLS = { 1:["signos"], 2:["frac-simpl","frac-suma","frac-mult"], 3:["
        - La sesión más reciente (criterio d) se toma de la evidencia
          ya filtrada y con tope: si esa sesión tiene pocos intentos,
          su precisión manda igual.
+   - Etapa de cada nodo (campo etapa): las seis etapas del CBC usan
+     el slug de su materia (analisis, algebra, fisica, pc, icse,
+     ipc) y los 12 nodos del piloto (signos y las 11 subhabilidades
+     de fracciones) declaran etapa:"precbc", con el mismo formato de
+     valor. Ningún consumidor depende de que el campo falte: los
+     pendientes del piloto se agrupan por el campo piloto y las
+     vistas por etapa comparan contra los valores del CBC, así que
+     declarar la etapa no cambia ninguna cuenta; solo evita que una
+     vista que agrupe por etapa deje estos nodos fuera.
 */
 var SKILL_GRAPH = {
-  "signos": { name:"Números con signo", desc:"Regla de signos de la semana 1: el prerrequisito externo del piloto.", lessons:["s1-suma"], prereqs:[], piloto:false },
-  "frac-concepto": { name:"Qué es una fracción", desc:"Partes de un todo, la raya como división y fracciones mayores que 1.", lessons:["s2-fraccion"], prereqs:[], piloto:true },
-  "frac-divresto": { name:"División con resto, divisores y múltiplos", desc:"Repartir cuando no da exacto y el vocabulario que sostiene a MCD y MCM.", lessons:["s2-division-resto"], prereqs:[], piloto:true },
-  "frac-tipos": { name:"Propias, impropias y número mixto", desc:"Las tres familias según su tamaño y cómo pasar de una escritura a la otra.", lessons:["s2-tipos"], prereqs:["frac-concepto"], piloto:true },
-  "frac-mcd-mcm": { name:"Primos, MCD y MCM", desc:"Descomposición en primos y los procedimientos del máximo común divisor y el mínimo común múltiplo.", lessons:["s2-primos-mcd-mcm"], prereqs:["frac-divresto"], piloto:true },
-  "frac-simpl": { name:"Equivalentes y simplificar fracciones", desc:"La misma cantidad con otros números y cómo llegar a la fracción irreducible dividiendo por el MCD.", lessons:["s2-equivalentes"], prereqs:["frac-mcd-mcm"], piloto:true },
-  "frac-comparar": { name:"Comparar y ordenar fracciones", desc:"Qué fracción es mayor: mismo denominador, mismo numerador, producto cruzado y denominador común.", lessons:["s2-comparar"], prereqs:["frac-simpl"], piloto:true },
-  "frac-suma": { name:"Sumar y restar fracciones", desc:"Denominador común con el MCM y la operación, con el resultado simplificado.", lessons:["s2-suma"], prereqs:["frac-mcd-mcm", "frac-simpl"], piloto:true },
-  "frac-mult": { name:"Multiplicar y dividir fracciones", desc:"Directo al multiplicar; dar vuelta la segunda al dividir.", lessons:["s2-mult"], prereqs:[], piloto:true },
-  "frac-negativas": { name:"Fracciones negativas", desc:"Operar fracciones con signo usando la regla de signos y las operaciones con fracciones.", lessons:["s2-negativas"], prereqs:["signos", "frac-suma", "frac-mult"], piloto:true },
-  "frac-cantidad": { name:"Fracción de una cantidad", desc:"Cuánto es una fracción de un número, cuánto queda y cómo hallar el todo sabiendo una parte.", lessons:["s2-cantidad"], prereqs:["frac-mult"], piloto:true },
-  "frac-combinadas": { name:"Operaciones combinadas con fracciones", desc:"Sumas, restas, multiplicaciones y divisiones en una sola cuenta, en orden.", lessons:["s2-combinadas"], prereqs:["frac-suma", "frac-mult"], piloto:true },
+  "signos": { name:"Números con signo", desc:"Regla de signos de la semana 1: el prerrequisito externo del piloto.", lessons:["s1-suma"], prereqs:[], piloto:false, etapa:"precbc" },
+  "frac-concepto": { name:"Qué es una fracción", desc:"Partes de un todo, la raya como división y fracciones mayores que 1.", lessons:["s2-fraccion"], prereqs:[], piloto:true, etapa:"precbc" },
+  "frac-divresto": { name:"División con resto, divisores y múltiplos", desc:"Repartir cuando no da exacto y el vocabulario que sostiene a MCD y MCM.", lessons:["s2-division-resto"], prereqs:[], piloto:true, etapa:"precbc" },
+  "frac-tipos": { name:"Propias, impropias y número mixto", desc:"Las tres familias según su tamaño y cómo pasar de una escritura a la otra.", lessons:["s2-tipos"], prereqs:["frac-concepto"], piloto:true, etapa:"precbc" },
+  "frac-mcd-mcm": { name:"Primos, MCD y MCM", desc:"Descomposición en primos y los procedimientos del máximo común divisor y el mínimo común múltiplo.", lessons:["s2-primos-mcd-mcm"], prereqs:["frac-divresto"], piloto:true, etapa:"precbc" },
+  "frac-simpl": { name:"Equivalentes y simplificar fracciones", desc:"La misma cantidad con otros números y cómo llegar a la fracción irreducible dividiendo por el MCD.", lessons:["s2-equivalentes"], prereqs:["frac-mcd-mcm"], piloto:true, etapa:"precbc" },
+  "frac-comparar": { name:"Comparar y ordenar fracciones", desc:"Qué fracción es mayor: mismo denominador, mismo numerador, producto cruzado y denominador común.", lessons:["s2-comparar"], prereqs:["frac-simpl"], piloto:true, etapa:"precbc" },
+  "frac-suma": { name:"Sumar y restar fracciones", desc:"Denominador común con el MCM y la operación, con el resultado simplificado.", lessons:["s2-suma"], prereqs:["frac-mcd-mcm", "frac-simpl"], piloto:true, etapa:"precbc" },
+  "frac-mult": { name:"Multiplicar y dividir fracciones", desc:"Directo al multiplicar; dar vuelta la segunda al dividir.", lessons:["s2-mult"], prereqs:[], piloto:true, etapa:"precbc" },
+  "frac-negativas": { name:"Fracciones negativas", desc:"Operar fracciones con signo usando la regla de signos y las operaciones con fracciones.", lessons:["s2-negativas"], prereqs:["signos", "frac-suma", "frac-mult"], piloto:true, etapa:"precbc" },
+  "frac-cantidad": { name:"Fracción de una cantidad", desc:"Cuánto es una fracción de un número, cuánto queda y cómo hallar el todo sabiendo una parte.", lessons:["s2-cantidad"], prereqs:["frac-mult"], piloto:true, etapa:"precbc" },
+  "frac-combinadas": { name:"Operaciones combinadas con fracciones", desc:"Sumas, restas, multiplicaciones y divisiones en una sola cuenta, en orden.", lessons:["s2-combinadas"], prereqs:["frac-suma", "frac-mult"], piloto:true, etapa:"precbc" },
   /* ---- Expansión del grafo, etapa Análisis Matemático A (semanas 14
      y 15). Decisiones de esta etapa:
      - 42 nodos nuevos con prefijo an-, uno por bloque real de
@@ -8888,6 +9170,9 @@ function habilidadDeIntento(a){
 function evidenciaDeHabilidad(id, attempts){
   /* Intentos puntuables que son evidencia de la habilidad, con el
      tope de 5 por generador aplicado (ver el comentario del modelo).
+     Del tope cuentan los 5 intentos MÁS RECIENTES de cada generador:
+     la evidencia vieja de un generador no puede tapar para siempre
+     el progreso posterior del alumno con ese mismo generador.
      attempts por defecto es el registro real del estado. */
   var lista = Array.isArray(attempts) ? attempts : (state && Array.isArray(state.attempts) ? state.attempts : []);
   var cruda = lista.filter(function(a){
@@ -8896,13 +9181,15 @@ function evidenciaDeHabilidad(id, attempts){
     return habilidadDeIntento(a) === id;
   });
   cruda.sort(function(x, y){ return (x.ts || 0) - (y.ts || 0); });
-  var porGen = {}, out = [];
-  cruda.forEach(function(a){
+  var porGen = {}, recientes = [];
+  for(var i = cruda.length - 1; i >= 0; i--){
+    var a = cruda[i];
     var g = typeof a.gen === "string" && a.gen ? a.gen : "(sin generador)";
     porGen[g] = (porGen[g] || 0) + 1;
-    if(porGen[g] <= 5) out.push(a);
-  });
-  return out;
+    if(porGen[g] <= 5) recientes.push(a);
+  }
+  recientes.reverse();
+  return recientes;
 }
 var MASTERY_MIN = { intentos:12, precision:0.85, dias:2, sesiones:2, precisionSesion:0.80, tipos:3, dificultadAlta:4 };
 function masteryDeHabilidad(id, attempts, lessonsDone){
@@ -9366,6 +9653,14 @@ function runSkillGraphTests(){
         if(n.prereqs[k] === ids[i]) return ids[i] + " es prerrequisito de sí mismo";
       }
     }
+    return true;
+  });
+  check("Todo nodo del grafo declara su etapa: ningún nodo queda fuera al agrupar por etapa", function(){
+    var sin = Object.keys(SKILL_GRAPH).filter(function(id){
+      var e = SKILL_GRAPH[id].etapa;
+      return typeof e !== "string" || e.length === 0;
+    });
+    if(sin.length) return "nodos sin etapa no vacía: " + sin.join(", ");
     return true;
   });
   check("Sin ciclos: existe un orden topológico y cada prerrequisito va antes que su habilidad", function(){
@@ -10341,39 +10636,36 @@ function runSkillGraphTests(){
     }
     return true;
   });
-  check("Física: las dos habilidades con un único generador de dificultad alta cuentan 4 intentos suyos sin superar el tope de 5", function(){
-    /* fi-movimiento-circular y fi-energia-cinetica-teorema tienen,
-       según FI_GEN_META, un solo generador de dificultad 2 o más.
-       El criterio de 4 intentos de dificultad alta solo puede salir
-       de ese generador, y su tope es 5: esta prueba verifica
-       expresamente que la evidencia de dominio de cada una trae al
-       menos 4 intentos de ese generador, que ninguno supera el tope
-       y que toda su dificultad alta viene de ahí.
-       fi-vectores-componentes salió de esta lista en la Fase 2 de
-       la remediación (21/11/2026): el banco de magnitudes sumó al
-       final un segundo generador suyo de dificultad 2 (g18, de
-       componentes a módulo y ángulo), así que su dificultad alta ya
-       no depende de un único generador. */
+  check("Física: movimiento circular y el teorema de la energía cinética ya no dependen de un único generador de dificultad alta (tienen dos y alcanzan Dominada)", function(){
+    /* fi-movimiento-circular y fi-energia-cinetica-teorema tenían,
+       según FI_GEN_META, un solo generador de dificultad 2 o más
+       (el paso a paso de cada banco), así que su criterio de
+       dificultad alta colgaba de un único generador con tope 5.
+       El paquete 1 de la auditoría exhaustiva sumó al final de
+       cada banco un segundo generador puntuable de dificultad 2
+       (la fuerza centrípeta en cinemática 2D y el teorema trabajo
+       y energía con velocidad final en energía), sin tocar ningún
+       índice histórico. Esta prueba verifica que cada habilidad
+       tiene exactamente 2 generadores de dificultad 2 o más, que
+       la evidencia construida desde sus generadores reales no
+       supera el tope de 5 en ninguno y que alcanza Dominada.
+       fi-vectores-componentes salió de la lista original en la
+       Fase 2 de la remediación (21/11/2026), por la misma vía. */
     var casos = ["fi-movimiento-circular", "fi-energia-cinetica-teorema"];
     for(var t = 0; t < casos.length; t++){
       var skill = casos[t], altosMeta = [];
       FI_LESSONS.forEach(function(lid){
         (FI_GEN_META[lid] || []).forEach(function(mta, gi){ if(mta[0] === skill && mta[1] >= 2) altosMeta.push(lid + "#g" + gi); });
       });
-      if(altosMeta.length !== 1) return skill + " debería tener exactamente 1 generador de dificultad 2 o más en FI_GEN_META y tiene " + altosMeta.length + " (" + altosMeta.join(", ") + ")";
+      if(altosMeta.length !== 2) return skill + " debería tener exactamente 2 generadores de dificultad 2 o más en FI_GEN_META y tiene " + altosMeta.length + " (" + altosMeta.join(", ") + ")";
       var r = evidenciaFi(skill);
       if(r.error) return r.error;
-      var delAlto = r.set.filter(function(x){ return x.gen === altosMeta[0]; });
-      if(delAlto.length < 4) return skill + ": la evidencia trae " + delAlto.length + " intentos de su único generador de dificultad alta (" + altosMeta[0] + ") y el criterio exige 4";
-      if(delAlto.length > 5) return skill + ": la evidencia trae " + delAlto.length + " intentos de " + altosMeta[0] + " y supera su tope de 5";
+      if(Math.max.apply(null, r.conteo) > 5) return skill + ": la evidencia construida supera el tope de 5 en algún generador";
       var ev = evidenciaDeHabilidad(skill, r.set);
       var altaEv = ev.filter(function(x){ return typeof x.dificultad === "number" && x.dificultad >= 2; });
       if(altaEv.length < 4) return skill + ": la evidencia reconocida tiene " + altaEv.length + " intentos de dificultad alta y el criterio exige 4";
-      for(var i = 0; i < altaEv.length; i++){
-        if(altaEv[i].gen !== altosMeta[0]) return skill + ": un intento de dificultad alta vino de " + altaEv[i].gen + " y no de su único generador alto " + altosMeta[0];
-      }
       var m = masteryDeHabilidad(skill, r.set, {});
-      if(m.k !== "dominada" || !m.criterios.dificultad) return skill + " no alcanzó Dominada apoyándose en su único generador de dificultad alta: quedó en " + m.k + " con detalle " + JSON.stringify(m.detalle);
+      if(m.k !== "dominada" || !m.criterios.dificultad) return skill + " no alcanzó Dominada con sus dos generadores de dificultad alta: quedó en " + m.k + " con detalle " + JSON.stringify(m.detalle);
     }
     return true;
   });
@@ -10637,19 +10929,24 @@ function runSkillGraphTests(){
     }
     return true;
   });
-  check("Pensamiento Computacional: las tres habilidades con un único generador puntuable de dificultad alta cuentan 4 intentos suyos sin superar el tope de 5", function(){
-    /* pc-control-logica (la tabla de verdad, g8 de control),
-       pc-funciones-conceptos (la función sin return, g8 de
-       funciones) y pc-datos-tuplas-diccionarios (la tupla
-       inmutable, g11 de datos) tienen, entre sus generadores
-       puntuables, uno solo de dificultad 2 o más según PC_GEN_META
-       (tuplas tiene además un abierto de nivel 2, que no es
-       evidencia). El criterio de 4 intentos de dificultad alta solo
-       puede salir de ese generador, y su tope es 5: esta prueba
-       verifica expresamente que la evidencia de dominio de cada
-       una trae al menos 4 intentos de ese generador, que ninguno
-       supera el tope y que toda su dificultad alta viene de ahí. */
-    var casos = ["pc-control-logica", "pc-funciones-conceptos", "pc-datos-tuplas-diccionarios"];
+  check("Pensamiento Computacional: la habilidad con un único generador puntuable de dificultad alta cuenta 4 intentos suyos sin superar el tope de 5", function(){
+    /* Solo queda pc-datos-tuplas-diccionarios (la tupla inmutable,
+       g11 de datos) con un único generador puntuable de
+       dificultad 2 o más según PC_GEN_META (tiene además un
+       abierto de nivel 2, que no es evidencia). pc-control-logica
+       (la tabla de verdad, g8 de control) y pc-funciones-conceptos
+       (la función sin return, g8 de funciones) salieron de esta
+       lista con el paquete 1 de la auditoría exhaustiva: sus
+       bancos sumaron al final un segundo generador puntuable de
+       dificultad 2 cada uno (evaluar una condición con valores, en
+       control, y el alcance local y global, en funciones). El
+       criterio de 4 intentos de dificultad alta de la habilidad
+       que queda solo puede salir de su único generador, y su tope
+       es 5: esta prueba verifica expresamente que la evidencia de
+       dominio trae al menos 4 intentos de ese generador, que
+       ninguno supera el tope y que toda su dificultad alta viene
+       de ahí. */
+    var casos = ["pc-datos-tuplas-diccionarios"];
     for(var t = 0; t < casos.length; t++){
       var skill = casos[t], altosMeta = [], error = null;
       PC_LESSONS.forEach(function(lid){
@@ -10946,16 +11243,21 @@ function runSkillGraphTests(){
     }
     return true;
   });
-  check("ICSE: las ocho habilidades con un único generador puntuable de dificultad alta cuentan 4 intentos suyos sin superar el tope de 5", function(){
-    /* Ocho habilidades de la etapa tienen, entre sus generadores
+  check("ICSE: las cinco habilidades con un único generador puntuable de dificultad alta cuentan 4 intentos suyos sin superar el tope de 5", function(){
+    /* Cinco habilidades de la etapa tienen, entre sus generadores
        puntuables, uno solo de dificultad 2 o más según
        ICSE_GEN_META. El criterio de 4 intentos de dificultad alta
        solo puede salir de ese generador, y su tope es 5: esta
        prueba verifica expresamente, para cada una, que la
        evidencia de dominio trae al menos 4 intentos de ese
        generador, que ninguno supera el tope y que toda su
-       dificultad alta viene de ahí. */
-    var esperadas = ["icse-conceptos-sociedad-actores", "icse-estado-construccion", "icse-modelo-agroexportador", "icse-fraude-isi", "icse-peronismo-bienestar-caida", "icse-neoliberalismo-convertibilidad", "icse-reforma-1994", "icse-contemporanea-politicas-publicas"];
+       dificultad alta viene de ahí. icse-conceptos-sociedad-
+       actores, icse-fraude-isi e icse-reforma-1994 salieron de
+       esta lista con el paquete 1 de la auditoría exhaustiva: sus
+       bancos sumaron al final un segundo generador puntuable de
+       dificultad 2 cada uno (los actores en un caso nuevo, los
+       límites de la ISI y los contenidos de la reforma de 1994). */
+    var esperadas = ["icse-estado-construccion", "icse-modelo-agroexportador", "icse-peronismo-bienestar-caida", "icse-neoliberalismo-convertibilidad", "icse-contemporanea-politicas-publicas"];
     var icseIds = Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id].etapa === "icse"; });
     var singles = [];
     icseIds.forEach(function(skill){
@@ -10972,7 +11274,7 @@ function runSkillGraphTests(){
       if(error) return error;
       if(altosMeta.length === 1) singles.push(skill);
     });
-    if(singles.length !== esperadas.length || esperadas.some(function(s){ return singles.indexOf(s) < 0; })) return "las habilidades con un único generador puntuable de dificultad alta deberían ser exactamente las 8 documentadas y son " + JSON.stringify(singles);
+    if(singles.length !== esperadas.length || esperadas.some(function(s){ return singles.indexOf(s) < 0; })) return "las habilidades con un único generador puntuable de dificultad alta deberían ser exactamente las 5 documentadas y son " + JSON.stringify(singles);
     for(var t = 0; t < singles.length; t++){
       var skill = singles[t], altoGen = null;
       ICSE_LESSONS.forEach(function(lid){
@@ -11375,6 +11677,50 @@ function runSkillGraphTests(){
       return true;
     } finally { state = snapState; }
   });
+  check("Cobertura CBC (auditoría exhaustiva, paquete 1): toda habilidad del grafo CBC tiene al menos 2 generadores distintos de dificultad 2 o más según los GEN_META", function(){
+    /* El criterio de dominio pide 4 o más intentos de dificultad
+       2 o más con tope de 5 por generador. La auditoría encontró
+       3 habilidades sin ningún generador de dificultad 2 o más
+       (an-funciones-exp-log, an-integrales-primitivas y
+       an-series-absoluta: criterio inalcanzable) y 21 con uno solo
+       (capacidad 5 frente a 4 exigidos: alcanzable pero frágil).
+       Los bancos correspondientes sumaron generadores nuevos al
+       final, con su entrada en la misma posición de la tabla, y
+       esta prueba afirma el objetivo final: ninguna habilidad de
+       las seis etapas CBC queda con menos de 2 generadores
+       distintos de dificultad 2 o más. Las habilidades del piloto
+       y del Pre-CBC no usan GEN_META y quedan fuera de esta
+       cuenta, como en el resto de la batería. */
+    var tablas = [
+      ["AN_GEN_META", typeof AN_GEN_META !== "undefined" ? AN_GEN_META : null],
+      ["AL_GEN_META", typeof AL_GEN_META !== "undefined" ? AL_GEN_META : null],
+      ["FI_GEN_META", typeof FI_GEN_META !== "undefined" ? FI_GEN_META : null],
+      ["PC_GEN_META", typeof PC_GEN_META !== "undefined" ? PC_GEN_META : null],
+      ["ICSE_GEN_META", typeof ICSE_GEN_META !== "undefined" ? ICSE_GEN_META : null],
+      ["IPC_GEN_META", typeof IPC_GEN_META !== "undefined" ? IPC_GEN_META : null]
+    ];
+    var conteo = {};
+    for(var ti = 0; ti < tablas.length; ti++){
+      if(!tablas[ti][1]) return "no está la tabla " + tablas[ti][0];
+      var tabla = tablas[ti][1];
+      for(var lid in tabla){
+        var meta = tabla[lid] || [], banco = LESSON_EXERCISES[lid] || [];
+        if(meta.length !== banco.length) return lid + ": " + tablas[ti][0] + " declara " + meta.length + " generadores y el banco tiene " + banco.length;
+        meta.forEach(function(m, gi){
+          if(m && m[1] >= 2) (conteo[m[0]] = conteo[m[0]] || {})[lid + "#g" + gi] = true;
+        });
+      }
+    }
+    var etapasCbc = { analisis:true, algebra:true, fisica:true, pc:true, icse:true, ipc:true };
+    var faltan = [];
+    Object.keys(SKILL_GRAPH).forEach(function(id){
+      if(!etapasCbc[SKILL_GRAPH[id].etapa]) return;
+      var n = conteo[id] ? Object.keys(conteo[id]).length : 0;
+      if(n < 2) faltan.push(id + " (" + n + ")");
+    });
+    if(faltan.length) return "habilidades CBC con menos de 2 generadores distintos de dificultad 2 o más: " + faltan.join(", ");
+    return true;
+  });
   return results;
 }
 if(window.TutorData) window.TutorData.runSkillGraphTests = runSkillGraphTests;
@@ -11413,6 +11759,16 @@ function nextLesson(){
   for(var i = 0; i < LESSONS.length; i++) if(!state.lessonsDone[LESSONS[i].id]) return LESSONS[i];
   return null;
 }
+function semanaExamenActual(){
+  /* La semana cuyo examen ofrece Hoy: la primera que todavía tiene
+     alguna clase sin terminar. Si están todas terminadas, la última
+     semana del plan (la 22). */
+  for(var w = 1; w <= WEEKS.length; w++){
+    var ls = LESSONS.filter(function(l){ return l.week === w; });
+    if(ls.some(function(l){ return !state.lessonsDone[l.id]; })) return w;
+  }
+  return WEEKS.length;
+}
 function weakestSkill(){
   var worst = null, worstAcc = 2, anyTouched = null;
   SKILLS.forEach(function(sk){
@@ -11425,12 +11781,25 @@ function weakestSkill(){
   });
   return worst || anyTouched || SKILLS[0];
 }
+function goToWeek(n){
+  /* Desde Hoy: muestra Clases y lleva la vista hasta el encabezado de
+     la semana elegida, con un resaltado breve y sobrio. Si el
+     encabezado no existe, queda el comportamiento anterior (la lista
+     desde arriba). */
+  showView("clases");
+  var target = document.getElementById("week-head-" + n);
+  if(!target) return;
+  target.scrollIntoView({ behavior:"smooth", block:"start" });
+  target.classList.add("week-flash");
+  setTimeout(function(){ target.classList.remove("week-flash"); }, 1800);
+}
 function renderHoy(){
   $("#hoy-title").textContent = anyProgress() ? "Seguir" : "Comenzar";
   var plan = $("#hoy-plan");
   var nl = nextLesson(), weak = weakestSkill();
   var weakSt = state.skills[weak.id];
   var weakTouched = weakSt && (weakSt.ok + weakSt.mal) >= 3;
+  var examWeek = semanaExamenActual();
   var html = "";
   if(nl){
     var wk = WEEKS[nl.week - 1];
@@ -11443,13 +11812,14 @@ function renderHoy(){
         ' (' + acc + '%). Hoy lo volvemos a tocar junto con la clase.</p>';
     }
     html += '<div class="row"><button class="btn solid" id="hoy-start">Empezar la clase de hoy</button>' +
-            '<button class="btn" id="hoy-practice">Practicar ' + esc(weak.name) + '</button></div>';
+            '<button class="btn" id="hoy-practice">Practicar ' + esc(weak.name) + '</button>' +
+            '<button class="btn" id="hoy-exam">Examen semana ' + examWeek + '</button></div>';
   } else {
     html += '<p class="plan-title">Libro completo: Pre-CBC y CBC</p>';
     html += '<p>Viste las ' + LESSONS.length + ' clases. El plan de hoy es repasar tu tema más flojo, ' + esc(weak.name.toLowerCase()) +
-      ', y rendir el examen de la semana 6 para cerrar la base de matemática.</p>';
+      ', y rendir el examen de la semana ' + examWeek + '.</p>';
     html += '<div class="row"><button class="btn solid" id="hoy-practice">Practicar ' + esc(weak.name) + '</button>' +
-            '<button class="btn" id="hoy-exam">Examen semana 6</button></div>';
+            '<button class="btn" id="hoy-exam">Examen semana ' + examWeek + '</button></div>';
   }
   plan.innerHTML = html;
   var startBtn = $("#hoy-start");
@@ -11457,7 +11827,7 @@ function renderHoy(){
   var prBtn = $("#hoy-practice");
   if(prBtn) prBtn.addEventListener("click", function(){ showView("quiz"); setQuizTab("practica"); openSkill(weak.id); });
   var exBtn = $("#hoy-exam");
-  if(exBtn) exBtn.addEventListener("click", function(){ showView("quiz"); setQuizTab("examenes"); openExam(6); });
+  if(exBtn) exBtn.addEventListener("click", function(){ showView("quiz"); setQuizTab("examenes"); openExam(examWeek); });
   var hw = $("#hoy-weeks");
   function hoyWeekBtn(w){
     var ls = LESSONS.filter(function(l){ return l.week === w.n; });
@@ -11467,7 +11837,7 @@ function renderHoy(){
   }
   hw.innerHTML = WEEKS.map(hoyWeekBtn).join("");
   $$("#hoy-weeks .hoy-week").forEach(function(b){
-    b.addEventListener("click", function(){ showView("clases"); });
+    b.addEventListener("click", function(){ goToWeek(parseInt(b.getAttribute("data-week"), 10)); });
   });
 }
 
@@ -11483,7 +11853,7 @@ function renderClases(){
       lastPhase = w.phase;
       html += '<div style="margin:40px 0 2px; padding:14px 16px; background:var(--ink); color:#fff; border-radius:10px;"><div style="font-size:19px; font-weight:650; letter-spacing:-.01em;">' + esc(w.phase) + '</div></div>';
     }
-    html += '<div class="week-head"><span class="wn">Semana ' + w.n + '</span><h2 style="margin:0;">' + esc(w.title) + '</h2></div>';
+    html += '<div class="week-head" id="week-head-' + w.n + '" data-week="' + w.n + '"><span class="wn">Semana ' + w.n + '</span><h2 style="margin:0;">' + esc(w.title) + '</h2></div>';
     html += '<p class="small muted" style="margin:2px 0 4px;">' + esc(w.sub) + '</p>';
     ls.forEach(function(l, i){
       var done = !!state.lessonsDone[l.id];
@@ -12023,14 +12393,26 @@ function createPlayer(mount, cfg){
   var endHandler = null;
   function clearEndWait(){ if(endHandler){ audio.removeEventListener("ended", endHandler); endHandler = null; } }
   function stopVoice(){ clearEndWait(); try{ audio.pause(); }catch(e){} }
+  /* La voz no falla más en silencio: si el MP3 de un paso no existe o
+     play() falla, se muestra una sola vez por clase un aviso discreto
+     junto al control de voz, sin interrumpir la clase. Las clases
+     agregadas después de grabar los audios no tienen MP3. */
+  var voiceNoteEl = $('[data-role="voice-note"]', mount);
+  var voiceNoteShown = false;
+  function noteVoiceMissing(){
+    if(voiceNoteShown) return;
+    voiceNoteShown = true;
+    if(voiceNoteEl) voiceNoteEl.hidden = false;
+  }
+  audio.addEventListener("error", function(){ if(voiceOn && cfg.id) noteVoiceMissing(); });
   function speakStep(i){
     if(!voiceOn || !cfg.id) return;
     try{
       audio.src = "assets/voz/" + cfg.id + "-" + i + ".mp3";
       audio.currentTime = 0;
       var p = audio.play();
-      if(p && p.catch) p.catch(function(){});
-    }catch(e){}
+      if(p && p.catch) p.catch(function(){ noteVoiceMissing(); });
+    }catch(e){ noteVoiceMissing(); }
   }
   if(voiceEl) voiceEl.addEventListener("change", function(){
     voiceOn = voiceEl.checked;
@@ -12118,6 +12500,12 @@ function createPlayer(mount, cfg){
     var rule = '<p class="sc-rule">' + esc(s.r) + '</p>';
     var instr = '<p class="stage-instr">' + esc(s.i) + '</p>';
     el.innerHTML = head + rule + instr;
+    /* La instrucción y la regla siguen la misma lógica de color por
+       signo que los bloques, las preguntas y las soluciones: los
+       números se pintan por su signo actual (colorizePlain es el
+       mecanismo que ya usan práctica, exámenes y ejercicios). */
+    colorizePlain($(".sc-rule", el));
+    colorizePlain($(".stage-instr", el));
     var blocksWrap = document.createElement("div");
     blocksWrap.className = "stage-blocks";
     el.appendChild(blocksWrap);
@@ -13456,7 +13844,24 @@ LESSON_EXERCISES["cbc-an1-funciones"] = [
     ["Se supone lo contrario de lo que se quiere probar: √2 = p/q en su mínima expresión, y de ahí p² = 2q².",
      "De p² = 2q² sale que p es par, y escribiendo p = 2k sale que q también es par.",
      "Pero p y q pares contradicen la mínima expresión: la suposición se cae y √2 es irracional. Es una prueba por contradicción: suponer, operar y chocar contra la hipótesis."]);
-    e.ansText = "√2 es irracional"; return e; }
+    e.ansText = "√2 es irracional"; return e; },
+  function(){ var o = pick([{ b:4, v:8, nb:2, eb:2, ev:3 }, { b:9, v:27, nb:3, eb:2, ev:3 }, { b:8, v:32, nb:2, eb:3, ev:5 }, { b:25, v:125, nb:5, eb:2, ev:3 }, { b:16, v:8, nb:2, eb:4, ev:3 }, { b:27, v:9, nb:3, eb:3, ev:2 }]);
+    var sup = { 2:"²", 3:"³", 4:"⁴", 5:"⁵" };
+    return exFrac("Ecuación exponencial con otra base", "¿Cuánto vale x en la ecuación " + o.b + "ˣ = " + o.v + "? Escríbelo como fracción simplificada.", o.ev, o.eb,
+    ["Reescribo las dos potencias con la misma base: " + o.b + " = " + o.nb + sup[o.eb] + " y " + o.v + " = " + o.nb + sup[o.ev] + ".",
+     "Al reemplazar, el exponente de la izquierda queda " + o.eb + "x y el de la derecha " + o.ev + ": como la exponencial es inyectiva, los exponentes se igualan, " + o.eb + "x = " + o.ev + ".",
+     "Despejo: x = " + o.ev + "/" + o.eb + ", que ya está simplificada. Acá la respuesta no es un entero: forzarla a entero es el error que este ejercicio caza."]); },
+  function(){ var o = pick([{ b:2, c:2, x:4, k:3, r:-2 }, { b:2, c:6, x:8, k:4, r:-2 }, { b:3, c:6, x:9, k:3, r:-3 }]);
+    var sub = o.b === 2 ? "₂" : "₃", sup = o.k === 3 ? "³" : "⁴", prod = o.x * (o.x - o.c);
+    return exNum("Ecuación logarítmica con dominio", "¿Cuánto vale x en la ecuación log" + sub + "(x) + log" + sub + "(x − " + o.c + ") = " + o.k + "?", o.x,
+    ["Junto los logaritmos en uno solo: log" + sub + "(x · (x − " + o.c + ")) = " + o.k + ", o sea x · (x − " + o.c + ") = " + o.b + sup + " = " + prod + ".",
+     "Queda la cuadrática x² − " + o.c + "x − " + prod + " = 0, con raíces x = " + o.x + " y x = " + fmtN(o.r) + ".",
+     "El dominio manda: los dos argumentos deben ser positivos, así que x > " + o.c + ". La raíz " + fmtN(o.r) + " se descarta y la única solución es x = " + o.x + ". Comprobación: log" + sub + "(" + o.x + ") + log" + sub + "(" + (o.x - o.c) + ") = " + o.k + " ✓"]); },
+  function(){ var o = pick([{ A:3, k:2, f:"sen" }, { A:2, k:3, f:"cos" }, { A:4, k:3, f:"sen" }, { A:5, k:2, f:"cos" }, { A:3, k:4, f:"sen" }, { A:2, k:4, f:"cos" }, { A:4, k:2, f:"sen" }, { A:5, k:3, f:"cos" }]);
+    var per = o.k === 2 ? "π" : (o.k === 3 ? "2π/3" : "π/2");
+    return exChoice("Amplitud y período", "La función f(x) = " + o.A + " · " + o.f + "(" + o.k + "x) tiene…", "amplitud " + o.A + " y período " + per, "amplitud " + o.k + " y período " + per, "amplitud " + o.A + " y período 2π",
+    ["La amplitud es el factor que multiplica a la función trigonométrica: " + o.A + ". No depende del factor interno.",
+     "El período es 2π dividido por el factor que multiplica a x (" + o.k + "), y queda " + per + ". A mayor factor interno, el ciclo se completa en menos x."]); }
 ];
 LESSON_EXERCISES["cbc-an1-sucesiones"] = [
   function(){ var p = ri(2, 4), q = ri(1, 6), k = ri(4, 7); return exNum("Término general", "En la sucesión a(n) = " + p + "n + " + q + ", ¿cuánto vale el término número " + k + "?", p * k + q, ["Reemplazo n por " + k + " en el término general: " + p + " · " + k + " + " + q + ".", "Da " + (p * k + q) + ". El término general es la fórmula que genera toda la lista de una vez."]); },
@@ -13496,7 +13901,24 @@ LESSON_EXERCISES["cbc-an1-sucesiones"] = [
      "La subsucesión de índices impares es constante −1: tiende a −1.",
      "Dos subsucesiones con límites distintos fuerzan la conclusión: (−1)ⁿ no converge. Que una sola subsucesión converja no alcanzaría para afirmar convergencia: es la diferencia de límites lo que refuta."]);
     e.ansText = "(−1)ⁿ no converge"; return e; },
-  function(){ var o = pick([{ s:"a(n) = 1/n", r:"sí es de Cauchy: con N = 100, dos términos cualesquiera desde ahí difieren en menos de 0,01", sol:"Si m, n ≥ 100, entonces 1/m y 1/n son menores o iguales que 0,01 y su diferencia es menor que 0,01. Con un margen menor basta tomar N más grande: los términos se aprietan tanto como se pida." }, { s:"a(n) = (−1)ⁿ", r:"no es de Cauchy: los términos pares e impares quedan siempre a distancia 2", sol:"Por lejos que se avance, un término par vale 1 y uno impar vale −1: la distancia entre ellos es 2. Con el margen 1 no existe ningún N que funcione." }, { s:"a(n) = n", r:"no es de Cauchy: los términos se separan cada vez más entre sí", sol:"Entre el término n y el término 2n hay distancia n, que crece sin tope: ningún margen fijo se cumple desde algún lugar en adelante." }]); return exChoice("El criterio de Cauchy", "El criterio de Cauchy afirma que una sucesión converge si y solo si sus términos se acercan entre sí tanto como se quiera desde algún lugar en adelante. Para " + o.s + ", el criterio…", o.r, o.r.indexOf("sí es") === 0 ? "no es de Cauchy: los términos pares e impares quedan siempre a distancia 2" : "sí es de Cauchy: con N = 100, dos términos cualesquiera desde ahí difieren en menos de 0,01", o.r.indexOf("se separan") >= 0 ? "no es de Cauchy: los términos pares e impares quedan siempre a distancia 2" : "no es de Cauchy: los términos se separan cada vez más entre sí", [o.sol, "El criterio sirve para garantizar convergencia sin conocer el límite: alcanza con que el grupo de términos posteriores se apriete por debajo de cualquier margen. Y exige todos los pares de términos, no solo los consecutivos."]); }
+  function(){ var o = pick([{ s:"a(n) = 1/n", r:"sí es de Cauchy: con N = 100, dos términos cualesquiera desde ahí difieren en menos de 0,01", sol:"Si m, n ≥ 100, entonces 1/m y 1/n son menores o iguales que 0,01 y su diferencia es menor que 0,01. Con un margen menor basta tomar N más grande: los términos se aprietan tanto como se pida." }, { s:"a(n) = (−1)ⁿ", r:"no es de Cauchy: los términos pares e impares quedan siempre a distancia 2", sol:"Por lejos que se avance, un término par vale 1 y uno impar vale −1: la distancia entre ellos es 2. Con el margen 1 no existe ningún N que funcione." }, { s:"a(n) = n", r:"no es de Cauchy: los términos se separan cada vez más entre sí", sol:"Entre el término n y el término 2n hay distancia n, que crece sin tope: ningún margen fijo se cumple desde algún lugar en adelante." }]); return exChoice("El criterio de Cauchy", "El criterio de Cauchy afirma que una sucesión converge si y solo si sus términos se acercan entre sí tanto como se quiera desde algún lugar en adelante. Para " + o.s + ", el criterio…", o.r, o.r.indexOf("sí es") === 0 ? "no es de Cauchy: los términos pares e impares quedan siempre a distancia 2" : "sí es de Cauchy: con N = 100, dos términos cualesquiera desde ahí difieren en menos de 0,01", o.r.indexOf("se separan") >= 0 ? "no es de Cauchy: los términos pares e impares quedan siempre a distancia 2" : "no es de Cauchy: los términos se separan cada vez más entre sí", [o.sol, "El criterio sirve para garantizar convergencia sin conocer el límite: alcanza con que el grupo de términos posteriores se apriete por debajo de cualquier margen. Y exige todos los pares de términos, no solo los consecutivos."]); },
+  function(){ var o = pick([
+      { f:"(3n + 1)/(n + 2)", dif:"5", den:"(n + 2)(n + 3)", res:"creciente", signo:"positiva" },
+      { f:"(4n + 1)/(n + 3)", dif:"11", den:"(n + 3)(n + 4)", res:"creciente", signo:"positiva" },
+      { f:"(2n + 3)/(n + 1)", dif:"−1", den:"(n + 1)(n + 2)", res:"decreciente", signo:"negativa" },
+      { f:"(n + 5)/(n + 1)", dif:"−4", den:"(n + 1)(n + 2)", res:"decreciente", signo:"negativa" } ]);
+    return exChoice("Monotonía de una sucesión racional", "La sucesión a(n) = " + o.f + " es…", o.res, o.res === "creciente" ? "decreciente" : "creciente", "ni creciente ni decreciente: oscila",
+    ["Comparo dos términos consecutivos restando: a(n + 1) − a(n) = " + o.dif + "/" + o.den + ".",
+     "El denominador es positivo para todo n ≥ 1 y el numerador es una constante " + o.signo + ": la diferencia conserva su signo en todo el dominio.",
+     "Por eso cada término queda siempre " + (o.res === "creciente" ? "por encima" : "por debajo") + " del anterior: la sucesión es " + o.res + ". Mirar solo dos o tres términos no alcanza: manda el signo de la diferencia general."]); },
+  function(){ var par = pick([[2, 3], [3, 3], [4, 3], [6, 3], [2, 4], [3, 4], [4, 4], [6, 4], [2, 5], [4, 5], [6, 5]]);
+    var a = par[0], n = par[1], terminos = [], i;
+    for(i = 0; i < n; i++) terminos.push(i === 0 ? String(a) : fracStr(a, Math.pow(2, i)));
+    var suma = fracStr(a * (Math.pow(2, n) - 1), Math.pow(2, n - 1));
+    return exFrac("Suma de una geométrica", "Calcula la suma de los primeros " + n + " términos de la sucesión geométrica que empieza en " + a + " y tiene razón 1/2. Escríbela como fracción simplificada.", a * (Math.pow(2, n) - 1), Math.pow(2, n - 1),
+    ["Los términos son " + terminos.join(", ") + ": cada uno es la mitad del anterior.",
+     "La fórmula de la suma geométrica: S = a · (1 − rⁿ)/(1 − r), con a = " + a + ", r = 1/2 y n = " + n + ".",
+     "Reemplazando da S = " + suma + ", y sumando término a término se comprueba: " + terminos.join(" + ") + " = " + suma + " ✓"]); }
 ];
 LESSON_EXERCISES["cbc-an1-limites"] = [
   function(){ var a = ri(2, 5); return exNum("Indeterminación 0/0 factorizando", "El límite de (x² − " + (a * a) + ")/(x − " + a + ") cuando x tiende a " + a + " es…", 2 * a, ["Sustituir da 0/0: hay que trabajar la expresión. Diferencia de cuadrados: x² − " + (a * a) + " = (x − " + a + ")(x + " + a + ").", "Cancelo el factor (x − " + a + "), válido porque en el límite x se acerca a " + a + " sin ser " + a + ", y queda x + " + a + ", que en " + a + " vale " + (2 * a) + "."]); },
@@ -13527,7 +13949,20 @@ LESSON_EXERCISES["cbc-an1-limites"] = [
     ["La continuidad en un punto a exige tres cosas a la vez: que f(a) exista, que el límite de f en a exista (laterales iguales y finitos) y que el límite coincida con f(a).",
      "Primera condición: f(−2) = 1/0 no existe, porque el denominador se anula en x = −2. Ya con esto alcanza para afirmar que no es continua ahí.",
      "Segunda condición: tampoco hay límite finito: por izquierda los valores se van a −∞ y por derecha a +∞, así que los laterales ni siquiera coinciden entre sí.",
-     "Conclusión: en x = −2 hay una discontinuidad no evitable, de tipo infinito: es la que dibuja la asíntota vertical. No es un agujero que se pueda tapar redefiniendo el valor en un punto."]); }
+     "Conclusión: en x = −2 hay una discontinuidad no evitable, de tipo infinito: es la que dibuja la asíntota vertical. No es un agujero que se pueda tapar redefiniendo el valor en un punto."]); },
+  function(){ var m = ri(2, 3), b = ri(1, 3), a = ri(2, 4), izq = m * a + b, der = a * a; if(der === izq) der = der + 3;
+    return exNum("Límite lateral en una función partida", "La función f está definida por partes: f(x) = " + m + "x + " + b + " si x < " + a + ", y f(x) = " + der + " si x ≥ " + a + ". ¿Cuánto vale el límite de f cuando x tiende a " + a + " por la izquierda?", izq,
+    ["Por la izquierda manda la primera rama: me acerco a " + a + " con valores menores que " + a + ", donde vale f(x) = " + m + "x + " + b + ".",
+     "Esa rama es una recta, continua: el límite es " + m + " · " + a + " + " + b + " = " + izq + ".",
+     "El valor " + der + " de la otra rama es el límite por la derecha (y el valor f(" + a + ")), no este. Que los dos laterales difieran significa que en " + a + " hay un salto y el límite bilateral no existe."]); },
+  function(){ var A = pick([2, 3]), q = ri(1, 2), B = ri(0, 3); if(B === A * q) B = B + 1;
+    var C = pick([-1, 1, 2]), D = B + A * q, R = C + D * q, mal = B - A * q; if(mal === 0) mal = -q;
+    function recta(n){ return "y = " + A + "x" + (n === 0 ? "" : (n > 0 ? " + " + n : " − " + Math.abs(n))); }
+    var pol = A + "x²" + (B === 0 ? "" : B === 1 ? " + x" : " + " + B + "x") + (C < 0 ? " − " + Math.abs(C) : " + " + C);
+    return exChoice("Asíntota oblicua por división", "La función f(x) = (" + pol + ")/(x − " + q + ") tiene asíntota oblicua…", recta(D), recta(mal), recta(0),
+    ["Divido el numerador por el denominador: el cociente es " + A + "x + " + D + " y el resto es " + R + ".",
+     "Entonces f(x) = " + A + "x + " + D + " + " + R + "/(x − " + q + "), y ese último término tiende a 0 cuando x crece.",
+     "La asíntota oblicua es la recta del cociente: " + recta(D) + ". El error típico es copiar el resto o equivocarse en el signo al dividir."]); }
 ];
 LESSON_EXERCISES["cbc-an2-derivadas"] = [
   function(){ var a = ri(2, 4);
@@ -13639,7 +14074,33 @@ LESSON_EXERCISES["cbc-an2-estudio"] = [
      "Derivada: f'(x) = x(x − 2)/(x − 1)², con críticos en 0 y 2. Crece en (−∞, 0) y en (2, ∞), decrece en (0, 1) y en (1, 2). Máximo local (0, 0) y mínimo local (2, 4).",
      "Segunda derivada: f''(x) = 2/(x − 1)³. Cóncava hacia abajo en (−∞, 1) y hacia arriba en (1, ∞), sin punto de inflexión porque el cambio ocurre fuera del dominio.",
      "Gráfico: dos ramas separadas por la asíntota vertical; la izquierda sube hasta (0, 0) y baja a −∞ junto a x = 1, y la derecha baja desde +∞ hasta (2, 4) y sube pegándose a la oblicua."]);
-    e.ansText = "máximo local 0 en x = 0, mínimo local 4 en x = 2, sin inflexión"; return e; }
+    e.ansText = "máximo local 0 en x = 0, mínimo local 4 en x = 2, sin inflexión"; return e; },
+  function(){ var a = ri(1, 2), c2 = 2 * a;
+    return exChoice("Crecimiento de una cúbica", "La función f(x) = x³ − " + (3 * a) + "x² crece en…", "los intervalos (−∞, 0) y (" + c2 + ", +∞)", "el intervalo (0, " + c2 + ")", "todo R, sin excepción",
+    ["Derivo: f'(x) = 3x² − " + (6 * a) + "x = 3x(x − " + c2 + "). Los puntos críticos son x = 0 y x = " + c2 + ".",
+     "La parábola de f' abre hacia arriba: f' es positiva fuera de sus raíces y negativa entre ellas.",
+     "Donde la derivada es positiva, la función crece: (−∞, 0) y (" + c2 + ", +∞). Entre 0 y " + c2 + " decrece, así que no crece en todo R."]); },
+  function(){ var a = pick([2, 3, 4]), b = pick([1, 3, 5]);
+    return exNum("Inflexión de una cúbica", "La función f(x) = x³ − " + (3 * a) + "x² + " + (b === 1 ? "" : b) + "x tiene su punto de inflexión en x = …", a,
+    ["Derivo dos veces: f'(x) = 3x² − " + (6 * a) + "x + " + b + " y f''(x) = 6x − " + (6 * a) + ".",
+     "La inflexión está donde f'' se anula y cambia de signo: 6x − " + (6 * a) + " = 0 da x = " + a + ".",
+     "A la izquierda de " + a + ", f'' es negativa (cóncava hacia abajo) y a la derecha positiva (cóncava hacia arriba): en x = " + a + " hay inflexión."]); },
+  function(){ var o = pick([
+      { f:"eˣ", g:2, p:"1 + x + x²/2", t:"1 + 1 + 1/2", n:5, d:2 },
+      { f:"eˣ", g:3, p:"1 + x + x²/2 + x³/6", t:"1 + 1 + 1/2 + 1/6", n:8, d:3 },
+      { f:"ln(1 + x)", g:2, p:"x − x²/2", t:"1 − 1/2", n:1, d:2 },
+      { f:"ln(1 + x)", g:3, p:"x − x²/2 + x³/3", t:"1 − 1/2 + 1/3", n:5, d:6 } ]);
+    return exFrac("Taylor: evaluar el polinomio", "El polinomio de Taylor de grado " + o.g + " de " + o.f + " centrado en 0 es P(x) = " + o.p + ". ¿Cuánto vale P(1)? Escríbelo como fracción simplificada.", o.n, o.d,
+    ["Evalúo el polinomio en x = 1: cada potencia de 1 vale 1 y queda la suma de los coeficientes con sus signos.",
+     "Esa suma es " + o.t + " = " + fracStr(o.n, o.d) + ".",
+     "Es una aproximación del valor de la función en 1, no el valor exacto: el resto de Taylor mide la diferencia."]); },
+  function(){ var o = pick([
+      { c:2, x0:1, x1:"3/2", n:17, d:12 },
+      { c:3, x0:1, x1:"2", n:7, d:4 } ]);
+    return exFrac("Newton: dos iteraciones", "Para aproximar √" + o.c + " se aplica el método de Newton a f(x) = x² − " + o.c + " partiendo de x₀ = " + o.x0 + ". ¿Cuánto vale la segunda iteración, x₂? Escríbela como fracción simplificada.", o.n, o.d,
+    ["La fórmula de Newton: xₙ₊₁ = xₙ − (xₙ² − " + o.c + ")/(2 · xₙ).",
+     "La primera iteración da x₁ = " + o.x1 + ".",
+     "Reemplazo x₁ en la fórmula y opero con fracciones: x₂ = " + fracStr(o.n, o.d) + ". Cada iteración acerca mucho más que la anterior: es la ganancia del método."]); }
 ];
 LESSON_EXERCISES["cbc-an2-integrales"] = [
   function(){ return exNum("Barrow", "La integral definida de 2x entre 0 y 3, con primitiva x², vale F(3) − F(0). ¿Cuánto da?", 9, ["F(3) = 9 y F(0) = 0: la resta da 9.", "Es el área bajo la recta 2x entre 0 y 3: un triángulo de base 3 y altura 6."]); },
@@ -13727,7 +14188,28 @@ LESSON_EXERCISES["cbc-an2-integrales"] = [
     ["Por partes con u = x y dv = sen x dx: du = dx y v = −cos x. La fórmula da [−x · cos x] entre 0 y π, más la integral de cos x entre 0 y π.",
      "El término evaluado vale π − 0 = π, y la integral que queda vale 0: la integral total es π ≈ 3,1416.",
      "Comprobación: la función sen x − x · cos x es una primitiva del integrando, porque su derivada es cos x − cos x + x · sen x = x · sen x. Y Barrow con ella da (0 + π) − (0 − 0) = π. Coincide."]);
-    e.ansText = "π ≈ 3,1416"; return e; }
+    e.ansText = "π ≈ 3,1416"; return e; },
+  function(){ var b = pick([1, 2, 4]), c0 = pick([1, 2, 3, 5]), t = ri(2, 3), ans = t * t * t + b * t + c0;
+    return exNum("Primitiva con condición inicial", "Sea F una primitiva de f(x) = 3x² + " + b + " que cumple F(0) = " + c0 + ". ¿Cuánto vale F(" + t + ")?", ans,
+    ["Integro: las primitivas de 3x² + " + b + " son F(x) = x³ + " + (b === 1 ? "" : b) + "x + C, una por cada constante C.",
+     "La condición inicial fija la constante: F(0) = C = " + c0 + ". Sin ese dato no hay una única primitiva.",
+     "Evalúo: F(" + t + ") = " + (t * t * t) + " + " + (b * t) + " + " + c0 + " = " + ans + "."]); },
+  function(){ var o = pick([
+      { f:"e^(2x)", p:"e^(2x)/2", w1:"2 · e^(2x)", w2:"e^(2x)", s:"Derivo la candidata: la derivada de e^(2x)/2 es (2 · e^(2x))/2 = e^(2x). El 2 que baja por la regla de la cadena se cancela con el 1/2." },
+      { f:"e^(3x)", p:"e^(3x)/3", w1:"3 · e^(3x)", w2:"e^(3x)", s:"Derivo la candidata: la derivada de e^(3x)/3 es (3 · e^(3x))/3 = e^(3x). El 3 de la cadena se cancela con el 1/3." },
+      { f:"cos(2x)", p:"sen(2x)/2", w1:"−sen(2x)/2", w2:"2 · sen(2x)", s:"Derivo la candidata: la derivada de sen(2x)/2 es (2 · cos(2x))/2 = cos(2x). Sin el signo menos: ese aparecería si la función fuera sen." },
+      { f:"cos(3x)", p:"sen(3x)/3", w1:"−sen(3x)/3", w2:"3 · sen(3x)", s:"Derivo la candidata: la derivada de sen(3x)/3 es (3 · cos(3x))/3 = cos(3x). El factor interno se compensa dividiendo." },
+      { f:"sen(2x)", p:"−cos(2x)/2", w1:"cos(2x)/2", w2:"−2 · cos(2x)", s:"Derivo la candidata: la derivada de −cos(2x)/2 es −(−2 · sen(2x))/2 = sen(2x). Acá el signo menos es parte de la primitiva, no un adorno." } ]);
+    return exChoice("Primitiva de una composición", "Una primitiva de f(x) = " + o.f + " es…", o.p, o.w1, o.w2,
+    [o.s, "La comprobación es siempre la misma: derivar la candidata y ver si vuelve la función original. El error típico es olvidar el factor que compensa la derivada de la función interna."]); },
+  function(){ var o = pick([
+      { txt:"f(x) = x² en [0, 2] con 2 subintervalos", ans:1, pasos:"Δx = 1. Los extremos izquierdos son x = 0 y x = 1, con alturas f(0) = 0 y f(1) = 1.", suma:"(0 + 1) · 1 = 1" },
+      { txt:"f(x) = x² en [0, 4] con 2 subintervalos", ans:8, pasos:"Δx = 2. Los extremos izquierdos son x = 0 y x = 2, con alturas f(0) = 0 y f(2) = 4.", suma:"(0 + 4) · 2 = 8" },
+      { txt:"f(x) = x + 1 en [0, 3] con 3 subintervalos", ans:6, pasos:"Δx = 1. Los extremos izquierdos son x = 0, 1 y 2, con alturas f(0) = 1, f(1) = 2 y f(2) = 3.", suma:"(1 + 2 + 3) · 1 = 6" },
+      { txt:"f(x) = 2x en [0, 2] con 2 subintervalos", ans:2, pasos:"Δx = 1. Los extremos izquierdos son x = 0 y x = 1, con alturas f(0) = 0 y f(1) = 2.", suma:"(0 + 2) · 1 = 2" } ]);
+    return exNum("Riemann por izquierda", "La suma de Riemann por izquierda de " + o.txt + " vale…", o.ans,
+    [o.pasos, "Multiplico cada altura por el ancho común y sumo: " + o.suma + ".",
+     "Por izquierda se toma el valor al comienzo de cada subintervalo; por derecha, el del final. Con más subintervalos, las dos sumas se acercan a la integral."]); }
 ];
 LESSON_EXERCISES["cbc-an2-series"] = [
   function(){ var k = pick([2, 3, 4]); return exFrac("Geométrica de razón 1/k", "La serie geométrica con primer término 1/" + k + " y razón 1/" + k + " suma…", 1, k - 1, ["La suma de una geométrica convergente es primer término sobre (1 − razón): (1/" + k + ")/(1 − 1/" + k + ").", "Eso es (1/" + k + ")/(" + (k - 1) + "/" + k + ") = 1/" + (k - 1) + ". Converge porque |razón| = 1/" + k + " < 1."]); },
@@ -13781,7 +14263,22 @@ LESSON_EXERCISES["cbc-an2-series"] = [
     ["El chequeo cero de la guía de decisión: antes de comparar, derivar cocientes o sacar raíces, se mira el límite del término general.",
      "El término general " + o.t + " tiende a " + o.lim + ": " + o.calc + ".",
      "Como el límite no es 0, el contrarrecíproco de la condición necesaria decide solo: la serie diverge."]);
-    e.ansText = "diverge por la condición necesaria"; return e; }
+    e.ansText = "diverge por la condición necesaria"; return e; },
+  function(){ var o = pick([
+      { s:"Σ (−1)ⁿ/n²", r:"abs", p:"²", sol:"Tomo módulos: queda la p-serie Σ 1/n², que converge porque el exponente es 2 > 1." },
+      { s:"Σ (−1)ⁿ/n³", r:"abs", p:"³", sol:"Tomo módulos: queda la p-serie Σ 1/n³, que converge porque el exponente es 3 > 1." },
+      { s:"Σ (−1)ⁿ/n", r:"cond", sol:"Por Leibniz converge: 1/n decrece a 0. Pero la serie de los módulos es la armónica Σ 1/n, que diverge." },
+      { s:"Σ (−1)ⁿ/√n", r:"cond", sol:"Por Leibniz converge: 1/√n decrece a 0. Pero la serie de los módulos es una p-serie con exponente 1/2, que diverge." } ]);
+    var correcta = o.r === "abs" ? "converge absolutamente: la serie de los módulos converge" : "converge solo condicionalmente: converge, pero la serie de los módulos diverge";
+    var otra = o.r === "abs" ? "converge solo condicionalmente: converge, pero la serie de los módulos diverge" : "converge absolutamente: la serie de los módulos converge";
+    return exChoice("Absoluta o condicional", "La serie " + o.s + "…", correcta, otra, "diverge: ni siquiera cumple la condición necesaria",
+    [o.sol, o.r === "abs" ? "Si converge la de los módulos, la original converge absolutamente. La convergencia absoluta es la fuerte: garantiza la común y permite reordenar términos." : "Convergencia condicional: la serie llega a converger por la alternancia de signos, pero sin la red de la absoluta. Confundirlas es el error que este ejercicio caza."]); },
+  function(){ var o = pick([
+      { s:"Σ (−1)ⁿ · n/2ⁿ", sol:"Aplico el criterio del cociente a los módulos: el cociente entre términos consecutivos de n/2ⁿ tiende a 1/2, menor que 1, así que la serie de módulos converge." },
+      { s:"Σ (−1)ⁿ · 3ⁿ/n!", sol:"Aplico el criterio del cociente a los módulos: el cociente entre términos consecutivos de 3ⁿ/n! tiende a 0, menor que 1, así que la serie de módulos converge." },
+      { s:"Σ (−1)ⁿ · n²/3ⁿ", sol:"Aplico el criterio del cociente a los módulos: el cociente entre términos consecutivos de n²/3ⁿ tiende a 1/3, menor que 1, así que la serie de módulos converge." } ]);
+    return exChoice("Absoluta por el criterio del cociente", "La serie " + o.s + " es…", "absolutamente convergente", "condicionalmente convergente", "divergente",
+    [o.sol, "Como la serie de los módulos converge, la original converge absolutamente, sin necesidad de estudiar la alternancia. La condicional sería el caso contrario: converge la original pero no la de los módulos."]); }
 ];
 LESSON_EXERCISES["cbc-al1-conjuntos-complejos"] = [
   function(){ return exChoice("Conjuntos", "La intersección de dos conjuntos es el conjunto de elementos que están…", "en los dos a la vez", "en alguno de los dos", "fuera de los dos", ["Intersección: en ambos. Unión: en alguno. Complemento: fuera.", "Los diagramas de Venn dibujan estas tres operaciones."]); },
@@ -13819,7 +14316,21 @@ LESSON_EXERCISES["cbc-al1-conjuntos-complejos"] = [
     ["La conjugación respeta las operaciones: el conjugado de una suma es la suma de los conjugados, y el conjugado de un producto es el producto de los conjugados. También respeta las potencias: el conjugado de zⁿ es z̄ⁿ.",
      "Si P(z) = 0, aplico la conjugación a los dos lados: el conjugado de P(z) se obtiene conjugando cada término, y eso da P(z̄) con cada coeficiente reemplazado por su conjugado.",
      "Como los coeficientes son reales, cada uno es igual a su propio conjugado: el conjugado de P(z) es exactamente P(z̄). Y el conjugado de 0 es 0.",
-     "Conclusión: P(z̄) = 0. Por eso las raíces no reales de un polinomio real vienen siempre en parejas conjugadas, y por eso en la factorización sobre los reales aparecen factores cuadráticos."]); }
+     "Conclusión: P(z̄) = 0. Por eso las raíces no reales de un polinomio real vienen siempre en parejas conjugadas, y por eso en la factorización sobre los reales aparecen factores cuadráticos."]); },
+  function(){ var a = ri(12, 20), b = ri(12, 20), i = ri(3, 9), u = a + b - i;
+    return exNum("Inclusión-exclusión: la intersección", "En un grupo de personas, " + a + " practican fútbol y " + b + " practican básquet. En total son " + u + " personas y todas practican al menos uno de los dos deportes. ¿Cuántas practican los dos?", i,
+    ["Sumo los dos grupos: " + a + " + " + b + " = " + (a + b) + ". Esa suma cuenta dos veces a quienes practican los dos deportes.",
+     "Como el total real es " + u + ", el exceso de la suma es exactamente la intersección: " + (a + b) + " − " + u + " = " + i + ".",
+     "Es la fórmula de inclusión-exclusión: |A ∪ B| = |A| + |B| − |A ∩ B|, despejada al revés de como se la suele usar."]); },
+  function(){ var o = pick([
+      { r:2, t:30, n:3, pot:"cubo", arg:90, mod:8, sup:"³" },
+      { r:3, t:20, n:2, pot:"cuadrado", arg:40, mod:9, sup:"²" },
+      { r:2, t:15, n:4, pot:"cuarta", arg:60, mod:16, sup:"⁴" },
+      { r:2, t:45, n:2, pot:"cuadrado", arg:90, mod:4, sup:"²" } ]);
+    return exNum("De Moivre: el argumento de una potencia", "Si z = " + o.r + " · (cos " + o.t + "° + i · sen " + o.t + "°), ¿cuánto vale, en grados, el argumento de z elevado " + (o.n === 2 ? "al cuadrado" : "a la " + o.pot) + "?", o.arg,
+    ["La fórmula de De Moivre: al elevar un complejo en forma polar, el módulo se eleva a la potencia y el argumento se multiplica por el exponente.",
+     "El argumento queda " + o.n + " · " + o.t + "° = " + o.arg + "°. El módulo, de paso, queda " + o.r + o.sup + " = " + o.mod + ".",
+     "En binómica esta cuenta sería una multiplicación larga; en polar es una sola multiplicación de ángulos: para eso sirve la forma trigonométrica."]); }
 ];
 LESSON_EXERCISES["cbc-al1-polinomios"] = [
   function(){ return exVF("Verdadero o falso", "Si un polinomio de coeficientes reales tiene la raíz compleja 2 + i, también tiene la raíz 2 − i", true, ["Las raíces complejas de polinomios reales vienen en parejas conjugadas.", "Por eso la descomposición en reales usa factores cuadráticos para esas parejas."]); },
@@ -13978,7 +14489,12 @@ LESSON_EXERCISES["cbc-al1-vectores"] = [
     var ec = fmtN(c.n[0]) + "x " + (c.n[1] < 0 ? "− " + Math.abs(c.n[1]) : "+ " + c.n[1]) + "y " + (c.n[2] < 0 ? "− " + Math.abs(c.n[2]) : "+ " + c.n[2]) + "z = " + c.D;
     return exNum("Distancia punto-plano calculada", "La distancia del punto (" + c.p.join(", ") + ") al plano " + ec + " es…", dist,
     ["Se evalúa el punto en el lado izquierdo de la ecuación: " + fmtN(c.n[0]) + " · " + c.p[0] + " + " + fmtN(c.n[1]) + " · " + c.p[1] + " + " + fmtN(c.n[2]) + " · " + c.p[2] + " = " + fmtN(val) + ". El módulo del normal es √(" + (c.n[0] * c.n[0]) + " + " + (c.n[1] * c.n[1]) + " + " + (c.n[2] * c.n[2]) + ") = 3.",
-     "Distancia = |" + fmtN(val) + " − " + c.D + "| / 3 = " + Math.abs(val - c.D) + "/3 = " + dist + ". La división por el módulo del normal es el paso que no se puede saltear: sin ella, el resultado dependería de cómo está escrita la ecuación del plano y no sería una distancia."]); }
+     "Distancia = |" + fmtN(val) + " − " + c.D + "| / 3 = " + Math.abs(val - c.D) + "/3 = " + dist + ". La división por el módulo del normal es el paso que no se puede saltear: sin ella, el resultado dependería de cómo está escrita la ecuación del plano y no sería una distancia."]); },
+  function(){ var al = ri(2, 5), be = ri(2, 5), w1 = al + be, w2 = al - be;
+    return exNum("Coeficientes de una combinación", "El vector w = (" + w1 + ", " + fmtN(w2) + ") se escribe como combinación α · (1, 1) + β · (1, −1). ¿Cuánto vale α?", al,
+    ["La combinación, componente a componente, da el sistema: α + β = " + w1 + " y α − β = " + fmtN(w2) + ".",
+     "Sumo las dos ecuaciones y el β se cancela: 2α = " + (2 * al) + ", así que α = " + al + ".",
+     "Comprobación: con β = " + be + ", α · (1, 1) + β · (1, −1) = (" + w1 + ", " + fmtN(w2) + ") = w ✓ Escribir un vector como combinación es resolver este sistema, no adivinar los coeficientes."]); }
 ];
 LESSON_EXERCISES["cbc-al2-matrices"] = [
   function(){ return exNum("El determinante 2×2", "El determinante de la matriz [[3, 1], [2, 4]] es 3 · 4 − 1 · 2. ¿Cuánto vale?", 10, ["det = a·d − b·c = 12 − 2 = 10.", "Como no es cero, la matriz tiene inversa."]); },
@@ -14400,7 +14916,13 @@ LESSON_EXERCISES["cbc-fis1-cinematica2d"] = [
     ["El movimiento se descompone en dos independientes que solo comparten el tiempo: en x un MRU sin aceleración y en y un tiro vertical con aceleración g hacia abajo.",
      "La caída termina cuando la posición y vuelve al nivel de salida, y esa condición solo involucra a vy inicial y a g: por eso el tiempo de vuelo es 2 · vy/g y no aparece vx en la fórmula.",
      "La velocidad horizontal decide cuánto avanza el proyectil durante ese tiempo (el alcance), pero no cuánto dura el vuelo: un proyectil con más vx cae más lejos, no más tarde.",
-     "Supuestos del modelo: sin resistencia del aire, g constante y salida y caída al mismo nivel. Con aire, las componentes dejan de ser independientes y la simetría se rompe."]); }
+     "Supuestos del modelo: sin resistencia del aire, g constante y salida y caída al mismo nivel. Con aire, las componentes dejan de ser independientes y la simetría se rompe."]); },
+  function(){ var o = pick([
+      { m:2, v:6, R:9, F:8 }, { m:3, v:4, R:6, F:8 }, { m:1, v:8, R:16, F:4 }, { m:4, v:5, R:10, F:10 }, { m:2, v:10, R:20, F:10 } ]);
+    return exNum("La fuerza centrípeta", "Un cuerpo de " + o.m + " kg gira en una circunferencia de " + o.R + " m de radio con velocidad constante de " + o.v + " m/s. ¿Cuánto vale la fuerza neta que lo mantiene en la curva, en newtons?", o.F,
+    ["La fuerza neta sobre un cuerpo en movimiento circular uniforme es la centrípeta: F = m · v²/R, apuntando al centro de la circunferencia.",
+     "Reemplazo: F = " + o.m + " · " + (o.v * o.v) + "/" + o.R + " = " + o.F + " N.",
+     "No es una fuerza nueva que se agrega a las demás: es el papel que cumple la resultante (la tensión, el rozamiento o la gravedad, según el caso). Si esa resultante falta, el cuerpo sale por la tangente."]); }
 ];
 LESSON_EXERCISES["cbc-fis2-dinamica"] = [
   function(){ return exNum("Rozamiento máximo", "Un cuerpo de peso normal 50 N está sobre una superficie con μ = 0,4. ¿Cuál es el rozamiento máximo?", 20, ["El rozamiento máximo es μ por la normal: 0,4 · 50 = 20 N.", "Si la fuerza aplicada es menor, el rozamiento vale lo mismo que ella: se ajusta hasta el máximo."]); },
@@ -14476,7 +14998,14 @@ LESSON_EXERCISES["cbc-fis2-energia"] = [
      "Abajo: Ep = 0 y Ec = " + c.ep + " J, de donde ½ · " + c.m + " · v² = " + c.ep + " y v = " + c.v + " m/s.",
      "Si el cero se hubiera elegido en el nivel de largada, la potencial inicial sería 0 y la final, −" + c.ep + " J: cambian los valores de Ep, pero la diferencia es la misma y la velocidad de llegada no cambia. Comprobación por cinemática: v² = 2 · g · h = " + (c.v * c.v) + ", de donde v = " + c.v + " m/s."]);
     e.ansText = c.v + " m/s"; return e; },
-  function(){ var c = pick([{m:2,h:5,fk:3,d:12,v:8,sl:10},{m:2,h:20,fk:6,d:24,v:16,sl:20},{m:1,h:45,fk:10,d:25,v:20,sl:30},{m:4,h:5,fk:6,d:12,v:8,sl:10}]); var ep = c.m * 10 * c.h, w = -c.fk * c.d, ec = ep + w; return exNum("Balance con rozamiento: la velocidad final", "Un cuerpo de " + c.m + " kg baja por una rampa desde " + c.h + " m de altura, recorriendo " + c.d + " m con una fuerza de rozamiento cinético constante de " + c.fk + " N, y parte del reposo. Con el cero de potencial abajo y g = 10 m/s², ¿con qué velocidad llega, en m/s?", c.v, ["Con rozamiento no hay conservación: vale el balance ΔEmec = W del rozamiento. Arriba, Emec = m · g · h = " + c.m + " · 10 · " + c.h + " = " + ep + " J.", "El trabajo del rozamiento es negativo: W = −" + c.fk + " · " + c.d + " = " + w + " J. La energía mecánica final es " + ep + " − " + (c.fk * c.d) + " = " + ec + " J, toda cinética abajo.", "De ½ · " + c.m + " · v² = " + ec + " sale v = " + c.v + " m/s. Sin rozamiento habría llegado a " + c.sl + " m/s: el rozamiento le quitó exactamente " + (c.fk * c.d) + " J, y por eso llega más lento."]); }
+  function(){ var c = pick([{m:2,h:5,fk:3,d:12,v:8,sl:10},{m:2,h:20,fk:6,d:24,v:16,sl:20},{m:1,h:45,fk:10,d:25,v:20,sl:30},{m:4,h:5,fk:6,d:12,v:8,sl:10}]); var ep = c.m * 10 * c.h, w = -c.fk * c.d, ec = ep + w; return exNum("Balance con rozamiento: la velocidad final", "Un cuerpo de " + c.m + " kg baja por una rampa desde " + c.h + " m de altura, recorriendo " + c.d + " m con una fuerza de rozamiento cinético constante de " + c.fk + " N, y parte del reposo. Con el cero de potencial abajo y g = 10 m/s², ¿con qué velocidad llega, en m/s?", c.v, ["Con rozamiento no hay conservación: vale el balance ΔEmec = W del rozamiento. Arriba, Emec = m · g · h = " + c.m + " · 10 · " + c.h + " = " + ep + " J.", "El trabajo del rozamiento es negativo: W = −" + c.fk + " · " + c.d + " = " + w + " J. La energía mecánica final es " + ep + " − " + (c.fk * c.d) + " = " + ec + " J, toda cinética abajo.", "De ½ · " + c.m + " · v² = " + ec + " sale v = " + c.v + " m/s. Sin rozamiento habría llegado a " + c.sl + " m/s: el rozamiento le quitó exactamente " + (c.fk * c.d) + " J, y por eso llega más lento."]); },
+  function(){ var o = pick([
+      { m:2, v0:3, W:16, v:5 }, { m:1, v0:4, W:24, v:8 }, { m:2, v0:0, W:36, v:6 }, { m:3, v0:3, W:24, v:5 }, { m:4, v0:2, W:42, v:5 } ]);
+    var inicio = o.v0 === 0 ? "parte del reposo" : "se mueve a " + o.v0 + " m/s";
+    return exNum("Teorema trabajo-energía: la velocidad final", "Un cuerpo de " + o.m + " kg " + inicio + " y el trabajo total de todas las fuerzas sobre él es de " + o.W + " J. ¿A qué velocidad queda, en m/s?", o.v,
+    ["El teorema del trabajo y la energía cinética: el trabajo total es la variación de la energía cinética, W = (1/2) · m · v² − (1/2) · m · v₀².",
+     "Despejo la velocidad final: v² = v₀² + 2W/m = " + (o.v0 * o.v0) + " + " + (2 * o.W / o.m) + " = " + (o.v * o.v) + ".",
+     "La velocidad es la raíz positiva: v = " + o.v + " m/s. El teorema trabaja con el trabajo total: no hace falta separar el de cada fuerza."]); }
 ];
 LESSON_EXERCISES["cbc-fis2-hidrostatica"] = [
   function(){ return exNum("Presión por profundidad", "En un líquido de densidad 1000 kg/m³, con g = 10 m/s², la presión por el líquido a 2 m de profundidad es ρ·g·h. ¿Cuánto vale?", 20000, ["1000 · 10 · 2 = 20000 pascales, sin contar la atmosférica de la superficie.", "Esa sería la presión manométrica; la absoluta suma la atmosférica."]); },
@@ -14619,7 +15148,15 @@ function(){ var n = pick([4, 5, 6, 7]), tot = n * (n + 1) / 2; return exNum("Acu
     return exNum("Acumulador que multiplica", "Un acumulador p empieza en 1 y un ciclo lo multiplica por cada número del 2 al " + n + ". ¿Cuánto vale p al salir?", p,
     ["El acumulador de un producto arranca en 1, el neutro de la multiplicación: si arrancara en 0, todo el producto sería 0.", "La traza de p vuelta a vuelta: " + traza.join(", ") + ". El valor final es " + p + "."]); },
   function(){ return exOpen("Respuesta abierta", "Un ciclo suma los números del 1 al n en un acumulador s, llevando la cuenta con una variable i que sube de a 1. Escribe cuál es el invariante del ciclo y explica por qué ese invariante garantiza que, al terminar, s vale la suma buscada.",
-    ["Invariante modelo: al terminar cada vuelta, s vale exactamente la suma de los números del 1 al i ya recorridos (s = 1 + 2 + … + i).", "Vale antes de empezar: con i = 0 y s = 0, es la suma de ningún número, 0.", "Se mantiene en cada vuelta: la vuelta suma el siguiente i al acumulador, así que la afirmación sigue siendo cierta con el i nuevo.", "Al salir del ciclo, i = n, y el invariante afirma que s = 1 + 2 + … + n: exactamente el resultado buscado. Para eso sirve el invariante: razonar el ciclo completo sin ejecutarlo vuelta por vuelta."]); }
+    ["Invariante modelo: al terminar cada vuelta, s vale exactamente la suma de los números del 1 al i ya recorridos (s = 1 + 2 + … + i).", "Vale antes de empezar: con i = 0 y s = 0, es la suma de ningún número, 0.", "Se mantiene en cada vuelta: la vuelta suma el siguiente i al acumulador, así que la afirmación sigue siendo cierta con el i nuevo.", "Al salir del ciclo, i = n, y el invariante afirma que s = 1 + 2 + … + n: exactamente el resultado buscado. Para eso sirve el invariante: razonar el ciclo completo sin ejecutarlo vuelta por vuelta."]); },
+  function(){ var o = pick([
+      { x:4, y:7, e:"(x > 3) and (y < 5)", v:false, s:"x > 3 es verdadero, pero y < 5 es falso (7 no es menor que 5): el and necesita los dos lados verdaderos y cae." },
+      { x:4, y:7, e:"(x > 3) or (y < 5)", v:true, s:"Al or le alcanza un lado verdadero: x > 3 lo es, así que la condición completa es verdadera aunque el otro lado sea falso." },
+      { x:2, y:9, e:"not (x == 2) or (y > 8)", v:true, s:"not (x == 2) es falso, porque x sí vale 2; pero y > 8 es verdadero, y el or se sostiene con ese lado." },
+      { x:5, y:5, e:"(x >= 5) and not (y == 5)", v:false, s:"x >= 5 es verdadero, pero not (y == 5) es falso, porque y vale 5 y la negación lo da vuelta: el and cae por ese lado." },
+      { x:3, y:4, e:"(x < 4) and (y <= 4)", v:true, s:"Los dos lados son verdaderos: 3 < 4 y 4 <= 4 (en el <= el igual también cumple). El and se sostiene." } ]);
+    return exVF("Evaluar una condición con valores", "Con x = " + o.x + " e y = " + o.y + ", la condición " + o.e + " es verdadera", o.v,
+    [o.s, "El procedimiento seguro: primero se resuelven los paréntesis y las negaciones, y recién después el and u or que combina los resultados."]); }
 ];
 LESSON_EXERCISES["cbc-pc2-funciones"] = [
   function(){ return exChoice("Definir no es llamar", "Definir una función con def hace que…", "quede disponible para ser llamada, sin ejecutarse todavía", "se ejecute en ese mismo momento", "se imprima su resultado", ["La definición registra el procedimiento; la llamada lo ejecuta.", "Confundirlas es un error de lectura clásico."]); },
@@ -14659,7 +15196,12 @@ function(){ var b = ri(2, 9), h = ri(2, 9); return exNum("Llamar con argumentos"
   function(){ return exChoice("Los paradigmas", "Usar map y filter para transformar y seleccionar colecciones, en lugar de escribir ciclos con instrucciones paso a paso, corresponde al paradigma…", "funcional", "imperativo puro", "de hardware",
     ["El paradigma funcional trabaja aplicando funciones a colecciones; el imperativo describe instrucciones en orden, una por una.", "Python es multiparadigma: la misma materia usa los dos estilos según el problema."]); },
   function(){ return exOpen("Respuesta abierta", "Escribe una función en Python que reciba un número y devuelva True si es par y False si no lo es. Después explica, en una o dos frases, qué hace cada línea y cómo se la llamaría desde el programa principal.",
-    ["Solución modelo:\ndef es_par(n):\n    return n % 2 == 0", "La línea del return combina todo: n % 2 calcula el resto de dividir por 2, y la comparación == 0 produce el booleano que se devuelve. No hace falta un if con dos return: la comparación ya es el valor buscado.", "La llamada sería, por ejemplo, es_par(7), que devuelve False, y ese resultado puede guardarse en una variable o usarse dentro de una condición.", "Criterio de corrección: la función recibe el número como parámetro (no lo pide con input adentro) y devuelve el booleano con return (no lo imprime)."]); }
+    ["Solución modelo:\ndef es_par(n):\n    return n % 2 == 0", "La línea del return combina todo: n % 2 calcula el resto de dividir por 2, y la comparación == 0 produce el booleano que se devuelve. No hace falta un if con dos return: la comparación ya es el valor buscado.", "La llamada sería, por ejemplo, es_par(7), que devuelve False, y ese resultado puede guardarse en una variable o usarse dentro de una condición.", "Criterio de corrección: la función recibe el número como parámetro (no lo pide con input adentro) y devuelve el booleano con return (no lo imprime)."]); },
+  function(){ var a = ri(3, 9), b = ri(1, 6), c = ri(1, 4);
+    return exNum("Alcance: local y global", "Un programa dice: x = " + a + " ; def f(): x = " + b + " ; return x + " + c + " ; y al final ejecuta print(f() + x). ¿Qué número imprime?", a + b + c,
+    ["Dentro de f, la x vale " + b + ": la asignación dentro de la función crea una variable local, propia de f, que no toca la de afuera.",
+     "Entonces f devuelve " + b + " + " + c + " = " + (b + c) + ".",
+     "Afuera, la x global sigue valiendo " + a + ": el print suma lo devuelto con la global, " + (b + c) + " + " + a + " = " + (a + b + c) + ". Mismo nombre, dos variables distintas."]); }
 ];
 LESSON_EXERCISES["cbc-pc2-datos"] = [
   function(){ return exChoice("El diccionario", "Un diccionario en Python guarda…", "pares clave-valor", "solo números ordenados", "texto sin estructura", ["Se accede por la clave, no por la posición: como un índice de agenda.", "La lista accede por posición; el diccionario, por clave."]); },
@@ -14790,7 +15332,13 @@ function(){ var e = exSteps("Estado, gobierno y régimen en un caso, paso a paso
       exChoice("Etapa 2 · El régimen", "Con el régimen político pasó que…", "cambió: las reglas democráticas fueron reemplazadas por un régimen autoritario", "siguió igual, porque solo cambiaron las personas", "dejó de existir todo régimen posible", ["Disolver el Congreso y los partidos y gobernar sin plazo es cambiar las reglas del juego, no solo a los jugadores: cambia el régimen."]),
       exChoice("Etapa 3 · El Estado", "Con el Estado pasó que…", "continuó: mismo territorio, población y aparatos, ahora al servicio del nuevo régimen", "desapareció y hubo que fundar uno nuevo desde cero", "quedó reducido al gobierno de turno", ["Ningún golpe argentino fundó un Estado nuevo: la organización permanente siguió, y por eso sus burocracias funcionaron al día siguiente."]) ],
     ["El análisis completo separa los tres planos: cambió el gobierno (elenco), cambió el régimen (reglas) y continuó el Estado (organización permanente).", "Esa es la operación que la unidad pide para cualquier golpe o elección: decir qué cambió de los tres planos y qué no.", "Error habitual: decir que en 1966 «cambió todo». Cambiaron dos planos de tres, y nombrar el que continuó es parte de la respuesta."]);
-    e.ansText = "cambió el gobierno y el régimen; el Estado continuó"; return e; }
+    e.ansText = "cambió el gobierno y el régimen; el Estado continuó"; return e; },
+  function(){ var o = pick([
+      { caso:"Una central sindical declara un paro general para frenar una reforma laboral que el gobierno impulsa en el Congreso.", s:"El sindicato no ejecuta decisiones del Estado ni es un régimen: organiza a los trabajadores, defiende sus intereses y presiona sobre una decisión pública." },
+      { caso:"Una cámara que agrupa a las empresas de una rama presiona a los legisladores para que no se apruebe un impuesto que la perjudica.", s:"La cámara empresaria no forma parte del aparato estatal: organiza a un sector, defiende sus intereses y disputa una decisión del Congreso." },
+      { caso:"Un movimiento de vecinos se organiza, marcha semana tras semana y logra que el municipio dé marcha atrás con el cierre de un hospital.", s:"El movimiento no es una burocracia ni un régimen: es un colectivo que se organiza alrededor de un interés compartido y logra torcer una decisión pública." } ]);
+    return exChoice("Actores en un caso nuevo", o.caso + " En el vocabulario de la unidad, ese protagonista es…", "un actor sociopolítico organizado: defiende los intereses de quienes representa y disputa decisiones públicas", "una burocracia estatal que ejecuta una decisión ya tomada", "un régimen político que reemplaza al anterior",
+    [o.s, "La marca del actor sociopolítico es triple: organización, intereses propios y capacidad de disputar decisiones públicas. No hace falta ser un partido ni ganar una elección para serlo."]); }
 ];
 LESSON_EXERCISES["cbc-icse2-estado-nacional"] = [
   function(){ return exChoice("Ley 1420", "La Ley 1420 estableció en la Argentina…", "la educación primaria gratuita, laica y obligatoria", "el voto secreto y obligatorio", "la jornada laboral de 8 horas", ["Es de 1884, en plena construcción del Estado nacional.", "El voto secreto es la Ley Sáenz Peña, de 1912."]); },
@@ -14865,7 +15413,9 @@ function(){ var e = exSteps("La base de Perón, paso a paso", "Reconstruye cómo
   function(){ return exOpen("Respuesta abierta", "Explica por qué el 17 de octubre de 1945 se considera la fecha fundacional del peronismo, conectándolo con lo que Perón había construido antes y con lo que pasó después.",
     ["Antes: Perón, desde la Secretaría de Trabajo, había construido un vínculo con los sindicatos a fuerza de conquistas laborales concretas; detenido por el gobierno militar, ese vínculo quedó sin su figura.", "El hecho: la movilización obrera masiva del 17 de octubre de 1945 logra su liberación. Los trabajadores aparecen como actor político decisivo, no como telón de fondo.", "Después: liberado, Perón se convierte en candidato y gana las elecciones de 1946. La fecha funda una identidad porque marca el momento en que el movimiento obrero entra en la política como protagonista.", "Cierre esperado: fundacional no quiere decir primer hecho cronológico, sino el hecho que la identidad peronista toma como su nacimiento."]); },
   function(){ return exOpen("Respuesta abierta", "Argumenta por qué la caída de Perón en 1955 no disolvió la identidad peronista, usando el concepto de actor sociopolítico.",
-    ["Desarrollo modelo: el golpe de 1955 saca al peronismo del gobierno y lo proscribe, pero no desarma su base social: los sindicatos y la lealtad obrera construida durante una década de derechos concretos siguen existiendo como actor organizado.", "Una identidad política sostenida por un actor real (organizaciones, memoria de conquistas, símbolos) no depende de ocupar el gobierno para sobrevivir.", "La prueba histórica que da la unidad siguiente: ese actor proscripto condiciona toda la política de 1955 a 1973, porque ningún proyecto puede gobernar ignorándolo.", "Formato: la respuesta debe conectar el concepto (actor) con el hecho (proscripción sin disolución), no solo afirmar que el peronismo «era fuerte»."]); }
+    ["Desarrollo modelo: el golpe de 1955 saca al peronismo del gobierno y lo proscribe, pero no desarma su base social: los sindicatos y la lealtad obrera construida durante una década de derechos concretos siguen existiendo como actor organizado.", "Una identidad política sostenida por un actor real (organizaciones, memoria de conquistas, símbolos) no depende de ocupar el gobierno para sobrevivir.", "La prueba histórica que da la unidad siguiente: ese actor proscripto condiciona toda la política de 1955 a 1973, porque ningún proyecto puede gobernar ignorándolo.", "Formato: la respuesta debe conectar el concepto (actor) con el hecho (proscripción sin disolución), no solo afirmar que el peronismo «era fuerte»."]); },
+  function(){ return exChoice("Los límites de la ISI", "La industrialización por sustitución de importaciones avanzó rápido en los bienes de consumo (textiles, alimentos, calzado), pero se trabó en los bienes de capital e intermedios porque…", "la Argentina no producía las máquinas ni los insumos de esa etapa y seguía dependiendo de importarlos", "el gobierno prohibió por ley instalar fábricas nuevas después de 1935", "la clase obrera se negó a trabajar en la industria pesada",
+    ["La sustitución fácil se agotó: pasar de fabricar camisas a fabricar las máquinas que hacen camisas exigía una base industrial que el país no tenía.", "Ese límite estructural es parte de la explicación de la unidad: la ISI creó la industria y a la vez mostró su techo, dependiente del exterior para equiparse."]); }
 ];
 LESSON_EXERCISES["cbc-icse4-empate"] = [
   function(){ return exChoice("El empate", "El concepto de empate describe el período 1955-1973 como…", "un bloqueo entre fuerzas que no logran imponerse de manera duradera", "una época de estabilidad institucional", "el dominio absoluto de un solo actor", ["El peronismo proscripto conserva fuerza social; los gobiernos caen por golpes en 1962 y 1966.", "Ningún proyecto cierra el juego: esa es la tesis de la unidad."]); },
@@ -14949,7 +15499,9 @@ function(){ var e = exSteps("Los carapintadas, paso a paso", "Durante el gobiern
   function(){ return exOpen("Respuesta abierta", "Explica el concepto de democracia delegativa de O'Donnell y aplícalo al menemismo, indicando qué rasgos del período coinciden con la definición.",
     ["Definición modelo: en la democracia delegativa, el presidente entiende que el voto lo autoriza a gobernar según su criterio entre elecciones, con controles institucionales débiles y una rendición de cuentas escasa.", "Aplicación modelo: el menemismo gobernó con decretos y vetos frecuentes, aplicó un programa económico contrario al prometido en campaña sin sentir que eso rompiera el mandato, y concentró decisiones en el Ejecutivo.", "El rasgo que cierra la aplicación: las elecciones seguían existiendo y eran competitivas, así que no es autoritarismo; es una democracia con controles debilitados, que es exactamente lo que el concepto quiere capturar.", "Formato: definición primero, rasgos del caso después, y el matiz que separa el concepto de sus vecinos al final."]); },
   function(){ return exOpen("Respuesta abierta", "Haz un balance argumentado del período de la Convertibilidad: presenta su logro central y su costo central, y cierra con una conclusión que use un concepto de la materia.",
-    ["Logro central modelo: la Convertibilidad detuvo la inflación tras la hiperinflación de 1989 y dio años de estabilidad de precios, un bien concreto después de una década de desorden monetario.", "Costo central modelo: la misma rigidez cambiaria convivió con desocupación y precarización crecientes, apertura con desindustrialización y endeudamiento.", "Conclusión con concepto: el período muestra una democracia delegativa aplicando el programa del Consenso de Washington; evaluar el modelo exige mirar la estabilidad y el costo social como dos caras del mismo proceso, no elegir una sola.", "Un balance no es una lista de cosas buenas y malas sueltas: es ponderarlas dentro de un mismo análisis."]); }
+    ["Logro central modelo: la Convertibilidad detuvo la inflación tras la hiperinflación de 1989 y dio años de estabilidad de precios, un bien concreto después de una década de desorden monetario.", "Costo central modelo: la misma rigidez cambiaria convivió con desocupación y precarización crecientes, apertura con desindustrialización y endeudamiento.", "Conclusión con concepto: el período muestra una democracia delegativa aplicando el programa del Consenso de Washington; evaluar el modelo exige mirar la estabilidad y el costo social como dos caras del mismo proceso, no elegir una sola.", "Un balance no es una lista de cosas buenas y malas sueltas: es ponderarlas dentro de un mismo análisis."]); },
+  function(){ return exChoice("La reforma de 1994: sus contenidos", "La reforma constitucional de 1994, salida del Pacto de Olivos, incorporó…", "la reelección presidencial inmediata y la jerarquía constitucional de los tratados de derechos humanos", "el voto femenino y los derechos sociales del trabajador", "la supresión del Senado y la elección del presidente por el Congreso",
+    ["El Pacto de Olivos entre Menem y Alfonsín habilitó la reforma: el oficialismo obtuvo la reelección inmediata y la oposición sumó garantías institucionales.", "La marca de derechos de la reforma son los tratados internacionales con jerarquía constitucional, que quedan por encima de las leyes comunes.", "El voto femenino es de 1947, del primer peronismo: mezclar los contenidos de cada época es el error que esta pregunta caza."]); }
 ];
 LESSON_EXERCISES["cbc-ipc1-lenguaje"] = [
   function(){ return exChoice("Metalenguaje", "Cuando en un libro de lógica se habla sobre las proposiciones usando comillas y nombres, se está usando…", "un metalenguaje: lenguaje sobre el lenguaje", "un lenguaje objeto", "una falacia formal", ["El lenguaje objeto es del que se habla; el metalenguaje es con el que se habla de él.", "La distinción evita confusiones clásicas como la de uso y mención."]); },
@@ -15310,7 +15862,17 @@ LESSON_EXERCISES["cbc-an2-edo"] = [
     ["Separación: con y ≠ 0, paso dividiendo y queda dy/y = 2x dx. Cada variable de un lado: esa es la maniobra que define a las separables.",
      "Integración: ln|y| = x² + C. El valor absoluto aparece porque la primitiva de 1/y es ln|y|, válida para y positiva o negativa.",
      "Despeje: y = ±e^C · e^(x²). Como ±e^C recorre todos los reales no nulos, y sumando la solución y = 0 que la separación había apartado, la familia completa es y = A · e^(x²) con A real cualquiera.",
-     "La condición inicial: y(0) = A · e⁰ = A = 3. La solución única del problema es y = 3 · e^(x²). Comprobación: su derivada es 3 · 2x · e^(x²) = 2x · y ✓"]); }
+     "La condición inicial: y(0) = A · e⁰ = A = 3. La solución única del problema es y = 3 · e^(x²). Comprobación: su derivada es 3 · 2x · e^(x²) = 2x · y ✓"]); },
+  function(){ var o = pick([
+      { n0:64, T:3, obj:8, vidas:3, cadena:"64 → 32 → 16 → 8" },
+      { n0:120, T:2, obj:15, vidas:3, cadena:"120 → 60 → 30 → 15" },
+      { n0:200, T:4, obj:25, vidas:3, cadena:"200 → 100 → 50 → 25" },
+      { n0:64, T:5, obj:4, vidas:4, cadena:"64 → 32 → 16 → 8 → 4" },
+      { n0:48, T:5, obj:6, vidas:3, cadena:"48 → 24 → 12 → 6" } ]);
+    return exNum("Decaimiento: el tiempo de reducción", "Una sustancia radiactiva tiene vida media de " + o.T + " años: cada ese tiempo, su masa se reduce a la mitad. Si al principio hay " + o.n0 + " g, ¿en cuántos años la masa baja a " + o.obj + " g?", o.vidas * o.T,
+    ["Cuento las vidas medias recorriendo la cadena de mitades: " + o.cadena + ". Son " + o.vidas + " reducciones a la mitad.",
+     "Cada vida media dura " + o.T + " años: el tiempo buscado es " + o.vidas + " · " + o.T + " = " + (o.vidas * o.T) + " años.",
+     "Es el modelo exponencial con razón 1/2: N(t) = " + o.n0 + " · (1/2)^(t/" + o.T + "). El mismo modelo del crecimiento, decayendo."]); }
 ];
 /* ================= Fase B · Declaración de habilidad y dificultad de
    los generadores de Análisis A =================
@@ -15387,21 +15949,24 @@ var AN_GEN_META = {
     ["an-funciones-asintotas", 1], ["an-funciones-asintotas", 2], ["an-funciones-asintotas", 1], ["an-funciones-asintotas", 2],
     ["an-funciones-exp-log", 1], ["an-funciones-exp-log", 1], ["an-funciones-exp-log", 1], ["an-funciones-trig", 1],
     ["an-funciones-trig", 2], ["an-funciones-propiedades", 1], ["an-funciones-propiedades", 2], ["an-funciones-propiedades", 1],
-    ["an-funciones-comp-inv", 2], ["an-funciones-propiedades", 3], ["an-funciones-propiedades", 2], ["an-funciones-propiedades", 3]
+    ["an-funciones-comp-inv", 2], ["an-funciones-propiedades", 3], ["an-funciones-propiedades", 2], ["an-funciones-propiedades", 3],
+    ["an-funciones-exp-log", 2], ["an-funciones-exp-log", 3], ["an-funciones-trig", 2]
   ],
   "cbc-an1-sucesiones": [
     ["an-sucesiones-termino", 1], ["an-sucesiones-termino", 1], ["an-sucesiones-limite", 2], ["an-sucesiones-limite", 2],
     ["an-sucesiones-limite", 1], ["an-sucesiones-limite", 2], ["an-sucesiones-limite", 2], ["an-sucesiones-monotonia", 1],
     ["an-sucesiones-termino", 2], ["an-sucesiones-termino", 2], ["an-sucesiones-sumas", 2], ["an-sucesiones-limite", 1],
     ["an-sucesiones-monotonia", 1], ["an-sucesiones-monotonia", 1], ["an-sucesiones-limite", 2], ["an-sucesiones-monotonia", 3],
-    ["an-sucesiones-limite", 3], ["an-sucesiones-limite", 3], ["an-sucesiones-limite", 2]
+    ["an-sucesiones-limite", 3], ["an-sucesiones-limite", 3], ["an-sucesiones-limite", 2],
+    ["an-sucesiones-monotonia", 2], ["an-sucesiones-sumas", 3]
   ],
   "cbc-an1-limites": [
     ["an-limites-calculo", 2], ["an-limites-calculo", 2], ["an-limites-calculo", 2], ["an-limites-calculo", 2],
     ["an-limites-laterales", 1], ["an-limites-asintotas", 1], ["an-limites-asintotas", 1], ["an-limites-asintotas", 2],
     ["an-continuidad", 2], ["an-continuidad", 2], ["an-continuidad", 1], ["an-continuidad", 1],
     ["an-continuidad", 2], ["an-limites-calculo", 1], ["an-limites-laterales", 2], ["an-limites-calculo", 2],
-    ["an-limites-calculo", 2], ["an-continuidad", 3]
+    ["an-limites-calculo", 2], ["an-continuidad", 3],
+    ["an-limites-laterales", 2], ["an-limites-asintotas", 3]
   ],
   "cbc-an2-derivadas": [
     ["an-derivadas-definicion", 2], ["an-derivadas-reglas", 1], ["an-derivadas-reglas", 2], ["an-derivadas-reglas", 2],
@@ -15417,7 +15982,8 @@ var AN_GEN_META = {
     ["an-aprox-lineal", 2], ["an-aprox-lineal", 1], ["an-aprox-lineal", 2], ["an-newton", 2],
     ["an-newton", 1], ["an-estudio-extremos", 3], ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 2],
     ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 3], ["an-asintotas-oblicuas", 1],
-    ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 3], ["an-estudio-extremos", 3], ["an-estudio-completo", 3]
+    ["an-asintotas-oblicuas", 2], ["an-asintotas-oblicuas", 3], ["an-estudio-extremos", 3], ["an-estudio-completo", 3],
+    ["an-estudio-crecimiento", 3], ["an-estudio-concavidad", 2], ["an-taylor", 3], ["an-newton", 3]
   ],
   "cbc-an2-integrales": [
     ["an-integral-barrow", 1], ["an-integrales-primitivas", 1], ["an-integrales-metodos", 1], ["an-integral-barrow", 1],
@@ -15428,21 +15994,24 @@ var AN_GEN_META = {
     ["an-integral-barrow", 1], ["an-integrales-metodos", 2], ["an-integral-barrow", 3], ["an-impropias", 2],
     ["an-impropias", 1], ["an-impropias", 2], ["an-impropias", 2], ["an-impropias", 2],
     ["an-impropias", 2], ["an-impropias", 1], ["an-impropias", 2], ["an-impropias", 2],
-    ["an-impropias", 3], ["an-integrales-metodos", 3], ["an-integrales-metodos", 3]
+    ["an-impropias", 3], ["an-integrales-metodos", 3], ["an-integrales-metodos", 3],
+    ["an-integrales-primitivas", 2], ["an-integrales-primitivas", 3], ["an-riemann", 2]
   ],
   "cbc-an2-series": [
     ["an-series-sumas", 2], ["an-series-sumas", 2], ["an-series-sumas", 2], ["an-series-criterios", 1],
     ["an-series-criterios", 1], ["an-series-criterios", 2], ["an-series-criterios", 1], ["an-series-criterios", 2],
     ["an-series-alternadas", 2], ["an-series-absoluta", 1], ["an-series-alternadas", 2], ["an-series-potencias", 2],
     ["an-series-potencias", 1], ["an-series-potencias", 2], ["an-series-potencias", 1], ["an-series-potencias", 3],
-    ["an-series-absoluta", 1], ["an-series-criterios", 3], ["an-series-criterios", 3], ["an-series-criterios", 2]
+    ["an-series-absoluta", 1], ["an-series-criterios", 3], ["an-series-criterios", 3], ["an-series-criterios", 2],
+    ["an-series-absoluta", 2], ["an-series-absoluta", 3]
   ],
   "cbc-an2-edo": [
     ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2],
     ["an-integrales-aplicaciones", 2], ["an-integrales-aplicaciones", 2], ["an-edo-directa", 2], ["an-edo-directa", 2],
     ["an-edo-separables", 1], ["an-edo-separables", 1], ["an-edo-separables", 3], ["an-edo-modelos", 1],
     ["an-edo-modelos", 2], ["an-edo-directa", 1], ["an-edo-separables", 1], ["an-integrales-aplicaciones", 1],
-    ["an-edo-separables", 3], ["an-edo-separables", 3]
+    ["an-edo-separables", 3], ["an-edo-separables", 3],
+    ["an-edo-modelos", 3]
   ]
 };
 /* Aplicación de la declaración: cada fábrica de Análisis queda
@@ -15524,7 +16093,8 @@ var AL_GEN_META = {
     ["al-complejos-operaciones", 2], ["al-complejos-polar", 1], ["al-conjuntos", 2], ["al-conjuntos", 1],
     ["al-complejos-modulo-conjugado", 1], ["al-complejos-modulo-conjugado", 2], ["al-complejos-operaciones", 2], ["al-complejos-polar", 2],
     ["al-complejos-ecuaciones", 2], ["al-complejos-operaciones", 2], ["al-complejos-polar", 1], ["al-complejos-polar", 1],
-    ["al-complejos-modulo-conjugado", 3], ["al-complejos-ecuaciones", 3]
+    ["al-complejos-modulo-conjugado", 3], ["al-complejos-ecuaciones", 3],
+    ["al-conjuntos", 2], ["al-complejos-polar", 2]
   ],
   "cbc-al1-polinomios": [
     ["al-polinomios-factorizacion", 1], ["al-polinomios-factorizacion", 1], ["al-polinomios-factorizacion", 1], ["al-polinomios-factorizacion", 2],
@@ -15539,7 +16109,8 @@ var AL_GEN_META = {
     ["al-vectores-producto-escalar", 2], ["al-vectores-producto-vectorial", 2], ["al-vectores-rectas-planos", 1], ["al-vectores-rectas-planos", 2],
     ["al-vectores-distancias-proyecciones", 2], ["al-vectores-distancias-proyecciones", 2], ["al-vectores-combinaciones", 2], ["al-vectores-producto-escalar", 2],
     ["al-vectores-rectas-planos", 3], ["al-vectores-producto-escalar", 3], ["al-vectores-producto-vectorial", 2],
-    ["al-vectores-producto-vectorial", 3], ["al-vectores-distancias-proyecciones", 3], ["al-vectores-distancias-proyecciones", 2]
+    ["al-vectores-producto-vectorial", 3], ["al-vectores-distancias-proyecciones", 3], ["al-vectores-distancias-proyecciones", 2],
+    ["al-vectores-combinaciones", 2]
   ],
   "cbc-al2-matrices": [
     ["al-determinantes", 1], ["al-matrices-operaciones", 1], ["al-determinantes", 1], ["al-sistemas-gauss", 1],
@@ -15705,7 +16276,8 @@ var FI_GEN_META = {
     ["fi-movimiento-relativo", 1], ["fi-tiro-oblicuo", 1], ["fi-tiro-oblicuo", 2], ["fi-tiro-oblicuo", 2],
     ["fi-tiro-oblicuo", 2], ["fi-tiro-oblicuo", 3], ["fi-movimiento-circular", 1], ["fi-movimiento-circular", 1],
     ["fi-movimiento-circular", 1], ["fi-movimiento-relativo", 2], ["fi-movimiento-relativo", 2], ["fi-tiro-oblicuo", 1],
-    ["fi-movimiento-circular", 3], ["fi-tiro-oblicuo", 3]
+    ["fi-movimiento-circular", 3], ["fi-tiro-oblicuo", 3],
+    ["fi-movimiento-circular", 2]
   ],
   "cbc-fis2-dinamica": [
     ["fi-dinamica-plano-rozamiento", 1], ["fi-dinamica-plano-rozamiento", 1], ["fi-dinamica-sistemas-circular", 1], ["fi-oscilaciones", 1],
@@ -15720,7 +16292,8 @@ var FI_GEN_META = {
     ["fi-energia-cinetica-teorema", 1], ["fi-energia-conservacion", 1], ["fi-energia-cinetica-teorema", 3], ["fi-energia-conservacion", 2],
     ["fi-energia-conservacion", 2], ["fi-energia-trabajo-potencia", 2], ["fi-energia-balance-roce", 2], ["fi-energia-trabajo-potencia", 2],
     ["fi-energia-balance-roce", 2], ["fi-energia-balance-roce", 3],
-    ["fi-energia-conservacion", 3], ["fi-energia-balance-roce", 3]
+    ["fi-energia-conservacion", 3], ["fi-energia-balance-roce", 3],
+    ["fi-energia-cinetica-teorema", 2]
   ],
   "cbc-fis2-hidrostatica": [
     ["fi-hidrostatica-presion", 1], ["fi-hidrostatica-pascal-prensa", 1], ["fi-hidrostatica-presion", 1], ["fi-hidrostatica-arquimedes-flotacion", 1],
@@ -15881,14 +16454,16 @@ var PC_GEN_META = {
     ["pc-control-logica", 1], ["pc-control-diseno-diagnostico", 1], ["pc-control-ciclos-traza", 2], ["pc-control-ciclos-traza", 2],
     ["pc-control-logica", 2], ["pc-control-ciclos-traza", 2], ["pc-control-diseno-diagnostico", 2], ["pc-control-diseno-diagnostico", 2],
     ["pc-control-logica", 1], ["pc-control-ciclos-traza", 2], ["pc-control-diseno-diagnostico", 2], ["pc-control-ciclos-traza", 2],
-    ["pc-control-diseno-diagnostico", 2]
+    ["pc-control-diseno-diagnostico", 2],
+    ["pc-control-logica", 2]
   ],
   "cbc-pc2-funciones": [
     ["pc-funciones-conceptos", 1], ["pc-funciones-conceptos", 1], ["pc-funciones-map-filter", 2], ["pc-funciones-map-filter", 2],
     ["pc-funciones-conceptos", 1], ["pc-funciones-conceptos", 1], ["pc-funciones-llamadas", 1], ["pc-funciones-llamadas", 2],
     ["pc-funciones-conceptos", 2], ["pc-funciones-map-filter", 2], ["pc-funciones-map-filter", 2], ["pc-funciones-conceptos", 1],
     ["pc-funciones-conceptos", 1], ["pc-funciones-llamadas", 1], ["pc-funciones-llamadas", 2], ["pc-funciones-conceptos", 1],
-    ["pc-funciones-llamadas", 2]
+    ["pc-funciones-llamadas", 2],
+    ["pc-funciones-conceptos", 2]
   ],
   "cbc-pc2-datos": [
     ["pc-datos-tuplas-diccionarios", 1], ["pc-datos-tuplas-diccionarios", 1], ["pc-datos-secuencias", 1], ["pc-datos-archivos-formatos", 1],
@@ -16099,7 +16674,8 @@ var ICSE_GEN_META = {
     ["icse-conceptos-estado-legitimidad", 1], ["icse-conceptos-regimen-tipologias", 1], ["icse-conceptos-regimen-tipologias", 2], ["icse-conceptos-regimen-tipologias", 2],
     ["icse-conceptos-estado-legitimidad", 2], ["icse-democratizacion", 1], ["icse-conceptos-sociedad-actores", 1], ["icse-conceptos-regimen-tipologias", 3],
     ["icse-conceptos-estado-legitimidad", 3],
-    ["icse-conceptos-estado-legitimidad", 3], ["icse-conceptos-regimen-tipologias", 2]
+    ["icse-conceptos-estado-legitimidad", 3], ["icse-conceptos-regimen-tipologias", 2],
+    ["icse-conceptos-sociedad-actores", 2]
   ],
   "cbc-icse2-estado-nacional": [
     ["icse-estado-construccion", 1], ["icse-modelo-agroexportador", 1], ["icse-democratizacion", 1], ["icse-democratizacion", 1],
@@ -16113,7 +16689,8 @@ var ICSE_GEN_META = {
     ["icse-peronismo-surgimiento", 1], ["icse-peronismo-bienestar-caida", 1], ["icse-peronismo-surgimiento", 2], ["icse-peronismo-surgimiento", 1],
     ["icse-peronismo-bienestar-caida", 1], ["icse-fraude-isi", 1], ["icse-fraude-isi", 1], ["icse-fraude-isi", 3],
     ["icse-peronismo-surgimiento", 3], ["icse-peronismo-bienestar-caida", 2], ["icse-peronismo-surgimiento", 1], ["icse-peronismo-surgimiento", 3],
-    ["icse-peronismo-bienestar-caida", 3]
+    ["icse-peronismo-bienestar-caida", 3],
+    ["icse-fraude-isi", 2]
   ],
   "cbc-icse4-empate": [
     ["icse-empate-proscripcion", 1], ["icse-empate-proscripcion", 1], ["icse-empate-proscripcion", 1], ["icse-dictadura-terrorismo", 1],
@@ -16128,7 +16705,8 @@ var ICSE_GEN_META = {
     ["icse-neoliberalismo-convertibilidad", 1], ["icse-reforma-1994", 1], ["icse-reforma-1994", 2], ["icse-transicion-justicia", 1],
     ["icse-reforma-1994", 1], ["icse-transicion-justicia", 1], ["icse-reforma-1994", 1], ["icse-transicion-justicia", 2],
     ["icse-transicion-justicia", 2], ["icse-neoliberalismo-convertibilidad", 2], ["icse-neoliberalismo-convertibilidad", 1], ["icse-neoliberalismo-convertibilidad", 3],
-    ["icse-neoliberalismo-convertibilidad", 3]
+    ["icse-neoliberalismo-convertibilidad", 3],
+    ["icse-reforma-1994", 2]
   ],
   "cbc-icse-contemporanea": [
     ["icse-contemporanea-globalizacion", 1], ["icse-contemporanea-globalizacion", 1], ["icse-contemporanea-politicas-publicas", 1], ["icse-contemporanea-sociedad-trabajo", 1],
@@ -16920,7 +17498,7 @@ function startLessonExercises(l, mount){
       box.innerHTML = doneHtml() +
         '<div class="lex-step-meta">Paso ' + (stepIdx + 1) + ' de ' + ex.steps.length + (st.type ? ' · ' + esc(st.type) : '') + '</div>' +
         '<p class="lex-q" id="lex-step-q" style="font-size:17.5px; margin-top:6px;">' + esc(st.prompt) + '</p>' + area +
-        '<div class="feedback" id="lex-step-fb"></div>';
+        '<div class="feedback" id="lex-step-fb" aria-live="polite"></div>';
       colorizePlain($("#lex-step-q", mount));
       $$(".lex-opt", box).forEach(function(b){
         colorizePlain(b);
@@ -17045,7 +17623,7 @@ function startLessonExercises(l, mount){
       '<span class="lex-dots">' + round.map(function(){ return "<i></i>"; }).join("") + '</span>' +
       '<span class="small faint">Ejercicio ' + (idx + 1) + ' de ' + round.length + ' · ' + esc(l.title) + '</span></div>' +
       '<p class="lex-q" id="lex-q">' + esc(ex.prompt) + '</p>' + area +
-      '<div class="feedback" id="lex-fb"></div><div class="solsteps" id="lex-sol"></div>' +
+      '<div class="feedback" id="lex-fb" aria-live="polite"></div><div class="solsteps" id="lex-sol"></div>' +
       '<div class="row" style="margin-top:16px;"><button class="btn solid" id="lex-next" style="display:none;">' +
       (idx === round.length - 1 ? "Ver el resultado de la ronda" : "Siguiente ejercicio →") + '</button>' +
       '<span class="grow"></span><button class="textlink" id="lex-quit">Salir de la ronda</button></div></div>';
@@ -17216,27 +17794,122 @@ $("#pr-watch").addEventListener("click", function(){ if(prSkill) openLesson(prSk
 
 /* ================= Exámenes ================= */
 var examCurrent = null;
+/* Exámenes de banco (semanas sin EXAM_SKILLS, hoy las 9 a 22): las
+   preguntas salen de los bancos reales de las clases de la semana
+   (LESSON_EXERCISES), no de las 9 habilidades planas. El corrector de
+   exámenes solo evalúa respuestas numéricas con parseAnswer + numEq
+   sobre un input de texto, así que solo entran ejercicios de kind
+   "num" o "frac" que pasan lexExerciseSane; los choice, order, steps
+   y open quedan fuera porque ese corrector no los evalúa. Cada
+   pregunta conserva su clase y su generador ("clase#gN"), y al
+   corregir el intento se registra con esos datos reales, igual que
+   en la ronda de la clase: así habilidadDeIntento lo atribuye a la
+   habilidad del grafo que declara la tabla por generador de la
+   etapa, y la evidencia del examen cuenta para el dominio CBC. */
+/* Sirve una instancia de examen desde un generador de banco: sana y
+   de kind num o frac, con hasta "tries" intentos (el mismo criterio
+   de regeneración que usa la ronda al servir). Devuelve null si el
+   generador no rinde ninguna instancia así. */
+function examServeBankExercise(gen, tries){
+  for(var t = 0; t < tries; t++){
+    var e = null;
+    try{ e = gen(); }catch(err){ e = null; }
+    if(lexExerciseSane(e) && (e.kind === "num" || e.kind === "frac")) return e;
+  }
+  return null;
+}
+/* Generadores elegibles para el examen de una semana: los de sus
+   clases que pueden servir un ejercicio num o frac. Se sondea una
+   vez por semana y se cachea, para que la grilla y openExam vean la
+   misma lista. La mayoría de las semanas llena las 6 preguntas; las
+   hay con bancos casi sin ejercicios numéricos (la 13 tiene 1 y la
+   22 tiene 4), y ahí el examen trae las que hay, sin repetir
+   generador ni inventar preguntas de otro tipo. */
+var examBankCache = {};
+function examEligibleGens(week){
+  if(examBankCache[week]) return examBankCache[week];
+  var out = [];
+  LESSONS.filter(function(l){ return l.week === week; }).forEach(function(l){
+    (LESSON_EXERCISES[l.id] || []).forEach(function(gen, gi){
+      if(examServeBankExercise(gen, 3)) out.push({ lesson: l.id, gi: gi });
+    });
+  });
+  examBankCache[week] = out;
+  return out;
+}
+/* Arma las preguntas del examen de banco de una semana: reparto
+   equilibrado entre las clases (una por clase en cada vuelta) y sin
+   repetir generador dentro del mismo examen, hasta 6 preguntas o
+   hasta agotar los generadores elegibles de la semana. */
+function buildBankExam(week){
+  var porClase = {};
+  examEligibleGens(week).forEach(function(en){
+    (porClase[en.lesson] = porClase[en.lesson] || []).push(en.gi);
+  });
+  var clases = shufArr(Object.keys(porClase));
+  clases.forEach(function(lid){ porClase[lid] = shufArr(porClase[lid]); });
+  var qs = [], quedan = examEligibleGens(week).length;
+  while(qs.length < 6 && quedan > 0){
+    for(var ci = 0; ci < clases.length && qs.length < 6 && quedan > 0; ci++){
+      var lid = clases[ci];
+      if(!porClase[lid].length) continue;
+      var gi = porClase[lid].shift();
+      quedan--;
+      var e = examServeBankExercise(LESSON_EXERCISES[lid][gi], 8);
+      if(!e) continue;
+      qs.push({
+        lesson: lid, gen: lid + "#g" + gi,
+        skill: e.skill || LESSON_SKILL[lid] || null,
+        tipo: e.type, kind: e.kind,
+        dificultad: (e.dificultad === null || e.dificultad === undefined) ? null : e.dificultad,
+        data: { q: e.prompt, ans: e.ans, sol: e.sol }
+      });
+    }
+  }
+  return qs;
+}
 function renderExamGrid(){
   $("#exam-grid").innerHTML = WEEKS.map(function(w){
     var best = null;
     state.exams.forEach(function(e){ if(e.week === w.n && (best === null || e.nota > best)) best = e.nota; });
-    if(!EXAM_SKILLS[w.n]){
-      return '<div class="plain-item"><span class="pt">Semana ' + w.n + ' · ' + esc(w.title) + '</span>' +
-        '<span class="pd" style="display:block;">Esta etapa se evalúa con los ejercicios al final de cada clase y con la práctica, no con un examen numérico aparte.</span></div>';
+    var desc;
+    if(EXAM_SKILLS[w.n]){
+      desc = "6 preguntas de la semana.";
+    } else {
+      var nElig = examEligibleGens(w.n).length;
+      if(!nElig){
+        return '<div class="plain-item"><span class="pt">Semana ' + w.n + ' · ' + esc(w.title) + '</span>' +
+          '<span class="pd" style="display:block;">Esta etapa se evalúa con los ejercicios al final de cada clase y con la práctica, no con un examen numérico aparte.</span></div>';
+      }
+      desc = nElig >= 6 ? "6 preguntas de los bancos de las clases de la semana."
+        : nElig === 1 ? "1 pregunta numérica de los bancos de la semana: es la única que se corrige automáticamente."
+        : nElig + " preguntas numéricas de los bancos de la semana: son todas las que se corrigen automáticamente.";
     }
     return '<button class="plain-item" data-week="' + w.n + '"><span class="pt">Semana ' + w.n + ' · ' + esc(w.title) + '</span>' +
-      '<span class="pd" style="display:block;">6 preguntas de la semana.</span>' +
+      '<span class="pd" style="display:block;">' + desc + '</span>' +
       (best !== null ? '<span class="pd" style="display:block;">Mejor nota: <strong>' + best + '</strong> / 10</span>' : '<span class="pd" style="display:block;">Sin rendir todavía</span>') +
       '</button>';
   }).join("");
-  $$("#exam-grid .plain-item").forEach(function(b){
+  $$("#exam-grid .plain-item[data-week]").forEach(function(b){
     b.addEventListener("click", function(){ openExam(parseInt(b.getAttribute("data-week"), 10)); });
   });
 }
 function openExam(week){
-  var ids = EXAM_SKILLS[week] || ["signos"];
-  var qs = [];
-  for(var i = 0; i < 6; i++){ var sk = skillById(ids[i % ids.length]); qs.push({ skill: sk, data: sk.gen(2) }); }
+  var qs;
+  if(EXAM_SKILLS[week]){
+    /* Semanas 1 a 8: como siempre, 6 preguntas de las habilidades
+       planas de EXAM_SKILLS con su generador de práctica. */
+    var ids = EXAM_SKILLS[week];
+    qs = [];
+    for(var i = 0; i < 6; i++){ var sk = skillById(ids[i % ids.length]); qs.push({ skill: sk, data: sk.gen(2) }); }
+  } else {
+    /* Semanas 9 a 22: preguntas de los bancos reales de las clases
+       de la semana. Si ningún generador rindió (no debería pasar:
+       la grilla solo ofrece el botón cuando hay elegibles), no se
+       abre un examen vacío. */
+    qs = buildBankExam(week);
+    if(!qs.length) return;
+  }
   examCurrent = { week: week, qs: qs };
   $("#exam-title").textContent = "Examen · Semana " + week + " · " + WEEKS[week - 1].title;
   $("#exam-result").style.display = "none";
@@ -17260,10 +17933,24 @@ $("#exam-submit").addEventListener("click", function(){
     var corr = $('[data-corr="' + i + '"]');
     var v = parseAnswer(inp.value);
     var ok = !isNaN(v) && numEq(item.data.ans, inp.value);
-    var st = skillStat(item.skill.id);
-    if(ok){ aciertos++; st.ok++; } else { st.mal++; }
-    detalle.push({ skill:item.skill.id, ok:ok, dada:inp.value, esperada:fmtAns(item.data.ans) });
-    recordAttempt({ lesson:null, skill:item.skill.id, tipo:"Examen", gen:"examen-semana" + examCurrent.week, dada:inp.value, esperada:fmtAns(item.data.ans), ok:ok, modo:"examen", dificultad:2 });
+    if(item.lesson){
+      /* Pregunta de banco (semanas 9 a 22): el intento se registra
+         con la clase y el generador reales y el mismo skill, tipo,
+         kind y dificultad que registraría la ronda de esa clase, así
+         la evidencia cuenta para la habilidad del grafo CBC que le
+         corresponde (habilidadDeIntento resuelve por clase y
+         generador). No suma a las 9 habilidades planas: su evidencia
+         es la del grafo, que sale de los intentos. El detalle guarda
+         la habilidad atribuida, la misma que usa el grafo. */
+      if(ok) aciertos++;
+      detalle.push({ skill: habilidadDeIntento({ lesson:item.lesson, gen:item.gen, skill:item.skill }), ok:ok, dada:inp.value, esperada:fmtAns(item.data.ans) });
+      recordAttempt({ lesson:item.lesson, skill:item.skill, tipo:item.tipo, gen:item.gen, dada:inp.value, esperada:fmtAns(item.data.ans), ok:ok, modo:"examen", dificultad:item.dificultad, kind:item.kind });
+    } else {
+      var st = skillStat(item.skill.id);
+      if(ok){ aciertos++; st.ok++; } else { st.mal++; }
+      detalle.push({ skill:item.skill.id, ok:ok, dada:inp.value, esperada:fmtAns(item.data.ans) });
+      recordAttempt({ lesson:null, skill:item.skill.id, tipo:"Examen", gen:"examen-semana" + examCurrent.week, dada:inp.value, esperada:fmtAns(item.data.ans), ok:ok, modo:"examen", dificultad:2 });
+    }
     inp.disabled = true;
     corr.innerHTML = ok
       ? '<span style="color:var(--green); font-weight:600;">Correcta.</span>'
@@ -17272,7 +17959,16 @@ $("#exam-submit").addEventListener("click", function(){
     if(solSpan) colorizePlain(solSpan);
   });
   var nota = Math.round(aciertos / examCurrent.qs.length * 10);
-  state.exams.push({ week: examCurrent.week, nota: nota, aciertos: aciertos, total: examCurrent.qs.length, fecha: todayISO(), detalle: detalle });
+  /* El detalle solo se guarda si TODAS sus habilidades son ids
+     existentes: la validación de respaldos exige una habilidad
+     conocida en cada entrada del detalle, y un examen de banco de
+     una semana cuyas clases no tienen habilidad atribuible (las de
+     las semanas 9 a 13, fuera del grafo) dejaría el respaldo entero
+     inválido. En ese caso el examen se guarda sin detalle; el
+     registro por pregunta queda completo en los intentos. */
+  var examenGuardado = { week: examCurrent.week, nota: nota, aciertos: aciertos, total: examCurrent.qs.length, fecha: todayISO() };
+  if(detalle.every(function(d){ return typeof d.skill === "string" && knownSkillId(d.skill); })) examenGuardado.detalle = detalle;
+  state.exams.push(examenGuardado);
   saveState();
   $("#exam-submit").style.display = "none";
   $("#exam-score").textContent = nota + " / 10";
@@ -17360,6 +18056,42 @@ function renderGrafoPiloto(){
       '<div class="small faint">' + evTxt + '</div>' + falta + bloqTxt + '</div>';
   }).join("");
 }
+function totalesProgreso(){
+  /* Totales de «Ejercicios correctos» y «Precisión» de Mi progreso.
+     La fuente son los agregados completos por habilidad (skillAgg):
+     reciben todos los intentos con corrección objetiva (rondas de
+     clase Pre-CBC y CBC, práctica y exámenes), mientras que
+     state.skills solo suma las 9 habilidades planas: las rondas de
+     las clases CBC alimentan skillAgg vía recordAttempt pero no
+     state.skills (contabilizarLex solo suma a skills si la habilidad
+     es una de las 9 planas), así que con skills esos conteos no se
+     movían nunca. Excepción de compatibilidad: en las 9 habilidades
+     planas puede quedar historia anterior al registro de intentos
+     (de antes de la Fase A) que vive solo en state.skills; para esas
+     habilidades se toma el agregado con más intentos registrados,
+     así esa historia no se pierde ni se duplica (desde la Fase A
+     ambos agregados reciben los mismos intentos nuevos de esas
+     habilidades: práctica, exámenes de las semanas 1 a 8 y rondas
+     cuya habilidad es plana suman en los dos). */
+  var ok = 0, mal = 0;
+  var agg = isPlainObj(state.skillAgg) ? state.skillAgg : {};
+  var planas = {};
+  SKILLS.forEach(function(sk){
+    planas[sk.id] = true;
+    var g = isPlainObj(agg[sk.id]) ? agg[sk.id] : null;
+    var s = isPlainObj(state.skills) && isPlainObj(state.skills[sk.id]) ? state.skills[sk.id] : null;
+    var gTot = g ? (g.ok || 0) + (g.mal || 0) : 0;
+    var sTot = s ? (s.ok || 0) + (s.mal || 0) : 0;
+    if(s && sTot > gTot){ ok += s.ok || 0; mal += s.mal || 0; }
+    else if(g){ ok += g.ok || 0; mal += g.mal || 0; }
+  });
+  Object.keys(agg).forEach(function(k){
+    if(planas[k]) return;
+    var g = agg[k];
+    if(isPlainObj(g)){ ok += g.ok || 0; mal += g.mal || 0; }
+  });
+  return { ok: ok, mal: mal, total: ok + mal };
+}
 function renderProgreso(){
   var ai = $("#attempts-info");
   if(ai){
@@ -17379,9 +18111,9 @@ function renderProgreso(){
     rpBtn.style.display = hayPre ? "inline-flex" : "none";
   }
   var w9 = $("#storage-warn"); if(w9) w9.style.display = saveFailed ? "block" : "none";
-  var totalOk = 0, totalMal = 0;
-  SKILLS.forEach(function(sk){ var st = state.skills[sk.id]; if(st){ totalOk += st.ok; totalMal += st.mal; } });
-  var total = totalOk + totalMal;
+  var tp = totalesProgreso();
+  var totalOk = tp.ok, totalMal = tp.mal;
+  var total = tp.total;
   var prec = total ? Math.round(totalOk / total * 100) : 0;
   var bestNota = state.exams.length ? Math.max.apply(null, state.exams.map(function(e){ return e.nota; })) : null;
   var dias = Object.keys(state.visits).length;
