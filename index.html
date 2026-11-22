@@ -1871,6 +1871,12 @@ function runPhaseATests(){
      dominio, no entra en lessonEx, skills, skillAgg ni errorLog, no
      dispara el patrón de baja, y el historial conserva ambos casos
      con su detalle.
+   - Integración real de práctica y exámenes: las dos últimas pruebas
+     ejecutan checkPractice y el corrector de exámenes (con un click
+     real en #exam-submit) con respuestas esperadas controladas, y
+     comprueban la tabla numérica del comparador en esos caminos, la
+     contabilización (ok, mal, racha, nivel, nota y examen guardado)
+     y el contrato de entradas de cada uno.
    Qué NO hace: no valida los enunciados ni las soluciones de los
    tipos cuya respuesta no se deriva de los parámetros o del texto
    del enunciado; eso no es computable acá y no se presenta como
@@ -3377,6 +3383,184 @@ function runEngineTests(){
       }
     }
     return true;
+  });
+  /* ---- Integración real de práctica y exámenes ----
+     Las dos pruebas siguientes cierran el hueco de cobertura del
+     bloque numérico: hasta acá, práctica y exámenes se probaban
+     llamando a numEq con la misma forma de llamada que usan esas
+     funciones, sin ejecutarlas. Estas pruebas fijan prCurrent y
+     examCurrent con respuestas esperadas controladas (varias de la
+     tabla, como 0,001, no las produce ningún generador) y ejecutan
+     el camino real: checkPractice tal cual, leyendo #pr-input, y el
+     corrector de exámenes pulsando #exam-submit con un click real
+     sobre el botón, que dispara el handler anónimo registrado en la
+     página. No hay seam de producción: las pruebas viven dentro del
+     mismo script y usan el acceso de ámbito que ya tienen las demás
+     baterías (las variables prSkill, prCurrent, prAnswered, prNivel
+     y examCurrent, y los elementos reales del DOM). Trabajan sobre
+     un estado de prueba, guardan la clave de localStorage antes y
+     la restauran al terminar, porque checkPractice y el corrector
+     guardan con saveState al corregir. */
+  check("Integración práctica: checkPractice real corrige la tabla numérica, contabiliza ok, mal, racha y nivel, registra el intento con fmtAns y no cuenta entradas inválidas", function(){
+    var snapState = state;
+    var snapPrSkill = prSkill, snapPrCurrent = prCurrent, snapPrAnswered = prAnswered, snapPrNivel = prNivel;
+    var snapSaveFailed = saveFailed;
+    var rawLS = null; try{ rawLS = localStorage.getItem(LS_KEY); }catch(e){}
+    try{
+      state = emptyStateV2();
+      prSkill = skillById("signos");
+      if(!prSkill) return "no está la habilidad signos para la práctica";
+      prNivel = 1;
+      var casos = [
+        [1 / 15, "1/16", false], [1 / 15, "1/15", true], [0.04, "0,05", false],
+        [0.0651, "0,07", true], [0.001, "0,00", false], [0.125, "0,13", true]
+      ];
+      var espOk = 0, espMal = 0;
+      for(var ci = 0; ci < casos.length; ci++){
+        prCurrent = { q:"Pregunta de prueba", ans:casos[ci][0], hint:"", sol:["Solución de prueba."] };
+        prAnswered = false;
+        $("#pr-input").value = casos[ci][1];
+        checkPractice();
+        if(casos[ci][2]) espOk++; else espMal++;
+        var st = state.skills["signos"];
+        if(!prAnswered) return "checkPractice no marcó respondida la pregunta con " + casos[ci][1];
+        if(!st || st.ok !== espOk || st.mal !== espMal) return "práctica: conteo incorrecto tras responder " + casos[ci][1] + " para " + casos[ci][0] + " (ok=" + (st && st.ok) + ", mal=" + (st && st.mal) + ")";
+        var att = state.attempts[state.attempts.length - 1];
+        if(!att || att.modo !== "practica" || att.ok !== casos[ci][2] || att.dada !== casos[ci][1] || att.esperada !== fmtAns(casos[ci][0]) || att.gen !== "signos#nivel1" || att.dificultad !== 1)
+          return "práctica: el intento registrado no coincide para " + casos[ci][1] + " (esperada registrada " + (att && att.esperada) + ", se esperaba " + fmtAns(casos[ci][0]) + ")";
+        var fb = $("#pr-feedback");
+        if(casos[ci][2] && fb.className.indexOf("ok") < 0) return "práctica: la retroalimentación no marcó correcta la respuesta " + casos[ci][1];
+        if(!casos[ci][2] && (fb.className.indexOf("bad") < 0 || fb.textContent.indexOf(fmtAns(casos[ci][0])) < 0)) return "práctica: la retroalimentación no mostró la respuesta esperada " + fmtAns(casos[ci][0]);
+      }
+      var stF = state.skills["signos"];
+      if(stF.racha !== 1 || stF.nivel !== 1) return "práctica: racha o nivel final inesperado (racha " + stF.racha + ", nivel " + stF.nivel + "; la secuencia alterna deja racha 1 y nivel 1)";
+      if($("#pr-score").textContent !== "3 bien · 3 mal") return "práctica: el marcador en pantalla no refleja 3 bien y 3 mal";
+      /* Subida de nivel por racha, por la misma vía: con racha 1,
+         dos aciertos más la llevan a 3 y el nivel sube a 2 con la
+         racha reiniciada; el tercero ya suma en el nivel nuevo. */
+      for(var ui = 0; ui < 3; ui++){
+        prCurrent = { q:"Pregunta de prueba", ans:2, hint:"", sol:["Solución de prueba."] };
+        prAnswered = false;
+        $("#pr-input").value = "2";
+        checkPractice();
+        prNivel = state.skills["signos"].nivel;
+      }
+      var stU = state.skills["signos"];
+      if(stU.nivel !== 2 || stU.racha !== 1 || stU.ok !== 6) return "práctica: la subida de nivel por racha no ocurrió como marca la regla (nivel " + stU.nivel + ", racha " + stU.racha + ", ok " + stU.ok + ")";
+      /* Bajada de nivel por patrón, por la misma vía: seis errores
+         seguidos en otra habilidad de nivel 2 dejan precisión 0 en
+         los últimos 6 intentos y el nivel baja a 1. */
+      prSkill = skillById("frac-suma");
+      if(!prSkill) return "no está la habilidad frac-suma para la práctica";
+      state.skills["frac-suma"] = { ok:0, mal:0, nivel:2, racha:0 };
+      prNivel = 2;
+      for(var di = 0; di < 6; di++){
+        prCurrent = { q:"Pregunta de prueba", ans:10, hint:"", sol:["Solución de prueba."] };
+        prAnswered = false;
+        $("#pr-input").value = "9";
+        checkPractice();
+      }
+      var stD = state.skills["frac-suma"];
+      if(stD.mal !== 6 || stD.nivel !== 1 || stD.racha !== 0) return "práctica: el patrón de 6 errores no bajó el nivel (mal " + stD.mal + ", nivel " + stD.nivel + ", racha " + stD.racha + ")";
+      /* Contrato de entradas: vacío, texto no numérico y denominador
+         cero no cuentan, no se registran y muestran el mensaje. */
+      var antesAtt = state.attempts.length;
+      var invalidas = ["", "abc", "1/0"];
+      for(var ii = 0; ii < invalidas.length; ii++){
+        prCurrent = { q:"Pregunta de prueba", ans:5, hint:"", sol:["Solución de prueba."] };
+        prAnswered = false;
+        $("#pr-input").value = invalidas[ii];
+        checkPractice();
+        if(prAnswered) return "práctica: la entrada «" + invalidas[ii] + "» quedó marcada como respondida";
+        if(state.skills["frac-suma"].ok !== 0 || state.skills["frac-suma"].mal !== 6) return "práctica: la entrada «" + invalidas[ii] + "» contó en el marcador";
+        if(state.attempts.length !== antesAtt) return "práctica: la entrada «" + invalidas[ii] + "» quedó registrada como intento";
+        var fbi = $("#pr-feedback");
+        if(fbi.className.indexOf("bad") < 0 || fbi.textContent.indexOf("Escribe un número") !== 0) return "práctica: la entrada «" + invalidas[ii] + "» no mostró el mensaje de aviso";
+      }
+      return true;
+    } finally {
+      state = snapState;
+      prSkill = snapPrSkill; prCurrent = snapPrCurrent; prAnswered = snapPrAnswered; prNivel = snapPrNivel;
+      setSaveFailed(snapSaveFailed);
+      try{ if(rawLS === null) localStorage.removeItem(LS_KEY); else localStorage.setItem(LS_KEY, rawLS); }catch(e){}
+      try{
+        $("#pr-input").value = "";
+        var fbr = $("#pr-feedback"); fbr.className = "feedback"; fbr.textContent = "";
+        $("#pr-solution").innerHTML = "";
+        renderSkillGrid();
+      }catch(e){}
+    }
+  });
+  check("Integración exámenes: el corrector real (click en Entregar) corrige la tabla numérica, calcula la nota sobre 10, guarda el examen con su detalle, registra los intentos y cuenta vacío o no numérico como incorrecta", function(){
+    var snapState = state;
+    var snapExam = examCurrent;
+    var snapSaveFailed = saveFailed;
+    var rawLS = null; try{ rawLS = localStorage.getItem(LS_KEY); }catch(e){}
+    var snapQs = "";
+    try{ snapQs = $("#exam-qs").innerHTML; }catch(e){}
+    try{
+      state = emptyStateV2();
+      var sk = skillById("signos");
+      if(!sk) return "no está la habilidad signos para el examen";
+      function montaExamen(ansList, dadas){
+        examCurrent = { week:1, qs: ansList.map(function(a){ return { skill: sk, data:{ q:"Pregunta de prueba", ans:a, sol:["Solución de prueba."] } }; }) };
+        $("#exam-qs").innerHTML = examCurrent.qs.map(function(item, i){
+          return '<div class="exam-q"><div class="qq">' + (i + 1) + '. Pregunta de prueba</div>' +
+            '<input data-qi="' + i + '" inputmode="text" autocomplete="off" placeholder="Respuesta" aria-label="Respuesta ' + (i + 1) + '" />' +
+            '<div class="corr" data-corr="' + i + '"></div></div>';
+        }).join("");
+        dadas.forEach(function(d, i){ $('input[data-qi="' + i + '"]').value = d; });
+        $("#exam-result").style.display = "none";
+        $("#exam-submit").style.display = "inline-flex";
+      }
+      var casos = [
+        [1 / 15, "1/16", false], [1 / 15, "1/15", true], [0.04, "0,05", false],
+        [0.0651, "0,07", true], [0.001, "0,00", false], [0.125, "0,13", true]
+      ];
+      montaExamen(casos.map(function(c){ return c[0]; }), casos.map(function(c){ return c[1]; }));
+      $("#exam-submit").click();
+      var st = state.skills["signos"];
+      if(!st || st.ok !== 3 || st.mal !== 3) return "examen: conteo por habilidad incorrecto (ok=" + (st && st.ok) + ", mal=" + (st && st.mal) + ")";
+      if(state.exams.length !== 1) return "examen: no quedó guardado en state.exams";
+      var ex = state.exams[0];
+      if(ex.week !== 1 || ex.aciertos !== 3 || ex.total !== 6 || ex.nota !== 5) return "examen: nota o aciertos incorrectos (nota " + ex.nota + ", aciertos " + ex.aciertos + ", total " + ex.total + ")";
+      if(!Array.isArray(ex.detalle) || ex.detalle.length !== 6) return "examen: el detalle guardado no tiene las 6 preguntas";
+      if(state.attempts.length !== 6) return "examen: no quedaron registrados los 6 intentos";
+      for(var i = 0; i < 6; i++){
+        if(ex.detalle[i].ok !== casos[i][2] || ex.detalle[i].dada !== casos[i][1] || ex.detalle[i].esperada !== fmtAns(casos[i][0]) || ex.detalle[i].skill !== "signos")
+          return "examen: el detalle de la pregunta " + (i + 1) + " no coincide con lo respondido";
+        var att = state.attempts[i];
+        if(!att || att.modo !== "examen" || att.ok !== casos[i][2] || att.dada !== casos[i][1] || att.esperada !== fmtAns(casos[i][0]) || att.gen !== "examen-semana1" || att.dificultad !== 2)
+          return "examen: el intento " + (i + 1) + " no quedó registrado con modo examen";
+        var inp = $('input[data-qi="' + i + '"]');
+        if(!inp || !inp.disabled) return "examen: el input " + (i + 1) + " no quedó deshabilitado tras entregar";
+      }
+      if($("#exam-score").textContent !== "5 / 10") return "examen: la nota mostrada no es 5 / 10";
+      if($("#exam-submit").style.display !== "none") return "examen: el botón de entregar no se ocultó tras corregir";
+      /* Contrato de entradas del examen, sin cambios: una respuesta
+         vacía o no numérica cuenta como incorrecta (mal y detalle en
+         falso), a diferencia de la práctica, que no la cuenta. */
+      state = emptyStateV2();
+      montaExamen([5, 5, 5], ["", "abc", "5"]);
+      $("#exam-submit").click();
+      var st2 = state.skills["signos"];
+      if(!st2 || st2.ok !== 1 || st2.mal !== 2) return "examen: vacío o no numérico no contó como incorrecta (ok=" + (st2 && st2.ok) + ", mal=" + (st2 && st2.mal) + ")";
+      if(state.exams.length !== 1 || state.exams[0].aciertos !== 1 || state.exams[0].total !== 3 || state.exams[0].nota !== 3) return "examen: la nota con entradas inválidas no es 3 (1 acierto de 3)";
+      if(state.attempts.length !== 3 || state.attempts[0].ok || state.attempts[1].ok || !state.attempts[2].ok) return "examen: los intentos con entradas inválidas no quedaron registrados como incorrectos";
+      if(!state.exams[0].detalle || state.exams[0].detalle[0].ok || state.exams[0].detalle[1].ok || !state.exams[0].detalle[2].ok) return "examen: el detalle con entradas inválidas no coincide";
+      return true;
+    } finally {
+      state = snapState;
+      examCurrent = snapExam;
+      setSaveFailed(snapSaveFailed);
+      try{ if(rawLS === null) localStorage.removeItem(LS_KEY); else localStorage.setItem(LS_KEY, rawLS); }catch(e){}
+      try{
+        $("#exam-qs").innerHTML = snapQs;
+        $("#exam-result").style.display = "none";
+        $("#exam-submit").style.display = "inline-flex";
+        renderExamGrid();
+      }catch(e){}
+    }
   });
   return results;
 }
