@@ -2314,6 +2314,106 @@ function runEngineTests(){
     if(!gr(100, "100.01").ok) return "ans=100 ya no acepta 100,01 (tolerancia habitual rota)";
     return true;
   });
+  /* ---- Regresión de la Fase 1 (auditoría 21/11/2026, sección D) ---- */
+  check("Regresión Fase 1: s3-problemas no sirve artefactos de punto flotante (ningún decimal con más de 2 cifras en la respuesta ni en la solución)", function(){
+    var gens = LESSON_EXERCISES["s3-problemas"] || [];
+    if(!gens.length) return "no está el banco s3-problemas";
+    var mal = null;
+    function revisa(e){
+      if(!e || mal) return;
+      var textos = [];
+      if(typeof e.ans === "number") textos.push(String(e.ans));
+      (e.sol || []).forEach(function(s){ textos.push(String(s)); });
+      if(e.kind === "steps") (e.steps || []).forEach(revisa);
+      for(var i = 0; i < textos.length && !mal; i++){
+        var m = textos[i].match(/\d+\.\d{3,}|\d+,\d{3,}/);
+        if(m) mal = "decimal con más de 2 cifras (" + m[0] + ") en «" + textos[i] + "»";
+      }
+    }
+    for(var g = 0; g < gens.length && !mal; g++)
+      for(var r = 0; r < 120 && !mal; r++){ var e = null; try{ e = gens[g](); }catch(err){} revisa(e); }
+    return mal || true;
+  });
+  check("Regresión Fase 1: en «Comprobar» de s5-ecuaciones2 la ecuación servida siempre tiene la solución afirmada", function(){
+    var gen = null;
+    (LESSON_EXERCISES["s5-ecuaciones2"] || []).forEach(function(g){
+      for(var i = 0; i < 40 && !gen; i++){ var e = null; try{ e = g(); }catch(err){} if(e && e.type === "Comprobar") gen = g; }
+    });
+    if(!gen) return "no se encontró el generador Comprobar de s5-ecuaciones2";
+    for(var r = 0; r < 300; r++){
+      var e = gen(); if(!e) return "el generador Comprobar no sirvió";
+      var m = e.prompt.match(/¿Es x = (\d+) la solución de (\d+)x \+ (\d+) = (\d+)x \+ (\d+)\?/);
+      if(!m) return "enunciado no reconocido: " + e.prompt;
+      var prueba = +m[1], a = +m[2], b = +m[3], c = +m[4], t2 = +m[5];
+      if(a === c) return "la ecuación servida tiene el mismo coeficiente de x en los dos lados: " + e.prompt;
+      var esSol = (a * prueba + b) === (c * prueba + t2);
+      if((e.correct === 0) !== esSol) return "el veredicto verdadero/falso no coincide con la cuenta: " + e.prompt;
+      var mx = (e.sol || []).join(" ").match(/La solución es x = (\d+)/);
+      if(mx){ var x = +mx[1]; if(a * x + b !== c * x + t2) return "la solución afirmada x = " + x + " no satisface la ecuación servida: " + e.prompt; }
+      else if(!esSol) return "la solución no afirma cuál es la solución cuando el valor probado no lo es: " + e.prompt;
+    }
+    return true;
+  });
+  check("Regresión Fase 1: la comprobación de «El número que falta» (s2-suma) es consistente con los operandos servidos", function(){
+    var gen = null;
+    (LESSON_EXERCISES["s2-suma"] || []).forEach(function(g){
+      for(var i = 0; i < 40 && !gen; i++){ var e = null; try{ e = g(); }catch(err){} if(e && e.type === "El número que falta" && e.kind === "frac") gen = g; }
+    });
+    if(!gen) return "no se encontró el generador de s2-suma";
+    for(var r = 0; r < 200; r++){
+      var e = gen(); if(!e) return "el generador no sirvió";
+      var mp = e.prompt.match(/(\d+)\/(\d+) \+ ___ = (\d+)\/(\d+)/);
+      if(!mp) return "enunciado no reconocido: " + e.prompt;
+      var n1 = +mp[1], d = +mp[2], tot = +mp[3], falta = tot - n1;
+      if(Math.abs(e.ans - falta / d) > 1e-9) return "la respuesta no es la fracción que falta: " + e.prompt;
+      var linea = null;
+      (e.sol || []).forEach(function(s){ var mm = String(s).match(/(\d+)\/(\d+) \+ (\d+)\/(\d+) = (\d+)\/(\d+)/); if(mm) linea = mm; });
+      if(!linea) return "la solución no trae la comprobación con la suma: " + (e.sol || []).join(" / ");
+      var A = +linea[1], B = +linea[2], C = +linea[3], D = +linea[4], E = +linea[5], F = +linea[6];
+      if((A * D + C * B) * F !== E * B * D) return "la comprobación no cierra aritméticamente: " + linea[0];
+      if(A !== n1 || B !== d || C !== falta || D !== d || E !== tot || F !== d) return "la comprobación no usa los operandos servidos sin simplificar: " + linea[0] + " contra " + e.prompt;
+    }
+    return true;
+  });
+  check("Regresión Fase 1: el enunciado de 270° (p9-angulos) no regala la respuesta y la respuesta sigue siendo 1,5", function(){
+    var visto = null;
+    (LESSON_EXERCISES["p9-angulos"] || []).forEach(function(g){
+      for(var i = 0; i < 60 && !visto; i++){ var e = null; try{ e = g(); }catch(err){} if(e && e.prompt && e.prompt.indexOf("270°") >= 0) visto = e; }
+    });
+    if(!visto) return "no se encontró el ejercicio de 270° en p9-angulos";
+    if(visto.prompt.indexOf("1,5") >= 0 || visto.prompt.indexOf("1.5") >= 0) return "el enunciado sigue regalando la respuesta: " + visto.prompt;
+    if(Math.abs(visto.ans - 1.5) > 1e-9) return "la respuesta cambió: " + visto.ans;
+    return true;
+  });
+  check("Regresión Fase 1: textos corregidos de la auditoría (IPC, transformaciones, Ruffini y MRU)", function(){
+    var ipc = null;
+    (LESSON_EXERCISES["cbc-ipc1-lenguaje"] || []).forEach(function(g){
+      for(var i = 0; i < 60 && !ipc; i++){ var e = null; try{ e = g(); }catch(err){} if(e && (e.sol || []).join(" ").indexOf("Buenos Aires tiene") >= 0) ipc = e; }
+    });
+    if(!ipc) return "no se encontró el ejemplo de uso/mención de IPC";
+    var ipcTxt = ipc.sol.join(" ");
+    if(ipcTxt.indexOf("once letras") < 0) return "la solución de IPC no dice «once letras»: " + ipcTxt;
+    if(ipcTxt.indexOf("diez letras") >= 0) return "la solución de IPC sigue diciendo «diez letras»";
+    var tra = null;
+    (LESSON_EXERCISES["cbc-al2-transformaciones"] || []).forEach(function(g){
+      for(var i = 0; i < 60 && !tra; i++){ var e = null; try{ e = g(); }catch(err){} if(e && e.type === "La transformación inversa") tra = e; }
+    });
+    if(!tra) return "no se encontró el generador de la preimagen en cbc-al2-transformaciones";
+    var traTxt = tra.sol.join(" ");
+    if(traTxt.indexOf("deshace componente a componente") >= 0) return "la solución sigue afirmando la regla componente a componente como general";
+    if(traTxt.indexOf("solo funciona con matrices diagonales") < 0) return "la solución no acota el atajo a las matrices diagonales: " + traTxt;
+    var ruf = lessonById("p7-ruffini");
+    if(!ruf) return "no está la clase p7-ruffini";
+    var rufTxt = JSON.stringify(ruf);
+    if(rufTxt.indexOf("Las raíces racionales candidatas dividen al término independiente") >= 0) return "p7-ruffini sigue afirmando que las candidatas dividen al término independiente";
+    if(rufTxt.indexOf("p/q") < 0) return "p7-ruffini no enuncia las candidatas como p/q";
+    var mru = lessonById("p11-mru");
+    if(!mru) return "no está la clase p11-mru";
+    var mruTxt = JSON.stringify(mru);
+    if(mruTxt.indexOf("x(t) = 2 + 5t en metros") >= 0) return "p11-mru sigue mezclando km con m/s en el ejemplo";
+    if(mruTxt.indexOf("x(t) = 2000 + 5t") < 0) return "p11-mru no trae el ejemplo corregido en metros";
+    return true;
+  });
   return results;
 }
 window.TutorData = { migrateV1toV2: migrateV1toV2, validateStateShape: validateStateShape, serializeBackup: serializeBackup, parseBackup: parseBackup, importBackupText: importBackupText, recordAttempt: recordAttempt, patronParaBajar: patronParaBajar, runPhaseATests: runPhaseATests, runEngineTests: runEngineTests, isOpenAttempt: isOpenAttempt, isStepsRetryAttempt: isStepsRetryAttempt, writeVerified: writeVerified, saveState: saveState, loadState: loadState, computeSkillAgg: computeSkillAgg, skillAggSummary: skillAggSummary, ATTEMPTS_CAP: ATTEMPTS_CAP, getState: function(){ return state; }, getSessionId: function(){ return currentSessionId; } };
@@ -4061,7 +4161,7 @@ LESSONS.push(
           { l:"Resultado", t:"cociente x² − x − 6, resto 0", c:"green" },
           { l:"Entonces", t:"P(x) = (x − 1)(x² − x − 6) y 1 es raíz", c:"green" } ]} ] },
     { v:"TEOREMA DEL RESTO", vc:"orange", i:"El teorema del resto dice que el resto de dividir P(x) por (x − a) es exactamente P(a). Por eso, si P(a) = 0, a es raíz y (x − a) es factor.",
-      r:"P(a) = 0 ⇔ (x − a) divide a P(x). Las raíces racionales candidatas dividen al término independiente.",
+      r:"P(a) = 0 ⇔ (x − a) divide a P(x). Las raíces racionales candidatas son p/q, con p divisor del término independiente y q divisor del coeficiente principal. Si el coeficiente principal es 1, las candidatas son los divisores enteros del término independiente.",
       s:"Para cazar raíces de x³ − 2x² − 5x + 6 se prueban los divisores de 6: 1 funcionó. El cociente x² − x − 6 se factoriza como (x + 2)(x − 3): las raíces completas son 1, −2 y 3.",
       b:[ {k:"ink", t:"P(x) = (x − 1)(x + 2)(x − 3)", c:"green"}, {k:"ink", t:"raíces: 1, −2 y 3", c:"blue"} ] },
     { v:"CIERRA", vc:"black", i:"Polinomio, grado, Ruffini para dividir y cazar raíces, y el teorema del resto que une las dos cosas.",
@@ -4395,7 +4495,7 @@ LESSONS.push(
   steps:[
     { v:"EL MOVIMIENTO", vc:"blue", i:"Un móvil con MRU recorre distancias iguales en tiempos iguales: su velocidad es constante. Su posición cambia con la ecuación horaria x(t) = x₀ + v · t.",
       r:"¿Te suena? Es una función lineal: x₀ es el arranque y v es la pendiente. La semana 8 era, sin decirlo, física disfrazada.",
-      s:"Ejemplo: un ciclista que parte del km 2 a 5 m/s: x(t) = 2 + 5t en metros si el tiempo va en segundos... cuidado: las unidades deben ser coherentes entre sí, como pide la clase anterior.",
+      s:"Ejemplo: un ciclista que parte del km 2, o sea a 2000 m del origen, a 5 m/s: x(t) = 2000 + 5t en metros si el tiempo va en segundos... cuidado: las unidades deben ser coherentes entre sí, como pide la clase anterior.",
       b:[ {k:"ink", t:"x(t) = x₀ + v · t", c:"green"} ] },
     { v:"GRÁFICOS", vc:"black", i:"El gráfico posición-tiempo de un MRU es una recta cuya pendiente es la velocidad. El gráfico velocidad-tiempo es una horizontal, y el área bajo esa recta es el desplazamiento.",
       r:"Pendiente de x(t) = velocidad. Área bajo v(t) = desplazamiento. Estas dos lecturas gráficas son el corazón de la cinemática.",
@@ -10766,8 +10866,10 @@ LESSON_EXERCISES["s2-suma"] = [
     return exDif(exFrac("Restar fracciones", "Calcula y simplifica: " + p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3], N, m,
     ["Primero igualo los denominadores con el " + m + ": pedazos del mismo tamaño.", "Convierto la primera: " + p[0] + "/" + p[1] + " = " + (p[0] * (m / p[1])) + "/" + m, "Convierto la segunda: " + p[2] + "/" + p[3] + " = " + (p[2] * (m / p[3])) + "/" + m, "Ahora resto solo arriba: " + (p[0] * (m / p[1])) + " − " + (p[2] * (m / p[3])) + " = " + N, p[0] + "/" + p[1] + " − " + p[2] + "/" + p[3] + " = " + fracStr(N, m)]), 2); },
   function(){ var d = pick([6, 8, 9]), n1 = ri(1, 3), tot = n1 + ri(2, 3); if(tot >= d) tot = d - 1; var falta = tot - n1;
-    return exDif(exFrac("El número que falta", "¿Qué fracción falta?  " + n1 + "/" + d + " + ___ = " + tot + "/" + d + "  (escríbela simplificada)", falta, d,
-    ["Los denominadores ya son iguales: solo falta contar arriba.", tot + " − " + n1 + " = " + falta + " pedazos de " + d + ".", n1 + "/" + d + " + " + fracStr(falta, d) + " = " + fracStr(tot, d)]), 2); },
+    var solFalta = ["Los denominadores ya son iguales: solo falta contar arriba.", tot + " − " + n1 + " = " + falta + " pedazos de " + d + ".",
+      "Compruebo con la suma sin simplificar: " + n1 + "/" + d + " + " + falta + "/" + d + " = " + tot + "/" + d + ".",
+      gcd(falta, d) > 1 ? "Y la que falta, " + falta + "/" + d + ", simplificada es " + fracStr(falta, d) + "." : "Y la que falta, " + falta + "/" + d + ", ya está simplificada."];
+    return exDif(exFrac("El número que falta", "¿Qué fracción falta?  " + n1 + "/" + d + " + ___ = " + tot + "/" + d + "  (escríbela simplificada)", falta, d, solFalta), 2); },
   function(){ return exDif(exFrac("Problema real", "Para una receta usas 1/2 taza de harina a la mañana y 1/4 de taza a la tarde. ¿Cuánta harina usaste en total? (en tazas, como fracción simplificada)", 3, 4,
     ["Primero hablo el mismo idioma: convierto 1/2 a cuartos.", "1/2 = 2/4", "2/4 + 1/4 = 3/4"]), 2); },
   function(){ return exDif(exVF("Verdadero o falso", "1/2 + 1/3 = 2/5", false,
@@ -10859,13 +10961,13 @@ LESSON_EXERCISES["s3-problemas"] = [
     ["El aumento es el " + p + "% de " + sueldo + " = " + aum + ".", sueldo + " + " + aum + " = " + (sueldo + aum)]); },
   function(){ var p = pick([10, 15, 20, 25, 40]); return exChoice("Directo", "Si un precio tiene " + p + "% de descuento, ¿qué porcentaje del precio original pagas?", (100 - p) + "%", p + "%", (100 + p) + "%",
     ["Pagas lo que queda después de sacar el " + p + "%.", "100% − " + p + "% = " + (100 - p) + "%"]); },
-  function(){ var base = pick([100, 200, 500]); var sube = base * 1.1, baja = Math.round(sube * 0.9 * 100) / 100;
+  function(){ var base = pick([100, 200, 500]); var sube = Math.round(base * 1.1 * 100) / 100, baja = Math.round(sube * 0.9 * 100) / 100;
     return exNum("La trampa", "Un precio de " + base + " sube 10% y después baja 10%. ¿Cuál es el precio final?", baja,
     ["Sube 10%: " + base + " → " + sube + ".", "La baja del 10% se calcula sobre " + sube + ", no sobre " + base + ": se van " + Math.round(sube * 0.1 * 100) / 100 + ".", "Precio final: " + baja + ". No volvió al original."]); },
   function(){ return exVF("Verdadero o falso", "Si un precio baja 50% y después sube 50%, vuelve al precio original", false,
     ["La subida se calcula sobre el precio ya bajado, que es la mitad.", "100 → baja 50% → 50 → sube 50% de 50 → 75. No vuelve."]); },
-  function(){ var cuenta = pick([200, 300, 500, 800]); return exNum("Problema real", "La cuenta de un restaurante es " + cuenta + " y dejas el 10% de propina. ¿Cuánto pagas en total?", cuenta * 1.1,
-    ["La propina es el 10% de " + cuenta + " = " + (cuenta / 10) + ".", "Total: " + cuenta + " + " + (cuenta / 10) + " = " + (cuenta * 1.1)]); }
+  function(){ var cuenta = pick([200, 300, 500, 800]); var total = Math.round(cuenta * 1.1 * 100) / 100; return exNum("Problema real", "La cuenta de un restaurante es " + cuenta + " y dejas el 10% de propina. ¿Cuánto pagas en total?", total,
+    ["La propina es el 10% de " + cuenta + " = " + (cuenta / 10) + ".", "Total: " + cuenta + " + " + (cuenta / 10) + " = " + total]); }
 ];
 
 LESSON_EXERCISES["s4-potencias"] = [
@@ -11279,7 +11381,7 @@ LESSON_EXERCISES["s5-ecuaciones2"] = [
   function(){ var x = ri(2, 9), c = ri(1, 3), extra = ri(2, 4), a = c + extra, b = ri(1, 8); var d = a * x - b - c * x;
     return exNum("X en los dos lados", "Resuelve: " + a + "x − " + b + " = " + c + "x + " + d + "  →  x = ?", x,
     ["Resto " + c + "x en ambos lados: " + extra + "x − " + b + " = " + d + ".", "Sumo " + b + ": " + extra + "x = " + (d + b) + ". Divido por " + extra + ": x = " + x + ".", "Compruebo: " + a + " · " + x + " − " + b + " = " + (a * x - b) + " y " + c + " · " + x + " + " + d + " = " + (c * x + d) + " ✓"], "ecuaciones"); },
-  function(){ var x = ri(2, 9), a = ri(2, 5), b = ri(1, 9), c = ri(1, 3); var tot1 = a * x + b, tot2 = c * x + (tot1 - c * x); var prueba = Math.random() < 0.5 ? x : x + 1;
+  function(){ var x = ri(2, 9), a = ri(2, 5), b = ri(1, 9), c = pick([1, 2, 3].filter(function(v){ return v < a; })); var tot1 = a * x + b, tot2 = tot1 - c * x; var prueba = Math.random() < 0.5 ? x : x + 1;
     return exVF("Comprobar", "¿Es x = " + prueba + " la solución de " + a + "x + " + b + " = " + c + "x + " + tot2 + "?", prueba === x,
     ["Reemplazo en los dos lados: izquierdo " + a + " · " + prueba + " + " + b + " = " + (a * prueba + b) + "; derecho " + c + " · " + prueba + " + " + tot2 + " = " + (c * prueba + tot2) + ".", (a * prueba + b) === (c * prueba + tot2) ? "Los dos lados coinciden: sí es la solución." : "Los lados no coinciden: no es la solución. La solución es x = " + x + "."], "ecuaciones"); },
   function(){ var x = ri(2, 6), a1 = ri(1, 3), k = ri(1, 2), a2 = a1 + k, d = ri(1, 6), b1 = k * x + d;
@@ -11500,7 +11602,7 @@ LESSON_EXERCISES["p9-angulos"] = [
   function(){ return exChoice("Conversión", "90° en radianes es…", "π/2", "π", "2π", ["La vuelta completa es 2π = 360°; un cuarto de vuelta es π/2.", "45° sería π/4."]); },
   function(){ return exChoice("Valores exactos", "sen 30° vale…", "1/2", "√3/2", "√2/2", ["En 30°: seno 1/2 y coseno √3/2. En 60° se invierten.", "La lista √0/2, √1/2, √2/2, √3/2, √4/2 ordena todos los senos clásicos."]); },
   function(){ return exVF("Verdadero o falso", "En el CBC, los ángulos de las fórmulas se trabajan en radianes y la calculadora va en modo RAD", true, ["Salvo aviso contrario, la medida universitaria del ángulo es el radián.", "Hacer la cuenta con el modo equivocado es un error clásico de parcial."]); },
-  function(){ return exNum("Grados a radianes", "270° es tres cuartos de vuelta. ¿Cuántos π radianes son, expresado como decimal de π? (responde cuántos π: 1,5)", 1.5, ["La vuelta completa es 2π; tres cuartos de 2π es 1,5π.", "270° = 3π/2 radianes."]); },
+  function(){ return exNum("Grados a radianes", "270° es tres cuartos de vuelta. ¿Cuántos π radianes son, expresado como decimal de π? (responde el coeficiente de π, como decimal)", 1.5, ["La vuelta completa es 2π; tres cuartos de 2π es 1,5π.", "270° = 3π/2 radianes."]); },
   function(){ return exChoice("El radián", "Un radián es el ángulo que corresponde a un arco…", "igual al radio", "igual al diámetro", "de 180 grados", ["Por eso la vuelta completa mide 2π radianes: la circunferencia mide 2π radios.", "Es una medida natural, no una convención de 360 partes."]); }
 ];
 LESSON_EXERCISES["p9-triangulo"] = [
@@ -12237,7 +12339,7 @@ LESSON_EXERCISES["cbc-al2-transformaciones"] = [
       { T:"T(x, y) = (3x, y)", p:"(9, 5)", ans:3, full:"(3, 5)" },
       { T:"T(x, y) = (−2x, 5y)", p:"(−6, 10)", ans:3, full:"(3, 2)" },
       { T:"T(x, y) = (4x, 2y)", p:"(8, 6)", ans:2, full:"(2, 3)" } ]);
-    return exNum("La transformación inversa", "La transformación " + c.T + " es inversible. La primera componente de T⁻¹" + c.p + " es…", c.ans, ["La inversa deshace componente a componente: si T multiplica la primera componente por un factor, T⁻¹ la divide por ese mismo factor.", "La preimagen completa es " + c.full + ": aplicando T a ese vector se recupera el punto " + c.p + ", que es la comprobación de que la inversa está bien calculada."]); },
+    return exNum("La transformación inversa", "La transformación " + c.T + " es inversible. La primera componente de T⁻¹" + c.p + " es…", c.ans, ["La preimagen se halla resolviendo T(x) = b, o aplicando la matriz inversa. En este ejercicio la matriz es diagonal, así que cada componente se divide por su factor; ese atajo solo funciona con matrices diagonales.", "La preimagen completa es " + c.full + ": aplicando T a ese vector se recupera el punto " + c.p + ", que es la comprobación de que la inversa está bien calculada."]); },
   function(){ var c = pick([
       { r:"T(x, y) = (x + 1, y)", ok:false, por:"manda el origen a (1, 0) en vez de al origen, y ninguna transformación lineal puede mover el vector cero" },
       { r:"T(x, y) = (x², y)", ok:false, por:"cumple T(0, 0) = (0, 0) pero no respeta los múltiplos: T(2, 0) = (4, 0) mientras que 2 · T(1, 0) = (2, 0)" },
@@ -12983,7 +13085,7 @@ function(){ var e = exSteps("Las tres dimensiones, paso a paso", "La frase «qu�
     ["La tríada aplicada: sintáctica para las relaciones entre signos, semántica para el significado literal y pragmática para el uso real.", "El caso muestra por qué las tres dimensiones no se reducen una a otra: el mismo significado literal produce efectos opuestos según el uso."]);
     e.ansText = "el sentido efectivo es pragmático"; return e; },
   function(){ return exOpen("Respuesta abierta", "Explica la diferencia entre uso y mención de una palabra, con un ejemplo propio, y por qué esa diferencia obliga a distinguir lenguaje objeto y metalenguaje.",
-    ["Uso modelo: en «Buenos Aires es una ciudad», la expresión Buenos Aires se usa: se habla de la ciudad.", "Mención modelo: en «Buenos Aires tiene diez letras» (contando sin el espacio, según la convención que se fije), la expresión se menciona: se habla de las palabras mismas, no de la ciudad.", "La confusión entre los dos planos produce enunciados absurdos (una ciudad no tiene letras; las tiene su nombre).", "Para hablar del lenguaje sin confundirlo con lo que el lenguaje nombra, hace falta un metalenguaje: el lenguaje con el que se habla del lenguaje objeto. Las comillas son su marca habitual."]); },
+    ["Uso modelo: en «Buenos Aires es una ciudad», la expresión Buenos Aires se usa: se habla de la ciudad.", "Mención modelo: en «Buenos Aires tiene once letras» (contando sin el espacio, según la convención que se fije), la expresión se menciona: se habla de las palabras mismas, no de la ciudad.", "La confusión entre los dos planos produce enunciados absurdos (una ciudad no tiene letras; las tiene su nombre).", "Para hablar del lenguaje sin confundirlo con lo que el lenguaje nombra, hace falta un metalenguaje: el lenguaje con el que se habla del lenguaje objeto. Las comillas son su marca habitual."]); },
 function(){ var e = exSteps("Abducción, paso a paso", "A la mañana, el pasto del jardín está mojado. Alguien concluye: «Seguramente llovió durante la noche.» Analiza ese razonamiento en etapas.",
     [ exChoice("Etapa 1 · El punto de partida", "El razonamiento parte de…", "un hecho que pide explicación: el pasto mojado", "una ley universal ya demostrada", "la definición de la palabra lluvia", ["La abducción arranca de un hecho sorprendente o a explicar, no de premisas generales."]),
       exChoice("Etapa 2 · El movimiento", "La conclusión propone la lluvia como…", "la mejor explicación disponible del hecho, sin garantía de ser la verdadera", "la única causa lógicamente posible del pasto mojado", "una generalización de miles de mañanas observadas", ["Pudo ser el riego o el rocío: la abducción elige la explicación más plausible y la deja abierta a revisión."]),
