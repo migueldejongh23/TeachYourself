@@ -2285,7 +2285,7 @@ function runEngineTests(){
       return true;
     } finally { state = snapState; }
   });
-  check("La tolerancia numérica no acepta respuestas erróneas cuando la respuesta es chica (casos obligatorios y generadores reales) y mantiene la habitual en magnitudes normales", function(){
+  check("El comparador numérico no acepta respuestas erróneas cercanas cuando la respuesta es chica (casos obligatorios y generadores reales) y aplica el criterio único en magnitudes normales", function(){
     var solOk = ["Paso único de prueba."];
     function gr(ans, dada){ return gradeLex(exNum("T", "¿Pregunta?", ans, solOk), dada); }
     if(!gr(0.04, "0.04").ok) return "ans=0,04 ya no acepta 0,04";
@@ -2308,10 +2308,145 @@ function runEngineTests(){
     if(!e9) return "no se encontró el generador de integrales con respuesta 0,0651";
     if(!gradeLex(e9, "0.0651").ok) return "cbc-an2-integrales#g9: la respuesta correcta fue rechazada";
     if(gradeLex(e9, "0.07").ok) return "cbc-an2-integrales#g9: aceptó 0,07";
-    if(!gr(2.5, "2.51").ok) return "ans=2,5 ya no acepta 2,51 (tolerancia habitual rota)";
+    if(!gr(2.5, "2.5").ok) return "ans=2,5 ya no acepta 2,5";
+    if(gr(2.5, "2.51").ok) return "ans=2,5 acepta 2,51, que no es el valor ni un redondeo correcto de 2,5";
     if(gr(2.5, "2.52").ok) return "ans=2,5 acepta 2,52";
-    if(!gr(0.46875, "0.46").ok) return "ans=0,46875 ya no acepta 0,46 (tolerancia habitual rota)";
-    if(!gr(100, "100.01").ok) return "ans=100 ya no acepta 100,01 (tolerancia habitual rota)";
+    if(!gr(0.46875, "0.47").ok) return "ans=0,46875 no acepta 0,47, su redondeo correcto a 2 decimales";
+    if(gr(0.46875, "0.46").ok) return "ans=0,46875 acepta 0,46, que no es su redondeo (es 0,47)";
+    if(!gr(100, "100").ok) return "ans=100 ya no acepta 100";
+    if(gr(100, "100.01").ok) return "ans=100 acepta 100,01: un esperado entero exige igualdad salvo ruido de punto flotante";
+    return true;
+  });
+  check("Comparador numérico único: equivalencias, redondeos legítimos, cercanos incorrectos, signos, escala y contrato de entradas, por los caminos reales de evaluación", function(){
+    var solOk = ["Paso único de prueba."];
+    function grN(ans, dada){ return gradeLex(exNum("T", "¿Pregunta?", ans, solOk), dada); }
+    function grF(n, d, dada){ return gradeLex(exFrac("T", "¿Pregunta?", n, d, solOk), dada); }
+    function grO(order, dada){ return gradeLex(exOrder("T", "¿Pregunta?", order, solOk), dada); }
+    /* 1) El falso positivo original, en todos los caminos: ronda num,
+       ronda frac, order, práctica y examen (estos dos últimos llaman
+       a numEq con la respuesta esperada y el texto escrito, igual que
+       acá). */
+    if(grN(1 / 15, "1/16").ok) return "ronda num acepta 1/16 para 1/15";
+    if(grF(1, 15, "1/16").ok) return "ronda frac acepta 1/16 para 1/15";
+    if(grF(1, 15, "1/13").ok) return "ronda frac acepta 1/13 para 1/15";
+    if(grO([1 / 15, 2], "1/16; 2").ok) return "order acepta 1/16 para 1/15";
+    if(numEq(1 / 15, "1/16")) return "práctica acepta 1/16 para 1/15";
+    if(numEq(1 / 15, "0.0625")) return "examen acepta 0,0625 (1/16) para 1/15";
+    if(!grF(1, 15, "1/15").ok) return "ronda frac ya no acepta 1/15 para 1/15";
+    if(!grN(1 / 15, "1/15").ok) return "ronda num ya no acepta 1/15 para 1/15";
+    /* 2) Equivalencia 1/2 = 2/4: por la vía num se acepta; por la vía
+       frac sigue siendo notSimple, no ok (conducta pedagógica de
+       siempre). */
+    if(!grN(0.5, "2/4").ok) return "vía num ya no acepta 2/4 para 1/2";
+    var ns = grF(1, 2, "2/4");
+    if(!(ns.counted && !ns.ok && ns.notSimple)) return "vía frac: 2/4 para 1/2 dejó de dar notSimple";
+    /* 3 a 5) Fracción y decimal equivalentes, con signos. */
+    if(!grN(0.5, "0.5").ok) return "0.5 para 1/2 rechazado";
+    if(!grN(-0.5, "-0.5").ok) return "-0.5 para -1/2 rechazado";
+    if(!grN(-0.5, "-1/2").ok) return "-1/2 para -1/2 rechazado";
+    if(grN(0.5, "-1/2").ok) return "-1/2 aceptado para 1/2";
+    if(grN(-0.5, "0.5").ok) return "0.5 aceptado para -1/2";
+    /* 6 y 7) Cero exacto contra un valor chico distinto de cero. */
+    if(!grN(0, "0").ok) return "0 para 0 rechazado";
+    if(grN(0, "0.001").ok) return "0,001 aceptado para 0";
+    if(grN(0, "-0.001").ok) return "-0,001 aceptado para 0";
+    /* 8) Aproximaciones decimales legítimas: el redondeo correcto del
+       esperado a la precisión escrita. */
+    if(!grN(2 / 3, "0.67").ok) return "0,67 para 2/3 rechazado";
+    if(!grN(1 / 3, "0.333").ok) return "0,333 para 1/3 rechazado";
+    if(!grN(1 / 6, "0.17").ok) return "0,17 para 1/6 rechazado";
+    if(!grN(Math.SQRT2, "1.41").ok) return "1,41 para la raíz de 2 rechazado";
+    if(!grN(0.0651, "0.065").ok) return "0,065 para 0,0651 rechazado (redondeo correcto a 3 decimales)";
+    if(!grN(3.0167, "3.02").ok) return "3,02 para 3,0167 rechazado";
+    /* 9) Incorrectos pero cercanos: no son el redondeo correcto o el
+       redondeo es demasiado grueso para la escala del esperado. */
+    if(grN(0.04, "0.05").ok) return "0,05 aceptado para 0,04";
+    if(grN(0.0651, "0.07").ok) return "0,07 aceptado para 0,0651";
+    if(grN(2 / 3, "0.66").ok) return "0,66 aceptado para 2/3 (el redondeo es 0,67)";
+    if(grN(1 / 3, "0.34").ok) return "0,34 aceptado para 1/3";
+    if(numEq(0.04, "0.05")) return "práctica/examen acepta 0,05 para 0,04 (antes los tres caminos no coincidían)";
+    /* 10) Positivos y negativos de distintas magnitudes. */
+    if(!grN(-12.5, "-12.5").ok) return "-12,5 exacto rechazado";
+    if(grN(-12.5, "-12.6").ok) return "-12,6 aceptado para -12,5";
+    if(!grN(1234.5, "1234.5").ok) return "1234,5 exacto rechazado";
+    if(grN(1234.5, "1234.6").ok) return "1234,6 aceptado para 1234,5";
+    if(!grN(-0.6666666666666666, "-0.67").ok) return "-0,67 para -2/3 rechazado";
+    if(grN(-0.6666666666666666, "-0.66").ok) return "-0,66 aceptado para -2/3";
+    /* 11) Signos en fracciones según lo que admite cada vía:
+       parseAnswer (vía num, práctica y examen) acepta denominador
+       con signo y partes decimales; la regex de frac solo admite
+       numerador con signo y denominador entero sin signo. */
+    if(!grN(-0.5, "1/-2").ok) return "vía num ya no acepta 1/-2 para -1/2";
+    if(!grN(0.75, "1.5/2").ok) return "vía num ya no acepta 1.5/2 para 0,75";
+    if(!grF(-1, 2, "-1/2").ok) return "vía frac ya no acepta -1/2 para -1/2";
+    if(grF(1, 2, "1/-2").counted) return "vía frac pasó a contar 1/-2, que su regex nunca admitió";
+    /* 12) Error normal de punto flotante. Y el caso simétrico: el
+       generador redondeó su ans a 4 decimales y el alumno responde la
+       fracción exacta de la que salió ese redondeo. */
+    if(!grN(3.1667, "19/6").ok) return "19/6 rechazado para 3,1667, que es 19/6 redondeado por el generador";
+    if(!grN(4.6667, "14/3").ok) return "14/3 rechazado para 4,6667, que es 14/3 redondeado por el generador";
+    if(grN(2 / 3, "67/100").ok) return "67/100 aceptado para 2/3: como fracción afirma otro racional (0,67 en decimal sí es el redondeo correcto)";
+    if(!grN(0.1 + 0.2, "0.3").ok) return "0,3 rechazado para 0,1 + 0,2";
+    if(!grN(0.3, "0.30000000000000004").ok) return "el ruido de representación dejó de aceptarse";
+    /* 13) Contrato de entradas: vacío o no numérico no cuenta;
+       Infinity cuenta como respuesta incorrecta, como siempre. */
+    if(grN(0.5, "").counted) return "la respuesta vacía pasó a contar";
+    if(grN(0.5, "abc").counted) return "una respuesta no numérica pasó a contar";
+    if(grN(0.5, "1/0").counted) return "un denominador 0 pasó a contar";
+    var inf = grN(0.5, "Infinity");
+    if(!(inf.counted && !inf.ok)) return "Infinity dejó de contar como incorrecta";
+    if(numEq(0.5, "Infinity")) return "numEq acepta Infinity";
+    if(numEq(0.5, "")) return "numEq acepta una entrada vacía";
+    /* 14) Escala: valores muy grandes y muy chicos, sin
+       desbordamiento ni falsos positivos. */
+    if(!grN(1e12, "1000000000000").ok) return "1e12 exacto rechazado";
+    if(grN(1e12, "1000000000001").ok) return "1e12 + 1 aceptado para 1e12";
+    if(!grN(0.000001, "0.000001").ok) return "0,000001 exacto rechazado";
+    if(grN(0.000001, "0.000002").ok) return "0,000002 aceptado para 0,000001";
+    if(!grN(5, "10/2").ok) return "10/2 para 5 rechazado";
+    if(grN(5, "99999999999999999999/3").ok) return "una fracción gigante incorrecta fue aceptada";
+    if(!grN(1e15, "1000000000000000000000/1000000").ok) return "una fracción gigante equivalente fue rechazada";
+    return true;
+  });
+  check("Barrido del comparador: la respuesta esperada de cada ejercicio servido se acepta en su camino (los 1.210 generadores)", function(){
+    function formatoPropio(e){
+      if(e.kind === "frac") return e.fn + "/" + e.fd;
+      if(e.kind === "num") return String(e.ans);
+      if(e.kind === "order") return e.order.map(function(v){ return String(v); }).join("; ");
+      return null;
+    }
+    function acepta(e){
+      var f = formatoPropio(e);
+      if(f === null) return true;
+      return gradeLex(e, f).ok;
+    }
+    function revisa(e){
+      if(!e) return null;
+      if(e.kind === "steps"){ for(var i = 0; i < e.steps.length; i++){ var r = revisa(e.steps[i]); if(r) return r; } return null; }
+      if(!acepta(e)) return "la respuesta esperada fue rechazada: kind " + e.kind + ", ans " + (e.kind === "frac" ? e.fn + "/" + e.fd : e.ans) + ", enunciado: " + e.prompt;
+      return null;
+    }
+    var mal = null, servidos = 0;
+    Object.keys(LESSON_EXERCISES).forEach(function(lid){
+      if(mal) return;
+      (LESSON_EXERCISES[lid] || []).forEach(function(gen, gi){
+        if(mal) return;
+        for(var s = 0; s < 3 && !mal; s++){
+          var e = null;
+          for(var t = 0; t < 8 && !e; t++){
+            var cand = null;
+            try{ cand = gen(); }catch(err){ cand = null; }
+            if(lexExerciseSane(cand)) e = cand;
+          }
+          if(!e){ mal = lid + "#g" + gi + ": no se pudo servir una instancia sana"; return; }
+          servidos++;
+          mal = revisa(e);
+          if(mal) mal = lid + "#g" + gi + ": " + mal;
+        }
+      });
+    });
+    if(mal) return mal;
+    if(!servidos) return "no se sirvió ningún ejercicio";
     return true;
   });
   /* ---- Regresión de la Fase 1 (auditoría 21/11/2026, sección D) ---- */
@@ -15806,6 +15941,169 @@ function lessonExStat(id){
   if(!state.lessonEx[id]) state.lessonEx[id] = { ok:0, mal:0 };
   return state.lessonEx[id];
 }
+/* ================= Comparador numérico único =================
+   Toda comparación entre la respuesta del alumno y la respuesta
+   esperada pasa por numEq: la ronda de clase (gradeLex en sus kinds
+   num, frac y order), la práctica (checkPractice) y los exámenes.
+   Ningún camino conserva una tolerancia propia. Antes había cinco
+   criterios distintos y el más laxo (0,011 absoluto en frac, order,
+   práctica y exámenes) aceptaba respuestas incorrectas pero cercanas:
+   con esperado 1/15 aceptaba 1/16, porque |1/16 - 1/15| = 0,0042 <
+   0,011. El criterio nuevo distingue cuatro situaciones, sin una
+   constante de tolerancia genérica:
+
+   1. Equivalencia racional exacta. Si la entrada es una fracción
+      (contiene "/"), se interpreta como un racional exacto: cada
+      parte se lee como literal decimal exacto (entero o decimal, con
+      signo en cualquiera de las dos partes, como admite parseAnswer)
+      y se compara con el esperado por multiplicación cruzada de
+      enteros con BigInt, la misma idea de eqFrac pero sin límite de
+      enteros seguros. El esperado exacto sale de fn/fd cuando el
+      ejercicio lo trae (kind frac) o se recupera del float con
+      fracciones continuas (denominador hasta 10000 y diferencia con
+      el float de hasta 1e-9; si no hay un racional así, el esperado
+      no se trata como fracción). Si la fracción escrita no es
+      exactamente el esperado, cae a la regla decimal con su valor.
+   2. Ruido de punto flotante. Una diferencia de hasta
+      max(1e-9, 4 ulps del esperado) es representación, no error:
+      0,1 + 0,2 frente a 0,3 se acepta.
+   3. Esperado entero: fuera del ruido, igualdad exacta. Así 0 se
+      distingue de 0,001 y 100 de 100,01.
+   4. Esperado no entero, entrada decimal: la respuesta debe ser el
+      redondeo correcto del esperado a la precisión escrita. Si el
+      alumno escribe k decimales, el error debe ser como máximo media
+      unidad del último decimal (0,5 · 10^-k), que es exactamente lo
+      que cumple un redondeo correcto. Y una guarda contra
+      aproximaciones demasiado gruesas: el error relativo debe ser
+      como máximo 3%. Sin esa guarda, 0,07 sería "el redondeo a 2
+      decimales" de 0,0651, con un error relativo del 7,5%: a esa
+      escala, 2 decimales no alcanzan para distinguir la respuesta.
+
+   Justificación con los bancos reales (muestreo sirviendo los 1.210
+   generadores, 24.160 respuestas de kind num): el 94% de los ans es
+   entero, el 5% es una fracción exacta de denominador hasta 100 y el
+   1% es un decimal que el propio generador redondea a 4 cifras
+   (0,0651; 3,0167). No apareció ningún ans irracional. Por eso el
+   redondeo legítimo que hay que aceptar es el de las fracciones
+   periódicas (0,67 para 2/3, error relativo 0,5%; 0,333 para 1/3,
+   0,1%; 0,17 para 1/6, 2,0%) y el umbral del 3% los cubre a todos,
+   mientras rechaza los cercanos incorrectos conocidos: 0,05 para
+   0,04 (no es su redondeo a 2 decimales), 0,07 para 0,0651 (7,5%),
+   0,66 para 2/3 (no es su redondeo: es 0,67) y 1/16 para 1/15 (vía
+   racional exacta y, escrito 0,0625, por error relativo 6,25%).
+   Limitación conocida: un redondeo a 2 decimales de un esperado
+   entre 0,1 y 0,17 con error relativo mayor al 3% (0,13 para 0,125)
+   se rechaza; el alumno puede escribir el valor exacto o con más
+   decimales. */
+function numNoise(ans){ return Math.max(1e-9, 4 * Number.EPSILON * Math.abs(ans)); }
+/* Recupera la fracción exacta detrás de un float, si existe una con
+   denominador hasta 10000 que difiera del float en hasta 1e-9 (los
+   ans de los bancos son enteros, fracciones de denominador chico o
+   decimales de 4 cifras: todos cumplen). Devuelve [p, q] con q > 0,
+   o null si el float no representa un racional así (por ejemplo una
+   raíz), en cuyo caso manda la regla decimal. */
+function fracFromFloat(x){
+  if(typeof x !== "number" || !isFinite(x)) return null;
+  if(x === 0) return [0, 1];
+  var sign = x < 0 ? -1 : 1, ax = Math.abs(x);
+  var p0 = 0, p1 = 1, q0 = 1, q1 = 0, y = ax;
+  for(var i = 0; i < 80; i++){
+    var a = Math.floor(y);
+    var p = a * p1 + p0, q = a * q1 + q0;
+    if(q > 10000 || !isFinite(p) || !isFinite(q) || p > Number.MAX_SAFE_INTEGER) return null;
+    p0 = p1; p1 = p; q0 = q1; q1 = q;
+    if(Math.abs(ax - p1 / q1) <= 1e-9) return [sign * p1, q1];
+    var r = y - a;
+    if(!(r >= 1e-12)) return null;
+    y = 1 / r;
+    if(!isFinite(y)) return null;
+  }
+  return null;
+}
+/* Lee un literal decimal como racional exacto [num, den] con BigInt
+   (admite signo, parte fraccionaria y exponente, con topes para que
+   un literal absurdo no dispare potencias gigantes). */
+function decLiteralToFrac(s){
+  var m = /^([+-]?)(?:(\d+)(?:\.(\d*))?|\.(\d+))(?:[eE]([+-]?\d+))?$/.exec(s);
+  if(!m) return null;
+  var intPart = m[2] || "", fracPart = m[3] !== undefined ? m[3] : (m[4] || "");
+  var digits = (intPart + fracPart).replace(/^0+/, "");
+  if(digits.length > 400) return null;
+  var exp = (m[5] ? parseInt(m[5], 10) : 0) - fracPart.length;
+  if(exp > 400 || exp < -400) return null;
+  var num = digits === "" ? 0n : BigInt(digits);
+  if(m[1] === "-") num = -num;
+  var den = 1n;
+  if(exp >= 0) num = num * (10n ** BigInt(exp)); else den = 10n ** BigInt(-exp);
+  return [num, den];
+}
+/* Interpreta "a/b" como el racional exacto a/b (cada parte puede ser
+   un literal decimal, con su signo: "1/-2" vale -1/2, como en
+   parseAnswer). Devuelve [num, den] con den > 0, o null si no es una
+   fracción válida o el denominador vale 0. */
+function fracInputToFrac(norm){
+  var parts = norm.split("/");
+  if(parts.length !== 2) return null;
+  var a = decLiteralToFrac(parts[0]), b = decLiteralToFrac(parts[1]);
+  if(!a || !b || b[0] === 0n) return null;
+  var n = a[0] * b[1], d = a[1] * b[0];
+  if(d < 0n){ n = -n; d = -d; }
+  return [n, d];
+}
+/* Cuántos decimales escribió el alumno en un literal (con exponente,
+   la precisión efectiva se corre según el exponente). */
+function decimalsWritten(s){
+  var exp = 0, ei = s.search(/[eE]/);
+  if(ei >= 0){ exp = parseInt(s.slice(ei + 1), 10) || 0; s = s.slice(0, ei); }
+  var di = s.indexOf(".");
+  var k = di >= 0 ? s.length - di - 1 : 0;
+  k = k - exp;
+  return k < 0 ? 0 : k;
+}
+/* Regla decimal de numEq: v es el valor de la respuesta y k la
+   cantidad de decimales que el alumno escribió. */
+function numEqDecimal(ans, v, k){
+  if(!isFinite(v)) return false;
+  var err = Math.abs(v - ans);
+  if(err <= numNoise(ans)) return true;
+  if(Math.abs(ans - Math.round(ans)) <= numNoise(ans)) return false;
+  if(err > 0.5 * Math.pow(10, -k) + 1e-12) return false;
+  if(err > 0.03 * Math.abs(ans)) return false;
+  return true;
+}
+/* numEq(ans, raw, fnE, fdE): ¿la respuesta escrita en raw es correcta
+   para el esperado ans? fnE/fdE, cuando el ejercicio los trae (kind
+   frac), son la fracción exacta del esperado y evitan recuperarla
+   del float. Los llamadores mantienen su contrato de siempre ante
+   entradas vacías o no numéricas (counted:false o no contada);
+   numEq devuelve false ante cualquier entrada que no se pueda
+   interpretar o no sea finita, así que un Infinity sigue contando
+   como respuesta incorrecta, igual que antes. */
+function numEq(ans, raw, fnE, fdE){
+  if(typeof ans !== "number" || !isFinite(ans)) return false;
+  var norm = String(raw === null || raw === undefined ? "" : raw).replace(/−/g, "-").replace(/\s+/g, "").replace(",", ".");
+  if(!norm) return false;
+  if(norm.indexOf("/") >= 0){
+    var fr = fracInputToFrac(norm);
+    if(!fr) return false;
+    var ef = null;
+    if(typeof fnE === "number" && typeof fdE === "number" && isFinite(fnE) && isFinite(fdE) && fdE !== 0) ef = [fnE, fdE];
+    else ef = fracFromFloat(ans);
+    if(ef && fr[0] * BigInt(ef[1]) === BigInt(ef[0]) * fr[1]) return true;
+    /* La fracción escrita no es exactamente el esperado: cae a la
+       regla decimal con su valor, a 4 decimales de precisión. Es la
+       precisión máxima con la que los propios generadores redondean
+       sus ans (ver el muestreo del comentario de numEq): si el
+       generador guardó 3,1667 por 19/6, la fracción exacta 19/6 que
+       escribe el alumno difiere en 0,00003 y debe aceptarse, mientras
+       que 1/16 difiere de 1/15 en 0,0042 y se sigue rechazando. */
+    var vf = Number(fr[0]) / Number(fr[1]);
+    return numEqDecimal(ans, vf, 4);
+  }
+  var v = parseFloat(norm);
+  if(isNaN(v)) return false;
+  return numEqDecimal(ans, v, decimalsWritten(norm));
+}
 function gradeLex(ex, raw, selIdx){
   /* La opción elegida se compara por su TEXTO con el de la correcta, no
      por posición: si un distractor repitiera el mismo texto que la
@@ -15817,22 +16115,18 @@ function gradeLex(ex, raw, selIdx){
   if(ex.kind === "num"){
     var v = parseAnswer(norm);
     if(isNaN(v)) return { counted:false, msg:"Escribe un número o una fracción como 5/6 para poder revisar." };
-    /* Tolerancia: la habitual es absoluta (0,011) y se mantiene para
-       |ans| >= 0,1. Con respuestas chicas (|ans| < 0,1) esa tolerancia
-       aceptaba respuestas erróneas (con ans = 0,04 aceptaba 0,05; con
-       ans = 0,0651 aceptaba 0,07), así que ahí la tolerancia pasa a ser
-       el 5% del valor, con un piso de 0,0011 para no exigir más
-       precisión de la que el enunciado pide: ans = 0,04 acepta 0,04 y
-       rechaza 0,05; ans = 0,0651 acepta 0,0651 y rechaza 0,07. */
-    var tolNum = Math.abs(ex.ans) < 0.1 ? Math.max(0.0011, Math.abs(ex.ans) * 0.05) : 0.011;
-    return { counted:true, ok: Math.abs(v - ex.ans) < tolNum };
+    /* La comparación la hace numEq, el comparador único (ver su
+       comentario): equivalencia racional exacta para fracciones,
+       igualdad salvo ruido de punto flotante para enteros y redondeo
+       correcto a la precisión escrita para el resto. */
+    return { counted:true, ok: numEq(ex.ans, norm) };
   }
   if(ex.kind === "frac"){
     var m = norm.replace(/\s+/g, "").match(/^(-?\d+)(?:\/(\d+))?$/);
     if(!m) return { counted:false, msg:"Escríbela como fracción, así: 3/4." };
     var n = parseInt(m[1], 10), d = m[2] ? parseInt(m[2], 10) : 1;
     if(d === 0) return { counted:false, msg:"El denominador no puede ser 0." };
-    var okVal = Math.abs(n / d - ex.ans) < 0.011;
+    var okVal = numEq(ex.ans, norm, ex.fn, ex.fd);
     var simple = gcd(n, d) === 1;
     if(okVal && !simple) return { counted:true, ok:false, notSimple:true };
     return { counted:true, ok: okVal && simple };
@@ -15843,7 +16137,7 @@ function gradeLex(ex, raw, selIdx){
     if(toks.length !== ex.order.length) return { counted:false, msg:"Son " + ex.order.length + " números: escríbelos todos, en orden." };
     var vals = toks.map(function(t){ return parseAnswer(t); });
     if(vals.some(function(v){ return isNaN(v); })) return { counted:false, msg:"Alguno de los números no se entiende: revísalos." };
-    return { counted:true, ok: vals.every(function(v, i){ return Math.abs(v - ex.order[i]) < 0.011; }) };
+    return { counted:true, ok: toks.every(function(t, i){ return numEq(ex.order[i], t); }) };
   }
   return { counted:false, msg:"" };
 }
@@ -16375,7 +16669,7 @@ function checkPractice(){
   var v = parseAnswer($("#pr-input").value);
   var fb = $("#pr-feedback");
   if(isNaN(v)){ fb.className = "feedback bad"; fb.textContent = "Escribe un número o una fracción como 5/6 para poder revisar."; return; }
-  var ok = Math.abs(v - prCurrent.ans) < 0.011;
+  var ok = numEq(prCurrent.ans, $("#pr-input").value);
   var st = skillStat(prSkill.id);
   prAnswered = true;
   if(ok) st.ok++; else st.mal++;
@@ -16454,7 +16748,7 @@ $("#exam-submit").addEventListener("click", function(){
     var inp = $('input[data-qi="' + i + '"]');
     var corr = $('[data-corr="' + i + '"]');
     var v = parseAnswer(inp.value);
-    var ok = !isNaN(v) && Math.abs(v - item.data.ans) < 0.011;
+    var ok = !isNaN(v) && numEq(item.data.ans, inp.value);
     var st = skillStat(item.skill.id);
     if(ok){ aciertos++; st.ok++; } else { st.mal++; }
     detalle.push({ skill:item.skill.id, ok:ok, dada:inp.value, esperada:fmtAns(item.data.ans) });
