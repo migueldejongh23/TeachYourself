@@ -2481,7 +2481,7 @@ function runEngineTests(){
     /* Decimales de 2, 3 y 4 cifras, chicos y grandes, negativos y
        cero: se muestran con su precisión y se aceptan. */
     var falloFmt = null;
-    [[3.14, "3,14"], [0.125, "1/8"], [0.35, "0,35"], [2.675, "2,675"], [0.0651, "0,0651"], [3.0167, "3,0167"], [-3.14, "-3,14"], [-0.0651, "-0,0651"], [0, "0"], [5, "5"], [1234.5678, "1234,5678"], [100.01, "100,01"], [0.04, "0,04"]].forEach(function(par){
+    [[3.14, "3,14"], [0.125, "1/8"], [0.35, "0,35"], [2.675, "2,675"], [0.0651, "0,0651"], [3.0167, "3,0167"], [-3.14, "-3,14"], [-0.0651, "-0,0651"], [0, "0"], [5, "5"], [1234.5678, "1234,5678"], [100.01, "100,01"], [0.04, "0,04"], [0.001, "0,001"], [0.00004, "0,00004"], [0.0000001, "0,0000001"], [-0.00004, "-0,00004"]].forEach(function(par){
       if(falloFmt) return;
       if(fmtAns(par[0]) !== par[1]) falloFmt = "fmtAns(" + par[0] + ") = " + fmtAns(par[0]) + ", se esperaba " + par[1];
       else if(!numEq(par[0], fmtAns(par[0]))) falloFmt = "numEq rechaza lo que fmtAns muestra para " + par[0] + ": " + fmtAns(par[0]);
@@ -2573,6 +2573,90 @@ function runEngineTests(){
     }
     if(mal) return mal;
     if(!revisados) return "el barrido de coherencia no revisó ninguna instancia";
+    return true;
+  });
+  check("Precisión decimal final: la respuesta no puede aniquilar el esperado (tabla obligatoria por los caminos reales, magnitudes, cercanos a cero y fmtAns diminuto)", function(){
+    var solOk = ["Paso único de prueba."];
+    function grN(ans, dada){ return gradeLex(exNum("T", "¿Pregunta?", ans, solOk), dada); }
+    function grF(n, d, dada){ return gradeLex(exFrac("T", "¿Pregunta?", n, d, solOk), dada); }
+    function grO(order, dada){ return gradeLex(exOrder("T", "¿Pregunta?", order, solOk), dada); }
+    /* La tabla obligatoria completa, por numEq directo (la forma de
+       llamada de práctica y exámenes) y por la ronda num. El hueco
+       que cierra esta prueba: con el piso de 2 decimales solo,
+       "0,00" era el redondeo correcto de cualquier esperado menor
+       que media centésima y se aceptaba aniquilando el valor. */
+    var tabla = [
+      [0.001, "0.00", false], [0.0001, "0.00", false], [0.0011, "0.00", false],
+      [0.001, "0.001", true], [0.001, "0.0010", true],
+      [0.125, "0.13", true], [0.0651, "0.07", true],
+      [2 / 3, "0.67", true], [1 / 3, "0.333", true],
+      [1 / 15, "1/16", false], [0.04, "0.05", false]
+    ];
+    for(var ti = 0; ti < tabla.length; ti++){
+      if(numEq(tabla[ti][0], tabla[ti][1]) !== tabla[ti][2])
+        return "tabla (práctica/examen): numEq(" + tabla[ti][0] + ", \"" + tabla[ti][1] + "\") debía dar " + tabla[ti][2];
+      if(grN(tabla[ti][0], tabla[ti][1]).ok !== tabla[ti][2])
+        return "tabla (ronda num): \"" + tabla[ti][1] + "\" para " + tabla[ti][0] + " debía dar " + tabla[ti][2];
+    }
+    /* La tabla por order y por frac, donde la forma lo permite. */
+    if(grO([0.001, 2], "0.00; 2").ok) return "order acepta 0,00 para 0,001";
+    if(!grO([0.001, 2], "0.001; 2").ok) return "order ya no acepta 0,001 para 0,001";
+    if(grO([0.0001, 2], "0.00; 2").ok) return "order acepta 0,00 para 0,0001";
+    if(grF(1, 15, "1/16").ok) return "ronda frac acepta 1/16 para 1/15";
+    if(!grF(1, 15, "1/15").ok) return "ronda frac ya no acepta 1/15 para 1/15";
+    if(grF(1, 1000, "0").ok) return "ronda frac acepta 0 para 1/1000";
+    if(!grF(1, 1000, "1/1000").ok) return "ronda frac ya no acepta 1/1000 para 1/1000";
+    /* Magnitudes: 10^12, 1, 0,01, 0,0001 y 10^-7. En cada escala el
+       valor exacto se acepta y el cero o un vecino grueso no. */
+    if(!numEq(1e12, "1000000000000")) return "1e12 exacto rechazado";
+    if(numEq(1e12, "1000000000001")) return "1e12 + 1 aceptado para 1e12";
+    if(!numEq(1, "1")) return "1 exacto rechazado";
+    if(numEq(1, "1.001")) return "1,001 aceptado para 1 (esperado entero)";
+    if(!numEq(0.01, "0.01")) return "0,01 exacto rechazado";
+    if(!numEq(0.01, "0.010")) return "0,010 para 0,01 rechazado";
+    if(numEq(0.01, "0.00")) return "0,00 aceptado para 0,01: aniquila el valor";
+    if(!numEq(0.0001, "0.0001")) return "0,0001 exacto rechazado";
+    if(numEq(0.0001, "0.000")) return "0,000 aceptado para 0,0001: solo lo rechaza la condición de magnitud";
+    if(!numEq(1e-7, "0.0000001")) return "0,0000001 exacto rechazado para 10^-7";
+    if(numEq(1e-7, "0.00")) return "0,00 aceptado para 10^-7";
+    if(numEq(1e-7, "0")) return "0 aceptado para 10^-7";
+    if(numEq(1e-7, "0.0000002")) return "0,0000002 aceptado para 10^-7 (no es su redondeo)";
+    /* Cero y próximos a cero, con signo. */
+    if(!numEq(0, "0")) return "0 para 0 rechazado";
+    if(numEq(0, "0.001")) return "0,001 aceptado para 0";
+    if(numEq(0.0001, "0.0000")) return "0,0000 aceptado para 0,0001";
+    if(numEq(-0.001, "0.00")) return "0,00 aceptado para -0,001 (aniquila el valor y cambia el signo)";
+    if(!numEq(-0.001, "-0.001")) return "-0,001 exacto rechazado";
+    if(numEq(-0.001, "-0.00")) return "-0,00 aceptado para -0,001";
+    /* Redondeos correctos de 2, 3 y 4 decimales y de 3 o más cifras
+       significativas se siguen aceptando; los incorrectos no. */
+    if(!numEq(0.125, "0.13")) return "0,13 para 0,125 rechazado (redondeo correcto a 2 decimales)";
+    if(!numEq(0.0651, "0.065")) return "0,065 para 0,0651 rechazado (redondeo correcto a 3 decimales)";
+    if(!numEq(2 / 3, "0.6667")) return "0,6667 para 2/3 rechazado (redondeo correcto a 4 decimales)";
+    if(!numEq(2 / 3, "0.667")) return "0,667 para 2/3 rechazado (3 cifras significativas)";
+    if(numEq(1 / 3, "0.334")) return "0,334 aceptado para 1/3";
+    if(numEq(2 / 3, "0.6666")) return "0,6666 aceptado para 2/3 (su redondeo a 4 decimales es 0,6667)";
+    /* Negativos en valores normales y chicos. */
+    if(!numEq(-0.125, "-0.13")) return "-0,13 para -0,125 rechazado";
+    if(!numEq(-2 / 3, "-0.67")) return "-0,67 para -2/3 rechazado";
+    if(numEq(-0.04, "-0.05")) return "-0,05 aceptado para -0,04";
+    if(numEq(-0.0001, "0.00")) return "0,00 aceptado para -0,0001";
+    /* Fracciones exactas y equivalentes, también diminutas; una
+       fracción que vale cero no pasa para un esperado no nulo. */
+    if(!numEq(0.001, "1/1000")) return "1/1000 para 0,001 rechazado";
+    if(!numEq(0.001, "2/2000")) return "2/2000 para 0,001 rechazado (equivalente)";
+    if(!numEq(1 / 15, "2/30")) return "2/30 para 1/15 rechazado (equivalente)";
+    if(numEq(0.001, "0/7")) return "0/7 aceptado para 0,001: la fracción aniquila el valor";
+    if(numEq(1 / 15, "1/16")) return "1/16 aceptado para 1/15 (falso positivo original)";
+    /* fmtAns con valores diminutos: nunca muestra 0 para un esperado
+       no nulo, no usa notación científica y lo mostrado se acepta.
+       En los bancos reales el menor |ans| no nulo es 0,05 (s2-mult),
+       así que esto es robustez a futuro, no un caso servido hoy. */
+    if(fmtAns(0.00004) !== "0,00004") return "fmtAns(0,00004) = " + fmtAns(0.00004);
+    if(fmtAns(0.0000001) !== "0,0000001") return "fmtAns(10^-7) = " + fmtAns(0.0000001);
+    if(fmtAns(-0.00004) !== "-0,00004") return "fmtAns(-0,00004) = " + fmtAns(-0.00004);
+    if(!numEq(0.00004, fmtAns(0.00004))) return "numEq rechaza lo que fmtAns muestra para 0,00004";
+    if(!numEq(0.0000001, fmtAns(0.0000001))) return "numEq rechaza lo que fmtAns muestra para 10^-7";
     return true;
   });
   /* ---- Regresión de la Fase 1 (auditoría 21/11/2026, sección D) ---- */
@@ -16112,6 +16196,15 @@ function lessonExStat(id){
       7,5%. Se eliminó: 0,07 ES el redondeo correcto de 0,0651 a 2
       decimales y se acepta; es un cambio de comportamiento
       deliberado respecto del criterio anterior.)
+      Y una condición de magnitud: el error debe ser menor que
+      |ans|, es decir, la respuesta debe quedar más cerca del
+      esperado que del cero. Sin ella, para un esperado menor que
+      media centésima, "0,00" sería aceptado: es su redondeo
+      correcto a 2 decimales y cumple el piso, pero aniquila el
+      valor (error del 100%, cero cifras significativas). La
+      condición no es un caso especial para el cero: conserva el
+      orden de magnitud y el signo del esperado en cualquier
+      escala (ver el comentario de numEqDecimal).
 
    Justificación con los bancos reales (muestreo sirviendo los 1.210
    generadores, 24.160 respuestas de kind num): el 94% de los ans es
@@ -16215,17 +16308,40 @@ function sigFigsWritten(s){
    escrito (null cuando la respuesta venía como fracción y solo se
    conoce su valor: en ese camino k ya es 4 y el piso no aplica).
    Criterio: fuera del ruido de punto flotante y del esperado entero
-   (igualdad exacta), la respuesta se acepta si es el redondeo
-   correcto del esperado a la precisión escrita (error de hasta
-   media unidad del último decimal) y cumple el piso de precisión:
-   al menos 2 decimales escritos o al menos 3 cifras significativas.
+   (igualdad exacta), la respuesta se acepta si cumple tres cosas:
+   (a) es el redondeo correcto del esperado a la precisión escrita
+   (error de hasta media unidad del último decimal); (b) cumple el
+   piso de precisión: al menos 2 decimales escritos o al menos 3
+   cifras significativas; y (c) conserva la magnitud del esperado:
+   el error es menor que |ans|.
    El piso es lo único que separa un redondeo correcto de una
-   aproximación demasiado gruesa: 0,1 para 0,0651 y 0,7 para 2/3 son
-   "el redondeo correcto" a 1 decimal o a 1 cifra, y se rechazan por
-   el piso, no por su error. No hay guarda de error relativo: 0,13
-   para 0,125 y 0,07 para 0,0651 son redondeos correctos a 2
-   decimales y se aceptan aunque su error relativo supere el 3% que
-   el criterio anterior usaba como tope. */
+   aproximación demasiado gruesa en valores normales: 0,1 para
+   0,0651 y 0,7 para 2/3 son "el redondeo correcto" a 1 decimal o a
+   1 cifra, y se rechazan por el piso, no por su error. Pero el piso
+   solo mira la precisión escrita, no la escala del esperado: para
+   un esperado menor que media centésima, "0,00" cumple el piso (2
+   decimales escritos) y es su redondeo correcto a 2 decimales,
+   aunque aniquila el valor (error del 100%, cero cifras
+   significativas): así se aceptaban 0,00 para 0,001, para 0,0001 y
+   para 0,0011. La condición (c) lo cierra sin ser un caso especial
+   para el cero: exige que la respuesta quede más cerca del
+   esperado que del cero, lo que equivale a que no lo aniquile ni
+   le cambie el signo y a que conserve su orden de magnitud; vale
+   igual para valores grandes, chicos, negativos y cercanos a
+   cero, y también en el camino de las fracciones no exactas,
+   donde k es fijo y ni el redondeo ni el piso miran la escala.
+   Se evaluó la formulación alternativa "la unidad del último
+   decimal escrito, 10^-k, debe ser menor que |ans|": cumple la
+   misma tabla de casos, pero ata la aceptación al formato escrito
+   y no al error cometido, y con desigualdad estricta rechazaría
+   la respuesta exacta 0,001 para el esperado 0,001 (10^-3 no es
+   menor que 0,001); por eso se eligió la forma sobre el error.
+   No hay guarda de error relativo porcentual: 0,13 para 0,125 y
+   0,07 para 0,0651 son redondeos correctos a 2 decimales y se
+   aceptan aunque su error relativo supere el 3% que un criterio
+   anterior usaba como tope; la única cota relativa es la de la
+   magnitud (error menor que el propio valor, es decir, error
+   relativo menor que el 100%). */
 function numEqDecimal(ans, v, k, rawStr){
   if(!isFinite(v)) return false;
   var err = Math.abs(v - ans);
@@ -16233,6 +16349,7 @@ function numEqDecimal(ans, v, k, rawStr){
   if(Math.abs(ans - Math.round(ans)) <= numNoise(ans)) return false;
   if(err > 0.5 * Math.pow(10, -k) + 1e-12) return false;
   if(rawStr !== null && rawStr !== undefined && k < 2 && sigFigsWritten(rawStr) < 3) return false;
+  if(err >= Math.abs(ans)) return false;
   return true;
 }
 /* numEq(ans, raw, fnE, fdE): ¿la respuesta escrita en raw es correcta
@@ -16875,14 +16992,36 @@ function checkPractice(){
      decimales (0,0651 se muestra "0,0651", no "0,07" como antes, que
      además perdía las cifras del ans; la raíz de 2 se muestra
      "1,4142"). Un valor más chico que media unidad del cuarto
-     decimal se muestra tal cual, nunca como 0. */
+     decimal se muestra con los decimales que hagan falta
+     (decimalPlano), nunca como 0 ni en notación científica. En los
+     bancos reales el menor |ans| no nulo es 0,05, así que ese caso
+     es solo robustez a futuro. */
+/* Un valor no nulo tan chico que redondeado a 4 decimales daría 0
+   se muestra completo, en notación decimal plana: String(1e-7) da
+   "1e-7", y eso no es una respuesta presentable ni comparable a
+   mano con lo que el alumno escribe. Lo mostrado sigue siendo el
+   propio valor, así que numEq lo acepta por la vía del ruido de
+   punto flotante y la coherencia se mantiene. */
+function decimalPlano(a){
+  var s = String(a);
+  if(s.indexOf("e") < 0 && s.indexOf("E") < 0) return s.replace(".", ",");
+  var m = /^(-?)(\d+)(?:\.(\d+))?[eE](-?\d+)$/.exec(s);
+  if(!m) return s.replace(".", ",");
+  var digitos = m[2] + (m[3] || "");
+  var punto = m[2].length + parseInt(m[4], 10);
+  var out;
+  if(punto <= 0) out = "0." + "0".repeat(-punto) + digitos;
+  else if(punto >= digitos.length) out = digitos + "0".repeat(punto - digitos.length);
+  else out = digitos.slice(0, punto) + "." + digitos.slice(punto);
+  return (m[1] + out).replace(".", ",");
+}
 function fmtAns(a){
   if(typeof a !== "number" || !isFinite(a)) return String(a);
   if(Math.abs(a - Math.round(a)) <= numNoise(a)) return String(Math.round(a));
   var fr = fracFromFloat(a);
   if(fr && fr[1] > 1 && fr[1] <= 12) return fracStr(fr[0], fr[1]);
   var r4 = Math.round(a * 10000) / 10000;
-  if(r4 === 0) r4 = a;
+  if(r4 === 0) return decimalPlano(a);
   return String(r4).replace(".", ",");
 }
 $("#pr-check").addEventListener("click", checkPractice);
