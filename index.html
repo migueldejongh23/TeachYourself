@@ -119,6 +119,10 @@
   .btn.danger{ border-color:var(--red); color:var(--red); }
   .textlink{ font-size:14px; font-weight:550; color:var(--ink); text-decoration:underline; text-underline-offset:3px; padding:6px 2px; min-height:40px; display:inline-flex; align-items:center; }
 
+  /* ---------- Guías oficiales ---------- */
+  .guia-frame{ width:100%; height:min(78vh, 900px); min-height:520px; border:1px solid var(--line-2); border-radius:12px; background:#fff; display:block; }
+  @media (max-width:640px){ .guia-frame{ height:70vh; min-height:440px; } }
+
   /* ---------- Hoy ---------- */
   #view-hoy{ padding-top:26px; }
   .hoy-hero{ display:grid; grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:48px; align-items:stretch; margin-top:0; }
@@ -574,6 +578,7 @@
         <button data-view="ver"><span class="mi-dot"></span>Watch</button>
         <button data-view="quiz"><span class="mi-dot"></span>Quiz me</button>
         <button data-view="pizarra"><span class="mi-dot"></span>Whiteboard</button>
+        <button data-view="guias"><span class="mi-dot"></span>Guías oficiales</button>
         <div class="mi-sep"></div>
         <button data-view="progreso"><span class="mi-dot"></span>Mi progreso</button>
       </nav>
@@ -712,6 +717,15 @@
       <button class="toolbtn" id="pad-clear">Limpiar todo</button>
     </div>
     <canvas id="freepad" width="1200" height="580"></canvas>
+  </section>
+
+  <!-- ================= GUÍAS OFICIALES ================= -->
+  <section class="view" id="view-guias">
+    <p class="kicker">Guías oficiales</p>
+    <h1>Guía de Trabajos Prácticos de Análisis Matemático 66</h1>
+    <p class="muted" style="max-width:780px;">Análisis Matemático 66 (CBC, UBA). Es el documento oficial tal cual, cargado desde su sitio: se lee acá mismo, página por página, con scroll y zoom.</p>
+    <p style="margin:14px 0;"><a class="btn" href="https://matetutoriales.ar/download/291/analisis-matematico-66-cbc-uba/5354/66-practica-completa-es-nueva1.pdf" target="_blank" rel="noopener">Abrir el PDF</a></p>
+    <iframe class="guia-frame" id="guia-visor" src="https://docs.google.com/viewer?url=https%3A%2F%2Fmatetutoriales.ar%2Fdownload%2F291%2Fanalisis-matematico-66-cbc-uba%2F5354%2F66-practica-completa-es-nueva1.pdf&embedded=true" title="Guía de Trabajos Prácticos de Análisis Matemático 66 (CBC, UBA)" loading="lazy"></iframe>
   </section>
 
   <!-- ================= PROGRESO ================= -->
@@ -4383,6 +4397,26 @@ function runEngineTests(){
       state = snapState;
       try{ showView("hoy"); }catch(e){}
     }
+  });
+  check("Guía oficial de ejemplo: la sección «Guías oficiales» existe, su visor carga la guía de Análisis Matemático 66 y las clases y generadores no cambiaron", function(){
+    var sec = document.getElementById("view-guias");
+    if(!sec) return "no existe la sección de Guías oficiales";
+    var btn = document.querySelector('#menu-panel button[data-view="guias"]');
+    if(!btn) return "no existe el acceso a Guías oficiales en el menú";
+    var urlGuia = "https://matetutoriales.ar/download/291/analisis-matematico-66-cbc-uba/5354/66-practica-completa-es-nueva1.pdf";
+    var visor = document.getElementById("guia-visor");
+    if(!visor) return "no existe el visor de la guía";
+    var src = visor.getAttribute("src") || "";
+    var directa = src === urlGuia;
+    var viaGoogle = src.indexOf("https://docs.google.com/viewer?url=") === 0 && src.indexOf(encodeURIComponent(urlGuia)) >= 0 && src.indexOf("embedded=true") >= 0;
+    if(!directa && !viaGoogle) return "el visor no apunta a la guía oficial: " + src;
+    var enlace = sec.querySelector('a[href="' + urlGuia + '"]');
+    if(!enlace) return "falta el enlace de respaldo a la URL directa del PDF";
+    if(typeof LESSONS === "undefined" || LESSONS.length !== 113) return "cambió el número de clases: " + (typeof LESSONS === "undefined" ? "sin LESSONS" : LESSONS.length);
+    var totalGen = 0;
+    Object.keys(LESSON_EXERCISES).forEach(function(k){ totalGen += (LESSON_EXERCISES[k] || []).length; });
+    if(totalGen !== 1268) return "cambió el número de generadores: " + totalGen;
+    return true;
   });
   return results;
 }
