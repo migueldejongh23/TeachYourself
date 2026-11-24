@@ -524,6 +524,16 @@
     margin-top:auto; padding-top:14px; border-top:1px solid var(--line);
     color:var(--ink-2); font-size:15.5px; line-height:1.65; max-width:none; width:100%;
   }
+  .teacher-plan{ margin:0 0 20px; padding:18px; border:1px solid var(--line-2); border-radius:14px; background:var(--soft); }
+  .teacher-plan h2{ margin:0 0 8px; font-size:18px; }
+  .teacher-plan p{ margin:6px 0; }
+  .teacher-plan-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:14px; }
+  .teacher-plan-section{ min-width:0; }
+  .teacher-plan-label{ margin:0 0 6px; color:var(--ink-3); font-size:11px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+  .teacher-plan ul{ margin:5px 0 0; padding-left:19px; }
+  .teacher-plan li{ margin:4px 0; line-height:1.45; }
+  .teacher-plan-status{ font-size:12px; color:var(--ink-2); }
+  @media(max-width:680px){ .teacher-plan-grid{ grid-template-columns:1fr; } }
   .lesson-check{ margin:16px 0 8px; padding:16px; border:1px solid var(--line-2); border-radius:12px; background:var(--soft); }
   .lesson-check[hidden]{ display:none; }
   .lesson-check-title{ margin:0 0 8px; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); }
@@ -10803,6 +10813,50 @@ var IPC_LESSON_SKILLS = {
 };
 function graphNode(id){ return (typeof SKILL_GRAPH !== "undefined" && SKILL_GRAPH && SKILL_GRAPH[id]) || null; }
 function prereqsDe(id){ var n = graphNode(id); return n ? n.prereqs.slice() : []; }
+
+/* ================= Motor pedagógico: primera capa =================
+   El contenido deja de ser una secuencia pasiva: cada clase declara
+   qué habilidades desarrolla, qué conocimientos las sostienen y qué
+   estrategia didáctica corresponde a la disciplina. Este plan no
+   bloquea al estudiante por falta de evidencia: convierte los
+   prerrequisitos en diagnóstico y apoyo, nunca en una barrera. */
+var TEACHING_PROFILES = {
+  analisis: { label:"Matemáticas", method:"Construir intuición y significado; formalizar definiciones; mostrar procedimientos razonados; practicar variaciones y problemas de transferencia.", moves:["Conectar el concepto con una representación gráfica, numérica o geométrica.","Explicar por qué cada transformación matemática es válida.","Contrastar procedimientos y comprobar el resultado." ] },
+  algebra: { label:"Álgebra", method:"Partir de objetos y operaciones; representar relaciones; justificar propiedades; modelar procedimientos y comprobarlos con casos.", moves:["Interpretar los objetos antes de operar con ellos.","Mostrar qué propiedad justifica cada paso.","Usar ejemplos y contraejemplos para comprobar generalizaciones." ] },
+  fisica: { label:"Física", method:"Partir del fenómeno; construir un modelo; elegir sistema de referencia y representación; identificar leyes; resolver y verificar unidades y sentido físico.", moves:["Describir qué ocurre antes de escribir ecuaciones.","Dibujar el sistema y declarar fuerzas, magnitudes y convenciones.","Justificar la ley elegida y comprobar dimensiones y plausibilidad." ] },
+  pc: { label:"Programación", method:"Comprender el problema; diseñar un algoritmo; predecir su ejecución; implementar; probar casos y depurar errores.", moves:["Separar entradas, proceso y salidas.","Trazar el algoritmo con ejemplos pequeños antes de ejecutarlo.","Usar casos de prueba para localizar y explicar errores." ] },
+  icse: { label:"Ciencias sociales", method:"Situar procesos en contexto; distinguir actores, instituciones y conceptos; analizar causas y consecuencias; argumentar con evidencia.", moves:["Construir una línea temporal y contextualizar los hechos.","Distinguir descripción, explicación e interpretación.","Sostener conclusiones con evidencia y considerar otras perspectivas." ] },
+  ipc: { label:"Pensamiento científico y filosofía", method:"Definir conceptos; reconstruir argumentos; identificar premisas y conclusiones; evaluar inferencias y contrastar posiciones.", moves:["Precisar el significado de los términos.","Reconstruir el argumento sin deformarlo.","Probarlo con objeciones, contraejemplos y consecuencias." ] },
+  general: { label:"Aprendizaje", method:"Activar conocimientos previos; explicar progresivamente; modelar el razonamiento; practicar con apoyo y comprobar autonomía.", moves:["Relacionar lo nuevo con conocimientos conocidos.","Hacer visible el razonamiento experto.","Retirar las ayudas a medida que aparece dominio." ] }
+};
+function perfilDocenteDeClase(l, skills){
+  var etapas = skills.map(function(x){ return x.node.etapa; }).filter(Boolean);
+  var e = etapas[0] || (l.id.indexOf("cbc-an") === 0 ? "analisis" : l.id.indexOf("cbc-al") === 0 ? "algebra" : l.id.indexOf("cbc-fis") === 0 ? "fisica" : l.id.indexOf("cbc-pc") === 0 ? "pc" : l.id.indexOf("cbc-icse") === 0 ? "icse" : l.id.indexOf("cbc-ipc") === 0 ? "ipc" : "general");
+  return TEACHING_PROFILES[e] || TEACHING_PROFILES.general;
+}
+function planificarClase(l, attempts, lessonsDone){
+  if(!l || !l.id) return null;
+  var skills = Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id].lessons.indexOf(l.id) >= 0; }).map(function(id){
+    return { id:id, node:SKILL_GRAPH[id], estado:masteryDeHabilidad(id, attempts, lessonsDone) };
+  });
+  var prereqIds = [];
+  skills.forEach(function(x){ prereqsDe(x.id).forEach(function(p){ if(prereqIds.indexOf(p) < 0) prereqIds.push(p); }); });
+  var prereqs = prereqIds.map(function(id){ return { id:id, node:graphNode(id), estado:masteryDeHabilidad(id, attempts, lessonsDone) }; });
+  var faltan = prereqs.filter(function(x){ return x.estado.k !== "dominada"; });
+  return {
+    lessonId:l.id, profile:perfilDocenteDeClase(l, skills), skills:skills, prereqs:prereqs,
+    diagnostic:{ total:prereqs.length, dominados:prereqs.length-faltan.length, needsSupport:faltan.length>0 },
+    sequence:["Activar lo que ya sabes y detectar fundamentos que falten.","Explicar el fenómeno o problema y construir la intuición.","Desarrollar conceptos y representaciones paso a paso.","Modelar un ejemplo completo verbalizando las decisiones.","Resolver ejercicios contigo, con pistas graduadas.","Comprobar resolución independiente y aplicación en un problema nuevo."],
+    mastery:["Explica el concepto con sus propias palabras.","Justifica por qué el procedimiento elegido corresponde.","Resuelve un ejercicio conocido sin ayuda.","Transfiere lo aprendido a una situación nueva."],
+    needsSupport:faltan.map(function(x){ return x.id; })
+  };
+}
+function resumenPlanDocente(plan){
+  if(!plan) return "";
+  var skills = plan.skills.map(function(x){ return x.node.name; });
+  var prereqs = plan.prereqs.map(function(x){ return {name:x.node ? x.node.name : x.id, status:x.estado.t, mastered:x.estado.k === "dominada"}; });
+  return { discipline:plan.profile.label, method:plan.profile.method, moves:plan.profile.moves.slice(), objectives:skills, prerequisites:prereqs, sequence:plan.sequence.slice(), mastery:plan.mastery.slice() };
+}
 function duenoDeClase(){
   /* Mapa clase -> nodo dueño, construido desde los lessons de cada
      nodo. Cada clase del piloto tiene exactamente un dueño. */
@@ -11072,6 +11126,9 @@ if(window.TutorData){
   window.TutorData.PILOT_LESSONS = PILOT_LESSONS;
   window.TutorData.masteryDeHabilidad = masteryDeHabilidad;
   window.TutorData.estadoHabilidad = estadoHabilidad;
+  window.TutorData.planificarClase = planificarClase;
+  window.TutorData.resumenPlanDocente = resumenPlanDocente;
+  window.TutorData.TEACHING_PROFILES = TEACHING_PROFILES;
   window.TutorData.bloqueosDe = bloqueosDe;
   window.TutorData.bloqueosEnCadena = bloqueosEnCadena;
   window.TutorData.habilidadesPendientes = habilidadesPendientes;
@@ -13600,6 +13657,21 @@ function runSkillGraphTests(){
       return true;
     } finally { state = snapState; }
   });
+  check("El plan pedagógico de estática identifica habilidades y prerrequisitos", function(){
+    var l = lessonById("cbc-fis1-estatica");
+    var p = planificarClase(l, [], {});
+    if(!p || p.skills.length !== 3) return "se esperaban 3 habilidades de estática";
+    if(!p.prereqs.some(function(x){ return x.id === "fi-vectores-componentes"; })) return "no identifica componentes de vectores como fundamento";
+    if(p.profile.label !== "Física") return "perfil disciplinar incorrecto";
+    return true;
+  });
+  check("El plan pedagógico nunca bloquea por prerrequisitos no dominados", function(){
+    var p = planificarClase(lessonById("cbc-fis1-estatica"), [], {});
+    return !!p && p.diagnostic.needsSupport && p.sequence.length === 6 && p.mastery.length === 4;
+  });
+  check("Las seis disciplinas principales tienen estrategias docentes específicas", function(){
+    return ["analisis","algebra","fisica","pc","icse","ipc"].every(function(k){ return TEACHING_PROFILES[k] && TEACHING_PROFILES[k].moves.length >= 3; });
+  });
   return results;
 }
 if(window.TutorData) window.TutorData.runSkillGraphTests = runSkillGraphTests;
@@ -14050,11 +14122,32 @@ function renderClases(){
     b.addEventListener("click", function(){ openLesson(b.getAttribute("data-lesson")); });
   });
 }
+function renderTeacherPlan(l){
+  var plan = planificarClase(l, null, null);
+  var data = resumenPlanDocente(plan);
+  var el = document.createElement("section");
+  el.className = "teacher-plan";
+  el.setAttribute("aria-label", "Plan de enseñanza de la clase");
+  var objectives = data.objectives.length ? data.objectives.map(function(x){ return "<li>"+esc(x)+"</li>"; }).join("") : "<li>Comprender los conceptos y procedimientos centrales de esta clase.</li>";
+  var prereqs = data.prerequisites.length ? data.prerequisites.map(function(x){ return '<li>'+esc(x.name)+' <span class="teacher-plan-status">· '+esc(x.status)+'</span></li>'; }).join("") : "<li>No hay prerrequisitos registrados en el mapa de habilidades.</li>";
+  el.innerHTML = '<p class="kicker" style="margin-bottom:5px;">Cómo te va a enseñar el tutor · '+esc(data.discipline)+'</p>'+
+    '<h2>Primero vamos a construir comprensión; después, autonomía.</h2>'+
+    '<p>'+esc(data.method)+'</p>'+
+    '<div class="teacher-plan-grid">'+
+      '<div class="teacher-plan-section"><p class="teacher-plan-label">Al terminar podrás trabajar en</p><ul>'+objectives+'</ul></div>'+
+      '<div class="teacher-plan-section"><p class="teacher-plan-label">Conocimientos que conviene revisar</p><ul>'+prereqs+'</ul></div>'+
+      '<div class="teacher-plan-section"><p class="teacher-plan-label">Cómo será la enseñanza</p><ul>'+data.moves.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>'+
+      '<div class="teacher-plan-section"><p class="teacher-plan-label">Cómo comprobaremos el aprendizaje</p><ul>'+data.mastery.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>'+
+    '</div>'+
+    '<p class="teacher-plan-status" style="margin-top:12px;">'+(plan.diagnostic.needsSupport ? 'El mapa detecta fundamentos que podrían necesitar refuerzo. No te bloquearemos: el tutor deberá comprobarlos y enseñarlos si hace falta.' : 'No aparecen prerrequisitos pendientes en el mapa actual. Aun así, comprobaremos tu comprensión durante la clase.')+'</p>';
+  return el;
+}
 function openLesson(id){
   var l = lessonById(id); if(!l) return;
   showView("clases");
   $("#clases-home").style.display = "none";
   var box = $("#lesson-watch"); box.style.display = "block"; box.innerHTML = "";
+  box.appendChild(renderTeacherPlan(l));
   var pDiv = document.createElement("div");
   var eDiv = document.createElement("div");
   box.appendChild(pDiv); box.appendChild(eDiv);
