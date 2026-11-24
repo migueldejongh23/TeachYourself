@@ -533,6 +533,19 @@
   .teacher-plan ul{ margin:5px 0 0; padding-left:19px; }
   .teacher-plan li{ margin:4px 0; line-height:1.45; }
   .teacher-plan-status{ font-size:12px; color:var(--ink-2); }
+  .teacher-diagnostic{ margin-top:16px; padding-top:14px; border-top:1px solid var(--line-2); }
+  .teacher-diagnostic-item{ padding:12px 0; border-bottom:1px solid var(--line-2); }
+  .teacher-diagnostic-name{ font-weight:700; }
+  .teacher-diagnostic-actions{ display:flex; flex-wrap:wrap; gap:7px; margin-top:9px; }
+  .teacher-diagnostic-choice{ padding:7px 11px; font-size:12px; }
+  .teacher-diagnostic-choice.on{ border-color:var(--ink); background:var(--soft-2); font-weight:700; }
+  .teacher-diagnostic-summary{ margin:12px 0 0; font-size:13px; font-weight:600; }
+  .teacher-recovery{ margin-top:10px; padding:12px; border-radius:10px; background:var(--soft-2); }
+  .teacher-recovery p{ margin:6px 0 10px; font-size:13px; line-height:1.5; }
+  .teacher-recovery-lesson h4{ margin:0 0 9px; font-size:15px; }
+  .teacher-recovery-lesson strong{ display:block; margin-top:9px; font-size:13px; }
+  .teacher-recovery-lesson p{ margin:4px 0 8px; font-size:13px; line-height:1.55; }
+  .teacher-recovery-question{ font-weight:700; }
   @media(max-width:680px){ .teacher-plan-grid{ grid-template-columns:1fr; } }
   .lesson-check{ margin:16px 0 8px; padding:16px; border:1px solid var(--line-2); border-radius:12px; background:var(--soft); }
   .lesson-check[hidden]{ display:none; }
@@ -937,7 +950,7 @@ var saveFailed = false;
 var currentSessionId = "s-" + todayISO() + "-" + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
 function isPlainObj(x){ return !!x && typeof x === "object" && !Array.isArray(x); }
 function emptyStateV2(){
-  return { version: STATE_VERSION, lessonsDone:{}, lessonEx:{}, skills:{}, exams:[], visits:{}, errorLog:[], attempts:[], skillAgg:{}, lastServed:{}, started: todayISO(), meta:{ createdAt: todayISO() } };
+  return { version: STATE_VERSION, lessonsDone:{}, lessonEx:{}, skills:{}, exams:[], visits:{}, errorLog:[], attempts:[], skillAgg:{}, lastServed:{}, tutorDiagnostics:{}, started: todayISO(), meta:{ createdAt: todayISO() } };
 }
 /* ---------- Agregados por habilidad (skillAgg) ----------
    Totales históricos por habilidad, separados del registro crudo de
@@ -1175,6 +1188,13 @@ function normalizeState(s){
       if(clean.length) out.lastServed[id] = clean;
     });
   }
+  /* Autoevaluación diagnóstica por habilidad. Es una señal declarada
+     por el estudiante, nunca evidencia objetiva de dominio. */
+  out.tutorDiagnostics = {};
+  if(isPlainObj(s.tutorDiagnostics)) Object.keys(s.tutorDiagnostics).forEach(function(id){
+    if(!graphNode(id) || ["confident","familiar","unknown"].indexOf(s.tutorDiagnostics[id]) < 0) return;
+    out.tutorDiagnostics[id] = s.tutorDiagnostics[id];
+  });
   out.started = typeof s.started === "string" && s.started ? s.started : todayISO();
   return out;
 }
@@ -1390,6 +1410,15 @@ function validateStateShape(s){
       var lv = s.lastServed[lsIds[q]];
       if(!Array.isArray(lv)) return "lastServed." + lsIds[q] + " debe ser una lista de índices";
       for(var w2 = 0; w2 < lv.length; w2++) if(!isNonNegInt(lv[w2])) return "lastServed." + lsIds[q] + " debe guardar índices enteros no negativos";
+    }
+  }
+  /* tutorDiagnostics: autoevaluación declarada, no evidencia de dominio. */
+  if(s.tutorDiagnostics !== undefined){
+    if(!isPlainObj(s.tutorDiagnostics)) return "tutorDiagnostics debe ser un objeto";
+    var tdIds = Object.keys(s.tutorDiagnostics);
+    for(var td = 0; td < tdIds.length; td++){
+      if(!knownSkillId(tdIds[td])) return "tutorDiagnostics trae una habilidad que no existe: " + tdIds[td];
+      if(["confident","familiar","unknown"].indexOf(s.tutorDiagnostics[tdIds[td]]) < 0) return "tutorDiagnostics." + tdIds[td] + " tiene un estado inválido";
     }
   }
   /* started y meta */
@@ -10851,6 +10880,33 @@ function planificarClase(l, attempts, lessonsDone){
     needsSupport:faltan.map(function(x){ return x.id; })
   };
 }
+var RECOVERY_MICROLESSONS = {
+  "fi-vectores-componentes": {
+    title:"Descomponer una fuerza en dos direcciones",
+    steps:[
+      {h:"1. Qué es un vector",p:"Una fuerza no queda descrita solo por cuánto vale: también importa hacia dónde apunta. La representamos con una flecha. Su longitud representa el módulo y su orientación representa la dirección."},
+      {h:"2. Por qué lo descomponemos",p:"Para estudiar una barra, elegimos ejes horizontal (x) y vertical (y). En vez de trabajar con una flecha inclinada, la reemplazamos por dos efectos perpendiculares: uno horizontal y otro vertical. La suma de ambos reproduce la fuerza original."},
+      {h:"3. Cómo se calcula",p:"Si el ángulo θ se mide desde el eje horizontal positivo, la componente horizontal es Fx = F·cos(θ) y la vertical es Fy = F·sen(θ). El signo de cada componente depende de hacia dónde apunta la flecha."},
+      {h:"4. Ejemplo resuelto",p:"Una fuerza de 10 N forma 30° sobre la horizontal. Fx = 10·cos(30°) ≈ 8,66 N y Fy = 10·sen(30°) = 5 N. La componente horizontal es mayor porque el ángulo está más cerca del eje x."}
+    ],
+    question:{prompt:"Una fuerza de 10 N forma 30° con la horizontal. ¿Cuánto vale su componente vertical?",options:["5 N","8,66 N","10 N"],answer:0,feedback:"Fy = F·sen(30°) = 10·0,5 = 5 N. La componente vertical usa el seno porque el ángulo se mide desde el eje horizontal."}
+  }
+};
+function microleccionDeHabilidad(id){
+  if(RECOVERY_MICROLESSONS[id]) return RECOVERY_MICROLESSONS[id];
+  var n = graphNode(id);
+  if(!n) return null;
+  var profile = TEACHING_PROFILES[n.etapa] || TEACHING_PROFILES.general;
+  return {title:"Recuperar: "+n.name, steps:[
+    {h:"Qué necesitas comprender",p:n.desc},
+    {h:"Cómo vamos a estudiarlo",p:profile.moves[0]+" "+profile.moves[1]},
+    {h:"Cómo comprobarlo",p:"Al volver a la clase, explica la idea con tus palabras y resuelve un caso sencillo antes de pasar a uno más complejo."}
+  ], question:null};
+}
+function prerrequisitosExternosDeClase(plan){
+  if(!plan) return [];
+  return plan.prereqs.filter(function(x){ return x.node && x.node.lessons.indexOf(plan.lessonId) < 0; });
+}
 function resumenPlanDocente(plan){
   if(!plan) return "";
   var skills = plan.skills.map(function(x){ return x.node.name; });
@@ -11128,6 +11184,8 @@ if(window.TutorData){
   window.TutorData.estadoHabilidad = estadoHabilidad;
   window.TutorData.planificarClase = planificarClase;
   window.TutorData.resumenPlanDocente = resumenPlanDocente;
+  window.TutorData.prerrequisitosExternosDeClase = prerrequisitosExternosDeClase;
+  window.TutorData.microleccionDeHabilidad = microleccionDeHabilidad;
   window.TutorData.TEACHING_PROFILES = TEACHING_PROFILES;
   window.TutorData.bloqueosDe = bloqueosDe;
   window.TutorData.bloqueosEnCadena = bloqueosEnCadena;
@@ -13669,8 +13727,32 @@ function runSkillGraphTests(){
     var p = planificarClase(lessonById("cbc-fis1-estatica"), [], {});
     return !!p && p.diagnostic.needsSupport && p.sequence.length === 6 && p.mastery.length === 4;
   });
+  check("El diagnóstico inicial solo pregunta por fundamentos externos a la clase", function(){
+    var p = planificarClase(lessonById("cbc-fis1-estatica"), [], {});
+    var ext = prerrequisitosExternosDeClase(p);
+    return ext.length === 1 && ext[0].id === "fi-vectores-componentes";
+  });
+  check("El fundamento de vectores tiene una microlección desde cero y práctica explicada", function(){
+    var m = microleccionDeHabilidad("fi-vectores-componentes");
+    return !!m && m.steps.length === 4 && !!m.question && m.question.answer === 0;
+  });
   check("Las seis disciplinas principales tienen estrategias docentes específicas", function(){
     return ["analisis","algebra","fisica","pc","icse","ipc"].every(function(k){ return TEACHING_PROFILES[k] && TEACHING_PROFILES[k].moves.length >= 3; });
+  });
+  check("Las 113 clases reciben un perfil y un plan docente", function(){
+    return LESSONS.length === 113 && LESSONS.every(function(l){ var p=planificarClase(l,[],{}); return !!p && !!p.profile && p.sequence.length === 6 && p.mastery.length === 4; });
+  });
+  check("La autoevaluación diagnóstica se conserva y valida en el estado v2", function(){
+    var snap = state;
+    try{
+      var sample = emptyStateV2(); sample.tutorDiagnostics["fi-vectores-componentes"] = "unknown";
+      if(validateStateShape(sample)) return "el estado válido fue rechazado";
+      var restored = normalizeState(JSON.parse(JSON.stringify(sample)));
+      if(restored.tutorDiagnostics["fi-vectores-componentes"] !== "unknown") return "no sobrevivió a normalización/respaldo";
+      sample.tutorDiagnostics["fi-vectores-componentes"] = "inventado";
+      if(!validateStateShape(sample)) return "se aceptó un estado diagnóstico inválido";
+      return true;
+    } finally { state = snap; }
   });
   return results;
 }
@@ -14122,24 +14204,95 @@ function renderClases(){
     b.addEventListener("click", function(){ openLesson(b.getAttribute("data-lesson")); });
   });
 }
+function renderMicroleccion(node, host){
+  var nodeId = node && node.id ? node.id : Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id] === node; })[0];
+  var micro = microleccionDeHabilidad(nodeId);
+  if(!micro) return;
+  var wrap = document.createElement("div"); wrap.className = "teacher-recovery-lesson";
+  var title = document.createElement("h4"); title.textContent = micro.title; wrap.appendChild(title);
+  micro.steps.forEach(function(st){ var h=document.createElement("strong");h.textContent=st.h;var p=document.createElement("p");p.textContent=st.p;wrap.appendChild(h);wrap.appendChild(p); });
+  if(micro.question){
+    var q=document.createElement("p");q.className="teacher-recovery-question";q.textContent=micro.question.prompt;wrap.appendChild(q);
+    var opts=document.createElement("div");opts.className="teacher-diagnostic-actions";var fb=document.createElement("p");fb.className="teacher-plan-status";fb.hidden=true;fb.setAttribute("aria-live","polite");
+    micro.question.options.forEach(function(label,i){var b=document.createElement("button");b.type="button";b.className="btn teacher-diagnostic-choice";b.textContent=label;b.addEventListener("click",function(){
+      opts.querySelectorAll("button").forEach(function(x){x.disabled=true;if(micro.question.answer===Array.prototype.indexOf.call(opts.children,x))x.classList.add("on");});
+      if(i===micro.question.answer){fb.textContent="Correcto. "+micro.question.feedback;fb.style.color="var(--green)";}
+      else{fb.textContent="Todavía no. "+micro.question.feedback+" Vuelve a mirar el paso 3 y prueba otra vez.";fb.style.color="var(--red)";var retry=document.createElement("button");retry.type="button";retry.className="btn";retry.textContent="Intentar de nuevo";retry.addEventListener("click",function(){opts.querySelectorAll("button").forEach(function(x){x.disabled=false;x.classList.remove("on");});fb.hidden=true;retry.remove();});wrap.appendChild(retry);}
+      fb.hidden=false;
+    });opts.appendChild(b);});wrap.appendChild(opts);wrap.appendChild(fb);
+  }
+  host.appendChild(wrap);
+}
 function renderTeacherPlan(l){
   var plan = planificarClase(l, null, null);
   var data = resumenPlanDocente(plan);
+  var external = prerrequisitosExternosDeClase(plan);
   var el = document.createElement("section");
   el.className = "teacher-plan";
-  el.setAttribute("aria-label", "Plan de enseñanza de la clase");
+  el.setAttribute("aria-label", "Plan de enseñanza y diagnóstico inicial");
   var objectives = data.objectives.length ? data.objectives.map(function(x){ return "<li>"+esc(x)+"</li>"; }).join("") : "<li>Comprender los conceptos y procedimientos centrales de esta clase.</li>";
-  var prereqs = data.prerequisites.length ? data.prerequisites.map(function(x){ return '<li>'+esc(x.name)+' <span class="teacher-plan-status">· '+esc(x.status)+'</span></li>'; }).join("") : "<li>No hay prerrequisitos registrados en el mapa de habilidades.</li>";
-  el.innerHTML = '<p class="kicker" style="margin-bottom:5px;">Cómo te va a enseñar el tutor · '+esc(data.discipline)+'</p>'+
-    '<h2>Primero vamos a construir comprensión; después, autonomía.</h2>'+
+  el.innerHTML = '<p class="kicker" style="margin-bottom:5px;">Tu tutor · '+esc(data.discipline)+'</p>'+
+    '<h2>Antes de empezar: vamos a ubicar desde dónde partes.</h2>'+
     '<p>'+esc(data.method)+'</p>'+
     '<div class="teacher-plan-grid">'+
-      '<div class="teacher-plan-section"><p class="teacher-plan-label">Al terminar podrás trabajar en</p><ul>'+objectives+'</ul></div>'+
-      '<div class="teacher-plan-section"><p class="teacher-plan-label">Conocimientos que conviene revisar</p><ul>'+prereqs+'</ul></div>'+
-      '<div class="teacher-plan-section"><p class="teacher-plan-label">Cómo será la enseñanza</p><ul>'+data.moves.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>'+
-      '<div class="teacher-plan-section"><p class="teacher-plan-label">Cómo comprobaremos el aprendizaje</p><ul>'+data.mastery.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>'+
+      '<div class="teacher-plan-section"><p class="teacher-plan-label">Lo que aprenderás</p><ul>'+objectives+'</ul></div>'+
+      '<div class="teacher-plan-section"><p class="teacher-plan-label">Cómo te voy a enseñar</p><ul>'+data.moves.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>'+
     '</div>'+
-    '<p class="teacher-plan-status" style="margin-top:12px;">'+(plan.diagnostic.needsSupport ? 'El mapa detecta fundamentos que podrían necesitar refuerzo. No te bloquearemos: el tutor deberá comprobarlos y enseñarlos si hace falta.' : 'No aparecen prerrequisitos pendientes en el mapa actual. Aun así, comprobaremos tu comprensión durante la clase.')+'</p>';
+    '<div class="teacher-diagnostic"><p class="teacher-plan-label">Diagnóstico de conocimientos previos</p><p class="teacher-plan-status">Indica cómo te sientes con cada fundamento. No es un examen ni afecta tu nota: sirve para decidir qué debemos repasar. Después comprobaremos la comprensión con ejercicios.</p><div class="teacher-diagnostic-list"></div><p class="teacher-diagnostic-summary" aria-live="polite"></p></div>'+
+    '<div class="teacher-plan-grid" style="margin-top:14px;">'+
+      '<div class="teacher-plan-section"><p class="teacher-plan-label">Cómo sabremos que aprendiste</p><ul>'+data.mastery.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul></div>'+
+      '<div class="teacher-plan-section"><p class="teacher-plan-label">Regla del tutor</p><p>Si una idea no se entiende, cambiaremos la explicación, usaremos otra representación, resolveremos un ejemplo juntos y volverás a intentarlo. No avanzaremos fingiendo que quedó claro.</p></div>'+
+    '</div>';
+  var list = el.querySelector(".teacher-diagnostic-list");
+  var summary = el.querySelector(".teacher-diagnostic-summary");
+  if(!external.length){
+    list.innerHTML = '<p>No hay fundamentos externos registrados para esta clase. Empezaremos con una comprobación suave dentro de la explicación.</p>';
+  }
+  function updateSummary(){
+    var vals = external.map(function(x){ return state.tutorDiagnostics && state.tutorDiagnostics[x.id]; });
+    var unknown = vals.filter(function(v){ return v === "unknown"; }).length;
+    var pending = vals.filter(function(v){ return !v; }).length;
+    summary.textContent = unknown ? unknown+" fundamento(s) marcado(s) para repaso. El tutor mostrará apoyo antes de exigir que los uses." : pending ? "Diagnóstico pendiente: "+pending+" fundamento(s) sin revisar." : "Diagnóstico inicial completado. Esto orienta la enseñanza; no sustituye la comprobación de comprensión.";
+  }
+  external.forEach(function(x){
+    var row = document.createElement("div"); row.className = "teacher-diagnostic-item";
+    var name = document.createElement("div"); name.className = "teacher-diagnostic-name"; name.textContent = x.node.name;
+    var desc = document.createElement("p"); desc.className = "teacher-plan-status"; desc.textContent = x.node.desc;
+    var controls = document.createElement("div"); controls.className = "teacher-diagnostic-actions";
+    var currentStatus = state.tutorDiagnostics && state.tutorDiagnostics[x.id];
+    var buttons = [{v:"confident",t:"Lo domino"},{v:"familiar",t:"Me suena"},{v:"unknown",t:"No lo conozco"}];
+    buttons.forEach(function(opt){
+      var b = document.createElement("button"); b.type = "button"; b.className = "btn teacher-diagnostic-choice"+(currentStatus === opt.v ? " on" : ""); b.textContent = opt.t;
+      b.setAttribute("aria-pressed", currentStatus === opt.v ? "true" : "false");
+      b.addEventListener("click", function(){
+        if(!isPlainObj(state.tutorDiagnostics)) state.tutorDiagnostics = {};
+        state.tutorDiagnostics[x.id] = opt.v; currentStatus = opt.v;
+        controls.querySelectorAll("button").forEach(function(q){ q.classList.remove("on"); q.setAttribute("aria-pressed","false"); });
+        b.classList.add("on"); b.setAttribute("aria-pressed","true");
+        var recovery = row.querySelector(".teacher-recovery");
+        if(opt.v === "unknown" || opt.v === "familiar"){
+          if(!recovery){ recovery = document.createElement("div"); recovery.className = "teacher-recovery"; row.appendChild(recovery); }
+          recovery.innerHTML = "";
+          renderMicroleccion(x.node, recovery);
+          var baseId = x.node.lessons.filter(function(lid){ return lid !== l.id; })[0];
+          if(baseId){ var base = lessonById(baseId); var go = document.createElement("button"); go.type="button"; go.className="btn"; go.textContent="Repasar primero: "+(base ? base.title : "clase de fundamento"); go.addEventListener("click",function(){ openLesson(baseId); }); recovery.appendChild(go); }
+          else { var here = document.createElement("p"); here.className="teacher-plan-status"; here.textContent="Este fundamento se enseña en la clase actual. Lo explicaremos antes de usarlo."; recovery.appendChild(here); }
+        } else if(recovery) recovery.remove();
+        saveState(); updateSummary();
+      });
+      controls.appendChild(b);
+    });
+    row.appendChild(name); row.appendChild(desc); row.appendChild(controls); list.appendChild(row);
+    if(currentStatus === "unknown" || currentStatus === "familiar"){
+      var recovery = document.createElement("div"); recovery.className = "teacher-recovery";
+      renderMicroleccion(x.node, recovery);
+      var baseId = x.node.lessons.filter(function(lid){ return lid !== l.id; })[0];
+      if(baseId){ var base = lessonById(baseId); var go = document.createElement("button"); go.type="button"; go.className="btn"; go.textContent="Repasar primero: "+(base ? base.title : "clase de fundamento"); go.addEventListener("click",function(){ openLesson(baseId); }); recovery.appendChild(go); }
+      else { var here = document.createElement("p"); here.className="teacher-plan-status"; here.textContent="Este fundamento se enseña en la clase actual. Lo explicaremos antes de usarlo."; recovery.appendChild(here); }
+      row.appendChild(recovery);
+    }
+  });
+  updateSummary();
   return el;
 }
 function openLesson(id){
@@ -14798,22 +14951,37 @@ function createPlayer(mount, cfg){
         var swapIndex = Math.floor(Math.random() * (shuffleIndex + 1));
         var swapValue = checkOrder[shuffleIndex]; checkOrder[shuffleIndex] = checkOrder[swapIndex]; checkOrder[swapIndex] = swapValue;
       }
+      var selectedCorrect = false, explanationShown = false;
       checkOrder.forEach(function(oi){
         var label = s.check.options[oi];
         var option = document.createElement("button"); option.type = "button"; option.className = "lesson-check-option"; option.textContent = label;
         option.addEventListener("click", function(){
-          if(checkDone[i]) return;
-          var correct = oi === s.check.answer;
+          if(checkDone[i] || explanationShown) return;
+          selectedCorrect = oi === s.check.answer;
           options.querySelectorAll("button").forEach(function(b, bi){ b.disabled = true; if(checkOrder[bi] === s.check.answer) b.classList.add("correct"); });
-          if(!correct) option.classList.add("wrong");
-          feedback.textContent = (correct ? "Correcto. " : "Aún no. Revisa el razonamiento. ") + s.check.feedback;
+          if(!selectedCorrect){ option.classList.add("wrong"); }
+          feedback.textContent = (selectedCorrect ? "Correcto. " : "Todavía no. No pasa nada: vamos a revisar la idea antes de volver a intentarlo. ") + s.check.feedback;
           feedback.hidden = false; next.hidden = false;
+          next.textContent = selectedCorrect ? "Ver explicación y continuar" : "Ver explicación paso a paso";
         });
         options.appendChild(option);
       });
       next.addEventListener("click", function(){
-        checkDone[i] = true; checkEl.hidden = true; blocksWrap.hidden = false; typed[i] = false;
-        if(current){ current.typedBlocks = 0; typeStep(i); }
+        if(!selectedCorrect && !explanationShown){
+          explanationShown = true; blocksWrap.hidden = false; say.hidden = false;
+          current.blocks.forEach(fillInstant);
+          next.textContent = "Volver a intentarlo";
+          feedback.textContent += " Lee también el desarrollo de arriba: después podrás responder otra vez.";
+          return;
+        }
+        if(!selectedCorrect && explanationShown){
+          explanationShown = false; selectedCorrect = false;
+          options.querySelectorAll("button").forEach(function(b){ b.disabled = false; b.classList.remove("correct","wrong"); });
+          feedback.hidden = true; next.hidden = true; next.textContent = "Ver explicación y continuar";
+          return;
+        }
+        checkDone[i] = true; checkEl.hidden = true; blocksWrap.hidden = false; say.hidden = false; typed[i] = true;
+        if(current){ current.typedBlocks = current.blocks.length; refreshChrome(); }
       });
       checkEl.appendChild(title); checkEl.appendChild(prompt); checkEl.appendChild(options); checkEl.appendChild(feedback); checkEl.appendChild(next);
       el.insertBefore(checkEl, blocksWrap);
@@ -19962,15 +20130,24 @@ function startLessonExercises(l, mount){
      respaldos viejos no existe y se trata como vacío). Con 6 o menos
      generadores se sirve todo el banco, como siempre. */
   var allIdx = gens.map(function(_, i){ return i; });
+  function tutorPriority(gi){
+    var sid = habilidadDeIntento({lesson:l.id, gen:l.id+"#g"+gi});
+    if(!sid) return 0;
+    var score = state && state.tutorDiagnostics ? ({unknown:5,familiar:2,confident:0}[state.tutorDiagnostics[sid]] || 0) : 0;
+    var recent = (state && Array.isArray(state.attempts) ? state.attempts : []).filter(function(a){ return a && a.skill === sid && !isOpenAttempt(a) && !isStepsRetryAttempt(a); }).slice(-8);
+    if(recent.length){ var misses=recent.filter(function(a){return !a.ok;}).length; score += Math.round(misses/recent.length*4); }
+    return score;
+  }
+  function prioritize(indices){ return indices.slice().sort(function(a,b){ return tutorPriority(b)-tutorPriority(a) || a-b; }); }
   var chosen;
   if(gens.length <= 6){
-    chosen = shufArr(allIdx);
+    chosen = prioritize(shufArr(allIdx));
   } else {
     var lastServed = (state && isPlainObj(state.lastServed) && Array.isArray(state.lastServed[l.id])) ? state.lastServed[l.id] : [];
     var freshIdx = allIdx.filter(function(i){ return lastServed.indexOf(i) < 0; });
-    chosen = shufArr(freshIdx).slice(0, 6);
+    chosen = prioritize(shufArr(freshIdx)).slice(0, 6);
     if(chosen.length < 6){
-      var refill = shufArr(lastServed.filter(function(i){ return i < gens.length && chosen.indexOf(i) < 0; }));
+      var refill = prioritize(shufArr(lastServed.filter(function(i){ return i < gens.length && chosen.indexOf(i) < 0; })));
       chosen = chosen.concat(refill.slice(0, 6 - chosen.length));
     }
   }
