@@ -10881,31 +10881,152 @@ function planificarClase(l, attempts, lessonsDone){
   };
 }
 var RECOVERY_MICROLESSONS = {
-  "fi-vectores-componentes": {
-    title:"Descomponer una fuerza en dos direcciones",
-    steps:[
-      {h:"1. Qué es un vector",p:"Una fuerza no queda descrita solo por cuánto vale: también importa hacia dónde apunta. La representamos con una flecha. Su longitud representa el módulo y su orientación representa la dirección."},
-      {h:"2. Por qué lo descomponemos",p:"Para estudiar una barra, elegimos ejes horizontal (x) y vertical (y). En vez de trabajar con una flecha inclinada, la reemplazamos por dos efectos perpendiculares: uno horizontal y otro vertical. La suma de ambos reproduce la fuerza original."},
-      {h:"3. Cómo se calcula",p:"Si el ángulo θ se mide desde el eje horizontal positivo, la componente horizontal es Fx = F·cos(θ) y la vertical es Fy = F·sen(θ). El signo de cada componente depende de hacia dónde apunta la flecha."},
-      {h:"4. Ejemplo resuelto",p:"Una fuerza de 10 N forma 30° sobre la horizontal. Fx = 10·cos(30°) ≈ 8,66 N y Fy = 10·sen(30°) = 5 N. La componente horizontal es mayor porque el ángulo está más cerca del eje x."}
-    ],
-    question:{prompt:"Una fuerza de 10 N forma 30° con la horizontal. ¿Cuánto vale su componente vertical?",options:["5 N","8,66 N","10 N"],answer:0,feedback:"Fy = F·sen(30°) = 10·0,5 = 5 N. La componente vertical usa el seno porque el ángulo se mide desde el eje horizontal."}
-  }
+  "an-sucesiones-termino": { title:"Reconocer el patrón de una sucesión", steps:[
+    {h:"1. Qué es una sucesión",p:"Es una lista ordenada de números. Cada posición tiene un índice: a₁ es el primero, a₂ el segundo y aₙ el término que ocupa el lugar n."},
+    {h:"2. Buscar el patrón",p:"En 2, 5, 8, 11, cada término aumenta 3. La diferencia constante se llama razón de una progresión aritmética."},
+    {h:"3. Escribir el término general",p:"Si el primer término es a₁ y la diferencia es d, entonces aₙ = a₁ + (n−1)d. Se usa n−1 porque para llegar al término n damos n−1 saltos."},
+    {h:"4. Expresar una recurrencia",p:"También podemos definir a₁ = 2 y aₙ₊₁ = aₙ + 3. La recurrencia dice cómo obtener el siguiente término a partir del anterior."}
+  ],question:{prompt:"La sucesión es 2, 5, 8, 11… ¿cuál es el quinto término?",options:["14","15","17"],answer:0,feedback:"La diferencia es 3. El quinto término es 2 + 4·3 = 14."}},
+  "al-complejos-operaciones": { title:"Operar con números complejos", steps:[
+    {h:"1. Dos partes",p:"Un complejo se escribe z = a + bi. a es la parte real, b la imaginaria e i es la unidad imaginaria, definida por i² = −1."},
+    {h:"2. Sumar y restar",p:"Se agrupan partes del mismo tipo: (a+bi)+(c+di) = (a+c)+(b+d)i. No se suma una parte real con una imaginaria."},
+    {h:"3. Multiplicar",p:"Se distribuye como con binomios y luego se reemplaza i² por −1. Por ejemplo, (1+i)(1−i)=1−i²=2."},
+    {h:"4. Interpretar",p:"El complejo puede verse como el punto (a,b) del plano. La parte real es la coordenada horizontal y la imaginaria la vertical."}
+  ],question:{prompt:"¿Cuánto vale (2+i)+(3−4i)?",options:["5−3i","5+5i","6−4i"],answer:0,feedback:"Sumamos reales: 2+3=5. Sumamos coeficientes imaginarios: 1−4=−3. Resultado: 5−3i."}},
+  "al-sistemas-gauss": { title:"Resolver sistemas con eliminación de Gauss", steps:[
+    {h:"1. Qué buscamos",p:"Un sistema reúne ecuaciones que deben cumplirse al mismo tiempo. Resolverlo significa encontrar valores de las incógnitas que satisfagan todas."},
+    {h:"2. Matriz aumentada",p:"Los coeficientes y los términos independientes se ordenan en una matriz. Cada fila representa una ecuación; la barra separa coeficientes de resultados."},
+    {h:"3. Eliminar incógnitas",p:"Sumamos a una fila un múltiplo de otra para crear ceros debajo de los pivotes. Estas operaciones no cambian las soluciones del sistema."},
+    {h:"4. Sustituir hacia atrás",p:"Cuando la matriz queda escalonada, la última ecuación permite hallar una incógnita; luego reemplazamos ese valor en las filas anteriores."}
+  ],question:{prompt:"Si x+y=7 y x−y=1, ¿cuál es el valor de x?",options:["4","3","6"],answer:0,feedback:"Sumando las ecuaciones se elimina y: 2x=8. Por tanto x=4 y, al reemplazar, y=3."}},
+  "al-determinantes": { title:"Entender el determinante", steps:[
+    {h:"1. Una medida asociada a una matriz",p:"El determinante es un número que se calcula a partir de una matriz cuadrada. Informa, entre otras cosas, si la transformación asociada aplasta el espacio en alguna dirección."},
+    {h:"2. Caso 2×2",p:"Para la matriz [[a,b],[c,d]], el determinante es ad−bc: producto de la diagonal principal menos producto de la otra diagonal."},
+    {h:"3. Qué significa",p:"Si el determinante es cero, la matriz no es invertible y sus filas o columnas son dependientes. Si no es cero, la matriz es invertible."},
+    {h:"4. Área y escala",p:"En dos dimensiones, el valor absoluto del determinante indica cuánto se multiplica el área. Un determinante negativo también señala inversión de orientación."}
+  ],question:{prompt:"¿Cuál es el determinante de [[2,1],[3,4]]?",options:["5","11","−5"],answer:0,feedback:"Aplicamos ad−bc: 2·4−1·3=8−3=5."}},
+  "al-vectores-producto-escalar": { title:"Producto escalar y ángulo", steps:[
+    {h:"1. Operar dos vectores",p:"El producto escalar combina dos vectores y devuelve un número, no otro vector. En coordenadas, se multiplican componentes correspondientes y se suman."},
+    {h:"2. Fórmula por componentes",p:"En el plano, (a,b)·(c,d)=ac+bd. En tres dimensiones se agrega el producto de las terceras componentes."},
+    {h:"3. Relación con el ángulo",p:"También vale u·v=|u||v|cos(θ). Esta fórmula conecta el resultado con el ángulo entre los vectores."},
+    {h:"4. Perpendicularidad",p:"Si los dos vectores no son nulos, son perpendiculares cuando su producto escalar vale cero, porque cos(90°)=0."}
+  ],question:{prompt:"¿Cuánto vale (1,2)·(3,4)?",options:["11","10","14"],answer:0,feedback:"Multiplicamos componente a componente y sumamos: 1·3+2·4=3+8=11."}},
+  "al-vectores-producto-vectorial": { title:"Producto vectorial", steps:[
+    {h:"1. El resultado es un vector",p:"En tres dimensiones, el producto vectorial u×v produce un vector perpendicular a u y a v. Su dirección se determina con la regla de la mano derecha."},
+    {h:"2. Su módulo",p:"El módulo vale |u×v|=|u||v|sen(θ). Mide el área del paralelogramo formado por los dos vectores."},
+    {h:"3. Orden importa",p:"Cambiar el orden cambia el signo: u×v=−(v×u). No es una operación conmutativa."},
+    {h:"4. Vectores de la base",p:"Con la orientación usual de los ejes, i×j=k, j×k=i y k×i=j. Al invertir el orden, el resultado cambia de signo."}
+  ],question:{prompt:"Con la orientación usual, ¿cuánto vale j×i?",options:["−k","k","0"],answer:0,feedback:"Como j×i=−(i×j) y i×j=k, entonces j×i=−k."}},
+  "fi-vectores-componentes": { title:"Descomponer una fuerza en dos direcciones", steps:[
+    {h:"1. Qué es un vector",p:"Una fuerza no queda descrita solo por cuánto vale: también importa hacia dónde apunta. La representamos con una flecha. Su longitud representa el módulo y su orientación representa la dirección."},
+    {h:"2. Por qué lo descomponemos",p:"Para estudiar una barra, elegimos ejes horizontal (x) y vertical (y). En vez de trabajar con una flecha inclinada, la reemplazamos por dos efectos perpendiculares: uno horizontal y otro vertical. La suma de ambos reproduce la fuerza original."},
+    {h:"3. Cómo se calcula",p:"Si el ángulo θ se mide desde el eje horizontal positivo, la componente horizontal es Fx = F·cos(θ) y la vertical es Fy = F·sen(θ). El signo de cada componente depende de hacia dónde apunta la flecha."},
+    {h:"4. Ejemplo resuelto",p:"Una fuerza de 10 N forma 30° sobre la horizontal. Fx = 10·cos(30°) ≈ 8,66 N y Fy = 10·sen(30°) = 5 N. La componente horizontal es mayor porque el ángulo está más cerca del eje x."}
+  ],question:{prompt:"Una fuerza de 10 N forma 30° con la horizontal. ¿Cuánto vale su componente vertical?",options:["5 N","8,66 N","10 N"],answer:0,feedback:"Fy = F·sen(30°) = 10·0,5 = 5 N. La componente vertical usa el seno porque el ángulo se mide desde el eje horizontal."}},
+  "fi-cinematica-mru-mruv": { title:"Distinguir MRU y MRUV", steps:[
+    {h:"1. Describir el movimiento",p:"La cinemática describe cómo cambia la posición con el tiempo, sin preguntar todavía qué fuerza lo causa. Primero elegimos un eje y un sentido positivo."},
+    {h:"2. Movimiento rectilíneo uniforme",p:"En MRU la velocidad es constante y la aceleración es cero. La posición es x=x₀+vt: cada segundo se suma el mismo desplazamiento."},
+    {h:"3. Movimiento uniformemente variado",p:"En MRUV la aceleración es constante. La velocidad cambia según v=v₀+at y la posición según x=x₀+v₀t+(1/2)at²."},
+    {h:"4. Elegir la ecuación",p:"Si la velocidad no cambia, usa MRU. Si la aceleración es constante y distinta de cero, usa MRUV. Las unidades deben ser compatibles: metros, segundos y m/s²."}
+  ],question:{prompt:"Un objeto parte del reposo con aceleración constante de 2 m/s². ¿Qué velocidad tiene a los 3 s?",options:["6 m/s","3 m/s","9 m/s"],answer:0,feedback:"v=v₀+at=0+2·3=6 m/s."}},
+  "fi-movimiento-circular": { title:"Movimiento circular uniforme", steps:[
+    {h:"1. Ángulo y tiempo",p:"En el movimiento circular, la posición puede describirse con un ángulo. Si gira siempre al mismo ritmo, la velocidad angular ω es constante."},
+    {h:"2. Período y frecuencia",p:"El período T es el tiempo de una vuelta. La frecuencia f es el número de vueltas por segundo. Se relacionan por f=1/T y ω=2π/T=2πf."},
+    {h:"3. Velocidad lineal",p:"Un punto a distancia r del centro recorre un arco. Su rapidez tangencial vale v=ωr: a mayor radio, mayor rapidez para la misma velocidad angular."},
+    {h:"4. Aceleración centrípeta",p:"Aunque la rapidez sea constante, cambia la dirección de la velocidad. Por eso hay aceleración hacia el centro: ac=v²/r=ω²r."}
+  ],question:{prompt:"Un punto gira con ω=3 rad/s a 2 m del centro. ¿Cuál es su rapidez tangencial?",options:["6 m/s","1,5 m/s","5 m/s"],answer:0,feedback:"v=ωr=3·2=6 m/s."}},
+  "pc-algoritmos-expresiones": { title:"Leer expresiones y operadores", steps:[
+    {h:"1. Una expresión calcula un valor",p:"Una expresión combina datos y operadores. Para saber qué produce, hay que respetar las reglas de precedencia y evaluar las operaciones en el orden correcto."},
+    {h:"2. División entera y resto",p:"En Python, // devuelve el cociente entero y % devuelve el resto. Por ejemplo, 17//5 vale 3 y 17%5 vale 2, porque 17=5·3+2."},
+    {h:"3. Precedencia",p:"Paréntesis primero; luego potencias; después multiplicación, división, división entera y resto; finalmente suma y resta. Si hay empate, normalmente se evalúa de izquierda a derecha."},
+    {h:"4. Trazar antes de ejecutar",p:"Sustituye los valores y calcula cada parte en orden. Una traza manual pequeña permite detectar si interpretaste mal un operador."}
+  ],question:{prompt:"¿Qué resultado devuelve 17 % 5 en Python?",options:["2","3","3,4"],answer:0,feedback:"% devuelve el resto de la división entera. Como 17=5·3+2, el resultado es 2."}},
+  "pc-control-logica": { title:"Condiciones booleanas", steps:[
+    {h:"1. Dos valores posibles",p:"Una condición booleana solo puede ser True o False. Las comparaciones como x>3 producen uno de esos dos valores."},
+    {h:"2. Operadores",p:"and es verdadero si ambas condiciones lo son. or es verdadero si al menos una lo es. not invierte el valor lógico."},
+    {h:"3. De Morgan",p:"Negar una conjunción la convierte en disyunción de negaciones: not(A and B) equivale a (not A) or (not B). Negar una disyunción produce una conjunción de negaciones."},
+    {h:"4. Evaluar por partes",p:"Primero resuelve las comparaciones, después los not y luego combina con and u or. Escribir una tabla de verdad ayuda cuando la condición es larga."}
+  ],question:{prompt:"¿Cuánto vale not (True and False)?",options:["True","False","No se puede saber"],answer:0,feedback:"True and False es False. not False invierte el resultado y da True."}},
+  "pc-algoritmos-tipos-conversion": { title:"Tipos de datos y conversiones", steps:[
+    {h:"1. El tipo cambia la operación",p:"El número 2 y el texto \"2\" pueden verse parecidos, pero son datos distintos. Sumar números calcula; sumar textos concatena."},
+    {h:"2. Qué devuelve input",p:"En Python, input() devuelve texto (str), incluso si el usuario escribe dígitos. No se convierte automáticamente en número."},
+    {h:"3. Convertir de forma explícita",p:"int(\"4\") produce el entero 4. float(\"4.5\") produce un número decimal. La conversión debe ser válida para el contenido recibido."},
+    {h:"4. Evitar errores",p:"Antes de operar, identifica el tipo de cada dato. Si necesitas hacer cuentas con una entrada, conviértela primero y luego aplica el operador."}
+  ],question:{prompt:"¿Qué devuelve int(\"4\") + 3 en Python?",options:["7","43","Error siempre"],answer:0,feedback:"int convierte el texto \"4\" en el número 4. Luego 4+3=7."}},
+  "pc-funciones-conceptos": { title:"Funciones, parámetros y retorno", steps:[
+    {h:"1. Qué es una función",p:"Una función agrupa instrucciones bajo un nombre para poder reutilizarlas. Se define una vez y se ejecuta cuando se la llama."},
+    {h:"2. Parámetros y argumentos",p:"Los parámetros son nombres que aparecen en la definición. Los argumentos son los valores concretos que se pasan al llamar la función."},
+    {h:"3. return no es print",p:"return entrega un resultado al programa que llamó la función. print muestra algo en pantalla, pero no devuelve ese valor como resultado."},
+    {h:"4. Seguir el flujo",p:"Al llamar una función, los argumentos ocupan los parámetros; se ejecuta el cuerpo y, al llegar a return, el valor vuelve al lugar de la llamada."}
+  ],question:{prompt:"Si doble(n) devuelve n*2, ¿qué devuelve doble(3)?",options:["6","3","None"],answer:0,feedback:"El argumento 3 ocupa el parámetro n y return n*2 entrega 3·2=6."}},
+  "icse-conceptos-estado-legitimidad": { title:"Estado, poder y legitimidad", steps:[
+    {h:"1. Estado y gobierno no son lo mismo",p:"El Estado es una organización política e institucional relativamente permanente sobre una población y un territorio. El gobierno es el conjunto de autoridades que dirige temporalmente esa organización."},
+    {h:"2. Dominación",p:"En sociología, dominación es la probabilidad de que una orden sea obedecida. Puede sostenerse en distintos fundamentos y no se reduce a la fuerza física."},
+    {h:"3. Legitimidad",p:"Hay legitimidad cuando quienes obedecen reconocen como válido el derecho de quien manda a emitir órdenes. La obediencia puede apoyarse en la tradición, el carisma o reglas legales."},
+    {h:"4. Burocracia",p:"La burocracia moderna organiza tareas mediante cargos, competencias, reglas y expedientes. Su autoridad se vincula al cargo y a normas impersonales, no solo a la persona que lo ocupa."}
+  ],question:{prompt:"¿Qué distingue principalmente a la legitimidad de la mera fuerza?",options:["El reconocimiento del derecho a mandar","La capacidad física de imponer una orden","La cantidad de funcionarios"],answer:0,feedback:"La legitimidad supone que la autoridad es reconocida como válida; la fuerza puede obtener obediencia sin ese reconocimiento."}},
+  "icse-conceptos-regimen-tipologias": { title:"Distinguir gobierno y régimen político", steps:[
+    {h:"1. Gobierno",p:"El gobierno está formado por quienes ocupan temporalmente los cargos ejecutivos y conducen las decisiones políticas."},
+    {h:"2. Régimen",p:"El régimen es el conjunto de reglas, instituciones y prácticas que organizan el acceso al poder y su ejercicio. Define cómo se compite, decide y controla la autoridad."},
+    {h:"3. Tipologías",p:"Las clasificaciones distinguen, por ejemplo, regímenes democráticos y autoritarios según la competencia política, el pluralismo, las libertades y los límites al poder."},
+    {h:"4. Cambio y continuidad",p:"Puede cambiar el gobierno mediante elecciones sin que cambie el régimen. Un cambio de régimen altera las reglas fundamentales de acceso y ejercicio del poder."}
+  ],question:{prompt:"Después de una elección cambia el presidente, pero se mantienen las reglas e instituciones. ¿Qué cambió?",options:["El gobierno","Necesariamente el régimen","El Estado desapareció"],answer:0,feedback:"Cambió quién gobierna; si las reglas e instituciones permanecen, el régimen puede seguir siendo el mismo."}},
+  "icse-conceptos-sociedad-actores": { title:"Sociedad, desigualdad y actores", steps:[
+    {h:"1. La sociedad no es homogénea",p:"Una sociedad reúne grupos y personas con posiciones, recursos, intereses y experiencias diferentes. Las relaciones entre ellos pueden incluir cooperación, conflicto y negociación."},
+    {h:"2. Estratificación",p:"La estratificación describe desigualdades relativamente estructuradas: diferencias de ingresos, poder, prestigio, educación u oportunidades."},
+    {h:"3. Actores sociopolíticos",p:"Son personas, organizaciones o colectivos capaces de intervenir en asuntos públicos: partidos, sindicatos, movimientos, asociaciones empresariales y organizaciones sociales, entre otros."},
+    {h:"4. Analizar actores",p:"Para estudiar un conflicto, identifica quiénes participan, qué intereses tienen, qué recursos movilizan y qué alianzas o disputas establecen."}
+  ],question:{prompt:"En un conflicto laboral, ¿cuál es un actor sociopolítico colectivo?",options:["Un sindicato","La temperatura del día","Una ecuación"],answer:0,feedback:"Un sindicato organiza intereses de trabajadores y puede intervenir colectivamente en decisiones y conflictos públicos."}},
+  "icse-empate-proscripcion": { title:"El empate político y la proscripción", steps:[
+    {h:"1. La ruptura de 1955",p:"El golpe de Estado de 1955 derrocó a Juan Domingo Perón. Luego se desarrolló un proceso de proscripción del peronismo, que restringió su participación política y electoral."},
+    {h:"2. Democracia restringida",p:"Entre 1955 y 1973 hubo gobiernos civiles y militares, pero la exclusión del peronismo limitó la competencia y la legitimidad del sistema político."},
+    {h:"3. Inestabilidad",p:"La proscripción, las intervenciones militares y los conflictos sociales dificultaron construir reglas compartidas y gobiernos estables. El golpe de 1966 abrió otra dictadura."},
+    {h:"4. Salida electoral",p:"En 1973 se levantó la proscripción y se abrió el camino a elecciones con participación peronista. La vuelta de Perón no eliminó automáticamente los conflictos acumulados."}
+  ],question:{prompt:"¿Qué hecho marca el inicio del ciclo de proscripción peronista?",options:["El golpe de Estado de 1955","La elección de 1983","La reforma constitucional de 1994"],answer:0,feedback:"El golpe de 1955 derrocó a Perón y dio paso a la llamada Revolución Libertadora y a la proscripción del peronismo."}},
+  "icse-neoliberalismo-convertibilidad": { title:"Neoliberalismo y Convertibilidad", steps:[
+    {h:"1. Reformas de mercado",p:"En los años noventa, el gobierno de Carlos Menem impulsó privatizaciones, apertura económica, desregulación y reformas del Estado, en un contexto internacional de expansión de políticas de mercado."},
+    {h:"2. Convertibilidad",p:"La Ley de Convertibilidad de 1991 estableció una paridad fija: un peso equivalía a un dólar. El régimen buscó frenar la inflación, pero redujo la flexibilidad de la política monetaria."},
+    {h:"3. Costos y crisis",p:"El esquema convivió con endeudamiento, vulnerabilidad externa y dificultades para ajustar la economía. La crisis se profundizó y desembocó en el colapso de 2001."},
+    {h:"4. Democracia delegativa",p:"Guillermo O'Donnell usa el concepto para analizar democracias en las que el Ejecutivo interpreta su victoria electoral como autorización amplia para gobernar con pocos controles horizontales."}
+  ],question:{prompt:"¿Qué paridad estableció la Convertibilidad argentina de 1991?",options:["1 peso = 1 dólar","10 pesos = 1 dólar","1 peso = 100 dólares"],answer:0,feedback:"La ley fijó una paridad de un peso por dólar, sostenida mediante el régimen de convertibilidad."}},
+  "ipc-lenguaje-niveles-signos": { title:"Lenguaje, metalenguaje y signos", steps:[
+    {h:"1. Signo",p:"Un signo es algo que representa otra cosa dentro de un sistema. En el modelo lingüístico, se distingue el significante (la forma) del significado (el concepto)."},
+    {h:"2. Lenguaje objeto",p:"El lenguaje objeto es el lenguaje del que estamos hablando. Por ejemplo, la oración La nieve es blanca es una expresión del lenguaje objeto."},
+    {h:"3. Metalenguaje",p:"El metalenguaje es el lenguaje que usamos para hablar del otro lenguaje. La frase La oración La nieve es blanca tiene cuatro palabras habla sobre una expresión: funciona como metalenguaje."},
+    {h:"4. Dimensiones",p:"La sintaxis estudia relaciones formales entre signos; la semántica estudia significado y referencia; la pragmática estudia el uso de expresiones en contexto."}
+  ],question:{prompt:"Cuando decimos La palabra casa tiene cuatro letras, ¿qué función cumple la expresión casa?",options:["Es mencionada como expresión del lenguaje objeto","Es una regla del metalenguaje por sí sola","Es un objeto físico"],answer:0,feedback:"La oración habla de la palabra casa como expresión lingüística; la usa como objeto de análisis desde el metalenguaje."}}
 };
-function microleccionDeHabilidad(id){
-  if(RECOVERY_MICROLESSONS[id]) return RECOVERY_MICROLESSONS[id];
-  var n = graphNode(id);
-  if(!n) return null;
-  var profile = TEACHING_PROFILES[n.etapa] || TEACHING_PROFILES.general;
-  return {title:"Recuperar: "+n.name, steps:[
-    {h:"Qué necesitas comprender",p:n.desc},
-    {h:"Cómo vamos a estudiarlo",p:profile.moves[0]+" "+profile.moves[1]},
-    {h:"Cómo comprobarlo",p:"Al volver a la clase, explica la idea con tus palabras y resuelve un caso sencillo antes de pasar a uno más complejo."}
-  ], question:null};
-}
-function prerrequisitosExternosDeClase(plan){
+function microleccionDeHabilidad(id){ return RECOVERY_MICROLESSONS[id] || null; }
+function prerrequisitosExternosDeClase(plan, attempts, lessonsDone){
   if(!plan) return [];
-  return plan.prereqs.filter(function(x){ return x.node && x.node.lessons.indexOf(plan.lessonId) < 0; });
+  var vistos = {}, out = [];
+  function buscar(id){
+    if(vistos[id]) return;
+    vistos[id] = true;
+    var node = graphNode(id); if(!node) return;
+    var mastery = masteryDeHabilidad(id, attempts, lessonsDone);
+    if(mastery.k === "dominada") return;
+    var deps = prereqsDe(id);
+    /* Se llega hasta los fundamentos más bajos que aún faltan. Así no
+       pedimos estudiar un concepto intermedio antes de sus bases. */
+    if(deps.length){ deps.forEach(buscar); return; }
+    if(node.lessons.indexOf(plan.lessonId) < 0) out.push({id:id,node:node,estado:mastery});
+  }
+  plan.skills.forEach(function(skill){
+    if(skill.estado.k !== "dominada") prereqsDe(skill.id).forEach(buscar);
+  });
+  return out;
+}
+function itemsDiagnosticoDeClase(plan, attempts, lessonsDone){
+  if(!plan) return [];
+  var items = prerrequisitosExternosDeClase(plan, attempts, lessonsDone), seen = {};
+  items.forEach(function(x){ seen[x.id] = true; x.kind = "foundation"; });
+  plan.skills.forEach(function(x){
+    if(seen[x.id] || x.estado.k === "dominada") return;
+    seen[x.id] = true;
+    items.push({id:x.id,node:x.node,estado:x.estado,kind:"target"});
+  });
+  return items;
 }
 function resumenPlanDocente(plan){
   if(!plan) return "";
@@ -10945,6 +11066,16 @@ function ordenHabilidades(){
     salientes[n].forEach(function(m){ grado[m]--; if(grado[m] === 0) cola.push(m); });
   }
   return orden.length === ids.length ? orden : null;
+}
+function prioridadTutorDeGenerador(lessonId, gi, attempts, diagnostics){
+  var sid = habilidadDeIntento({lesson:lessonId, gen:lessonId+"#g"+gi});
+  if(!sid) return 0;
+  var diag = isPlainObj(diagnostics) ? diagnostics : (state && isPlainObj(state.tutorDiagnostics) ? state.tutorDiagnostics : {});
+  var lista = Array.isArray(attempts) ? attempts : (state && Array.isArray(state.attempts) ? state.attempts : []);
+  var score = ({unknown:5,familiar:2,confident:0}[diag[sid]] || 0);
+  var recent = lista.filter(function(a){ return a && a.skill === sid && !isOpenAttempt(a) && !isStepsRetryAttempt(a); }).slice(-8);
+  if(recent.length){ var misses=recent.filter(function(a){return !a.ok;}).length; score += Math.round(misses/recent.length*4); }
+  return score;
 }
 function habilidadDeIntento(a){
   /* La ÚNICA habilidad a la que se atribuye un intento, o null si no
@@ -11185,7 +11316,9 @@ if(window.TutorData){
   window.TutorData.planificarClase = planificarClase;
   window.TutorData.resumenPlanDocente = resumenPlanDocente;
   window.TutorData.prerrequisitosExternosDeClase = prerrequisitosExternosDeClase;
+  window.TutorData.itemsDiagnosticoDeClase = itemsDiagnosticoDeClase;
   window.TutorData.microleccionDeHabilidad = microleccionDeHabilidad;
+  window.TutorData.prioridadTutorDeGenerador = prioridadTutorDeGenerador;
   window.TutorData.TEACHING_PROFILES = TEACHING_PROFILES;
   window.TutorData.bloqueosDe = bloqueosDe;
   window.TutorData.bloqueosEnCadena = bloqueosEnCadena;
@@ -13729,18 +13862,50 @@ function runSkillGraphTests(){
   });
   check("El diagnóstico inicial solo pregunta por fundamentos externos a la clase", function(){
     var p = planificarClase(lessonById("cbc-fis1-estatica"), [], {});
-    var ext = prerrequisitosExternosDeClase(p);
+    var ext = prerrequisitosExternosDeClase(p, [], {});
     return ext.length === 1 && ext[0].id === "fi-vectores-componentes";
+  });
+  check("Cada clase CBC diagnostica fundamentos o conocimientos del tema que va a enseñar", function(){
+    var cbc = LESSONS.filter(function(l){ return l.id.indexOf("cbc-") === 0; });
+    return cbc.length > 0 && cbc.every(function(l){ return itemsDiagnosticoDeClase(planificarClase(l,[],{}),[],{}).length > 0; });
+  });
+  check("El diagnóstico recorre cadenas y prioriza las bases que faltan", function(){
+    var l = lessonById("cbc-fis2-energia"), p = planificarClase(l, [], {});
+    var ext = prerrequisitosExternosDeClase(p, [], {});
+    return ext.every(function(x){ return prereqsDe(x.id).every(function(dep){ return masteryDeHabilidad(dep,[],{}).k === "dominada"; }); });
   });
   check("El fundamento de vectores tiene una microlección desde cero y práctica explicada", function(){
     var m = microleccionDeHabilidad("fi-vectores-componentes");
     return !!m && m.steps.length === 4 && !!m.question && m.question.answer === 0;
+  });
+  check("Los 19 fundamentos previos de las 37 clases CBC tienen microlección y comprobación", function(){
+    var ids = {};
+    LESSONS.filter(function(l){ return l.id.indexOf("cbc-") === 0; }).forEach(function(l){
+      itemsDiagnosticoDeClase(planificarClase(l,[],{}),[],{}).forEach(function(x){ if(x.kind === "foundation") ids[x.id] = true; });
+    });
+    var keys = Object.keys(ids);
+    return keys.length === 19 && keys.every(function(id){ var m=microleccionDeHabilidad(id); return !!m && m.steps.length >= 3 && !!m.question && m.question.options.length >= 2 && m.question.answer >= 0 && m.question.answer < m.question.options.length; });
   });
   check("Las seis disciplinas principales tienen estrategias docentes específicas", function(){
     return ["analisis","algebra","fisica","pc","icse","ipc"].every(function(k){ return TEACHING_PROFILES[k] && TEACHING_PROFILES[k].moves.length >= 3; });
   });
   check("Las 113 clases reciben un perfil y un plan docente", function(){
     return LESSONS.length === 113 && LESSONS.every(function(l){ var p=planificarClase(l,[],{}); return !!p && !!p.profile && p.sequence.length === 6 && p.mastery.length === 4; });
+  });
+  check("La práctica prioriza habilidades que el alumno marca como desconocidas", function(){
+    var lid="cbc-fis1-estatica", gi=-1, sid=null;
+    for(var i=0;i<(LESSON_EXERCISES[lid]||[]).length;i++){ var x=habilidadDeIntento({lesson:lid,gen:lid+"#g"+i}); if(x){gi=i;sid=x;break;} }
+    if(gi<0) return "no se encontró un generador atribuible";
+    var unknown=prioridadTutorDeGenerador(lid,gi,[],(function(){var d={};d[sid]="unknown";return d;})());
+    var confident=prioridadTutorDeGenerador(lid,gi,[],(function(){var d={};d[sid]="confident";return d;})());
+    return unknown > confident;
+  });
+  check("La práctica aumenta prioridad ante errores objetivos recientes", function(){
+    var lid="cbc-fis1-estatica", gi=-1, sid=null;
+    for(var i=0;i<(LESSON_EXERCISES[lid]||[]).length;i++){ var x=habilidadDeIntento({lesson:lid,gen:lid+"#g"+i}); if(x){gi=i;sid=x;break;} }
+    if(gi<0) return "no se encontró un generador atribuible";
+    var failures=[];for(var j=0;j<6;j++) failures.push({skill:sid,ok:false,kind:"num"});
+    return prioridadTutorDeGenerador(lid,gi,failures,{}) > prioridadTutorDeGenerador(lid,gi,[],{});
   });
   check("La autoevaluación diagnóstica se conserva y valida en el estado v2", function(){
     var snap = state;
@@ -14207,8 +14372,14 @@ function renderClases(){
 function renderMicroleccion(node, host){
   var nodeId = node && node.id ? node.id : Object.keys(SKILL_GRAPH).filter(function(id){ return SKILL_GRAPH[id] === node; })[0];
   var micro = microleccionDeHabilidad(nodeId);
-  if(!micro) return;
   var wrap = document.createElement("div"); wrap.className = "teacher-recovery-lesson";
+  if(!micro){
+    var node = graphNode(nodeId);
+    var routeTitle = document.createElement("h4"); routeTitle.textContent = "Ruta de recuperación: "+(node ? node.name : "fundamento pendiente"); wrap.appendChild(routeTitle);
+    var routeText = document.createElement("p"); routeText.textContent = node ? node.desc : "Este fundamento requiere una clase de repaso."; wrap.appendChild(routeText);
+    var routeNote = document.createElement("p"); routeNote.textContent = "Todavía no hay una explicación guiada propia para este fundamento. En lugar de inventar una, te llevo al material de la clase donde se enseña."; wrap.appendChild(routeNote);
+    host.appendChild(wrap); return;
+  }
   var title = document.createElement("h4"); title.textContent = micro.title; wrap.appendChild(title);
   micro.steps.forEach(function(st){ var h=document.createElement("strong");h.textContent=st.h;var p=document.createElement("p");p.textContent=st.p;wrap.appendChild(h);wrap.appendChild(p); });
   if(micro.question){
@@ -14226,7 +14397,7 @@ function renderMicroleccion(node, host){
 function renderTeacherPlan(l){
   var plan = planificarClase(l, null, null);
   var data = resumenPlanDocente(plan);
-  var external = prerrequisitosExternosDeClase(plan);
+  var external = itemsDiagnosticoDeClase(plan);
   var el = document.createElement("section");
   el.className = "teacher-plan";
   el.setAttribute("aria-label", "Plan de enseñanza y diagnóstico inicial");
@@ -14256,7 +14427,7 @@ function renderTeacherPlan(l){
   }
   external.forEach(function(x){
     var row = document.createElement("div"); row.className = "teacher-diagnostic-item";
-    var name = document.createElement("div"); name.className = "teacher-diagnostic-name"; name.textContent = x.node.name;
+    var name = document.createElement("div"); name.className = "teacher-diagnostic-name"; name.textContent = x.node.name+(x.kind === "foundation" ? " · fundamento previo" : " · tema de esta clase");
     var desc = document.createElement("p"); desc.className = "teacher-plan-status"; desc.textContent = x.node.desc;
     var controls = document.createElement("div"); controls.className = "teacher-diagnostic-actions";
     var currentStatus = state.tutorDiagnostics && state.tutorDiagnostics[x.id];
@@ -14273,10 +14444,11 @@ function renderTeacherPlan(l){
         if(opt.v === "unknown" || opt.v === "familiar"){
           if(!recovery){ recovery = document.createElement("div"); recovery.className = "teacher-recovery"; row.appendChild(recovery); }
           recovery.innerHTML = "";
-          renderMicroleccion(x.node, recovery);
-          var baseId = x.node.lessons.filter(function(lid){ return lid !== l.id; })[0];
+          if(x.kind === "foundation") renderMicroleccion({id:x.id,node:x.node}, recovery);
+          else { var own = document.createElement("p"); own.textContent="Este es uno de los objetivos de la clase. Lo construiremos desde cero en los pasos que siguen; no necesitas conocerlo antes."; recovery.appendChild(own); }
+          var baseId = x.kind === "foundation" ? x.node.lessons.filter(function(lid){ return lid !== l.id; })[0] : null;
           if(baseId){ var base = lessonById(baseId); var go = document.createElement("button"); go.type="button"; go.className="btn"; go.textContent="Repasar primero: "+(base ? base.title : "clase de fundamento"); go.addEventListener("click",function(){ openLesson(baseId); }); recovery.appendChild(go); }
-          else { var here = document.createElement("p"); here.className="teacher-plan-status"; here.textContent="Este fundamento se enseña en la clase actual. Lo explicaremos antes de usarlo."; recovery.appendChild(here); }
+          else if(x.kind === "foundation"){ var here = document.createElement("p"); here.className="teacher-plan-status"; here.textContent="Este fundamento se enseña en la clase actual. Lo explicaremos antes de usarlo."; recovery.appendChild(here); }
         } else if(recovery) recovery.remove();
         saveState(); updateSummary();
       });
@@ -14285,10 +14457,11 @@ function renderTeacherPlan(l){
     row.appendChild(name); row.appendChild(desc); row.appendChild(controls); list.appendChild(row);
     if(currentStatus === "unknown" || currentStatus === "familiar"){
       var recovery = document.createElement("div"); recovery.className = "teacher-recovery";
-      renderMicroleccion(x.node, recovery);
-      var baseId = x.node.lessons.filter(function(lid){ return lid !== l.id; })[0];
+      if(x.kind === "foundation") renderMicroleccion({id:x.id,node:x.node}, recovery);
+      else { var own = document.createElement("p"); own.textContent="Este es uno de los objetivos de la clase. Lo construiremos desde cero en los pasos que siguen; no necesitas conocerlo antes."; recovery.appendChild(own); }
+      var baseId = x.kind === "foundation" ? x.node.lessons.filter(function(lid){ return lid !== l.id; })[0] : null;
       if(baseId){ var base = lessonById(baseId); var go = document.createElement("button"); go.type="button"; go.className="btn"; go.textContent="Repasar primero: "+(base ? base.title : "clase de fundamento"); go.addEventListener("click",function(){ openLesson(baseId); }); recovery.appendChild(go); }
-      else { var here = document.createElement("p"); here.className="teacher-plan-status"; here.textContent="Este fundamento se enseña en la clase actual. Lo explicaremos antes de usarlo."; recovery.appendChild(here); }
+      else if(x.kind === "foundation"){ var here = document.createElement("p"); here.className="teacher-plan-status"; here.textContent="Este fundamento se enseña en la clase actual. Lo explicaremos antes de usarlo."; recovery.appendChild(here); }
       row.appendChild(recovery);
     }
   });
@@ -20130,15 +20303,7 @@ function startLessonExercises(l, mount){
      respaldos viejos no existe y se trata como vacío). Con 6 o menos
      generadores se sirve todo el banco, como siempre. */
   var allIdx = gens.map(function(_, i){ return i; });
-  function tutorPriority(gi){
-    var sid = habilidadDeIntento({lesson:l.id, gen:l.id+"#g"+gi});
-    if(!sid) return 0;
-    var score = state && state.tutorDiagnostics ? ({unknown:5,familiar:2,confident:0}[state.tutorDiagnostics[sid]] || 0) : 0;
-    var recent = (state && Array.isArray(state.attempts) ? state.attempts : []).filter(function(a){ return a && a.skill === sid && !isOpenAttempt(a) && !isStepsRetryAttempt(a); }).slice(-8);
-    if(recent.length){ var misses=recent.filter(function(a){return !a.ok;}).length; score += Math.round(misses/recent.length*4); }
-    return score;
-  }
-  function prioritize(indices){ return indices.slice().sort(function(a,b){ return tutorPriority(b)-tutorPriority(a) || a-b; }); }
+  function prioritize(indices){ return indices.slice().sort(function(a,b){ return prioridadTutorDeGenerador(l.id,b)-prioridadTutorDeGenerador(l.id,a) || a-b; }); }
   var chosen;
   if(gens.length <= 6){
     chosen = prioritize(shufArr(allIdx));
