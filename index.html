@@ -1192,7 +1192,8 @@ function normalizeState(s){
      por el estudiante, nunca evidencia objetiva de dominio. */
   out.tutorDiagnostics = {};
   if(isPlainObj(s.tutorDiagnostics)) Object.keys(s.tutorDiagnostics).forEach(function(id){
-    if(!graphNode(id) || ["confident","familiar","unknown"].indexOf(s.tutorDiagnostics[id]) < 0) return;
+    var validId = !!graphNode(id) || (id.indexOf("lesson:") === 0 && knownLessonId(id.slice(7)));
+    if(!validId || ["confident","familiar","unknown"].indexOf(s.tutorDiagnostics[id]) < 0) return;
     out.tutorDiagnostics[id] = s.tutorDiagnostics[id];
   });
   out.started = typeof s.started === "string" && s.started ? s.started : todayISO();
@@ -1417,7 +1418,8 @@ function validateStateShape(s){
     if(!isPlainObj(s.tutorDiagnostics)) return "tutorDiagnostics debe ser un objeto";
     var tdIds = Object.keys(s.tutorDiagnostics);
     for(var td = 0; td < tdIds.length; td++){
-      if(!knownSkillId(tdIds[td])) return "tutorDiagnostics trae una habilidad que no existe: " + tdIds[td];
+      var validDiagnosticId = knownSkillId(tdIds[td]) || (tdIds[td].indexOf("lesson:") === 0 && knownLessonId(tdIds[td].slice(7)));
+      if(!validDiagnosticId) return "tutorDiagnostics trae una habilidad o clase que no existe: " + tdIds[td];
       if(["confident","familiar","unknown"].indexOf(s.tutorDiagnostics[tdIds[td]]) < 0) return "tutorDiagnostics." + tdIds[td] + " tiene un estado inválido";
     }
   }
@@ -10881,6 +10883,30 @@ function planificarClase(l, attempts, lessonsDone){
   };
 }
 var RECOVERY_MICROLESSONS = {
+  "frac-concepto": { title:"Comprender qué representa una fracción", steps:[
+    {h:"1. Partes de un todo",p:"Una fracción a/b representa a partes cuando el todo se divide en b partes iguales. El denominador cuenta las partes iguales del todo y el numerador cuántas tomamos."},
+    {h:"2. La raya es una división",p:"La fracción 3/4 también significa 3 dividido 4. Por eso puede representar una cantidad menor que 1, igual a 1 o mayor que 1."},
+    {h:"3. El denominador no puede ser cero",p:"Dividir por cero no está definido. El denominador indica en cuántas partes se divide el todo, así que debe ser distinto de cero."},
+    {h:"4. Fracciones equivalentes",p:"Multiplicar o dividir numerador y denominador por el mismo número distinto de cero conserva el valor: 1/2 = 2/4 = 3/6."}
+  ],question:{prompt:"¿Qué fracción representa tres partes de un todo dividido en cuatro partes iguales?",options:["3/4","4/3","3/7"],answer:0,feedback:"El denominador es 4 porque el todo se dividió en cuatro partes; el numerador es 3 porque tomamos tres."}},
+  "frac-divresto": { title:"División, resto, divisores y múltiplos", steps:[
+    {h:"1. Cociente y resto",p:"Al dividir un entero a por otro b distinto de cero, buscamos q y r tales que a=bq+r, con un resto r menor que el divisor."},
+    {h:"2. Ejemplo",p:"17 dividido 5 da cociente 3 y resto 2: 17=5·3+2. La división es exacta solo cuando el resto vale cero."},
+    {h:"3. Divisor y múltiplo",p:"Si la división de a por b es exacta, b es divisor de a y a es múltiplo de b. Por ejemplo, 4 divide a 20 y 20 es múltiplo de 4."},
+    {h:"4. Para qué sirve",p:"Este vocabulario permite buscar divisores comunes, múltiplos comunes y luego calcular MCD y MCM para simplificar u operar fracciones."}
+  ],question:{prompt:"Al dividir 23 por 4, ¿cuál es el resto?",options:["3","2","4"],answer:0,feedback:"23=4·5+3. El cociente es 5 y el resto es 3."}},
+  "signos": { title:"Números positivos, negativos y opuestos", steps:[
+    {h:"1. La recta numérica",p:"El cero separa positivos y negativos. Los positivos están a la derecha; los negativos, a la izquierda. Más a la derecha significa mayor valor."},
+    {h:"2. Opuesto",p:"El opuesto está a la misma distancia del cero pero al otro lado. El opuesto de −5 es 5; el de 5 es −5."},
+    {h:"3. Suma de signos",p:"Sumar un positivo mueve a la derecha; sumar un negativo mueve a la izquierda. Si los signos son distintos, se restan los valores absolutos y queda el signo del número de mayor valor absoluto."},
+    {h:"4. Multiplicación y división",p:"Signos iguales dan resultado positivo; signos distintos dan resultado negativo. Esta regla se aplica a multiplicación y división, no se debe confundir con la regla de suma."}
+  ],question:{prompt:"¿Cuánto vale −7+3?",options:["−4","4","−10"],answer:0,feedback:"Los signos son distintos: restamos 7−3=4 y conservamos el signo del número de mayor valor absoluto, que es −7."}},
+  "frac-mult": { title:"Multiplicar y dividir fracciones", steps:[
+    {h:"1. Multiplicar",p:"Para multiplicar fracciones, multiplicamos numerador por numerador y denominador por denominador: (a/b)(c/d)=ac/bd."},
+    {h:"2. Simplificar",p:"Si numerador y denominador tienen un factor común, podemos dividir ambos por ese factor para expresar el mismo valor de forma irreducible."},
+    {h:"3. Dividir",p:"Dividir por una fracción equivale a multiplicar por su recíproca: (a/b)÷(c/d)=(a/b)(d/c), siempre que la segunda fracción no sea cero."},
+    {h:"4. Interpretar el recíproco",p:"El recíproco intercambia numerador y denominador. Por ejemplo, el recíproco de 2/3 es 3/2; su producto vale 1."}
+  ],question:{prompt:"¿Cuánto vale 2/3 ÷ 4/5?",options:["5/6","8/15","6/5"],answer:0,feedback:"Invertimos la segunda y multiplicamos: 2/3·5/4=10/12=5/6."}},
   "an-sucesiones-termino": { title:"Reconocer el patrón de una sucesión", steps:[
     {h:"1. Qué es una sucesión",p:"Es una lista ordenada de números. Cada posición tiene un índice: a₁ es el primero, a₂ el segundo y aₙ el término que ocupa el lugar n."},
     {h:"2. Buscar el patrón",p:"En 2, 5, 8, 11, cada término aumenta 3. La diferencia constante se llama razón de una progresión aritmética."},
@@ -11026,6 +11052,10 @@ function itemsDiagnosticoDeClase(plan, attempts, lessonsDone){
     seen[x.id] = true;
     items.push({id:x.id,node:x.node,estado:x.estado,kind:"target"});
   });
+  if(!plan.skills.length){
+    var lesson = lessonById(plan.lessonId);
+    if(lesson) items.push({id:"lesson:"+lesson.id,node:{name:lesson.title,desc:lesson.desc,lessons:[lesson.id]},estado:{k:"pendiente",t:"Pendiente"},kind:"target"});
+  }
   return items;
 }
 function resumenPlanDocente(plan){
@@ -11069,10 +11099,10 @@ function ordenHabilidades(){
 }
 function prioridadTutorDeGenerador(lessonId, gi, attempts, diagnostics){
   var sid = habilidadDeIntento({lesson:lessonId, gen:lessonId+"#g"+gi});
-  if(!sid) return 0;
   var diag = isPlainObj(diagnostics) ? diagnostics : (state && isPlainObj(state.tutorDiagnostics) ? state.tutorDiagnostics : {});
   var lista = Array.isArray(attempts) ? attempts : (state && Array.isArray(state.attempts) ? state.attempts : []);
-  var score = ({unknown:5,familiar:2,confident:0}[diag[sid]] || 0);
+  var score = ({unknown:5,familiar:2,confident:0}[diag["lesson:"+lessonId]] || 0);
+  if(sid) score += ({unknown:5,familiar:2,confident:0}[diag[sid]] || 0);
   var recent = lista.filter(function(a){ return a && a.skill === sid && !isOpenAttempt(a) && !isStepsRetryAttempt(a); }).slice(-8);
   if(recent.length){ var misses=recent.filter(function(a){return !a.ok;}).length; score += Math.round(misses/recent.length*4); }
   return score;
@@ -13865,9 +13895,8 @@ function runSkillGraphTests(){
     var ext = prerrequisitosExternosDeClase(p, [], {});
     return ext.length === 1 && ext[0].id === "fi-vectores-componentes";
   });
-  check("Cada clase CBC diagnostica fundamentos o conocimientos del tema que va a enseñar", function(){
-    var cbc = LESSONS.filter(function(l){ return l.id.indexOf("cbc-") === 0; });
-    return cbc.length > 0 && cbc.every(function(l){ return itemsDiagnosticoDeClase(planificarClase(l,[],{}),[],{}).length > 0; });
+  check("Las 113 clases diagnostican fundamentos o conocimientos previos del tema", function(){
+    return LESSONS.length === 113 && LESSONS.every(function(l){ return itemsDiagnosticoDeClase(planificarClase(l,[],{}),[],{}).length > 0; });
   });
   check("El diagnóstico recorre cadenas y prioriza las bases que faltan", function(){
     var l = lessonById("cbc-fis2-energia"), p = planificarClase(l, [], {});
@@ -13878,13 +13907,13 @@ function runSkillGraphTests(){
     var m = microleccionDeHabilidad("fi-vectores-componentes");
     return !!m && m.steps.length === 4 && !!m.question && m.question.answer === 0;
   });
-  check("Los 19 fundamentos previos de las 37 clases CBC tienen microlección y comprobación", function(){
+  check("Los 23 fundamentos previos del programa tienen microlección y comprobación", function(){
     var ids = {};
-    LESSONS.filter(function(l){ return l.id.indexOf("cbc-") === 0; }).forEach(function(l){
+    LESSONS.forEach(function(l){
       itemsDiagnosticoDeClase(planificarClase(l,[],{}),[],{}).forEach(function(x){ if(x.kind === "foundation") ids[x.id] = true; });
     });
     var keys = Object.keys(ids);
-    return keys.length === 19 && keys.every(function(id){ var m=microleccionDeHabilidad(id); return !!m && m.steps.length >= 3 && !!m.question && m.question.options.length >= 2 && m.question.answer >= 0 && m.question.answer < m.question.options.length; });
+    return keys.length === 23 && keys.every(function(id){ var m=microleccionDeHabilidad(id); return !!m && m.steps.length >= 3 && !!m.question && m.question.options.length >= 2 && m.question.answer >= 0 && m.question.answer < m.question.options.length; });
   });
   check("Las seis disciplinas principales tienen estrategias docentes específicas", function(){
     return ["analisis","algebra","fisica","pc","icse","ipc"].every(function(k){ return TEACHING_PROFILES[k] && TEACHING_PROFILES[k].moves.length >= 3; });
@@ -13900,6 +13929,12 @@ function runSkillGraphTests(){
     var confident=prioridadTutorDeGenerador(lid,gi,[],(function(){var d={};d[sid]="confident";return d;})());
     return unknown > confident;
   });
+  check("La práctica también se adapta a clases sin habilidad individual en el grafo", function(){
+    var lid="s1-signos", gens=LESSON_EXERCISES[lid] || [];
+    if(!gens.length) return "la clase de fundamentos no tiene generadores";
+    var d={};d["lesson:"+lid]="unknown";
+    return prioridadTutorDeGenerador(lid,0,[],d) > prioridadTutorDeGenerador(lid,0,[],{});
+  });
   check("La práctica aumenta prioridad ante errores objetivos recientes", function(){
     var lid="cbc-fis1-estatica", gi=-1, sid=null;
     for(var i=0;i<(LESSON_EXERCISES[lid]||[]).length;i++){ var x=habilidadDeIntento({lesson:lid,gen:lid+"#g"+i}); if(x){gi=i;sid=x;break;} }
@@ -13910,10 +13945,10 @@ function runSkillGraphTests(){
   check("La autoevaluación diagnóstica se conserva y valida en el estado v2", function(){
     var snap = state;
     try{
-      var sample = emptyStateV2(); sample.tutorDiagnostics["fi-vectores-componentes"] = "unknown";
+      var sample = emptyStateV2(); sample.tutorDiagnostics["fi-vectores-componentes"] = "unknown"; sample.tutorDiagnostics["lesson:s1-signos"] = "familiar";
       if(validateStateShape(sample)) return "el estado válido fue rechazado";
       var restored = normalizeState(JSON.parse(JSON.stringify(sample)));
-      if(restored.tutorDiagnostics["fi-vectores-componentes"] !== "unknown") return "no sobrevivió a normalización/respaldo";
+      if(restored.tutorDiagnostics["fi-vectores-componentes"] !== "unknown" || restored.tutorDiagnostics["lesson:s1-signos"] !== "familiar") return "no sobrevivió a normalización/respaldo";
       sample.tutorDiagnostics["fi-vectores-componentes"] = "inventado";
       if(!validateStateShape(sample)) return "se aceptó un estado diagnóstico inválido";
       return true;
