@@ -1,0 +1,77 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+Composición con inversas 
+cos(arcsen(𝑥)) = √1 − 𝑥2 ;  𝑥 ∈ [−1,1] 
+cos(arctan(𝑥)) = 1
+√1 + 𝑥2  ;  𝑥 ∈ ℝ 
+sen(arccos(𝑥)) = √1 − 𝑥2 ;  𝑥 ∈ [−1,1] 
+sen(arctan(𝑥)) = 𝑥
+√1 + 𝑥2  ;  𝑥 ∈ ℝ 
+tan(arccos(𝑥)) = √1 − 𝑥2
+𝑥  ;  𝑥 ∈ [−1,0) ∪ (0,1] 
+tan(arcsen(𝑥)) = 𝑥
+√1 − 𝑥2  ;  𝑥 ∈ (−1,1) 
+Composición con inversas 
+cos(2 arcsen(𝑥)) = 1 − 2𝑥2 ;  𝑥 ∈ [−1,1] 
+cos(2 arctan(𝑥)) = 1 − 𝑥2
+1 + 𝑥2  ;  𝑥 ∈ ℝ 
+sen(2 arccos(𝑥)) = 2𝑥√1 − 𝑥2 ;  𝑥 ∈ [−1,1] 
+sen(2 arctan(𝑥)) = 2𝑥1 + 𝑥2  ;  𝑥 ∈ ℝ 
+tan(2 arccos(𝑥)) = 2𝑥√1 − 𝑥2
+2𝑥2 − 1  ;  𝑥 ∈ [−1,1] − {− √22 , √22 } 
+tan(2 arcsen(𝑥)) = 2𝑥√1 − 𝑥2
+1 − 2𝑥2  ;  𝑥 ∈ [−1,1] − {− √22 , √22 } 
+Composición con inversas 
+cos (arccos(𝑥)2 ) = √1 + 𝑥2  ;  𝑥 ∈ [−1,1] 
+cos (arcsen(𝑥)2 ) = √1 − 𝑥 + √1 + 𝑥2  ;  𝑥 ∈ [−1,1] 
+cos (arctan(𝑥)2 ) = 1√2 √ 1√1 + 𝑥2 + 1 ;  𝑥 ∈ ℝ 
+sen (arccos(𝑥)2 ) = √1 − 𝑥√2  ;  𝑥 ∈ [−1,1] 
+sen (arcsen(𝑥)2 ) = 12 (√1 + 𝑥 − √1 − 𝑥) ;  𝑥 ∈ [−1,1] 
+sen (arctan(𝑥)2 ) = 1√2 𝑥
+√1 + 𝑥2√ 1√1 + 𝑥2 + 1
+ ;  𝑥 ∈ ℝ 
+tan (arccos(𝑥)2 ) = √1 − 𝑥√1 + 𝑥  ;  𝑥 ∈ [−1,0) ∪ (0,1] 
+tan (arcsen(𝑥)2 ) = 𝑥1 + √1 − 𝑥2  ;  𝑥 ∈ (−1,1) 
+tan (arctan(𝑥)2 ) = 𝑥√1 + 𝑥2 + 1 ;  𝑥 ∈ ℝ 
+Suma y diferencia de inversas 
+arccos(𝑥) + arccos(𝑦) = − arcsen(𝑥) − arcsen(𝑦) + 𝜋 
+TRIÁNGULOS 
+ 
+𝛼 + 𝛽 + 𝛾 = 180° (en 𝑑𝑒𝑔) = 𝜋 (en 𝑟𝑎𝑑) 
+Perímetro = 𝑎 + 𝑏 + 𝑐 ;  Área = base. altura2  
+base = 𝑐 ; altura = √(𝑎2 + 𝑏2 + 𝑐2)2 − 2(𝑎4 + 𝑏4 + 𝑐4)2𝑐  
+Fórmula de Herón 
+Á𝑟𝑒𝑎 = √𝑠(𝑠 − 𝑎)(𝑠 − 𝑏)(𝑠 − 𝑐) con 𝑠 =
+𝑃𝑒𝑟í𝑚𝑒𝑡𝑟𝑜
+2 =
+𝑎+𝑏+𝑐
+2  
+Fórmulas de Mollweide 
+𝑎 + 𝑏
+𝑐 =
+cos (𝛼 − 𝛽2 )
+sen (𝛾2)  ; 𝑎 − 𝑏𝑐 = sen (𝛼 − 𝛽2 )cos (𝛾2)  
+Teorema del Coseno 
+𝑎2 = 𝑏2 + 𝑐2 − 2𝑏𝑐 cos(𝛼) 
+𝑏2 = 𝑎2 + 𝑐2 − 2𝑎𝑐 cos(𝛽) 
+𝑐2 = 𝑎2 + 𝑏2 − 2𝑎𝑏 cos(𝛾) 
+Teorema del Seno 
+𝑎
+sen(𝛼) = 𝑏sen(𝛽) = 𝑐sen(𝛾) 
+Ley de Tangentes 
+𝑎 − 𝑏
+𝑎 + 𝑏 =
+tan (𝛼 − 𝛽2 )
+tan (𝛼 + 𝛽2 ) ; 𝑎 − 𝑐𝑎 + 𝑐 = tan (𝛼 − 𝛾2 )tan (𝛼 + 𝛾2 ) ; 𝑏 − 𝑐𝑏 + 𝑐 = tan (𝛽 − 𝛾2 )tan (𝛽 + 𝛾2 ) 
+TRIÁNGULOS RECTÁNGULOS 
+ 
+𝑐2 = 𝑎2 + 𝑏2   (Teorema de Pitágoras) 
+cos(𝛼) ∶= 𝑎𝑐        sen(𝛼) ∶= 𝑏𝑐        tg(𝛼) ∶= sen(𝛼)cos(𝛼) = 𝑏𝑎 
+Perímetro = 𝑎 + 𝑏 + 𝑐 ;  Área = base. altura2 = 𝑏𝑎2  
+DESCARGÁ MODELOS DE EXÁMENES EN algebraico.com 

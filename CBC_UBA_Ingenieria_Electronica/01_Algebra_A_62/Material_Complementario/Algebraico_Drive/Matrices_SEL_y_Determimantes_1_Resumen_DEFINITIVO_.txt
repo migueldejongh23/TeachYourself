@@ -1,0 +1,119 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+En lo que sigue 𝕂 significa ℚ, ℝ o ℂ. 
+MATRICES 
+Dados 𝐴 = (𝑎𝑖𝑗), 𝐵 = (𝑏𝑖𝑗) ∈ 𝕂𝑚×𝑛 y 𝑘 ∈ 𝕂, definimos 
+𝐴 + 𝐵 ≔ (𝑎𝑖𝑗 + 𝑏𝑖𝑗) ∈ 𝕂𝑚×𝑛 
+𝑘𝐴 ≔ (𝑘𝑎𝑖𝑗) ∈ 𝕂𝑚×𝑛 
+Dados 𝐴 = (𝑎𝑖𝑗) ∈ 𝕂𝑚×𝑛 y 𝐵 = (𝑏𝑖𝑗) ∈ 𝕂𝑛×𝑠, definimos 
+𝐴𝐵 ≔ (𝑐𝑖𝑗) ∈ 𝕂𝑚×𝑠 donde 𝑐𝑖𝑗 = (fila 𝑖 de 𝐴) ⋅ (columna 𝑗 de 𝐵) 
+Propiedades: Sean 𝐴, 𝐵 y 𝐶 de las dimensiones correctas 
+P1) 𝐴(𝐵𝐶) = (𝐴𝐵)𝐶 (Asociatividad) 
+P2) 𝐴(𝐵 + 𝐶) = 𝐴𝐵 + 𝐴𝐶 (Distributividad a izquierda) 
+       (𝐴 + 𝐵)𝐶 = 𝐴𝐶 + 𝐵𝐶 (Distributividad a derecha) 
+P3) Si 𝐴 ∈ 𝕂𝑚×𝑛, 𝐴𝐼𝑛 = 𝐴 y 𝐼𝑚𝐴 = 𝐴 donde 𝐼𝑛 ∈ 𝕂𝑛×𝑛 e 𝐼𝑚 ∈ 𝕂𝑚×𝑚 
+Propiedad: Dados 𝐴 = (𝑎𝑖𝑗) ∈ 𝕂𝑚×𝑛 y 𝐵 = (𝑏𝑖𝑗) ∈ 𝕂𝑛×𝑠, entonces 
+𝐴𝐵 = ∑(columna 𝑘 de 𝐴) ⋅ (fila 𝑘 de 𝐵)
+𝑛
+𝑘=1
+ 
+TRAZA DE UNA MATRIZ 
+Si 𝐴 = (𝑎𝑖𝑗) ∈ 𝕂𝑛×𝑛, la traza de 𝐴 es tr(𝐴) ≔ ∑ 𝑎𝑖𝑖𝑛𝑖=1 ∈ 𝕂 
+Propiedades: Sea 𝜆 ∈ 𝕂 
+P1) tr(𝐴 + 𝐵) = tr(𝐴) + tr(𝐵) 
+P2) tr(𝜆𝐴) = 𝜆 tr(𝐴) 
+P3) tr(𝐴𝐵) = tr(𝐵𝐴) si 𝐴 ∈ 𝕂𝑚×𝑛 y 𝐵 ∈ 𝕂𝑛×𝑚 
+P4) tr(𝐴𝐵𝐶) = tr(𝐶𝐴𝐵) = tr(𝐵𝐶𝐴) si 𝐴, 𝐵, 𝐶 ∈ 𝕂𝑛×𝑛 (propiedad cíclica) 
+P5) tr(𝐴𝑡) = tr(𝐴) 
+P6) Si 𝐴 es idempotente, entonces tr(𝐴) = rg(𝐴) 
+TRASPUESTA DE UNA MATRIZ 
+Si 𝐴 = (𝑎𝑖𝑗) ∈ 𝕂𝑚×𝑛, la matriz traspuesta de 𝐴 es 𝐴𝑡 ≔ (𝑎𝑗𝑖) ∈ 𝕂𝑛×𝑚 
+Propiedades: Sea 𝜆 ∈ 𝕂 
+P1) (𝐴𝑡)𝑡 = 𝐴 P2) (𝐴 + 𝐵)𝑡 = 𝐴𝑡 + 𝐵𝑡 P3) (𝜆𝐴)𝑡 = 𝜆𝐴𝑡  
+P4) (𝐴𝐵)𝑡 = 𝐵𝑡𝐴𝑡 donde 𝐴 ∈ 𝕂𝑚×𝑛 y 𝐵 ∈ 𝕂𝑛×𝑠 
+CONJUGADA Y HERMITIANO DE UNA MATRIZ 
+Si 𝐴 = (𝑎𝑖𝑗) ∈  ℂ 𝑚×𝑛, definimos su conjugada como 𝐴̅ ≔ (𝑎𝑖𝑗̅̅̅̅) ∈  ℂ 𝑚×𝑛 
+Si 𝐴 ∈  ℂ 𝑚×𝑛, definimos su hermitiano como 𝐴∗ ≔ (𝐴̅)𝑡 ∈  ℂ 𝑛×𝑚 
+Propiedades: Sea 𝜆 ∈ ℂ  
+P1) (𝐴𝑡)̅̅̅̅̅̅ = (𝐴̅)𝑡 P2) (𝐴∗)∗ = 𝐴 P3) (𝐴 + 𝐵)∗ = 𝐴∗ + 𝐵∗ 
+P4) (𝜆𝐴)∗ = 𝜆̅𝐴∗ P5) (𝐴𝐵)∗ = 𝐵∗𝐴∗ donde 𝐴 ∈ ℂ𝑚×𝑛 y 𝐵 ∈ ℂ𝑛×𝑠 
+TIPOS DE MATRICES 
+Una matriz 𝐴 = (𝑎𝑖𝑗) ∈ 𝕂𝑚×𝑛 se dice: 
+D1) Cuadrada si 𝑚 = 𝑛 
+D2) Rectangular si 𝑚 ≠ 𝑛. Si 𝑚 > 𝑛, se dice matriz vertical o matriz de 
+lado lineal. Si 𝑚 < 𝑛, se dice matriz horizontal. 
+D3) Columna si 𝑚 = 1 
+D4) Fila si 𝑛 = 1 
+Una matriz 𝐴 = (𝑎𝑖𝑗) ∈ 𝕂𝑛×𝑛 se dice: 
+D1) Triangular superior si 𝑎𝑖𝑗 = 0 para 𝑖 > 𝑗 
+D2) Triangular inferior si 𝑎𝑖𝑗 = 0 para 𝑖 < 𝑗 
+D3) Diagonal si 𝑎𝑖𝑗 = 0 para 𝑖 ≠ 𝑗 y notamos 𝐴 = diag{𝑎11, 𝑎22, … , 𝑎𝑛𝑛} 
+Definimos la matriz identidad como 𝐼𝑛 = diag{1, … ,1}. 
+Decimos que una matriz es escalar si es un múltiplo de la identidad, es 
+decir: 𝐴 = 𝑘𝐼𝑛 = diag{𝑘, … , 𝑘} 
+Una matriz 𝐴 ∈ ℂ𝑛×𝑛 se dice: 
+D1) Definida positiva si 𝐱∗𝐴𝐱 > 0 para todo 𝐱 ∈ ℂ𝑛×1 − {0} 
+D2) Semidefinida positiva si 𝐱∗𝐴𝐱 ≥ 0 para todo 𝐱 ∈ ℂ𝑛×1 − {0} 
+D3) Definida negativa si 𝐱∗𝐴𝐱 < 0 para todo 𝐱 ∈ ℂ𝑛×1 − {0} 
+D4) Semidefinida negativa si 𝐱∗𝐴𝐱 ≤ 0 para todo 𝐱 ∈ ℂ𝑛×1 − {0} 
+D5) Indefinida si existen 𝐱, 𝐲 ∈ ℂ𝑛×1 − {0} tales que 𝐱∗𝐴𝐱 > 0 e 𝐲∗𝐴𝐲 <
+0 
+Una matriz 𝐴 ∈ 𝕂𝑛×𝑛 se dice: 
+D1) Nilpotente si existe 𝑚 ∈ ℕ tal que 𝐴𝑚 = 0 
+D2) Idempotente si 𝐴2 = 𝐴 
+D3) Involutiva si 𝐴2 = 𝐼𝑛. Es decir, si 𝐴−1 = 𝐴 
+OBS: 𝐴 es idempotente si y solo si 2𝐴 − 𝐼𝑛 es involutiva 
+Una matriz 𝐴 ∈ ℂ𝑛×𝑛 se dice: 
+D1) Hermitiana (o hermítica) si 𝐴∗ = 𝐴. Es decir, si 𝑎𝑖𝑗 = 𝑎𝑗𝑖̅̅̅̅ 
+D2) Unitaria si 𝐴−1 = 𝐴∗. Es decir, si 𝐴𝐴∗ = 𝐴∗𝐴 = 𝐼𝑛 
+D3) Normal si 𝐴∗𝐴 = 𝐴∗𝐴 
+Una matriz 𝐴 ∈ ℝ𝑛×𝑛 se dice: 
+D1) Simétrica si 𝐴𝑡 = 𝐴. Es decir, si 𝑎𝑖𝑗 = 𝑎𝑗𝑖 
+D2) Antisimétrica si 𝐴𝑡 = −𝐴. Es decir, si 𝑎𝑖𝑗 = −𝑎𝑗𝑖 
+D3) Ortogonal si 𝐴−1 = 𝐴𝑡. Es decir, si 𝐴𝐴𝑡 = 𝐴𝑡𝐴 = 𝐼𝑛 
+MATRIZ INVERSA 
+Una matriz cuadrada 𝐴 ∈ 𝕂𝑛×𝑛 se dice inversible si existe 𝐵 ∈ 𝕂𝑛×𝑛 tal 
+que 𝐴𝐵 = 𝐵𝐴 = 𝐼𝑛. Cuando 𝐵 existe, es única y notamos 𝐵 = 𝐴−1.  
+Propiedades: Sean 𝐴, 𝐵 ∈ 𝕂𝑛×𝑛 inversibles y 𝜆 ∈ 𝕂 − {0}, entonces 
+P1) 𝐴−1 es inversible y vale (𝐴−1)−1 = 𝐴 
+P2) 𝜆𝐴 es inversible y vale (𝜆𝐴)−1 = 𝜆−1𝐴−1 
+P3) 𝐴𝐵 es inversible y vale (𝐴𝐵)−1 = 𝐵−1𝐴−1 
+P4) 𝐴𝑡 es inversible y vale (𝐴𝑡)−1 = (𝐴−1)𝑡 
+P5) 𝐴̅ es inversible y vale (𝐴̅)−1 = 𝐴−1̅̅̅̅̅ 
+OBS: 𝐴∗ es inversible y vale (𝐴∗)−1 = (𝐴−1)∗ 
+Propiedad: Si 𝐴 ∈ 𝕂𝑛×𝑛, las siguientes afirmaciones son equivalentes: 
+a) 𝐴 es inversible 
+b) 𝐴𝐱 = 𝐛 tiene solución única, cualquiera sea 𝑏 ∈ 𝕂𝑛×1 
+c) 𝐴𝐱 = 0 tiene únicamente solución trivial 
+d) rg(𝐴) = 𝑛 
+e) 𝐴 es equivalente por filas a 𝐼𝑛 
+ 
+SISTEMAS LINEALES 
+Un sistema lineal 𝑆 de 𝑚 ecuaciones con 𝑛 incógnitas es un conjunto de 
+𝑚 ecuaciones en las variables 𝑥1, 𝑥2, … , 𝑥𝑛 del tipo: 
+𝑆: {
+𝑎11𝑥1 + 𝑎12𝑥2 + … + 𝑎1𝑛𝑥𝑛 = 𝑏1
+𝑎21𝑥1 + 𝑎22𝑥2 + … + 𝑎2𝑛𝑥𝑛 = 𝑏2
+⋮
+𝑎𝑚1𝑥1 + 𝑎𝑚2𝑥2 + … + 𝑎𝑚𝑛𝑥𝑛 = 𝑏𝑚
+ 
+donde 𝑎𝑖𝑗, 𝑏𝑖 ∈ 𝕂 representan constantes. 
+Cuando 𝑏𝑖 = 0 para todo 𝑖 = 1, … , 𝑚, se dice que el sistema es 
+homogéneo. Por el contrario, si existe algún 𝑗 ∈ {1, … , 𝑚} tal que 𝑏𝑗 ≠ 0, 
+se dice que el sistema es no homogéneo. 
+Una 𝑛-upla (𝑠1, … , 𝑠𝑛) es una solución del sistema si y solo si al 
+reemplazar 𝑥𝑗 por 𝑠𝑗 para cada 𝑗 = 1, … , 𝑛, se satisfacen cada una de las 
+𝑚 ecuaciones. 
+Un sistema de dice incompatible si no tiene ninguna solución y 
+compatible si tiene alguna solución. 
+OBS: Un sistema lineal homogéneo siempre es compatible: 0 ∈ 𝕂𝑛 es una 
+solución, que llamaremos la solución trivial. 
+Si un sistema compatible tiene una única solución es determinado y si 
+tiene infinitas soluciones es indeterminado. 
+DESCARGÁ MODELOS DE EXÁMENES EN algebraico.com 

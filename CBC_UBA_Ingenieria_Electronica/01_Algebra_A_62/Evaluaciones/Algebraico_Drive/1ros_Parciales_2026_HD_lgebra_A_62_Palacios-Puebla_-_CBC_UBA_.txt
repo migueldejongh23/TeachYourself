@@ -1,0 +1,623 @@
+ 
+¡COLABORÁ con tus exámenes! 
+ 
+ALGEBRAICO.COM/colaboraciones 
+ 
+Hay que unirse, no para estar juntos, sino 
+para hacer algo juntos. JDC 
+Algebraico.com 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Álgebra A 62 (Palacios-Puebla) (CBC UBA) 
+PRIMEROS PARCIALES 
+«SI NO QUERÉS APRENDER, NADIE PUEDE ENSEÑARTE;  
+SI ESTÁS DETERMINADO A APRENDER, NADIE PUEDE DETENERTE» 
+ProfeUniversitario.com 
+WhatsApp +54 9 11 7121 8501 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases de Apoyo para TODAS las universidades  
+Álgebra I, II y Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS 
+Instagram, YouTube & Kick: @ProfeUniversitario 
+ESPACIO DEL PATROCINADOR 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ALGEBRAICO.COM  |  FDXMATHS@GMAIL.COM 
+IMPORTANTE Todos los materiales publicados en ALGEBRAICO.COM son con fines exclusivamente académicos. No se trata de documentos 
+estáticos, sino que son revisados y actualizados periódicamente para una versión más completa. Se permite su reproducción citando la fuente. 
+
+«SI TOMAR ES RICO                             IMAGÍNATE TOMAR EN SERIO EL CUATRIMESTRE Y APROBAR TODAS TUS MATERIAS»             
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+Programa  
+www.cbc.uba.ar/MateriasdelCBC.html 
+1) Conjuntos: Definición de conjuntos por comprensión y por extensión. Unión, intersección, diferencia, 
+complemento e igualdad de conjuntos. 
+2) Números complejos y polinomios:  Números complejos. Operaciones. Forma binómica y trigonométrica. 
+Teorema de De Möivre. Resolución de ecuaciones. Polinomios. Grado de un polinomio. Operaciones con 
+polinomios. Raíces y multiplicidad. Teorema del resto. Descomposición factorial. Teorema fu ndamental de 
+Álgebra. Fórmula de interpolación de Lagrange. 
+3) Álgebra Vectorial: Puntos en el espacio 𝑛-dimensional. Vectores. Producto escalar. Norma. Rectas y planos. 
+Producto vectorial. Distancia. Ángulo entre vectores. Área del paralelogramo. Producto mixto. Volumen del 
+paralelepípedo.  
+Proyección ortogonal. Distancia de un punto a una recta. Distancia de un punto a un plano. Simetrías. 
+4) Matrices: Espacios de matrices. Suma y producto de matrices. Sistemas de ecuaciones lineales. Matriz del 
+sistema. Eliminación de Gauss-Jordan. Rango. Teorema de Roché -Frobenius. Matrices inversibles. Cálculo de 
+la inversa. Sistemas con parámetros. 
+5) Espacios Vectoriales:  Definición. Subespacios. Independencia lineal. Combinación lineal. Sistemas de 
+generadores. Bases. Dimensión. 
+6) Determinante: Definición. Propiedades. Desarrollo por fila o por columna. Determinante de un producto. 
+Determinantes e inversas. Área del paralelogramo. Volumen del paralelepípedo. 
+7) Transformaciones lineales:  Matriz de una transformación lineal y expresión funcional. Transformaciones 
+lineales definidas sobre una base. Simetría. Proyección ortogonal. Rotación. Dilatación y contracción. 
+Deslizamientos. 𝑇(𝕊) y 𝑇−1(𝑀) con 𝑇 transformación lineal, 𝕊 subespacio y 𝑀 conjunto. Núcleo e imagen. 
+Definición sobre una base. Matriz de la composición. Matriz de la inversa. Proyectores. 
+8) Cónicas: Definición. Parábola. Circunferencia y elipse. Hipérbola. Reducción a la forma canónica. 
+Bibliografía 
+Cada una de las prácticas de esta materia comienza con un texto que resume los conceptos teóricos básicos que son 
+necesarios para la resolución de los Problemas. Se sugiere tener este texto como referencia teórica. 
+Algunas Recomendaciones 
+Hay una guía llamada Curso Previo de Matemáticas (CPM.pdf) que está destinada para los ingresantes al CBC. La idea 
+es repasar los temas del secundario, sin adelantar los contenidos de las cursadas. Más info en: FCEN Ingresantes CBC. 
+ 
+      Grupos de WhatsApp de Clases GRATUITAS CBC 2026 
+Álgebra 27 (Exactas) | Cátedra Única: 
+chat.whatsapp.com/LGWmO2L5l3y5QoacJbAYOS 
+Álgebra A 62 (Ing.) | Cátedra Única & Palacios-Puebla: 
+chat.whatsapp.com/IJxYxpiWYhQEXOkW80C86H 
+Análisis Matemático A 66 (Exactas/Ing.) | Cátedra Única & Palacios-Puebla: 
+chat.whatsapp.com/LepgPWLGXCR8TC08SjGcSu 
+ 
+
+«EXTRAÑO A MI EX…             A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                           
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+ 
+              Descargá GRATIS la versión más reciente de este PDF, 
+modelos de exámenes y todo lo que necesitás para aprobar: 
+algebraico.com/CBC  altillo.com/examenes/index.asp 
+ 
+ 
+    YouTube Play List: Álgebra 27 y A 62 (CBC UBA) 
+youtube.com/playlist?list=PLCAbyu1fKwePdXzmkw3AmjjYsPQJ3X_gl 
+    YouTube Play List: Análisis Matemático A 66 (CBC UBA) 
+youtube.com/playlist?list=PLCAbyu1fKweO_Fbm6dX8olyxyWaIAIY9L 
+ 
+ 
+          Pregunta para los que están yendo con algún particular: 
+¿Tu particular te va escribiendo todas las propiedades y teoremas que utiliza? 
+           ¡En todas tus clases con @ProfeUniversitario 
+vas a entender de dónde viene todo! ¡Todo se justifica!  
+@ProfeUniversitario OTROS PARTICULARES 
+¡Altísima calidad y claridad en las explicaciones! 
+ 
+En nuestras clases aprendés:  
+ 
++ Razonamiento matemático 
++ Justificación de procedimientos y desarrollo 
++ Comprobación de resultados 
++ Demostración de teoremas y propiedades 
+Las clases son (sospechosamente) re-baratas* y 
+quieren que pagues por mes o por programa 
+ 
+*Tratan de convencerte con el precio tan bajo que vas a pagar si 
+elegís pagar por programa completo. Luego, en la primera clase, 
+te das cuenta porque eran tan baratas. No te quieren devolver el 
+dinero del resto de clases que ya no querés tomar. TE 
+ESTAFARON. 
+¡Aprendés a hacer y entender demostraciones 
+matemáticas* desde tu primera clase! 
+ 
+*Esto imprescindible para aprobar un examen final o libre de 
+Matemáticas de Nivel Universitario 
+No saben demostrar* 
+ 
+*Sus alumnos no aprueban exámenes teóricos y mastican con la 
+boca abierta cuando comen 
+Los profes de la facu felicitan a nuestros 
+alumnos en las clases* y por los desarrollos tan 
+claros y bien justificados en sus exámenes 
+ 
+*Solo recomendamos que participen cuando el profe de la 
+facultad pregunta algo y nadie más responde; de esta manera 
+evitás que tus compañeros te miren feo y que los bullies del aula 
+te quiten el almuerzo en el receso 
+Los alumnos siguen sintiéndose incómodos por 
+el nivel de las clases de la facultad y pierden la 
+materia o terminan abandonando la carrera 
+
+«SI TOMAR ES RICO                             IMAGÍNATE TOMAR EN SERIO EL CUATRIMESTRE Y APROBAR TODAS TUS MATERIAS»             
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+Máximo porcentaje de alumnos aprobados* 
+ 
+*¿Te acordás que nosotros grabamos las clases? ¡Bueno, esto es 
+clave para repasar y aprobar!  
+Aprueban muy pocos*   
+*Los alumnos no tienen videos para repasar y escuchan cumbia a 
+todo volumen y sin auriculares en el transporte público 
+¡Preparamos para exámenes Finales y Libres!* 
+ 
+*Sí o sí tenés que saber hacer demostraciones. No alcanza con 
+saber resolver ejercicios. Tranqui, nosotros sí sabemos 
+demostrar y te vamos a enseñar  
+No se animan a preparar para Exámenes Libres 
+¡De cada clase vas a salir motivado e inspirado! Profesor insípido. Clases aburridas 
+ 
+ 
+          Pregunta para los que están yendo con algún particular: 
+¿Tu particular te graba las clases? ¿Cuántos videos tenés? Che, ¿Y qué onda 
+con las Matemáticas (ASESINAS) del segundo y tercer año de la carrera? 
+           ¡Todas tus clases con @ProfeUniversitario  
+se graban en HD y se comparten con Link privado! 
+@ProfeUniversitario OTROS PARTICULARES 
+Tus clases se graban en HD* + Link Privado 
+ 
+*¡Podés ver los videos de tus clases todas las veces que necesites 
+para repasar y preparar el examen que tenés que rendir! 
+No graban sus clases*  
+ 
+*Sin videos vas a tener que volver a pagar cuando necesites 
+refrescar cada tema 
+¡Clases Virtuales HD!* 
+ 
+*¡Para toda Argentina y el mundo! 
+Solo clases presenciales o virtuales de muy baja 
+calidad 
+Escribimos resúmenes en formato PDF* para 
+todas las Matemáticas de Nivel Universitario 
+ 
+*Descargalos desde nuestro sitio web. Además, para nuestros 
+alumnos, enviamos Resúmenes V.I.P. llenos de teoría y en Modo 
+Oscuro para proteger tus hermosos ojitos de la luz azul  
+No tienen resúmenes propios*  
+ 
+*Además, usan Word pirata lleno de virus y spywere 
+¡Tenés Videos Gratuitos en el canal de YouTube* 
+@ProfeUniversitario para que veas la 
+calidad de las clases y explicaciones!  
+ 
+*¡Mirá YA nuestras Listas de Reproducción! 
+No tienen videos. 
+ 
+No tenés idea cómo son las clases 
+Matemáticas de Nivel Universitario, EN SERIO* 
+ 
+*Desde Cursos de Ingresos Universitarios y CBC, pasando por 
+todas las matemáticas de la carrera de grado (como Álgebra 1, 2 
+y 3, Álgebra Lineal 1 y 2, Análisis Matemático 1, 2, 3 y 4, etc.) 
+¡Hasta las matemáticas de posgrados y maestrías! 
+Solo enseñan CBC y secundaria* 
+ 
+*Un particular que solo enseña para el CBC y secundaria tiene el 
+techo muy bajo y eso te limita 
+ 
+  
+
+«EXTRAÑO A MI EX…             A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                           
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+UBA - CBC - ÁLGEBRA (62) - CÁTEDRA PALACIOS-PUEBLA 
+PRIMER PARCIAL - TURNO MMV 10 A 13 - 2026 1C - SEDE LAS HERAS 𝐓𝐄𝐌𝐀 𝟏  
+1 2 3 4 5 CALIFICACIÓN 
+      
+ 
+APELLIDO Y NOMBRE:       DNI: 
+COMISIÓN:     HOJAS ENTREGADAS (Sin contar enunciado): 
+Resuelva los siguientes problemas justificando adecuadamente su respuesta: No se considerarán respuestas numéricas 
+sueltas. La evaluación quedará aprobada resolviendo CORRECTAMENTE AL MENOS DOS PROBLEMAS. 
+ 
+Problema 1: Dado el sistema 
+{
+𝑥1 − 4𝑥2 + 3𝑥3 = −2
+3𝑥1 − 𝑎𝑥2 + 𝑏𝑥3 = 4
+−𝑥1 + 𝑏𝑥2 + 𝑎𝑥3 = −3
+ 
+hallar 𝑎, 𝑏, 𝑐 ∈ ℝ para que (3,2,1) sea solución del sistema. Para los valores hallados, indicar si 
+(3,2,1) es la única solución o si el sistema posee infinitas soluciones. Si el sistema es compatible 
+indeterminado, hallar todas las soluciones del sistema. 
+Problema 2: Sean 𝐴, 𝐵 ∈ ℝ3×3 dos matrices tales que 𝐴𝐵 = (4 2 30 2 −1
+0 0 3
+) y det(𝐴−1) = 13, calcular 
+det(𝐵) y det(𝐴4𝐵−1𝐴𝑇𝐵3). 
+Problema 3: Una panadería vende tres tipos de panes de molde confeccionados con distintos tipos 
+de harinas. Para preparar un pan de tipo 𝐴 se utilizan 100 gramos de harina integral, 100 gramos 
+de harina de avena y 200 gramos de harina de centeno. Un pan de tipo 𝐵 se prepara con 250 gramos 
+de harina integral, 50 gramos de harina de avena y 100 gramos de harina de centeno. U n pan de 
+tipo 𝐶 se prepara con 200 gramos de harina integral, 500 gramos de harina de avena y 150 gramos 
+de harina de centeno. La panadería tiene 16 kilogramos de harina integral, 5 kilogramos de harina 
+de avena y 11 kilogramos de harina de centeno. Si se quiere usar todo el stock de harina posible, 
+¿Cuántos panes de cada tipo se pueden elaborar? 
+Problema 4: Hallar la forma trigonométrica de todos los 𝑧 ∈ ℂ tales que 
+𝑧5 = −16 + 16√3𝑖 
+Problema 5: Dado 
+𝑝(𝑋) = −𝑋5 − 3𝑋4 + 𝑋3 + 7𝑋2 + 𝑘, 
+hallar 𝑘 ∈ ℝ para que −1 sea raíz de 𝑝(𝑋). Para el valor hallado, encontrar todas las raíces de 𝑝, 
+indicar la multiplicidad de cada una y factorizar 𝑝 en ℝ[𝑋]. 
+  
+
+«SI TOMAR ES RICO                             IMAGÍNATE TOMAR EN SERIO EL CUATRIMESTRE Y APROBAR TODAS TUS MATERIAS»             
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+UBA - CBC - ÁLGEBRA (62) - CÁTEDRA PALACIOS-PUEBLA 
+PRIMER PARCIAL - TURNO MMV 10 A 13 - 2026 1C - SEDE LAS HERAS 𝐓𝐄𝐌𝐀 𝟏  
+1 2 3 4 5 CALIFICACIÓN 
+      
+ 
+APELLIDO Y NOMBRE:       DNI: 
+COMISIÓN:     HOJAS ENTREGADAS (Sin contar enunciado): 
+Resuelva los siguientes problemas justificando adecuadamente su respuesta: No se considerarán respuestas numéricas 
+sueltas. La evaluación quedará aprobada resolviendo CORRECTAMENTE AL MENOS DOS PROBLEMAS. 
+ 
+Problema 1: Resolver el siguiente sistema utilizando el método de Gauss-Jordan: 
+{
+𝑥1 − 2𝑥2 + 𝑥4 = 1
+3𝑥1 − 5𝑥2 − 2𝑥3 = 1
+2𝑥1 − 3𝑥2 − 2𝑥3 − 𝑥4 = 0
+𝑥1 − 𝑥2 − 2𝑥3 − 2𝑥4 = −1
+ 
+Indicar el rango de la matriz del sistema, el rango de la matriz ampliada y si el sistema es compatible 
+determinado, compatible indeterminado o incompatible. 
+Problema 2: Dada la matriz 
+𝐴 = (
+𝑘 0 1
+0 1 𝑘
+0 3 6
+), 
+hallar todos los valores de 𝑘 ∈ ℝ para los cuales 𝐴 es inversible. Para 𝑘 = 1, calcular 𝐴−1 y 
+det(2𝐴50). 
+Problema 3: Tres amigos, Juan, Pedro y María, fueron a una librería. Juan compró 2 cuadernos, 3 
+lapiceras y un lápiz negro y gastó 10700 pesos. Pedro compró un cuaderno, 2 lapiceras y 3 lápices 
+negros y gastó 7200. María compró 3 cuadernos, una lapicera y 2 lápices negros y gastó 13900. 
+¿Cuánto cuestan los cuadernos, las lapiceras y los lápices? 
+Problema 4: Hallar la forma binómica de todos los 𝑧 ∈ ℂ tales que  
+𝑧3 = (√3 − 𝑖)18 
+Problema 5: Dado  
+𝑝(𝑋) = 𝑋4 + 𝑋3 + 2𝑋2 + 𝑎𝑋 + 𝑏, 
+hallar 𝑎 y 𝑏 para que 1 y −2 sean raíces de 𝑝. Para los valores hallados, encontrar todas las raíces 
+de 𝑝. 
+  
+
+«SI TOMAR ES RICO                             IMAGÍNATE TOMAR EN SERIO EL CUATRIMESTRE Y APROBAR TODAS TUS MATERIAS»             
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+UBA - CBC - ÁLGEBRA (62) - CÁTEDRA PALACIOS-PUEBLA 
+PRIMER PARCIAL - TURNO MMV 13 A 16 - 2026 1C - SEDE LAS HERAS 𝐓𝐄𝐌𝐀 𝟐  
+1 2 3 4 5 CALIFICACIÓN 
+      
+ 
+APELLIDO Y NOMBRE:       DNI: 
+COMISIÓN:     HOJAS ENTREGADAS (Sin contar enunciado): 
+Resuelva los siguientes problemas justificando adecuadamente su respuesta: No se considerarán respuestas numéricas 
+sueltas. La evaluación quedará aprobada resolviendo CORRECTAMENTE AL MENOS DOS PROBLEMAS. 
+ 
+Problema 1: Dado el sistema 
+{
+𝑥1 + 𝑥2 + 𝑥3 = −1
+4𝑥1 + 𝑘2𝑥2 + 𝑥3 = 𝑘
+−𝑥1 + 2𝑥2 + 2𝑥3 = −2
+ 
+Obtener los valores de 𝑘 ∈ ℝ para los cuales el sistema es compatible determinado, compatible 
+indeterminado o incompatible. Dar la solución paramétrica en el caso en que el sistema sea 
+compatible indeterminado. 
+Problema 2: Dada la matriz 
+𝐴 = (
+1 0 2
+−1 1 1
+2 −1 0
+), 
+hallar 𝐵 = 𝐴2 − 2𝐴𝑇 y, utilizando propiedades del determinante, calcular det(3𝐵−1𝐴𝑇𝐵7𝐴6). 
+Problema 3: Un viajero que acaba de regresar de viaje gastó 30 dólares diarios en Perú, 20 dólares 
+diarios en Chile y 25 dólares diarios en Bolivia por concepto de hospedaje. En comida gastó 20 
+dólares diarios en Perú, 15 dólares diarios en Chile y 15 dólares diarios en Bolivia. Sus gastos 
+adicionales fueron de 10 dólares diarios en Perú, 20 dólares diarios en Chile y 5 dólares diarios en 
+Bolivia. Los registros del viajero indican que gastó un total de 530 dólares en hospedaje, 355 dólares 
+en comida y 250 dólares en gastos adicionales durante su viaje por estos tres países. Calcular el 
+número de días que pasó el viajero en cada país. 
+Problema 4: Hallar la forma trigonométrica de 
+𝑧 = −1 + 𝑖,    𝑤 = 1 − √3𝑖,    𝑧19𝑤̅ 23    y    𝑧47
+𝑤75 
+Problema 5: Dado el polinomio 
+𝑝(𝑋) = 𝑋4 − 𝑋3 + 𝑘𝑋2 − 4𝑋 − 2𝑘2, 
+hallar 𝑘 ∈ ℝ, 𝑘 ≠ 0, para que 2 sea raíz de 𝑝. Para el valor hallado, encontrar todas las raíces de 𝑝 y 
+factorizar 𝑝 en ℂ[𝑋]. 
+  
+
+«EXTRAÑO A MI EX…             A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                           
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+UBA - CBC - ÁLGEBRA (62) - CÁTEDRA PALACIOS-PUEBLA 
+1er RECUPERATORIO PRIMER PARCIAL - 2026 1C - SEDE LAS HERAS 𝐓𝐄𝐌𝐀 𝟏  
+1 2 3 4 5 CALIFICACIÓN 
+      
+ 
+APELLIDO Y NOMBRE:       DNI: 
+COMISIÓN:     HOJAS ENTREGADAS (Sin contar enunciado): 
+Resuelva los siguientes problemas justificando adecuadamente su respuesta: No se considerarán respuestas numéricas 
+sueltas. La evaluación quedará aprobada resolviendo CORRECTAMENTE AL MENOS DOS PROBLEMAS. 
+ 
+Problema 1: Hallar el valor de 𝑘 ∈ ℝ para que el siguiente sistema sea compatible: 
+{
+𝑥1 − 𝑥2 + 3𝑥3 = −2
+3𝑥1 + 𝑥2 + 5𝑥3 = 2
+2𝑥1 + 2𝑥2 + 2𝑥3 = 4
+𝑥1 + 3𝑥2 − 𝑥3 = 𝑘
+ 
+Para el valor de 𝑘 hallado, resolver el sistema e indicar el rango de la matriz del sistema, el rango 
+de la matriz ampliada y si el sistema es compatible determinado, compatible indeterminado o 
+incompatible. 
+Problema 2: Dadas las matrices 𝐴 = (
+3 0 1
+0 2 0
+2 0 1
+) y 𝐵 = (
+2 −3 1
+1 2 3
+3 −1 2
+), calcular utilizando 
+propiedades det(4𝐴5𝐵−1(𝐴𝑇)3𝐵7). 
+Problema 3: Tres compuestos se combinan para formar tres tipos de fertilizantes. Una unidad del 
+fertilizante del tipo 𝐼 requiere 10 kg del compuesto 𝐴,  30 kg del compuesto 𝐵 y 60 kg del compuesto 
+𝐶. Una unidad del tipo 𝐼𝐼 requiere 20 kg del compuesto 𝐴, 30 kg del compuesto 13 y 50 kg del 
+compuesto 𝐶. Una unidad del tipo 𝐼𝐼𝐼 requiere 50 kg del compuesto 𝐴 y 50 kg del y 5300 kg 
+compuesto 𝐶. Si hay disponibles 2300 kg del compuesto 𝐴, 2900 kg del compuesto 13 del 
+compuesto 𝐶, ¿Cuántas unidades de los tres tipos de fertilizantes se pueden producir si se utiliza 
+todo el material químico disponible? 
+Problema 4: Hallar todos los 𝑧 ∈ ℂ tales 
+𝑧5 = (√2 − 𝑖√2)10 
+Problema 5: Hallar todas las raíces de 
+𝑝(𝑋) = (𝑋3 − 8)(𝑋4 − 3𝑋3 + 4𝑋) 
+e indicar la multiplicidad de cada una de ellas. 
+  
+
+«SI TOMAR ES RICO                             IMAGÍNATE TOMAR EN SERIO EL CUATRIMESTRE Y APROBAR TODAS TUS MATERIAS»             
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+UBA - CBC - ÁLGEBRA (62) - CÁTEDRA PALACIOS-PUEBLA 
+𝐌𝐎𝐃𝐄𝐋𝐎 𝟏  PRIMER PARCIAL - 2026 2C - SEDE LAS HERAS 
+1 2 3 4 5 CALIFICACIÓN 
+      
+ 
+APELLIDO Y NOMBRE:       DNI: 
+COMISIÓN:     HOJAS ENTREGADAS (Sin contar enunciado): 
+Resuelva los siguientes problemas justificando adecuadamente su respuesta: No se considerarán respuestas numéricas 
+sueltas. La evaluación quedará aprobada resolviendo CORRECTAMENTE AL MENOS DOS PROBLEMAS. 
+ 
+Problema 1: Sea 
+𝐴 = (0 23 1) 
+a) Factorizar 𝐴 como producto de matrices elementales. 
+b) Calcular det(𝐴) a partir de la factorización hallada, y verificar el resultado calculando el 
+determinante directamente. 
+Problema 2: Para las matrices 𝐵 ∈ ℝ3×2 y 𝑀 ∈ ℝ2×3 se sabe que 𝐵𝑀 = 𝐶, siendo 
+(
+1 2
+0 1
+3 1
+) ( 1 0 2−1 1 1) = (−1 2 4−1 1 12 1 7) 
+a) Sin utilizar el método de Gauss, resolver el sistema 
+𝐵𝑥 = (
+2
+1
+1
+) 
+y decidir si la solución hallada es la única. 
+b) Explicar con sus palabras por qué el sistema 
+𝐵𝑥 = (
+0
+0
+1
+) 
+no tiene ninguna solución. 
+Problema 3: Sea 
+𝑧 = 6√2 (cos (994 𝜋) + 𝑖 sen (994 𝜋)) 
+Hallar la forma trigonométrica y la forma binómica de 𝑧 y de 𝑤 = 𝑧5 + (𝑧̅)3. 
+Problema 4: Sea 
+𝑝(𝑋) = 𝑋4 + 5𝑋3 + 9𝑋2 + 5𝑋 
+a) Hallar todas las raíces de 𝑝(𝑋) y factorizarlo en ℝ[𝑋] y en ℂ[𝑋]. 
+b) Dadas las matrices 
+𝐴 = (𝑝(−1) 𝑝(1)𝑝(−2) 𝑝(0)) 
+
+«EXTRAÑO A MI EX…             A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                           
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+y 𝐵 ∈ ℝ2×2 tal que det(𝐵) = 3, calcular 
+det(5𝐴7𝐵2𝐴𝑇𝐵−1) 
+indicando las propiedades del determinante utilizadas. 
+Problema 5: Una planta elabora tres fórmulas de alimento balanceado a partir de maíz, soja y 
+girasol. Cada bolsa de la fórmula 𝐴 lleva 2 kg de maíz, 1 kg de soja y 1 kg de girasol; cada bolsa de la 
+fórmula 𝐵 lleva 1 kg de maíz, 3 kg de soja y 1 kg de girasol; y cada bolsa de la fórmula 𝐶 lleva 1 kg 
+de maíz, 1 kg de soja y 3 kg de girasol.  
+a) La planta dispone de 70 kg de maíz, 100 kg de soja y 120 kg de girasol, y quiere usar todo  el 
+material. Plantear el sistema de ecuaciones lineales correspondiente y determinar cuántas 
+bolsas de cada fórmula debe preparar.  
+b) Se reemplaza la fórmula 𝐶 por una nueva fórmula 𝐶′, en la que cada bolsa lleva exactamente 
+lo mismo que una bolsa de 𝐴 y una bolsa de 𝐵 juntas. Con 80 kg de maíz, 90 kg de soja y 50 
+kg de girasol, y usando otra vez todo el material, decidir si el problema tiene solución única. 
+Hallar todas las soluciones del sistema e indicar cuántas de ellas corresponden a una 
+producción posible, teniendo en cuenta que el número de bolsas de cada fó rmula debe ser 
+un entero no negativo. 
+  
+
+«SI TOMAR ES RICO                             IMAGÍNATE TOMAR EN SERIO EL CUATRIMESTRE Y APROBAR TODAS TUS MATERIAS»             
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+UBA - CBC - ÁLGEBRA (62) - CÁTEDRA PALACIOS-PUEBLA 
+𝐌𝐎𝐃𝐄𝐋𝐎 𝟐  PRIMER PARCIAL - 2026 2C - SEDE LAS HERAS 
+1 2 3 4 5 CALIFICACIÓN 
+      
+ 
+APELLIDO Y NOMBRE:       DNI: 
+COMISIÓN:     HOJAS ENTREGADAS (Sin contar enunciado): 
+Resuelva los siguientes problemas justificando adecuadamente su respuesta: No se considerarán respuestas numéricas 
+sueltas. La evaluación quedará aprobada resolviendo CORRECTAMENTE AL MENOS DOS PROBLEMAS. 
+ 
+Problema 1: Sean las matrices elementales de orden 3 
+𝐹1 = 𝐸13,    𝐹2 = 𝐸2(4) 
+donde 𝐸13 intercambia las filas 1 y 3, y 𝐸2(4) multiplica la fila 2 por 4. Sea 𝑇 = 𝐹1 + 𝐹2. 
+a) Escribir 𝑇 explícitamente y calcular det(𝑇), det(𝐹1) y det(𝐹2). 
+b) Decidir si 𝑇 es inversible. Comparar con la Inversibilidad de 𝐹1 y de 𝐹2 y explicar qué se 
+concluye sobre la igualdad 
+(𝐹1 + 𝐹2)−1 = 𝐹1−1 + 𝐹2−1 
+Problema 2: Sea 
+𝑝(𝑋) = 𝑋3 − 3𝑋2 + 4 
+a) Hallar 𝑐0, 𝑐1, 𝑐2, 𝑐3 ∈ ℝ tales que 
+𝑝(𝑋) = 𝑐0 + 𝑐1(𝑋 − 2) + 𝑐2(𝑋 − 2)2 + 𝑐3(𝑋 − 2)3 
+planteando y resolviendo el sistema que resulta de igualar los coeficientes. 
+b) Deducir de esta escritura la multiplicidad de 2 como raíz de 𝑝, explicando el criterio utilizado 
+y factorizar 𝑝 en ℝ[𝑋]. 
+Problema 3:  
+a) Hallar la forma trigonométrica de 
+𝑧 =
+43 (cos (176 𝜋) + 𝑖 sen (176 𝜋))
+(−√3 + 𝑖)
+7  
+b) Graficar el conjunto 
+𝐴 = {𝑧 ∈ ℂ: |𝑧| < 1, 𝜋2 < arg(𝑧) < 34 𝜋} 
+e indicar si 𝑧 pertenece al conjunto 𝐴 o no. 
+Problema 4: A partir de la resolución de un sistema de 3 ecuaciones y 3 incógnitas, hallar los 
+coeficientes de un polinomio 𝑝(𝑋) de grado 2 que verifica 𝑝(1) = 2, 𝑝(2) = 9 y 𝑝(3) = 22. 
+Problema 5: De una matriz 𝐴 ∈ ℝ3×5 se sabe que su forma escalonada reducida es 
+𝐸𝐴 = (
+1 2 0 −1 0
+0 0 1 3 0
+0 0 0 0 1
+) 
+
+«EXTRAÑO A MI EX…             A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                           
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+y que sus columnas primera, tercera y quinta son, respectivamente, (
+1
+2
+−1
+), (
+0
+1
+3
+), (
+2
+0
+1
+). 
+a) Reconstruir la matriz 𝐴 completa, explicando de dónde se obtienen las dos columnas que 
+faltan. 
+b) Un estudiante afirma que la tercera columna de 𝐴 es combinación lineal de las dos primeras. 
+Decidir si tiene razón justificando a partir de 𝐸𝐴, y determinar si el dato del enunciado 
+alcanza para que 𝐴 quede unívocamente determinada. 
+  
+
+«SI TOMAR ES RICO                             IMAGÍNATE TOMAR EN SERIO EL CUATRIMESTRE Y APROBAR TODAS TUS MATERIAS»             
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+UBA - CBC - ÁLGEBRA (62) - CÁTEDRA PALACIOS-PUEBLA 
+PRIMER PARCIAL - TURNO MMV 7 A 10 - 2026 2C - SEDE LAS HERAS 𝐓𝐄𝐌𝐀 𝟏  
+1 2 3 4 5 CALIFICACIÓN 
+      
+ 
+APELLIDO Y NOMBRE:       DNI: 
+COMISIÓN:     HOJAS ENTREGADAS (Sin contar enunciado): 
+Resuelva los siguientes problemas justificando adecuadamente su respuesta: No se considerarán respuestas numéricas 
+sueltas. La evaluación quedará aprobada resolviendo CORRECTAMENTE AL MENOS DOS PROBLEMAS. 
+ 
+Problema 1: Dado el sistema 
+{
+𝑥1 + 𝑥2 − 𝑥3 = 𝑎
+𝑥1 − 𝑥2 + 3𝑥3 = 𝑏
+3𝑥1 + 𝑥2 + 𝑥3 = 𝑐
+ 
+hallar 𝑎, 𝑏, 𝑐 ∈ ℝ para que (2, −1,5) sea solución del sistema. Para los valores hallados, indicar si 
+(2, −1,5) es la única solución o si el sistema posee infinitas soluciones . Si el sistema es compatible 
+indeterminado, hallar todas las soluciones del sistema. 
+Problema 2: Se consideran las matrices 𝐴 = (
+1 2 0
+0 1 3
+2 0 1
+) y 𝐵 = (
+1 2 0
+0 1 3
+0 −4 1
+). 
+a) Hallar una matriz elemental 𝐸 tal que 𝐸𝐴 = 𝐵, indicando de qué tipo es y qué operación de 
+filas realiza. 
+b) Hallar 𝐸−1 y verificar que también es una matriz elemental del mismo tipo. ¿Qué operación 
+de filas realiza? 
+Problema 3: Una verdulería vende 3 tipos de bolsones de frutas orgánicas. El bolsón 1 contiene 2 
+kg de mandarinas, 3 kg de manzanas y 5 kg de peras y cuesta 39000 pesos. El bolsón 2 contiene 5 
+kg de mandarinas, 3 kg de manzanas y 2 kg de peras y cuesta 30000 pesos. El bolsón 3 contiene 3 
+kg de mandarinas, 5 kg de manzanas y 3 kg de peras y cuesta 32000 pesos. Plantear un sistema y 
+resolverlo para calcular el precio del kg de cada tipo de fruta. 
+Problema 4: Se considera el polinomio 
+𝑝(𝑋) = 𝑋4 + 𝑎𝑋3 + 𝑏𝑋2 + 𝑋 + 2 ∈ ℝ[𝑋] 
+a) Hallar 𝑎, 𝑏 ∈ ℝ para que −1 sea raíz múltiple de 𝑝. 
+b) Para los valores hallados, determinar la multiplicidad de −1 como raíz de 𝑝, hallar las 
+restantes raíces y factorizar 𝑝 en ℝ[𝑋]. 
+Problema 5: Hallar la forma trigonométrica de todos los 𝑧 ∈ ℂ tales que 
+𝑧7 = 128𝑖 
+tales que Im(𝑧) > 0. 
+  
+
+«SI TOMAR ES RICO                             IMAGÍNATE TOMAR EN SERIO EL CUATRIMESTRE Y APROBAR TODAS TUS MATERIAS»             
+ProfeUniversitario.com | WhatsApp +54 9 11 7121 8501 
+Álgebra I, II, Lineal | Análisis I, II y III | Mate 1, 2, 3 y 4 | CBC, Ingresos Universitarios y Matemáticas AVANZADAS | Ig, YouTube & Kick: @ProfeUniversitario  
+DESCARGÁ más exámenes y COLABORÁ (enviando los tuyos) en ALGEBRAICO.COM y FDXMATHS@GMAIL.COM 
+UBA - CBC - ÁLGEBRA (62) - CÁTEDRA PALACIOS-PUEBLA 
+PRIMER PARCIAL - TURNO MMV 10 A 13 - 2026 2C - SEDE LAS HERAS 𝐓𝐄𝐌𝐀 𝟏  
+1 2 3 4 5 CALIFICACIÓN 
+      
+ 
+APELLIDO Y NOMBRE:       DNI: 
+COMISIÓN:     HOJAS ENTREGADAS (Sin contar enunciado): 
+Resuelva los siguientes problemas justificando adecuadamente su respuesta: No se considerarán respuestas numéricas 
+sueltas. La evaluación quedará aprobada resolviendo CORRECTAMENTE AL MENOS DOS PROBLEMAS. 
+ 
+Problema 1: Se considera, para cada 𝑘 ∈ ℝ, el sistema de ecuaciones 
+{
+𝑥 + 𝑦 + 𝑧 = 1
+2𝑥 + 3𝑦 + 𝑘𝑧 = 3
+𝑥 + 𝑘𝑦 + 3𝑧 = 3
+ 
+a) Calcular el determinante de la matriz de coeficientes en función de 𝑘 y, a partir de él, 
+determinar todos los valores de 𝑘 para los cuales el sistema tiene solución única, infinitas 
+soluciones y ninguna solución. 
+b) Para 𝑘 = 1, hallar la solución del sistema. 
+Problema 2: Dadas las matrices 𝐴 = ( 1 −1−1 1 ) y 𝐵 = ( 2 3−4 0), hallar una matriz 𝐶 ∈ ℝ2×2, 𝐶 ≠ 𝐵, 
+tal que 𝐴𝐶 = 𝐴𝐵. 
+Problema 3: Un teatro vende entradas a $6000 para adultos, $3500 para estudiantes y $2500 para 
+niños menores de 12 años. Se vendió un total de 278 entradas para una función, con una 
+recaudación total de $1300000. Si la cantidad de entradas para adultos vendidas fue 10 menos que 
+el doble de la cantidad de entradas para estudiantes, ¿Cuántas entradas de cada tipo se vendieron 
+para la función? Plantear un sistema de ecuaciones y resolverlo. 
+Problema 4: Se considera la ecuación en ℂ 
+(1 + 𝑖)𝑧 + 2𝑧̅ = 4 + 2𝑖 
+a) Escribiendo 𝑧 = 𝑥 + 𝑖𝑦 con 𝑥, 𝑦 ∈ ℝ e igualando partes reales e imaginarias , plantear el 
+sistema de dos ecuaciones lineales con incógnitas reales 𝑥 e 𝑦 que resulta, y resolverlo. 
+b) Verificar la solución en la ecuación original y expresar 𝑧 en forma trigonométrica. 
+Problema 5: Dado 
+𝑝(𝑋) = 𝑋4 − 6𝑋2 − 8𝑋 + 𝑘, 
+hallar 𝑘 ∈ ℝ para que −1 sea raíz de 𝑝(𝑋). Para el valor hallado, encontrar todas las raíces de 𝑝, 
+indicar la multiplicidad de cada una y factorizar 𝑝 en ℝ[𝑋]. 
+  

@@ -1,0 +1,124 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+FUNCIONES ESCALARES Y VECTORIALES 
+Sean 𝑛, 𝑚 ∈ ℕ. Sea 𝐴 ⊂ ℝ𝑛. Sea 𝑓: 𝐴 → ℝ𝑚 función. Decimos que 𝑓 es 
+función ESCALAR si 𝑚 = 1 y que 𝑓 es función VECTORIAL si 𝑚 > 1. 
+Definimos la imagen de 𝑓 respecto de 𝐴 como 
+Im(𝑓, 𝐴) ≔ {𝑓(𝑥) ∈ ℝ𝑚: 𝑥 ∈ 𝐴} ⊂ ℝ𝑚 
+DEF: Si 𝐴 = Dom(𝑓), entonces Im(𝑓, Dom(𝑓)) se llama imagen de 𝑓 y se 
+nota Im(𝑓) 
+Definimos el gráfico de 𝑓 a partir de 𝐴 como 
+Gra(𝑓, 𝐴) ≔ {(𝑥, 𝑓(𝑥)) ∈ ℝ𝑛+1: 𝑥 ∈ 𝐴} ⊂ ℝ𝑛+1 
+DEF: Si 𝐴 = Dom(𝑓), entonces Gra(𝑓, Dom(𝑓)) se llama gráfico de 𝑓 y se 
+nota Gra(𝑓) 
+Dado 𝑐 ∈ ℝ, definimos el conjunto de nivel 𝑐 de 𝑓 a partir de 𝐴 como 
+ℒ(𝑐, 𝑓, 𝐴) ≔ {𝑥 ∈ 𝐴: 𝑓(𝑥) = 𝑐} ⊂ ℝ𝑛 
+DEF: Si 𝐴 = Dom(𝑓), entonces ℒ(𝑐, 𝑓, Dom(𝑓)) se llama conjunto de 
+nivel 𝑐 de 𝑓 y se nota ℒ(𝑐, 𝑓) 
+DERIVADAS DIRECCIONALES Y PARCIALES. GRADIENTE Y MATRIZ 
+DIFERENCIAL 
+DEF: Sea 𝐴 ⊂ ℝ𝑛. Sea 𝑣 ∈ ℝ𝑛, ‖𝑣‖ = 1. Sea 𝑓: 𝐴 → ℝ función escalar. 
+Definimos la derivada de 𝑓 en 𝑃 en la dirección de 𝑣 como 
+𝜕𝑓
+𝜕𝑣 (𝑃) ≔ lím𝑡→0
+𝑓(𝑃 + 𝑡𝑣) − 𝑓(𝑃)
+𝑡  
+DEF: Si 𝑣 ∈ {𝑒1, … , 𝑒𝑛} donde 𝑒𝑖 es el 𝑖-ésimo vector canónico de ℝ𝑛, 
+𝜕𝑓
+𝜕𝑣 (𝑃) = 𝜕𝑓𝜕𝑒𝑖 (𝑃) se llama la 𝑖-ésima derivada parcial de 𝑓 en 𝑃 
+Si existen 
+𝜕𝑓
+𝜕𝑒𝑖 (𝑃), ∀𝑖 ∈ {1, … , 𝑛}, definimos el gradiente de 𝑓 en 𝑃 como 
+∇𝑓(𝑃) ≔ ( 𝜕𝑓𝜕𝑒1 (𝑃), … , 𝜕𝑓𝜕𝑒𝑛 (𝑃)) 
+OBS: Si 𝑓 es diferenciable en 𝑃, entonces ∇𝑓(𝑃) es la dirección de mayor 
+crecimiento de 𝑓 en 𝑃 y −∇𝑓(𝑃) es la dirección de mayor decrecimiento 
+de 𝑓 en 𝑃. 
+Propiedad: Si 𝑓 es diferenciable en 𝑃, entonces 
+𝜕𝑓
+𝜕𝑣 (𝑃) = 〈∇𝑓(𝑃), 𝑣〉 
+CASO PARTICULAR: Si 𝑛 = 𝑚 = 1, entonces ∇𝑓(𝑃) se llama derivada de 𝑓 
+en 𝑃 y se nota 𝑓′(𝑃) ≔ lím
+ℎ→0
+𝑓(𝑃+ℎ)−𝑓(𝑃)
+ℎ = lím𝑥→𝑃
+𝑓(𝑥)−𝑓(𝑃)
+𝑥−𝑃  (Cociente 
+Incremental) 
+DEF: 𝑓 es diferenciable en 𝑃 si 
+lím
+𝑥→𝑃
+𝑓(𝑥) − 𝑓(𝑃) − 〈𝐷(𝐹), 𝑥 − 𝑃〉
+‖𝑥 − 𝑃‖ = 0 
+OBS: Si 𝑓 es diferenciable en 𝑃 ⇒ 𝑓 es continua en 𝑃. 
+OBS: Si 𝑓 es diferenciable en 𝑃 ⇒ 𝑓 tiene derivadas parciales en 𝑃. 
+DEF: 𝐹: 𝐴 → ℝ𝑚, 𝐹 = (𝑓1, … , 𝑓𝑚) con matriz diferencial de 𝐹 en 𝑃 
+definida como 
+𝐷(𝐹)(𝑃) ≔ (𝜕𝑓𝑖
+𝜕𝑒𝑗
+(𝑃))
+1≤𝑖≤𝑛
+1≤𝑗≤𝑚
+= (
+∇𝑓1(𝑃)
+⋮
+∇𝑓𝑚(𝑃)
+) ∈ ℝ𝑚×𝑛 
+Propiedades: Sea 𝐴 ⊂ ℝ𝑛. Si 𝐹, 𝐺: 𝐴 → ℝ𝑚 diferenciables en 𝑃 ∈ 𝐴∘. 
+Entonces: 
+▪ 𝐷(𝐹 + 𝐺)(𝑃) = 𝐷(𝐹)(𝑃) + 𝐷(𝐺)(𝑃) 
+▪ 𝐷(𝜆𝐹)(𝑃) = 𝜆𝐷(𝐹)(𝑃), 𝜆 ∈ ℝ 
+▪ ∇(〈𝐹, 𝐺〉)(𝑃) = 〈𝐷(𝐹)(𝑃), 𝐺(𝑃)〉 + 〈𝐹(𝑃), 𝐷(𝐺)(𝑃)〉 
+▪ Si 𝑚 = 1 y 𝑔 ≠ 0, ∇ (𝑓𝑔) (𝑃) = ∇𝑓(𝑃)⋅𝑔(𝑃)−𝑓(𝑃)⋅∇𝑔(𝑃)[𝑔(𝑃)]2  
+Propiedad: (Regla de la Cadena) Sea 𝐹: 𝐴 ⊂ ℝ𝑛 → ℝ𝑚, 𝐺: 𝐵 ⊂ ℝ𝑚 → ℝ𝑘, 
+Im(𝐹) ⊂ 𝐵, 𝐹 diferenciable en 𝑃 ∈ 𝐴∘, 𝐺 diferenciable en 𝐹(𝑃) ∈ 𝐵∘. 
+Entonces 𝐺 ∘ 𝐹: 𝐴 → ℝ𝑘 es diferenciable en 𝑃 y además 
+𝐷(𝐺 ∘ 𝐹)(𝑃) = 𝐷(𝐺)(𝐹(𝑃)) ⋅ 𝐷(𝐹)(𝑃) 
+TEOREMA DE LA FUNCIÓN INVERSA Y DE LA FUNCIÓN IMPLÍCITA 
+TEO: (de la Función Inversa) Sea 𝐹: 𝐴 ⊂ ℝ𝑛 → ℝ𝑛, 𝑃 ∈ 𝐴∘, 𝐹 ∈ 𝐶1 tal que 
+det(𝐷(𝐹)(𝑃)) ≠ 0. Entonces: existen abiertos 𝑈, 𝑉 ⊂ ℝ𝑛 tales que 𝑃 ∈
+𝑈, 𝐹(𝑃) ∈ 𝑉, 𝐹: 𝑈 → 𝑉 es biyectiva con inversa diferenciable y 
+𝐷(𝐹−1)(𝐹(𝑄)) = (𝐷(𝐹)(𝑄))−1 
+para todo 𝑄 ∈ 𝑉. 
+TEO: (de la Función Implícita) Sea 𝐹: 𝐴 ⊂ ℝ𝑛+𝑚 → ℝ𝑚, 𝑃 = (𝑃1, 𝑃2) ∈ 𝐴∘, 
+𝑃1 ∈ ℝ𝑛, 𝑃2 ∈ ℝ𝑚, 𝐹 ∈ 𝐶1 tal que det ( 𝜕𝐹𝜕(𝑒𝑛+1,…,𝑒𝑛+𝑚) (𝑃)) ≠ 0. Entonces 
+▪ ∃𝑈 ⊂ ℝ𝑛 abierto, 𝑃1 ∈ 𝑈, ∃𝑉 ⊂ ℝ𝑚 abierto, 𝑃2 ∈ 𝑉, ∃𝑔: 𝑈 →
+𝑉, 𝑔 ∈ 𝐶1(𝑈), 𝑔(𝑃1) = 𝑃2 y 𝐹(𝑃1, 𝑔(𝑃1)) = 𝐹(𝑃). 
+▪ Si 𝑢 ∈ 𝑈 y 𝑣 ∈ 𝑉, 𝐹(𝑢, 𝑣) = 𝐹(𝑢, 𝑔(𝑢)) ⟹ 𝑔(𝑢) = 𝑣 
+▪ 𝐷(𝑔)(𝑢) = − ( 𝜕𝐹𝜕(𝑒𝑛+1,…,𝑒𝑛+𝑚) (𝑢, 𝑔(𝑢)))
+−1
+⋅
+𝜕𝐹
+𝜕(𝑒1,…,𝑒𝑛) (𝑢, 𝑔(𝑢)), 
+∀𝑢 ∈ 𝑈 
+EXTREMOS LIGADOS Y MULTIPLICADORES DE LAGRANGE 
+TEO: (Multiplicadores de Lagrange) Sea 𝑓, 𝑔: 𝐴 ⊂ ℝ𝑛 → ℝ, 𝑃 ∈ 𝐴∘, 
+𝑔(𝑃) = 𝑘, 𝑆𝑘 ≔ {𝑥 ∈ ℝ𝑛: 𝑔(𝑥) = 𝑘}, 𝑓, 𝑔 ∈ 𝐶1. Entonces, si 𝑃 es un 
+extremo local de 𝑓 en 𝑆𝑘 ⇒ ∇𝑓(𝑃) ∥ ∇𝑔(𝑃). 
+OBS: 0ℝ𝑛 ∥ 𝑣, ∀𝑣 ∈ ℝ𝑛 
+Corolario: Sea 𝑓, 𝑔: 𝐴 ⊂ ℝ𝑛 → ℝ, 𝑃 ∈ 𝐴∘, 𝑔(𝑃) = 𝑘, 𝑆𝑘 ≔ {𝑥 ∈
+𝐴: 𝑔(𝑥) = 𝑘} y 𝑃 es un extremo local de 𝑓 en 𝑆𝑘. Entonces suceden 
+algunas de estas condiciones: 
+▪ 𝑓 no es 𝐶1 en un entorno de 𝑃 
+▪ 𝑔 no es 𝐶1 en un entorno de 𝑃 
+▪ ∇𝑔(𝑃) = 0ℝ𝑛 
+▪ Existe 𝜆 ∈ ℝ tal que ∇𝑓(𝑃) = 𝜆∇𝑔(𝑃) 
+TEO: (Varias ligaduras) Sea 𝑓, 𝑔1, … , 𝑔𝑡: 𝐴 ⊂ ℝ𝑛 → ℝ, 𝑃 ∈ 𝐴∘. Sean 𝑘𝑖 ∈
+ℝ, 𝑆𝑖 ≔ {𝑥 ∈ 𝐴: 𝑔𝑖(𝑥) = 𝑘𝑖}, con 𝑖 ∈ {1, … , 𝑡}, 𝑆 ≔ ⋂ 𝑆𝑖𝑡𝑖=1  y 
+𝑓, 𝑔1, … , 𝑔𝑡 ∈ 𝐶1. Si 𝑃 ∈ 𝑆 es un extremo local de 𝑓 en 𝑆 y 
+∇𝑔1(𝑃), … , ∇𝑔𝑡(𝑃) son linealmente independientes ⟹ ∃𝜆1, … , 𝜆𝑡 ∈ ℝ 
+tales que ∇𝑓(𝑃) = 𝜆1∇𝑔1(𝑃) + ⋯ + 𝜆𝑡∇𝑔𝑡(𝑃). 
+ 
+ 
+ 
+ 
+MÁS RESÚMENES EN ProfeUniversitario.com 
+   ¡Mirá las Listas de Reproducción!             
+YouTube: @ProfeUniversitario 
+Descargá modelos de exámenes y otros materiales en: 
+algebraico.com 

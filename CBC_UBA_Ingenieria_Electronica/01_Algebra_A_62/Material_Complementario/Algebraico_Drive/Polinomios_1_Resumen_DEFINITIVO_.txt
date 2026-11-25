@@ -1,0 +1,146 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+En lo que sigue 𝕂 significa ℚ, ℝ o ℂ. 
+POLINOMIOS 
+Un polinomio con coeficientes en 𝕂 es una expresión de la forma: 
+𝑃(𝑋) = 𝑎0 + 𝑎1𝑋 + ⋯ + 𝑎𝑛𝑋𝑛 = ∑ 𝑎𝑗𝑋𝑗
+𝑛
+𝑗=0
+ con 𝑛 ∈ ℕ y 𝑎0, … , 𝑎𝑛 ∈ 𝕂 
+Indicamos 𝕂[𝑋] ≔ {𝑃: 𝑃 es el polinomio con coeficientes en 𝕂}, y 
+consideramos 𝕂[𝑋] con las operaciones de suma y producto usuales 
+▪ Si 𝑃 ≔ ∑ 𝑎𝑖𝑋𝑖𝑛𝑖=0 , 𝑄 = ∑ 𝑏𝑖𝑋𝑖𝑛𝑖=0 ∈ 𝕂[𝑋], entonces 
+𝑃 + 𝑄 ≔ ∑(𝑎𝑖 + 𝑏𝑖)𝑋𝑖
+𝑛
+𝑖=0
+∈ 𝕂[𝑋] 
+▪ Si 𝑃 ≔ ∑ 𝑎𝑖𝑋𝑖𝑛𝑖=0 , 𝑄 = ∑ 𝑏𝑗𝑋𝑗𝑚𝑗=0 ∈ 𝕂[𝑋], entonces 
+𝑃𝑄 ≔ ∑ ( ∑ 𝑎𝑖𝑏𝑗
+𝑖+𝑗=𝑘
+) 𝑋𝑘
+𝑛+𝑚
+𝑘=0
+= ∑ (∑ 𝑎𝑖𝑏𝑘−𝑖
+𝑘
+𝑖=0
+) 𝑋𝑘
+𝑛+𝑚
+𝑘=0
+∈ 𝕂[𝑋] 
+OBS 1: Si 𝑄 = 𝑐 ∈ 𝕂[𝑋] es el polinomio constante, entonces 
+𝑐𝑃 ≔ ∑(𝑐𝑎𝑖)𝑋𝑖
+𝑛
+𝑖=0
+∈ 𝕂[𝑋] 
+OBS 2: 0𝑃 = 0 y 1𝑃 = 𝑃 para todo 𝑃 ∈ 𝕂[𝑋] 
+IGUALDAD DE POLINOMIOS 
+Sean 𝑃, 𝑄 ∈ 𝕂[𝑋], 𝑃(𝑋) = ∑ 𝑎𝑗𝑋𝑗𝑛𝑗=0 , 𝑄(𝑋) = ∑ 𝑏𝑗𝑋𝑗𝑚𝑗=0  y supongamos 
+que 𝑛 ≤ 𝑚. Decimos que 𝑃 = 𝑄 ⇔ 𝑎𝑖 = 𝑏𝑖 para todo 𝑖 ≤ 𝑛 y 𝑏𝑖 = 0 si 
+𝑖 = 𝑛 + 1, . . , 𝑚 
+GRADO DE UN POLINOMIO 
+Si 𝑃 ≠ 0, 𝑃(𝑥) = 𝑎0 + 𝑎1𝑋 + ⋯ + 𝑎𝑛𝑋𝑛 y 𝑎𝑛 ≠ 0, definimos gr(𝑃) =
+dg(𝑃) = 𝑛 
+OBS: El polinomio nulo, 𝑃 = 0, no tiene grado 
+Propiedades: Sean 𝑃, 𝑄 ∈ 𝕂[𝑋] − {0} 
+P1) gr(𝑃𝑄) = gr(𝑃) + gr(𝑄) P2) gr(𝜆𝑃) = gr(𝑃) si 𝜆 ∈ 𝕂 − {0} 
+P3) gr(𝑃 + 𝑄) ≤ máx{gr(𝑃) , gr(𝑄)} si 𝑃 + 𝑄 ≠ 0 
+Sea 𝑃 ∈ 𝕂[𝑋], 𝑧 ∈ 𝕂, 𝑃(𝑋) = ∑ 𝑎𝑗𝑋𝑗𝑛𝑗=0  llamaremos especialización de 𝑃 
+en 𝑧 al número 𝑃(𝑧) = ∑ 𝑎𝑗𝑧𝑗𝑛𝑗=0 . Diremos que 𝑧 es raíz de 𝑃 si 𝑃(𝑧) = 0 
+Propiedades: 
+P1) (𝑃 + 𝑄)(𝑧) = 𝑃(𝑧) + 𝑄(𝑧) P2) (𝜆𝑃)(𝑧) = 𝜆𝑃(𝑧) 
+P3) (𝑃𝑄)(𝑧) = 𝑃(𝑧)𝑄(𝑧) 
+ALGORITMO DE DIVISIÓN 
+Dados 𝑃, 𝑄 ∈ 𝕂[𝑋], 𝑄 ≠ 0, existen únicos 𝑆, 𝑅 ∈ 𝕂[𝑋] tales que: 𝑃 =
+𝑄𝑆 + 𝑅 con 𝑅 = 0 o gr(𝑅) < gr(𝑄) 
+Teo: (del Resto) Si 𝑃 ∈ 𝕂[𝑋] y 𝑧 ∈ 𝕂, el resto de la división de 𝑃 por 
+(𝑋 − 𝑧) es igual a 𝑃(𝑧) 
+Cor: Sea 𝑃 ∈ 𝕂[𝑋] y 𝑧 ∈ 𝕂; 𝑧 es raíz de 𝑃 si y solo si (𝑋 − 𝑧)|𝑃  
+OBS 1: mult(𝑧, 𝑃) = 𝑘 ⇔ (𝑋 − 𝑧)𝑘|𝑃 pero (𝑋 − 𝑧)𝑘+1 ∤ 𝑃 
+OBS 2: mult(𝑧, 𝑃) ≥ 𝑘 ⇔ (𝑋 − 𝑧)𝑘|𝑃 
+Teo: Si 𝑃 ∈ 𝕂[𝑋] y 𝑧1, 𝑧2, … , 𝑧𝑟 ∈ 𝕂 son raíces de 𝑃 con 𝑧𝑖 ≠ 𝑧𝑗 si 𝑖 ≠ 𝑗, 
+entonces 𝑃(𝑋) = (𝑋 − 𝑧1)(𝑋 − 𝑧2) … (𝑋 − 𝑧𝑟)𝑄(𝑋) con 𝑄 ∈ 𝕂[𝑋] 
+Cor: Si 𝑃 es un polinomio de grado 𝑛 entonces 𝑃 tiene a lo sumo 𝑛 raíces 
+Teo: (de Gauss) Sea 𝑃 ∈ ℤ[𝑋], 𝑃(𝑋) = ∑ 𝑎𝑗𝑋𝑗𝑛𝑗=0  con 𝑎0 ≠ 0. Si 𝑝𝑞 (con 
+𝑝 ∈ ℤ, 𝑞 ∈ ℕ y (𝑝: 𝑞) = 1) es una raíz (en ℚ) de 𝑃, entonces 𝑝|𝑎0 y 𝑞|𝑎𝑛  
+Teo: (fundamental del álgebra) Si 𝑃 ∈ ℂ[𝑋] y gr(𝑃) ≥ 1, existe 𝑧 ∈ ℂ tal 
+que 𝑧 es raíz de 𝑃 
+Teo: Sea 𝑃 ∈ ℝ[𝑋] y 𝑧 ∈ ℂ. Si 𝑧 es raíz de 𝑃, entonces 𝑧̅ es raíz de 𝑃. Es 
+más, si 𝑧 es una raíz de multiplicidad 𝑘, entonces 𝑧̅ es una raíz de 
+multiplicidad 𝑘 
+Teo: Sea 𝑃 ∈ ℝ[𝑋] de grado impar ⇒ 𝑃 admite al menos una raíz real 
+Teo: Sea 𝑃 ∈ ℂ[𝑋] − {0}, 𝑃(𝑋) = ∑ 𝑎𝑗𝑋𝑗𝑛𝑗=0  y sean 𝑧1, 𝑧2, … , 𝑧𝑛 ∈ ℂ 
+todas sus raíces (incluso repetidas), entonces: 
+∑ 𝑧𝑘
+𝑛
+𝑘=1
+= − 𝑎𝑛−1
+𝑎𝑛
+     ;     ∏ 𝑧𝑘
+𝑛
+𝑘=1
+= (−1)𝑛 𝑎0
+𝑎𝑛
+ 
+POLINOMIO DERIVADO 
+Si 𝑃(𝑋) = ∑ 𝑎𝑗𝑋𝑗𝑛𝑗=0 ∈ 𝕂[𝑋], llamaremos polinomio derivado de 𝑃 a: 
+𝜕𝑃(𝑋) = ∑ 𝑗𝑎𝑗𝑋𝑗−1
+𝑛
+𝑗=1
+= ∑(𝑗 + 1)𝑎𝑗+1𝑋𝑗
+𝑛−1
+𝑗=0
+ 
+Propiedades: 
+P1) 𝜕(𝑃 + 𝑄) = 𝜕𝑃 + 𝜕𝑄 P2) 𝜕(𝑃𝑄) = (𝜕𝑃)𝑄 + 𝑃(𝜕𝑄) 
+P3) 𝜕(𝜆𝑋0) = 0  P4) 𝜕(𝑃𝑚) = 𝑚𝑃𝑚−1𝜕𝑃 para todo 𝑚 ∈ ℕ 
+Notación: Designamos 𝜕(𝑚)𝑃 = 𝜕(𝜕(𝑚−1)𝑃) = 𝜕(𝜕(… (𝜕⏟      
+𝑚 veces
+𝑃) … )) 
+MULTIPLICIDAD DE UNA RAÍZ 
+Si 𝑃 ∈ 𝕂[𝑋], diremos que 𝑧 ∈ ℂ es raíz de multiplicidad 𝑘 ∈ ℕ de 𝑃 si 
+𝑃(𝑋) = (𝑋 − 𝑧)𝑘𝑄(𝑋) con 𝑄 ∈ ℂ[𝑋] y 𝑄(𝑧) ≠ 0. Notación: mult(𝑧, 𝑃) 
+Si 𝑘 = 1, diremos que 𝑧 es raíz simple (de 𝑃); y si 𝑘 ≥ 2, 𝑧 es raíz múltiple 
+OBS: mult(𝑧, 𝑃) ≥ 𝑘 ⇔ 𝑃(𝑋) = (𝑋 − 𝑧)𝑘𝑄(𝑋) con 𝑄 ∈ ℂ[𝑋], 𝑄 ≠ 0 
+Teo: Sea 𝑃 ∈ ℝ[𝑋], y sea 𝑧 ∈ ℂ; 𝑧 es raíz de multiplicidad 𝑘 de 𝑃 si y solo 
+si 𝑃(𝑧) = 𝜕𝑃(𝑧) = 𝜕2𝑃(𝑧) = ⋯ = 𝜕(𝑘−1)𝑃(𝑧) = 0 y 𝜕(𝑘)𝑃(𝑧) ≠ 0 
+OBS: mult(𝑧, 𝑃) ≥ 𝑘 ⇔ 𝑃(𝑧) = 𝜕𝑃(𝑧) = 𝜕2𝑃(𝑧) = ⋯ = 𝜕(𝑘−1)𝑃(𝑧) = 0 
+POLINOMIO INTERPOLADOR DE LAGRANGE 
+Sean 𝑎0, 𝑎1, … , 𝑎𝑛 ∈ 𝕂, 𝑎𝑖 ≠ 𝑎𝑗 si 𝑖 ≠ 𝑗, y sean 𝑏0, 𝑏1, … , 𝑏𝑛 ∈ 𝕂 
+arbitrarios. Existe un único polinomio 𝐿 ∈ 𝕂[𝑋], con 𝐿 = 0 o gr(𝐿) ≤ 𝑛, 
+que satisface 𝐿(𝑎𝑖) = 𝑏𝑖 para 𝑖 = 0,1, … , 𝑛. Se trata del polinomio: 
+𝐿(𝑋) ≔ ∑ 𝑏𝑗𝐿𝑗(𝑋)
+𝑛
+𝑗=0
+ donde 𝐿𝑗(𝑋) ≔
+∏ (𝑋 − 𝑎𝑘)𝑛𝑘=0
+𝑘≠𝑗
+∏ (𝑎𝑗 − 𝑎𝑘)𝑛𝑘=0
+𝑘≠𝑗
+ 
+NÚMEROS ALGEBRAICOS Y TRASCENDENTES 
+Si 𝑧 ∈ ℂ, diremos que 𝑧 es número algebraico si y solo si 𝑧 es raíz de un 
+polinomio no nulo con coeficientes racionales. Si 𝑧 no es algebraico, 
+diremos que es trascendente 
+Ej: Dados 𝑛 ∈ ℕ y 𝑎 ∈ ℚ, todas las raíces 𝑛-ésimas de 𝑎 en ℂ son 
+números algebraicos pues son las raíces del polinomio 𝑋𝑛 − 𝑎  
+Proposición: Sea 𝑃 ∈ ℤ[𝑋] − {0} y sea 𝑑 ∈ ℕ que no es cuadrado 
+perfecto (es decir, 𝑚2 ≠ 𝑑 para todo 𝑚 ∈ ℕ). Sean 𝑎. 𝑏 ∈ ℚ tales que 
+𝑧 = 𝑎 + 𝑏√𝑑 es raíz de 𝑃 ⇒ 𝑤 = 𝑎 − 𝑏√𝑑 es raíz de 𝑃 
+(Es más, si 𝑧 es una raíz de multiplicidad 𝑘, entonces 𝑤 es una raíz de 
+multiplicidad 𝑘) 
+ 
+FÓRMULAS ÚTILES 
+∑ 𝑟𝑘
+𝑛
+𝑘=0
+= 𝑟𝑛+1 − 1𝑟 − 1  si 𝑟 ≠ 1                   ∑ 𝑘𝑛
+𝑘=1
+= 𝑛(𝑛 + 1)2  
+ 
+DESCARGÁ MODELOS DE EXÁMENES EN algebraico.com 

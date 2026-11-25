@@ -1,0 +1,112 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+TRANSFORMACIONES LINEALES (T.L.) 
+Sean 𝕍 y 𝕎 espacios vectoriales sobre el cuerpo ℝ. Una transformación 
+lineal 𝑇:𝕍→𝕎 es una función que cumple: 
+T1) Si 𝐮,𝐯∈𝕍, 𝑇(𝐮+𝐯)=𝑇(𝐮)+𝑇(𝐯) 
+T2) Si 𝜆∈ℝ y 𝐯∈𝕍, 𝑇(𝜆𝐯)=𝜆𝑇(𝐯) 
+Propiedades: (Si 𝑇:𝕍→𝕎 es T.L.) 
+P1) 𝑇(0𝕍)=0𝕎       P2) 𝑇(−𝐯)=−𝑇(𝐯)      P3) 𝑇(𝐮−𝐯)=𝑇(𝐮)−𝑇(𝐯) 
+P4) 𝑇(𝑎1𝐯1+⋯+𝑎𝑛𝐯𝑛)=𝑎1𝑇(𝐯1)+⋯+𝑎𝑛𝑇(𝐯𝑛) 
+Def: Si 𝑇:𝕍→𝕎 es T.L., 𝕊⊆𝕍, 𝐰∈𝕎, ℍ⊆𝕎, definimos: 
+D1) 𝑇(𝕊)≔{𝑇(𝐬)∈𝕎:𝐬∈𝕊} (la imagen de 𝕊 por 𝑇)   
+D2) 𝑇−1(𝐰)≔{𝐯∈𝕍:𝑇(𝐯)=𝐰} (la preimagen de 𝐰 por 𝑇) 
+D3) 𝑇−1(ℍ)≔{𝐯∈𝕍:𝑇(𝐯)∈ℍ} (la preimagen de ℍ por 𝑇) 
+Propiedades: 
+P1) Si 𝕊 es un subespacio de 𝕍, entonces 𝑇(𝕊) es un subespacio de 𝕎 
+P2) Si ℍ es un subespacio de 𝕎, entonces 𝑇−1(ℍ) es un subespacio de 𝕍 
+TEOREMA: (fundamental de las T.L.) Si {𝐯1,…,𝐯𝑛} es una base de 𝕍, y 
+𝐰1,…,𝐰𝑛∈𝕎 (no necesariamente distintos), entonces hay una única 
+T.L. 𝑇:𝕍→𝕎 tal que 𝑇(𝐯1)=𝐰1,…,𝑇(𝐯𝑛)=𝐰𝑛 
+Def: Si 𝑇:𝕍→𝕎 es T.L., definimos: 
+D1) Nu(𝑇)≔𝑇−1(0𝕎) (núcleo de 𝑇)    D2) Im(𝑇)≔𝑇(𝕍) (imagen de 𝑇) 
+Propiedades: Si 𝑇:𝕍→𝕎 es T.L. 
+P1) Nu(𝑇) es un subespacio de 𝕍       P2) Im(𝑇) es un subespacio de 𝕎 
+P3) Si {𝐯1,…,𝐯𝑛} es un conjunto de generadores de 𝕍, entonces 
+{𝑇(𝐯1),…,𝑇(𝐯𝑛)} es un conjunto de generadores de Im(𝑇) 
+P4) Si {𝑇(𝐯1),…,𝑇(𝐯𝑟)} es LI, entonces {𝐯1,…,𝐯𝑟} es LI 
+Def: Decimos que una T.L. 𝑇:𝕍→𝕎 es: 
+D1) monomorfismo si es inyectiva, esto es, si 𝑇(𝐮)=𝑇(𝐯)⇒𝐮=𝐯 
+D2) epimorfismo si es suryectiva, esto es, si Im(𝑇)=𝕎 
+D3) isomorfismo si es biyectiva, es decir, si es monomorfismo y 
+epimorfismo 
+Propiedades: Si 𝑇:𝕍→𝕎 es T.L. 
+P1) 𝑇 es monomorfismo ⟺ Nu(𝑇)={0𝕍} 
+P2) Si 𝑇 es mono y {𝐯1,…,𝐯𝑟} es LI, entonces {𝑇(𝐯1),…,𝑇(𝐯𝑟)} es LI 
+P3) 𝑇 es isomorfismo ⟺ “Si {𝐯1,…,𝐯𝑛} es base de 𝕍, entonces 
+{𝑇(𝐯1),…,𝑇(𝐯𝑛)} es base de 𝕎” 
+TEOREMA: (de la dimensión) Sea 𝑇:𝕍→𝕎 es T.L. Si dim(𝕍)<∞, 
+entonces 
+dim(𝕍)=dim(Nu(𝑇))+dim(Im(𝑇)) 
+ 
+COMPOSICIÓN DE TRANSFORMACIONES LINEALES 
+Si 𝑇1:𝕍→𝕎 y 𝑇2:𝕎→𝕌 son T.L., definimos la composición 𝑇2∘𝑇1:𝕍→
+𝕌 como: 
+𝑇2∘𝑇1(𝐯)≔𝑇2(𝑇1(𝐯)),   ∀𝐯∈𝕍 
+Propiedades: 
+P1) 𝑇2∘𝑇1 es T.L.    P2) Nu(𝑇1)⊆Nu(𝑇2∘𝑇1)    P3) Im(𝑇2∘𝑇1)⊆Im(𝑇2)  
+P4) Si 𝑇2 es monomorfismo, entonces Nu(𝑇2∘𝑇1)⊆Nu(𝑇1) 
+P5) Si Im(𝑇1)∩Nu(𝑇2)={0𝕎}, entonces Nu(𝑇2∘𝑇1)⊆Nu(𝑇1) 
+P6) Si 𝑇1 es epimorfismo, entonces Im(𝑇2)⊆Im(𝑇2∘𝑇1)  
+P7) Si 𝑇:𝕍→𝕎 es isomorfismo, la función inversa 𝑇−1:𝕎→𝕍, que 
+cumple 𝑇∘𝑇−1=𝑖𝑑𝕎 y 𝑇−1∘𝑇=𝑖𝑑𝕍, es isomorfismo 
+P8) Si 𝑇:𝕍→𝕎 y 𝐺:𝕎→𝕌 son isomorfismos, 𝐺∘𝑇 es isimorfismo y 
+verifica que (𝐺∘𝑇)−1=𝑇−1∘𝐺−1 
+ 
+PROYECTOR 
+Una T.L. 𝑝:𝕍→𝕍 se dice proyector si 
+𝑝∘𝑝=𝑝 
+Propiedades: Si 𝑝:𝕍→𝕍 es proyector, entonces: 
+P1) 𝕍=Nu(𝑝)⊕Im(𝑝)       P2) Para todo 𝐯∈Im(𝑝), 𝑝(𝐯)=𝐯 
+ 
+MATRIZ DE TRANSFORMACIÓN LINEAL 
+Def: Dada una T.L. 𝑇:ℝ𝑛 →ℝ𝑚, existe una única matriz 𝐴∈ℝ𝑚×𝑛 tal 
+que 𝑇 puede escribirse como: 
+𝑇(𝐱)=𝐴𝐱,   ∀𝐱∈ℝ𝑛 
+La representación 𝑇(𝐱)=𝐴𝐱 se llama expresión matricial canónica de 𝑇 y 
+a la matriz 𝐴 se la denomina la matriz de la transformación lineal 𝑇, y 
+escribimos 𝐴=𝐴𝑇 =𝑀(𝑇)=[𝑇]𝐸𝑛𝐸𝑚. 
+Propiedad: Las columnas de 𝐴𝑇 son un conjunto de generadores de 
+Im(𝑇). 
+Def: Si 𝐴∈ℝ𝑚×𝑛, el rango columna de 𝐴 es la dimensión del subespacio 
+generado por las columnas de 𝐴; el rango fila de 𝐴 es la dimensión del 
+subespacio generado por las filas de 𝐴. 
+TEOREMA: Si 𝐴∈ℝ𝑚×𝑛, entonces rango columna de 𝐴 = rango fila de 𝐴. 
+Esta igualdad nos permite hablar de rango de 𝐴, que notamos rg(𝐴). 
+Propiedad: dim(Im(𝑇))=rg(𝐴𝑇) 
+TEOREMA: Si 𝐴∈ℝ𝑚×𝑛 y Nul(𝐴)≔{𝐱∈ℝ𝑛:𝐴𝐱=𝟎}, entonces 
+dim(Nul(𝐴))=𝑛−rg(𝐴). 
+Def: Sean 𝐵={𝐯1,…,𝐯𝑛} base de espacio vectorial 𝕍 de dimensión 𝑛 y 
+𝐵′={𝐰1,…,𝐰𝑚} base de un espacio vectorial 𝕎 de dimensión 𝑚. Si 
+𝑇:𝕍→𝕎 es T.L. y 𝑇(𝐯𝑗)=𝑎1𝑗𝐰1+⋯+𝑎𝑚𝑗𝐰𝑚, 1≤𝑗≤𝑛, llamamos 
+matriz asociada a 𝑇 en las bases 𝐵 y 𝐵′, a la matriz de 𝑚×𝑛: 
+𝑀𝐵𝐵′(𝑇)=[𝑇]𝐵𝐵′ ≔(
+𝑎11 𝑎12 ⋯ 𝑎1𝑛
+𝑎21 𝑎22 ⋯ 𝑎2𝑛
+⋮ ⋮ ⋱ ⋮
+𝑎𝑚1 𝑎𝑚2 ⋯ 𝑎𝑚𝑛
+) 
+OBS: La columna 𝑗 de [𝑇]𝐵𝐵′ son las coordenadas de 𝑇(𝐯𝑗) en la base 𝐵′. 
+La matriz [𝑇]𝐵𝐵′ es tal que si 𝐯∈𝕍: [𝑇]𝐵𝐵′[𝐯]𝐵=[𝑇(𝐯)]𝐵′ 
+Notación: Si 𝕎=𝕍 y 𝐵′=𝐵, escribimos [𝑇]𝐵 en lugar de [𝑇]𝐵𝐵 
+Propiedad: dim(Im(𝑇))=rg([𝑇]𝐵𝐵′); de esto se deduce que el rango de 
+una matriz asociada a una T.L. no depende de las bases elegidas 
+ 
+GEOMETRÍA Y TRANSFORMACIONES LINEALES EN EL PLANO 
+G1) Rotación antihoraria de ángulo 𝜃: 𝐴=(cos(𝜃) −sen(𝜃)sen(𝜃) cos(𝜃) ) 
+G2) Homotecia de factor 𝑘∈ℝ>0: 𝑇(𝐱)=𝑘𝐱. Puede ser una contracción 
+(si 0<𝑘<1) o una dilatación (si 𝑘>1). En este caso, 𝐴=(𝑘 00 𝑘) 
+G3.1) Deslizamiento cortante en la dirección 𝑥 con factor 𝑘: 𝐴=(1 𝑘0 1) 
+G3.2) Deslizamiento cortante en la dirección 𝑦 con factor 𝑘: 𝐴=(1 0𝑘 1) 
+ 
+MÁS RESÚMENES EN ProfeUniversitario.com 
+   ¡Mirá las Listas de Reproducción!             
+YouTube: @ProfeUniversitario 
+Descargá modelos de exámenes y otros materiales en: 
+algebraico.com 

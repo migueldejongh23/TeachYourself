@@ -1,0 +1,6 @@
+﻿archivo_candidato,pagina_origen,problema,resultado,desarrollo_verificado,estado,nota
+ALG62_2do_parcial_2025_2C_Tema2_PalaciosPuebla_p12-12.pdf,12,1,Área=2√3; diagonales 2√3 y 2.,Área=2·2·sen60°=2√3. Las diagonales u±v tienen normas al cuadrado 8±4.,Resuelto,Paralelogramo con diagonales distintas.
+ALG62_2do_parcial_2025_2C_Tema2_PalaciosPuebla_p12-12.pdf,12,2,"D=(4,2); área del cuadrilátero ABCD=27/2.","La intersección x−y=2, x+y=6 da D=(4,2). La fórmula del polígono da área 13.5.",Resuelto,Orden de vértices A-B-C-D usado.
+ALG62_2do_parcial_2025_2C_Tema2_PalaciosPuebla_p12-12.pdf,12,3,"Punto más cercano Q=(−8,−1).","La recta por (−2,0) y (4,1) tiene dirección (6,1). Para P=(−9,5), el parámetro de proyección es ((−7,5)·(6,1))/37=−1.",Resuelto,Proyección ortogonal calculada.
+ALG62_2do_parcial_2025_2C_Tema2_PalaciosPuebla_p12-12.pdf,12,4,"A=[[0,3],[1/3,0]].","Centros: P=(0,1) y Q=(3,0). Imponer A(0,1)=(3,0) y A(3,0)=(0,1) determina la matriz.",Resuelto,La transformación intercambia los centros.
+ALG62_2do_parcial_2025_2C_Tema2_PalaciosPuebla_p12-12.pdf,12,5,"α≠0,3. Para α=3, la imagen de 3x+y=1 es el punto (1,3).","A=[[3,1],[α²,α]], det(A)=α(3−α). Para α=3, T(x,y)=(3x+y,3(3x+y)); sobre la recta indicada la imagen es constante.",Resuelto,La transformación en α=3 tiene rango 1.

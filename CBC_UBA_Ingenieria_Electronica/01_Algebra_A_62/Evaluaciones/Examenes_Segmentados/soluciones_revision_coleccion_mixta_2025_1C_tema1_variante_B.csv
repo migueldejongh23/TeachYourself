@@ -1,0 +1,5 @@
+﻿archivo_candidato,pagina_origen,problema,resultado,desarrollo_verificado,estado,nota
+ALG62_1er_parcial_2025_Tema1_ColeccionMixta_p07-07.pdf,7,1,"z_k=5[cos(-π/12+2kπ/3)+i sen(-π/12+2kπ/3)], k=0,1,2.",|-10iz^-1|=2 implica |z|=5. La condición de argumento de (1+i)z^8 z̄^5 exige 3θ+π/4=0 módulo 2π.,Resuelto,La inspección visual confirmó que el exponente es z^-1.
+ALG62_1er_parcial_2025_Tema1_ColeccionMixta_p07-07.pdf,7,2,P(x)=(x-3)(x²+16)^2.,La factorización muestra las raíces 3 simple y ±4i dobles; cumple que una raíz imaginaria pura sea doble y sus conjugadas tengan igual multiplicidad.,Resuelto,Factorización exacta.
+ALG62_1er_parcial_2025_Tema1_ColeccionMixta_p07-07.pdf,7,3,a=-2.,"El punto medio entre (5,1,-2a) y (3,-1,8) pertenece al plano; la diferencia entre ambos es paralela a la normal (1,1,a). De ahí a=-2.",Resuelto,Se verifican simultáneamente punto medio y normal.
+ALG62_1er_parcial_2025_Tema1_ColeccionMixta_p07-07.pdf,7,4,"k=2: soluciones X=t(-2,1,0); k=3: soluciones X=t(0,-1,1).",det(A-I)=(k-2)(k-3). En ambos valores la matriz tiene rango 2 y el sistema homogéneo tiene dimensión de núcleo 1.,Resuelto,Ambos valores producen infinitas soluciones.

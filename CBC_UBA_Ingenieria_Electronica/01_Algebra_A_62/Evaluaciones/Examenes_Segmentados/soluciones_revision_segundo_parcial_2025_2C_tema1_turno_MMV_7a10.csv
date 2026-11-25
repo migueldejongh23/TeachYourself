@@ -1,0 +1,6 @@
+﻿archivo_candidato,pagina_origen,problema,resultado,desarrollo_verificado,estado,nota
+ALG62_2do_parcial_2025_2C_Tema1_PalaciosPuebla_p10-10.pdf,10,1,u=2v−3w.,"De <u,v>=2 y <u,w>=−8, con ||v||=||w||=2 y <v,w>=2, si u=αv+βw se obtiene 4α+2β=2 y 2α+4β=−8; α=2, β=−3.",Resuelto,Coeficientes determinados por el sistema de productos escalares.
+ALG62_2do_parcial_2025_2C_Tema1_PalaciosPuebla_p10-10.pdf,10,2,"L1: y=4x−9; L2: x+4y=−2. C=(-14,3) o C=(18,−5).","AB=(2,8), así que L2 tiene dirección (−4,1). El área fija |AC|=4√17; desde A=(2,−1) se avanza ±4(−4,1).",Resuelto,Dos puntos simétricos sobre la perpendicular.
+ALG62_2do_parcial_2025_2C_Tema1_PalaciosPuebla_p10-10.pdf,10,3,L: y=x+2.,"Los centros son C1=(−2,0) y C2=(0,−2). El vector C1−C2=(−2,2) es normal a la recta buscada, que pasa por C1.",Resuelto,Centros obtenidos por completar cuadrados.
+ALG62_2do_parcial_2025_2C_Tema1_PalaciosPuebla_p10-10.pdf,10,4,"S=[[−3/5,4/5],[4/5,3/5]]; S(−5,5)=(7,−1).","La reflexión respecto de dirección (1,2) tiene matriz 2uuᵀ/(u·u)−I.",Resuelto,La matriz es ortogonal y simétrica.
+ALG62_2do_parcial_2025_2C_Tema1_PalaciosPuebla_p10-10.pdf,10,5,"Imágenes: (0,0),(8,−4),(12,2); área inicial=8, área final=32; razón=4.","A=[[2,2],[−1,1]], det(A)=4. Se aplica A a los tres vértices y el área se multiplica por |det(A)|.",Resuelto,El factor de escala de áreas es 4.

@@ -1,0 +1,5 @@
+﻿archivo_candidato,pagina_origen,problema,resultado,desarrollo_verificado,estado,nota
+ALG62_1er_parcial_2025_Tema3_ColeccionMixta_p11-11.pdf,11,1,"z_k=5^(2/5)[cos(π/6+2kπ/3)+i sen(π/6+2kπ/3)], k=0,1,2.","En iz⁴ z̄=-25, el módulo da r⁵=25. El argumento da 3θ+π/2≡π (mod 2π), así θ=π/6+2πk/3.",Resuelto,Tres raíces distintas.
+ALG62_1er_parcial_2025_Tema3_ColeccionMixta_p11-11.pdf,11,2,a=-12.,"En el plano yz, x=0 y Π1 exige 4y-z=4. Sustituir y=-2 da z=-12.",Resuelto,"Punto (0,-2,-12) pertenece a la recta."
+ALG62_1er_parcial_2025_Tema3_ColeccionMixta_p11-11.pdf,11,3,"Q=(0,-4,-4); d(P,Q)=8√3.","La normal es (1,1,1). La proyección de P=(8,4,4) sobre x+y+z=4 es (4,0,0); el simétrico es Q=2(4,0,0)-P=(0,-4,-4). La distancia es 8√3.",Resuelto,Proyección y simetría verificadas.
+ALG62_1er_parcial_2025_Tema3_ColeccionMixta_p11-11.pdf,11,4,"k=3. Soluciones: (x1,x2,x3)=(1+15t,t,1-9t), t real.","Para k=3, las dos primeras ecuaciones coinciden y la tercera es independiente; los rangos de matriz y ampliada son 2. Para k=0 los rangos son 2 y 3; para otros k el sistema es determinado.",Resuelto,Único valor compatible indeterminado.

@@ -1,0 +1,77 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+IDENTIDADES HIPERBÓLICAS 
+cosh(𝑥) ∶= 𝑒 𝑥 + 𝑒−𝑥
+2  
+senh(𝑥) ∶= 𝑒 𝑥 − 𝑒−𝑥
+2  
+tanh(𝑥) ∶= senh(𝑥)cosh(𝑥) = 𝑒 𝑥 − 𝑒−𝑥𝑒𝑥 + 𝑒−𝑥 
+cosh(−𝑥) = cosh(𝑥) ; senh(−𝑥) = − senh(𝑥) ; tanh(−𝑥) = − tanh(𝑥) 
+cosh2(𝑥) − senh2(𝑥) = 1 
+arccos(𝑥) + arcsen(𝑥) = 𝜋2 
+Inversas 
+arccosh(𝑥) = ln (𝑥 + √𝑥2 − 1) ;  𝑥 ≥ 1 
+arcsenh(𝑥) = ln (𝑥 + √𝑥2 + 1) 
+arctanh(𝑥) = 12 ln (1 + 𝑥1 − 𝑥) ;  𝑥 ∈ (−1,1) 
+Composición con inversas 
+cosh(arcsenh(𝑥)) = √1 + 𝑥2 
+cosh(arctanh(𝑥)) = 1
+√1 − 𝑥2 
+senh(arccosh(𝑥)) = (𝑥 + 1)√𝑥 − 1𝑥 + 1 
+senh(arctanh(𝑥)) = 𝑥
+√1 − 𝑥2 
+tanh(arccosh(𝑥)) = √𝑥2 − 1𝑥  
+tanh(arcsenh(𝑥)) = 𝑥
+√1 + 𝑥2 
+Composición con inversas 
+cosh(2 arcsenh(𝑥)) = 1 + 2𝑥2 ;  𝑥 ∈ ℝ 
+cosh(2 arctanh(𝑥)) = 1 + 𝑥2
+1 − 𝑥2  ;  𝑥 ∈ (−1,1) 
+senh(2 arccosh(𝑥)) = 2𝑥√𝑥2 − 1 ;  𝑥 ∈ [1, +∞) 
+senh(2 arctanh(𝑥)) = 2𝑥1 − 𝑥2  ;  𝑥 ∈ (−1,1) 
+tanh(2 arccosh(𝑥)) = 2𝑥√𝑥2 − 12𝑥2 − 1  ;  𝑥 ∈ [1, +∞) 
+tanh(2 arcsenh(𝑥)) = 2𝑥√1 + 𝑥2
+1 + 2𝑥2  ;  𝑥 ∈ ℝ 
+Composición con inversas 
+cosh (arcsenh(𝑥)2 ) = √22 √√1 + 𝑥2 + 1 ;  𝑥 ∈ ℝ 
+cosh (arctanh(𝑥)2 ) = 1√2 √ 1√1 − 𝑥2 + 1 ;  𝑥 ∈ (−1,1) 
+senh (arccosh(𝑥)2 ) = √𝑥 − 1√2  ;  𝑥 ∈ [1, +∞) 
+senh (arctanh(𝑥)2 ) = 1√2 𝑥
+√1 − 𝑥2√ 1√1 − 𝑥2 + 1
+ ;  𝑥 ∈ (−1,1) 
+tanh (arccosh(𝑥)2 ) = √𝑥 − 1√𝑥 + 1 ;  𝑥 ∈ [1, +∞) 
+tanh (arcsenh(𝑥)2 ) = 𝑥1 + √1 + 𝑥2  ;  𝑥 ∈ ℝ 
+ 
+ANÁLISIS COMPLEJO 
+Fórmula de Euler 
+𝑒𝑖𝑥 = cos(𝑥) + 𝑖 sen(𝑥) ∀𝑥 ∈ ℝ 
+𝑒 𝑥+𝑖𝑦 = 𝑒 𝑥(cos(𝑦) + 𝑖 sen(𝑦)) ∀𝑥, 𝑦 ∈ ℝ 
+Definición compleja del coseno, seno y tangente 
+cos(𝑧) ∶= 𝑒𝑖𝑧 + 𝑒−𝑖𝑧
+2  
+sen(𝑧) ∶= 𝑒𝑖𝑧 − 𝑒−𝑖𝑧
+2𝑖 = 𝑖(𝑒−𝑖𝑧 − 𝑒𝑖𝑧)2  
+tan(𝑧) ∶= sen(𝑧)cos(𝑧) = 𝑖(𝑒−𝑖𝑧 − 𝑒𝑖𝑧)𝑒𝑖𝑧 + 𝑒−𝑖𝑧  
+Inversas complejas 
+arccos(𝑧) = −𝑖 ln (𝑧 + √𝑧2 − 1) 
+arcsen(𝑧) = −𝑖 ln (𝑖𝑧 + √1 − 𝑧2) 
+arctan(𝑧) = 𝑖2 ln (𝑖 + 𝑧𝑖 − 𝑧) 
+ 
+OTRAS FUNCIONES TRIGONOMÉTRICAS NO TAN CONOCIDAS 
+versen(𝑥) ∶= 1 − cos(𝑥) = 2 sen2 (𝑥2) 
+coversen(𝑥) ∶= covsen (𝜋2 − 𝑥) = 1 − sen(𝑥) 
+semiversen(𝑥) ∶= versen(𝑥)2 = sen2 (𝑥2) 
+semicoversen(𝑥) ∶= semiversen (𝜋2 − 𝑥) = coversen(𝑥)2  
+ 
+ 
+MÁS RESÚMENES EN ProfeUniversitario.com 
+   ¡Mirá las Listas de Reproducción!             
+YouTube: @ProfeUniversitario 
+Descargá modelos de exámenes y otros materiales en: 
+algebraico.com 

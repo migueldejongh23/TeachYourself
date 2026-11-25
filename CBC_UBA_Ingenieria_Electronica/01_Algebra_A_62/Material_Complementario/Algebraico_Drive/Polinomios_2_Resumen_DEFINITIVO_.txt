@@ -1,0 +1,125 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+POLINOMIOS 
+RELACIONES ENTRE RAÍCES Y COEFICIENTES DE POLINOMIOS DE GRADO 2 
+Sea 𝑃(𝑋) = 𝑎𝑋2 + 𝑏𝑋 + 𝑐, con 𝑎, 𝑏, 𝑐 ∈ ℂ y 𝑎 ≠ 0. Sean 𝛼, 𝛽 ∈ ℂ sus 
+raíces, entonces: 
+La suma y el producto de sus ceros: 
+𝛼 + 𝛽 = − 𝑏𝑎      ;        𝛼𝛽 = 𝑐𝑎 
+La suma de los inversos de sus ceros: 
+1
+𝛼 + 1𝛽 = − 𝑏𝑐  ;  𝑐 ≠ 0 
+La suma de los cuadrados de sus ceros: 
+𝛼2 + 𝛽2 = 𝑏2 − 2𝑎𝑐𝑎2  
+La suma de los inversos de los cuadrados de sus ceros: 
+1
+𝛼2 + 1𝛽2 = 𝑏2 − 2𝑎𝑐𝑐2  ;  𝑐 ≠ 0 
+La suma de los cubos de sus ceros: 
+𝛼3 + 𝛽3 = 3𝑎𝑏𝑐 − 𝑏3
+𝑎3  
+La suma de los inversos de los cubos de sus ceros: 
+1
+𝛼3 + 1𝛽3 = 3𝑎𝑏𝑐 − 𝑏3𝑐3  ;  𝑐 ≠ 0 
+ 
+OTRAS RELACIONES ÚTILES: 
+𝛼4 + 𝛽4 = 2𝑎2𝑐2 − 4𝑎𝑏2𝑐 + 𝑏4
+𝑎4  
+1
+𝛼4 + 1𝛽4 = 2𝑎2𝑐2 − 4𝑎𝑏2𝑐 + 𝑏4𝑐4  ;  𝑐 ≠ 0 
+𝛼5 + 𝛽5 = 10𝑎3𝑏𝑐2 − 15𝑎2𝑏𝑐2 + 5𝑎𝑏3𝑐 − 𝑏5
+𝑎5  
+1
+𝛼5 + 1𝛽5 = 10𝑎3𝑏𝑐2 − 15𝑎2𝑏𝑐2 + 5𝑎𝑏3𝑐 − 𝑏5𝑐5  ;  𝑐 ≠ 0 
+RELACIONES ENTRE RAÍCES Y COEFICIENTES DE POLINOMIOS DE GRADO 3 
+Sea 𝑃(𝑋) = 𝑎𝑋3 + 𝑏𝑋2 + 𝑐𝑋 + 𝑑, con 𝑎, 𝑏, 𝑐, 𝑑 ∈ ℂ y 𝑎 ≠ 0. Sean 
+𝛼, 𝛽, 𝛾 ∈ ℂ sus raíces, entonces: 
+La suma, la suma de los productos cruzados y el producto de sus ceros: 
+𝛼 + 𝛽 + 𝛾 = − 𝑏𝑎       ;        𝛼𝛽 + 𝛼𝛾 + 𝛽𝛾 = 𝑐𝑎       ;        𝛼𝛽𝛾 = − 𝑑𝑎 
+La suma de los inversos de sus ceros: 
+1
+𝛼 + 1𝛽 + 1𝛾 = − 𝑐𝑑 ;  𝑑 ≠ 0 
+La suma de los cuadrados de sus ceros: 
+𝛼2 + 𝛽2 + 𝛾2 = 𝑏2 − 2𝑎𝑐𝑎2  
+La suma de los inversos de los cuadrados de sus ceros: 
+1
+𝛼2 + 1𝛽2 + 1𝛾2 = 𝑐2 − 2𝑏𝑑𝑑2  ;  𝑑 ≠ 0 
+La suma de los cubos de sus ceros: 
+𝛼3 + 𝛽3 + 𝛾3 = 3𝑎𝑏𝑐 − 3𝑎2𝑑 − 𝑏3
+𝑎3  
+La suma de los inversos de los cubos de sus ceros: 
+1
+𝛼3 + 1𝛽3 + 1𝛾3 = 3𝑏𝑐𝑑 − 3𝑎𝑑2 − 𝑐3𝑑3  ;  𝑑 ≠ 0 
+ 
+OTRAS RELACIONES ÚTILES: 
+𝛼4 + 𝛽4 + 𝛾4 = 𝑏4 + 2𝑎2𝑏𝑑 + 2𝑎2𝑐2 − 4𝑎𝑏2𝑐𝑎4  
+1
+𝛼4 + 1𝛽4 + 1𝛾4 = 𝑐4 + 4𝑎𝑐𝑑2 + 2𝑏2𝑑2 − 4𝑏𝑐2𝑑𝑑4  ;  𝑑 ≠ 0 
+(𝛼𝛽)2 + (𝛼𝛾)2 + (𝛽𝛾)2 = 𝑐2 − 2𝑏𝑑𝑎2  
+𝛼2𝛽 + 𝛼2𝛾 + 𝛼𝛽2 + 𝛼𝛾2 + 𝛽2𝛾 + 𝛽𝛾2 = 3𝑎𝑑 − 𝑏𝑐𝑎2  
+(𝛼𝛽)3 + (𝛼𝛾)3 + (𝛽𝛾)3 = 𝑐3 + 3𝑎𝑑2 − 3𝑏𝑐𝑑𝑎3  
+(𝛼𝛽)4 + (𝛼𝛾)4 + (𝛽𝛾)4 = 4𝑎𝑐𝑑2 + 2𝑏2𝑑2 + 𝑐4 − 4𝑏𝑐2𝑑𝑎4  
+CASO PARTICULAR 1: (Si sus ceros están en progresión aritmética)  
+𝛼 = − 𝑏3𝑎 
+CASO PARTICULAR 2: (Si sus ceros están en progresión geométrica) 
+Si 
+𝑑
+𝑎 ∉ ℝ, entonces 𝛼 es alguna solución de la ecuación 𝑋3 = − 𝑑𝑎 
+Si 
+𝑑
+𝑎 ∈ ℝ, entonces 𝛼 = √− 𝑑𝑎3  
+RELACIONES ENTRE RAÍCES Y COEFICIENTES DE POLINOMIOS DE GRADO 𝑛 
+Sea 𝑃(𝑋) = ∑ 𝑎𝑘𝑋𝑘𝑛𝑘=0 , con 𝑎0, 𝑎1, … , 𝑎𝑛 ∈ ℂ y 𝑎𝑛 ≠ 0. Sean 𝑥1, … , 𝑥𝑛 ∈
+ℂ sus raíces, entonces la suma y el producto de sus ceros es: 
+∑ 𝑥𝑘
+𝑛
+𝑘=1
+= − 𝑎𝑛−1
+𝑎𝑛
+      ;       ∏ 𝑥𝑘
+𝑛
+𝑘=1
+= (−1)𝑛 𝑎0
+𝑎𝑛
+ 
+ 
+FÓRMULAS ÚTILES 
+𝑎2 − 𝑏2 = (𝑎 − 𝑏)(𝑎 + 𝑏)              𝑎2 + 𝑏2 = (𝑎 − 𝑖𝑏)(𝑎 + 𝑖𝑏) 
+Sea 𝑧 ∈ ℂ y 𝑛 ∈ ℕ. Entonces: 
+𝑋𝑛 − 𝑧𝑛 = (𝑋 − 𝑧) ∑ 𝑧𝑘𝑋𝑛−1−𝑘
+𝑛−1
+𝑘=0
+ 
+𝑋𝑛 + 𝑧𝑛 = (𝑋 + 𝑧) ∑(−𝑧)𝑘𝑋𝑛−1−𝑘
+𝑛−1
+𝑘=0
+ si 𝑛 es impar 
+𝑋𝑛 − 𝑧𝑛 = (𝑋 + 𝑧) ∑(−𝑧)𝑘𝑋𝑛−1−𝑘
+𝑛−1
+𝑘=0
+ si 𝑛 es par 
+Identidades de Steven: 
+(𝑋 + 𝑎)(𝑋 + 𝑏) = 𝑋2 + (𝑎 + 𝑏)𝑋 + 𝑎𝑏 
+(𝑋 + 𝑎)(𝑋 + 𝑏)(𝑋 + 𝑐)
+= 𝑋3 + (𝑎 + 𝑏 + 𝑐)𝑋2 + (𝑎𝑏 + 𝑎𝑐 + 𝑏𝑐)𝑋 + 𝑎𝑏𝑐 
+Teorema del binomio: 
+(𝑎 + 𝑏)𝑛 = ∑ (𝑛𝑘) 𝑎𝑛−𝑘𝑏𝑘
+𝑛
+𝑘=0
+ donde (𝑛𝑘) ≔ 𝑛!𝑘! (𝑛 − 𝑘)! 
+Identidades de Legendre: 
+(𝑎 + 𝑏)2 + (𝑎 − 𝑏)2 = 2(𝑎2 + 𝑏2)          (𝑎 + 𝑏)2 − (𝑎 − 𝑏)2 = 4𝑎𝑏 
+(𝑎 + 𝑏)3 + (𝑎 − 𝑏)3 = 2𝑎(𝑎2 + 3𝑏2) 
+(𝑎 + 𝑏)3 − (𝑎 − 𝑏)3 = 2𝑏(𝑏2 + 3𝑎2) 
+(𝑎 + 𝑏)4 + (𝑎 − 𝑏)4 = 2(𝑎4 + 6𝑎2𝑏2 + 𝑏4) 
+(𝑎 + 𝑏)4 − (𝑎 − 𝑏)4 = 8𝑎𝑏(𝑎2 + 𝑏2) 
+MÁS RESÚMENES EN ProfeUniversitario.com 
+   ¡Mirá las Listas de Reproducción!             
+YouTube: @ProfeUniversitario 
+Descargá modelos de exámenes y otros materiales en: 
+algebraico.com 

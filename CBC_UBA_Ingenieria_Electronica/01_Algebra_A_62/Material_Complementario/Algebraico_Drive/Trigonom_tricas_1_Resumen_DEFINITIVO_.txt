@@ -1,0 +1,92 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+IDENTIDADES TRIGONOMÉTRICAS 
+tan(𝑥) ∶= sen(𝑥)cos(𝑥)  ∀𝑥 ≠ 𝜋2 + 𝑘𝜋 ; 𝑘𝜖𝕫 
+cos2(𝑥) + sen2(𝑥) = 1 
+cos(−𝑥) = cos(𝑥) ; sen(−𝑥) = − sen(𝑥) ; tan(−𝑥) = − tan(𝑥) 
+Inversas multiplicativas 
+sec(𝑥) ∶= 1cos(𝑥) ; csc(𝑥) = 1sen(𝑥) ; cot(𝑥) ∶= 1tan(𝑥) 
+Suma y diferencias de ángulos 
+cos(𝑥 ± 𝑦) = cos(𝑥) cos(𝑦) ∓ sen(𝑥) sen(𝑦) 
+sen(𝑥 ± 𝑦) = cos(𝑥) sen(𝑦) ± cos(𝑦) sen(𝑥) 
+tan(𝑥 ± 𝑦) = tan(𝑥) ± tan(𝑦)1 ∓ tan(𝑥) tan(𝑦) 
+Producto a suma 
+cos(𝑥) cos(𝑦) = cos(𝑥 + 𝑦) + cos(𝑥 − 𝑦)2  
+cos(𝑥) sen(𝑦) = sen(𝑥 + 𝑦) − sen(𝑥 − 𝑦)2  
+sen(𝑥) sen(𝑦) = cos(𝑥 − 𝑦) − cos(𝑥 + 𝑦)2  
+Suma a producto 
+cos(𝑥) + cos(𝑦) = 2 cos (𝑥 + 𝑦2 ) cos (𝑥 − 𝑦2 ) 
+cos(𝑥) − cos(𝑦) = −2 sen (𝑥 + 𝑦2 ) sen (𝑥 − 𝑦2 ) 
+sen(𝑥) ± sen(𝑦) = 2 cos (𝑥 ∓ 𝑦2 ) sen (𝑥 ± 𝑦2 ) 
+tan(𝑥) ± tan(𝑦) = sen(𝑥 ± 𝑦)cos(𝑥) cos(𝑦) 
+Diferencia de cuadrados a productos 
+sen2(𝑥) − sen2(𝑦) = sen(𝑥 + 𝑦) sen(𝑥 − 𝑦) 
+cos2(𝑥) − sen2(𝑥) = cos(𝑥 + 𝑦) cos(𝑥 − 𝑦) 
+Fórmulas de Reducción de exponentes 
+cos2(𝑥) = 1 + cos(2𝑥)2  ; cos3(𝑥) = 3 cos(𝑥) + cos(3𝑥)4  
+sen2(𝑥) = 1 − cos(2𝑥)2  ; sen3(𝑥) = 3 sen(𝑥) − sen(3𝑥)4  
+tan2(𝑥) = 1 − cos(2𝑥)1 + cos(2𝑥) ; tan3(𝑥) = 3𝑥 sen(𝑥) − 𝑥 sen(3𝑥)3 cos(𝑥) + cos(3𝑥)  
+Desplazamientos 
+sen (𝜋2 − 𝑥) = sen (𝜋2 + 𝑥) = cos(𝑥) 
+cos(𝜋 − 𝑥) = cos(𝜋 + 𝑥) = − cos(𝑥) 
+cos (𝜋2 − 𝑥) = sen(𝜋 − 𝑥) = sen(𝑥) 
+cos (𝜋2 + 𝑥) = sen(𝜋 + 𝑥) = − sen(𝑥) 
+tan(𝜋 + 𝑥) = tan(𝑥) 
+tan(𝜋 − 𝑥) = − tan(𝑥) 
+Identidades del ángulo doble 
+cos(2𝑥) = cos2(𝑥) − sen2(𝑥) = 2 cos2(𝑥) − 1 = 1 − 2 sen2(𝑥) 
+cos(2𝑥) = 1 − tan2(𝑥)1 + tan2(𝑥) 
+sen(2𝑥) = 2 cos(𝑥) sen(𝑥) = 2 tan(𝑥)1 + tan2(𝑥) 
+tan(2𝑥) = 2 tan(𝑥)1 − tan2(𝑥) 
+Identidades del ángulo mitad 
+cos (𝑥2) = cos2 (𝑥4) − sen2 (𝑥4) = 2 cos2 (𝑥4) − 1 = 1 − 2 sen2 (𝑥4)
+=
+1 − tan2 (𝑥4)
+1 + tan2 (𝑥4) 
+cos (𝑥2) =
+{
+ 
+ 
+ 
+ −√1 + cos(𝑥)2 , 𝑥 ∈ [−𝜋, 𝜋] + 4𝜋ℤ
+√1 + cos(𝑥)
+2 , 𝑥 ∈ [𝜋, 3𝜋] + 4𝜋ℤ
+ 
+sen(2𝑥) = 2 cos (𝑥4) sen (𝑥4) = 2 tan (𝑥4)1 + tan2 (𝑥4) 
+sen (𝑥2) =
+{
+ 
+ 
+ 
+ −√1 − cos(𝑥)2 , 𝑥 ∈ [2𝜋, 4𝜋] + 4𝜋ℤ
+√1 − cos(𝑥)
+2 , 𝑥 ∈ [0,2𝜋] + 4𝜋ℤ
+ 
+tan (𝑥2) = sen(𝑥)1 + cos(𝑥) = 1 − cos(𝑥)sen(𝑥)  
+tan (𝑥2) =
+{
+ 
+ 
+ 
+ −√1 − cos(𝑥)1 + cos(𝑥) , 𝑥 ∈ [𝜋, 2𝜋] + 2𝜋ℤ
+√1 − cos(𝑥)1 + cos(𝑥) , 𝑥 ∈ [0, 𝜋] + 2𝜋ℤ
+ 
+Inversas 
+arccos: [−1,1] → [0, 𝜋], arccos(𝑥) ∶= cos−1(𝑥) 
+cos(arccos(𝑥)) = 𝑥 ;  𝑥 ∈ [−1,1] ∧ arccos(cos(𝑥)) = 𝑥 ;  𝑥 ∈ [0, 𝜋] 
+arcsen: [−1,1] → [− 𝜋2 , 𝜋2] , arcsen(𝑥) ∶= sen−1(𝑥) 
+sen(arcsen(𝑥)) = 𝑥 ;  𝑥 ∈ [−1,1] ∧ arcsen(sen(𝑥)) = 𝑥 ;  𝑥 ∈ [− 𝜋2 , 𝜋2] 
+arctan: ℝ → (− 𝜋2 , 𝜋2) , arctan(𝑥) ∶= tan−1(𝑥) 
+tan(arctan(𝑥)) = 𝑥 ; ∀𝑥 ∈ ℝ ∧ arctan(tan(𝑥)) = 𝑥 ; ∀𝑥 ∈ (− 𝜋2 , 𝜋2) 
+arctan(−𝑥) = − arctan(𝑥) 
+arccos(𝑥) + arcsen(𝑥) = 𝜋2  ; ∀𝑥 ∈ [−1,1] 
+arctan(𝑥) + arctan (1𝑥) = {− 𝜋2 , 𝑥 < 0𝜋
+2 , 𝑥 < 0
+ 
+DESCARGÁ MODELOS DE EXÁMENES EN algebraico.com 

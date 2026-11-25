@@ -1,0 +1,5 @@
+﻿archivo_candidato,pagina_origen,problema,resultado,desarrollo_verificado,estado,nota
+ALG62_1er_parcial_2025_Tema3_ColeccionMixta_p10-10.pdf,10,1,k=-252; P(x)=(x²+7)(x²-9)(x²+4).,"Sustituir i√7 da k=-252. Con y=x², y³+2y²-71y-252=(y+7)(y-9)(y+4).",Resuelto,"Raíces reales ±3 y complejas ±i√7, ±2i; todas simples."
+ALG62_1er_parcial_2025_Tema3_ColeccionMixta_p10-10.pdf,10,2,"Π1: y+z=3. Intersección: X=(2,3,0)+t(-1,-1,1).","El normal de Π1 es (0,1,1). Π2: x+z=2. Parametrizando z=t, x=2-t e y=3-t.",Resuelto,Recta de intersección verificada.
+ALG62_1er_parcial_2025_Tema3_ColeccionMixta_p10-10.pdf,10,3,"Π: x+y=1; d(R,Π)=3/√2.","El punto medio entre Q y P es (1,0,5) y P-Q=(4,4,0) es normal. Distancia de R=(1,3,1) al plano x+y=1: |1+3-1|/√2=3/√2.",Resuelto,Plano mediador y distancia verificados.
+ALG62_1er_parcial_2025_Tema3_ColeccionMixta_p10-10.pdf,10,4,"X=(7,3,4)+t(-5,-1,1), t real.","AX=Ab equivale a A(X-b)=0. El núcleo de A está generado por (-5,-1,1), así que todas las soluciones son b más ese núcleo.",Resuelto,Sistema de rango 2 con una variable libre.

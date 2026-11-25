@@ -1,0 +1,79 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com | Ig, YouTube & Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+DERIVADA 
+DERIVADA EN UN PUNTO Y COCIENTE INCREMENTAL 
+Sea 𝑓: Dom(𝑓) ⊂ ℝ → ℝ y 𝑎 ∈ Dom(𝑓). Si 𝑥 ≠ 𝑎 tal que 𝑥 ∈ Dom(𝑓) o si ℎ ≠ 0 tal que 𝑎 + ℎ ∈ Dom(𝑓): 
+𝑓′(𝑎) ∶= lím
+𝑥→𝑎
+𝑓(𝑥) − 𝑓(𝑎)
+𝑥 − 𝑎 = límℎ→0
+𝑓(𝑎 + ℎ) − 𝑓(𝑎)
+ℎ  
+Notación: 𝑓′(𝑎) ≔ 𝑑𝑓𝑑𝑥 (𝑎) = 𝐷(𝑓)(𝑎) = 𝑦′(𝑎) (si 𝑦 = 𝑓(𝑥)) 
+OBS: Si 𝑓 es derivable en 𝑥 = 𝑎 ⇒ 𝑓 es continua en 𝑥 = 𝑎. La recíproca no es cierta (Ej: 𝑓(𝑥) = |𝑥| y 𝑎 = 0). 
+Recta Tangente: Si ∃𝑓′(𝑎) ∈ ℝ, entonces 𝐿𝑇(𝑥) = 𝑓(𝑎) + 𝑓′(𝑎)(𝑥 − 𝑎) es la única función lineal que 
+satisface 𝐿𝑇(𝑎) = 𝑓(𝑎), 𝐿𝑇′ (𝑎) = 𝑓′(𝑎) y lím𝑥→𝑎 𝑓(𝑥)−𝐿𝑇(𝑥)𝑥−𝑎 = 0. 
+OBS: 𝑓 derivable en 𝑥 = 𝑎 ⟺ 𝑓 admite recta tangente en 𝑥 = 𝑎. 
+Recta Normal: Si ∃𝑓′(𝑎) ∈ ℝ, entonces 𝐿𝑁 es la única recta en ℝ2 que satisface (𝑎, 𝑓(𝑎)) ∈ 𝐿𝑁 y 𝐿𝑁 ⊥ 𝐿𝑇. 
+▪ Si 𝑓′(𝑎) ≠ 0, 𝐿𝑁(𝑥) = 𝑓(𝑎) − 1𝑓′(𝑎) (𝑥 − 𝑎) es una función lineal. OBS: 𝐿𝑇′ (𝑎) = − 1𝐿𝑇(𝑎) = − 1𝑓′(𝑎). 
+▪ Si 𝑓′(𝑎) = 0, 𝐿𝑁: 𝑥 = 𝑎. 
+DERIVADA EN UN CONJUNTO ABIERTO (FUNCIÓN DERIVADA) 
+Sea 𝐴 ⊆ Dom(𝑓) ⊂ ℝ abierto. Sea 𝑓: 𝐴 ⟶ ℝ derivable en 𝐴. Tenemos definida 𝑓′: 𝐴 ⟶ ℝ, 𝑎 ↦ 𝑓′(𝑎), la 
+función derivada de 𝑓. 
+Propiedades: Si ∃𝑓′ = 𝑓′(𝑥), 𝑔′ = 𝑔′(𝑥) para todo 𝑥 ∈ 𝐴 
+[𝑓 + 𝑔]′ = 𝑓′ + 𝑔′          [𝑘𝑓]′ = 𝑘𝑓′ ;  𝑘 ∈ ℝ          [𝑓𝑔]′ = 𝑓′𝑔 + 𝑓𝑔′          [𝑓𝑔]′ = 𝑓′𝑔 − 𝑓𝑔′(𝑔)2  ;  𝑔 ≠ 0 
+[𝑓(𝑔(𝑥))]
+′
+= 𝑓′(𝑔(𝑥))𝑔′(𝑥)          [𝑓−1(𝑦)]′ = 1𝑓′(𝑓−1(𝑦)) ; 𝑓′ ≠ 0 ; 𝑓−1(𝑦) = 𝑥 ⟺ 𝑦 = 𝑓(𝑥) 
+[𝑓𝑔]′ = 𝑓𝑔 (𝑓′ 𝑔𝑓 + ln(𝑓) 𝑔′) ;  𝑓 > 0 
+FUNCIÓN 𝑓(𝑥) DERIVADA 𝑓′(𝑥) = 𝑑𝑓𝑑𝑥 = 𝐷(𝑓)(𝑥) 
+𝑘 = constante ∈ ℝ 0 
+𝑥𝑎, con 𝑎 ∈ ℝ 𝑎𝑥𝑎−1 
+|𝑥| ≔ √𝑥2 = 𝑥 sgn(𝑥) ; sgn(𝑥) ≔ {
+−1, 𝑥 < 0
+0, 𝑥 = 0
+1, 𝑥 > 0
+ 𝑥|𝑥| = |𝑥|𝑥 = sgn(𝑥) , con 𝑥 ≠ 0 
+𝑏𝑥, con 𝑥 ∈ ℝ, 𝑏 > 0, 𝑏 ≠ 1 ln(𝑏) 𝑏𝑥 
+𝑒 𝑥 ≔ exp(𝑥) , con 𝑥 ∈ ℝ 𝑒 𝑥 
+log𝑏(𝑥), con 𝑥 > 0, 𝑏 > 0, 𝑏 ≠ 1 1ln(𝑏) 𝑥 = log𝑏(𝑒)𝑥  
+ln(𝑥) , con 𝑥 > 0 𝑥−1 = 1/𝑥  
+cos(𝑥) , con 𝑥 ∈ ℝ − sen(𝑥) 
+sen(𝑥) , con 𝑥 ∈ ℝ cos(𝑥) 
+tan(𝑥) ∶= sen(𝑥)cos(𝑥) , con 𝑥 ≠ 𝜋2 + 𝑘𝜋 y 𝑘 ∈ ℤ 1cos2(𝑥) = sec2(𝑥) 
+arccos(𝑥) , con 𝑥 ∈ [−1,1] −1
+√1 − 𝑥2 , con 𝑥 ∈ (−1,1) 
+arcsen(𝑥) , con 𝑥 ∈ [−1,1] 1
+√1 − 𝑥2 , con 𝑥 ∈ (−1,1) 
+arctan(𝑥) , con 𝑥 ∈ ℝ 11 + 𝑥2 
+sec(𝑥) ≔ 1cos(𝑥) , con 𝑥 ≠ 𝜋2 + 𝑘𝜋 y 𝑘 ∈ ℤ sec(𝑥) tan(𝑥) 
+csc(𝑥) ≔ 1sen(𝑥) , con 𝑥 ≠ 𝑘𝜋 y 𝑘 ∈ ℤ − csc(𝑥) cot(𝑥) 
+cot(𝑥) ≔ 1tan(𝑥) = cos(𝑥)sen(𝑥) , con 𝑥 ≠ 𝑘𝜋 y 𝑘 ∈ ℤ − 1sen2(𝑥) = − csc2(𝑥) 
+arcsec(𝑥) , con |𝑥| ≥ 1 1
+𝑥√𝑥2 − 1 , con |𝑥| > 1 
+arccsc(𝑥) , con |𝑥| ≥ 1 − 1
+𝑥√𝑥2 − 1 , con |𝑥| > 1 
+arccot(𝑥) , con 𝑥 ∈ ℝ − 11 + 𝑥2 
+cosh(𝑥) ∶= 𝑒 𝑥 + 𝑒−𝑥
+2 , con 𝑥 ∈ ℝ senh(𝑥) 
+senh(𝑥) ∶= 𝑒 𝑥 − 𝑒−𝑥
+2 , con 𝑥 ∈ ℝ cosh(𝑥) 
+tanh(𝑥) ≔ senh(𝑥)cosh(𝑥) , con 𝑥 ∈ ℝ 1cosh2(𝑥) 
+arccosh(𝑥) ≔ ln (𝑥 + √𝑥2 − 1) , con 𝑥 ≥ 1 1
+√𝑥2 − 1 , con 𝑥 > 1 
+arcsenh(𝑥) ≔ ln (𝑥 + √𝑥2 + 1) , con 𝑥 ∈ ℝ 1
+√𝑥2 + 1 
+arctanh(𝑥) ≔ 12 ln (1 + 𝑥1 − 𝑥) , con 𝑥 ∈ (−1,1) 11 − 𝑥2 
+sech(𝑥) ∶= 1cosh(𝑥) = 2𝑒𝑥 + 𝑒−𝑥 , con 𝑥 ∈ ℝ − sech(𝑥) tanh(𝑥) 
+csch(𝑥) ∶= 1senh(𝑥) = 2𝑒𝑥 − 𝑒−𝑥 , con 𝑥 ≠ 0 − csch(𝑥) coth(𝑥) 
+coth(𝑥) ≔ 1tanh(𝑥) = cosh(𝑥)senh(𝑥) , con 𝑥 ≠ 0 − 1senh2(𝑥) = − csch2(𝑥) 
+arcsech(𝑥) ≔ arccosh (1𝑥) = ln (1 + √1 − 𝑥2𝑥 ) , con 𝑥 ∈ (0,1] − 1𝑥√1 − 𝑥2 , con 𝑥 ∈ (0,1) 
+arccsch(𝑥) ≔ arcsenh (1𝑥) = ln (1𝑥 + √ 1𝑥2 + 1) , con 𝑥 ≠ 0 − 1|𝑥|√1 + 𝑥2 
+arccoth(𝑥) ≔ arctanh (1𝑥) = 12 ln (1 − 𝑥1 + 𝑥) , con |𝑥| > 1 11 − 𝑥2 
+ 
+RESÚMENES Y MODELOS DE EXÁMENES EN algebraico.com 

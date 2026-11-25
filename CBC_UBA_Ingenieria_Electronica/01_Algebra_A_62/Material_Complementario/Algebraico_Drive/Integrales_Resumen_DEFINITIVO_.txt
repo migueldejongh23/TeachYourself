@@ -1,0 +1,168 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+INTEGRAL O ANTIDERIVADA (INDEFINIDA) 
+𝐹(𝑥) = ∫ 𝑓(𝑥)𝑑𝑥  ; 𝐹′(𝑥) = 𝑓(𝑥) 
+Propiedades: 
+∫ 𝜆𝑓(𝑥)𝑑𝑥 = 𝜆 ∫ 𝑓(𝑥)𝑑𝑥  ;  𝜆 ∈ ℝ 
+∫(𝑓(𝑥) + 𝑔(𝑥))𝑑𝑥 = ∫ 𝑓(𝑥)𝑑𝑥 + ∫ 𝑔(𝑥)𝑑𝑥 
+∫ 𝑓′(𝑥)𝑔(𝑥)𝑑𝑥 = 𝑓(𝑥)𝑔(𝑥) − ∫ 𝑓(𝑥)𝑔′(𝑥)𝑑𝑥 
+∫ 𝑓(𝑔(𝑥))𝑔′(𝑥)𝑑𝑥 = 𝐹(𝑔(𝑥)) ; 𝐹′(𝑥) = 𝑓(𝑥) 
+FUNCIÓN = 𝑓(𝑥) PRIMITIVA = ∫ 𝑓(𝑥)𝑑𝑥 
+0 𝐶 = 𝑐𝑡𝑒 
+1 𝑥 + 𝐶 
+𝑥𝑎 ;  𝑎 ≠ −1 1𝑎 + 1 𝑥𝑎+1 + 𝐶 
+𝑥−1 = 1𝑥  ;  𝑥 ≠ 0 ln(|𝑥|) + 𝐶 
+𝑎𝑥 ;  𝑎 > 0 ∧  𝑎 ≠ 1 1ln(𝑎) 𝑎𝑥 + 𝐶 
+𝑒 𝑥 = exp(𝑥) 𝑒 𝑥 + 𝐶 
+log𝑎(𝑥) ;  𝑥 > 0 ;  𝑎 > 0 ∧  𝑎 ≠ 1 𝑥(ln(𝑥) − 1)ln(𝑎) + 𝐶 
+ln(𝑥) ;  𝑥 > 0 𝑥(ln(𝑥) − 1) + 𝐶 
+cos(𝑥) sen(𝑥) + 𝐶 
+sen(𝑥) − cos(𝑥) + 𝐶 
+tan(𝑥) ∶= sen(𝑥)cos(𝑥)  ;  𝑥 ≠ 𝜋2 + 𝜋ℤ − ln(|cos(𝑥)|) + 𝐶 
+arccos(𝑥) ;  𝑥 ∈ [−1,1] 𝑥 arccos(𝑥) − √1 − 𝑥2 + 𝐶 
+arcsen(𝑥) ;  𝑥 ∈ [−1,1] 𝑥 arcsen(𝑥) + √1 − 𝑥2 + 𝐶 
+arctan(𝑥) 𝑥 arctan(𝑥) − ln(1 + 𝑥2)2 + 𝐶 
+cosh(𝑥) ∶= 𝑒 𝑥 + 𝑒−𝑥
+2  senh(𝑥) + 𝐶 
+senh(𝑥) ∶= 𝑒 𝑥 − 𝑒−𝑥
+2  cosh(𝑥) + 𝐶 
+tanh(𝑥) ≔ senh(𝑥)cosh(𝑥) ln(cosh(𝑥)) + 𝐶 
+arccosh(𝑥) ;  𝑥 ≥ 1 𝑥 arccosh(𝑥) − √𝑥2 − 1 + 𝐶 
+arcsenh(𝑥) 𝑥 arcsenh(𝑥) − √𝑥2 + 1 + 𝐶 
+arctanh(𝑥) ;  𝑥 ∈ (−1,1) 𝑥 arctanh(𝑥) + ln(1 − 𝑥2)2 + 𝐶 
+1
+cos(𝑥) = sec(𝑥)  ;  𝑥 ≠ 𝜋2 + 𝜋ℤ ln(|tan(𝑥) + sec(𝑥)|) + 𝐶 
+1
+sen(𝑥) = csc(𝑥)  ;  𝑥 ≠ 𝜋ℤ − ln(|cot(𝑥) + csc(𝑥)|) + 𝐶 
+1
+tan(𝑥) = cot(𝑥)  ;  𝑥 ≠ 𝜋ℤ ln(|sen(𝑥)|) + 𝐶 
+1
+cos2(𝑥) = sec2(𝑥)  ;  𝑥 ≠ 𝜋2 + 𝜋ℤ tan(𝑥) + 𝐶 
+1
+1 + 𝑥2 arctan(𝑥) + 𝐶 
+𝑒 𝑥2 SIN DESARROLLO FINITO 
+1
+log𝑎(𝑥) ;  𝑥 > 0 ;  𝑎 > 0 ∧  𝑎 ≠ 1 SIN DESARROLLO FINITO 
+cos(𝑥)
+𝑥  ;  𝑥 ≠ 0 SIN DESARROLLO FINITO 
+sen(𝑥)
+𝑥  ;  𝑥 ≠ 0 SIN DESARROLLO FINITO 
+cos(𝑥2) SIN DESARROLLO FINITO 
+sen(𝑥2) SIN DESARROLLO FINITO 
+ 
+INTEGRAL O ANTIDERIVADA (DEFINIDA) 
+Teorema Fundamental del Cálculo: 
+𝐹(𝑥) = ∫ 𝑓(𝑡)𝑑𝑡
+𝑥
+𝑎
+ ⇒ 𝐹′(𝑥) = 𝑓(𝑥) 
+En general, Teorema Fundamental del Cálculo: 
+𝐹(𝑥) = ∫ 𝑓(𝑡)𝑑𝑡
+ℎ(𝑥)
+𝑔(𝑥)
+ ⇒ 𝐹′(𝑥) = 𝑓(ℎ(𝑥))ℎ′(𝑥) − 𝑓(𝑔(𝑥))𝑔′(𝑥) 
+Regla de Barrow: 
+∫ 𝑓(𝑡)𝑑𝑡
+𝑏
+𝑎
+= 𝐹(𝑥)|𝑎𝑏 ∶= 𝐹(𝑏) − 𝐹(𝑎) ; 𝐹′(𝑥) = 𝑓(𝑥) 
+Propiedades: (Sean 𝑓, 𝑔 continuas en [𝑎, 𝑏]) 
+∫ 𝜆𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+= 𝜆 ∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+ ;  𝜆 ∈ ℝ 
+∫ (𝑓(𝑥) + 𝑔(𝑥))𝑑𝑥
+𝑏
+𝑎
+= ∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
++ ∫ 𝑔(𝑥)𝑑𝑥
+𝑏
+𝑎
+ 
+∫ 𝑓(𝑥)𝑑𝑥
+𝑎
+𝑎
+= 0        ∧        ∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+= − ∫ 𝑓(𝑥)𝑑𝑥
+𝑎
+𝑏
+ 
+∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+< 0 ;  𝑓(𝑥) < 0 ∧ ∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+> 0 ;  𝑓(𝑥) > 0 
+∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+= ∫ 𝑓(𝑥)𝑑𝑥
+𝑐
+𝑎
++ ∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑐
+ ;  𝑎 < 𝑐 < 𝑏 
+∫ 𝑓(𝑎 + 𝑏 − 𝑥)𝑑𝑥
+𝑏
+𝑎
+= ∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+    (La propiedad del rey) 
+∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+≤ ∫ 𝑔(𝑥)𝑑𝑥
+𝑏
+𝑎
+ ;  𝑓(𝑥) ≤ 𝑔(𝑥) 
+∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+= 𝑓(𝑐)(𝑏 − 𝑎) ; ∃𝑐 ∈ [𝑎, 𝑏] 
+OBS: Sea 𝑓: (𝑎, 𝑏) → ℝ continua y ∃𝑓(𝑎+), 𝑓(𝑏−) y son finitos, es decir: 
+𝑓(𝑎+) = lím
+𝑥→𝑎+ 𝑓(𝑥) = 𝛼 ∧  𝑓(𝑏−) = lím𝑥→𝑏− 𝑓(𝑥) = 𝛽  
+⇒ Queda definida 𝑔: [𝑎, 𝑏] → ℝ función continua que verifica: 
+𝑔(𝑥) ≔ {
+𝛼, 𝑥 = 𝑎
+𝑓(𝑥), 𝑥 ∈ (𝑎, 𝑏)
+𝛽, 𝑥 = 𝑏
+ y ∫ 𝑓(𝑥)𝑑𝑥
+𝑏
+𝑎
+= ∫ 𝑔(𝑥)𝑑𝑥
+𝑏
+𝑎
+ 
+APLICACIONES 
+Área entre curvas (Fórmula general): Á𝑟𝑒𝑎 ≔ ∫ |𝑓(𝑥) − 𝑔(𝑥)|𝑑𝑥𝑏𝑎  
+Volumen de un sólido en revolución (Rotando alrededor del eje X por el 
+método de discos): 𝑉𝑜𝑙 ≔ 𝜋 ∫ [𝑓(𝑥)]2𝑑𝑥𝑏𝑎  
+Volumen de un sólido en revolución (Rotando alrededor del eje Y por el 
+método de cilindros o capas): 𝑉𝑜𝑙 ≔ 2𝜋 ∫ 𝑥𝑓(𝑥)𝑑𝑥𝑏𝑎  
+Longitud de arco de curva: 𝐿𝑜𝑛𝑔 ≔ ∫ √1 + [𝑓′(𝑥)]2 𝑑𝑥𝑏𝑎  
+IMPORTANTE 
+Para la resolución de Ecuaciones Diferenciales, con o sin valores iniciales, 
+debemos tener en claro la siguiente idea: 
+𝑦 = 𝑓(𝑥)  ⇒ 𝑦′ = 𝑓′(𝑥) = 𝑑𝑓𝑑𝑥 
+𝑓′(𝑥) = 𝑑𝑓𝑑𝑥 ⟹ 𝑓′(𝑥)𝑑𝑥 = 𝑑𝑓 ⟹ ∫ 𝑓′(𝑥)𝑑𝑥 = ∫ 𝑑𝑓 = 𝑓(𝑥) + 𝐶 
+Es decir:  
+𝒇(𝒙) + 𝒄 𝒇′(𝒙) 
+DERIVO
+INTEGRO

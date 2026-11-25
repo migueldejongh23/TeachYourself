@@ -1,0 +1,113 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+ESPACIOS VECTORIALES 
+Sea 𝕂 un cuerpo, donde a sus elementos llamaremos escalares. 
+Un 𝕂-espacio vectorial 𝕍, o espacio vectorial sobre 𝕂, es un conjunto de 
+elementos llamados vectores, junto con dos operaciones: suma 
++:𝕍×𝕍→𝕍, +(𝐮,𝐯)≔𝐮+𝐯; y producto por un escalar ⋅:𝕂×𝕍→𝕍, 
+⋅(𝑘,𝐯)≔𝑘𝐯, que satisfacen las siguientes propiedades: 
+E1) Si 𝐮,𝐯∈𝕍, entonces la suma 𝐮+𝐯∈𝕍.  
+E2) Si 𝐮,𝐯,𝐰∈𝕍, entonces (𝐮+𝐯)+𝐰=𝐮+(𝐯+𝐰). 
+E3) Existe un elemento en 𝕍, notado 𝟎𝕍, tal que 𝟎𝕍+𝐯=𝐯+𝟎𝕍=𝐯 
+para todo 𝐯∈𝕍. 
+E4) Para cada elemento 𝐯∈𝕍 existe −𝐯∈𝕍 tal que 𝐯+(−𝐯)=−𝐯+
+𝐯=𝟎𝕍. 
+E5) Si 𝐮,𝐯∈𝕍, entonces 𝐮+𝐯=𝐯+𝐮. 
+E6) Si 𝑘∈𝕂 y 𝐯∈𝕍, entonces el producto 𝑘𝐯∈𝕍. 
+E7) Si 𝐮,𝐯∈𝕍 y 𝑐∈𝕂, entonces 𝑐(𝐮+𝐯)=𝑐𝐮+𝑐𝐯. 
+E8) Si 𝑎,𝑏∈𝕂 y 𝐯∈𝕍, entonces (𝑎+𝑏)𝐯=𝑎𝐯+𝑏𝐯. 
+E9) Si 𝑎,𝑏∈𝕂 y 𝐯∈𝕍, entonces (𝑎𝑏)𝐯=𝑎(𝑏𝐯). 
+E10) Si 𝐯∈𝕍, entonces 1𝐯=𝐯 (1∈𝕂). 
+Notación: 𝐮−𝐯=𝐮+(−𝐯) 
+Propiedades: Sea 𝕍 un 𝕂-espacio vectorial 
+P1) 0𝐯=𝟎𝕍 para todo 𝐯∈𝕍. 
+P2) 𝑘𝟎𝕍=𝟎𝕍 para todo 𝑘∈𝕂. 
+P3) (−1)𝐯=−𝐯 para todo 𝐯∈𝕍. 
+P4) −(𝐯+𝐰)=−𝐯−𝐰 para todo 𝐯,𝐰∈𝕍. 
+P5) 𝑘(𝐯−𝐰)=𝑘𝐯−𝑘𝐰 para todo 𝐯,𝐰∈𝕍,𝑘∈𝕂. 
+P6) 𝑘𝐯=𝟎𝕍 si y solo si 𝑘=0 o 𝐯=𝟎𝕍. 
+SUBESPACIOS 
+Sea 𝕍 un 𝕂-espacio vectorial, y sea 𝕊 un subconjunto de 𝕍;𝕊 es un 
+subespacio de 𝕍 si se satisfacen las siguientes tres condiciones: 
+S1) El vector 𝟎𝕍 de 𝕍 pertenece a 𝕊. 
+S2) Si 𝐮,𝐯∈𝕊, entonces su suma 𝐮+𝐯 pertenece a 𝕊. 
+S3) Si 𝐯∈𝕊 y 𝑐∈𝕂, entonces el producto 𝑐𝐯 pertenece a 𝕊. 
+OBS: 𝕊 es un 𝕂-espacio vectorial. 
+Propiedad: Si 𝕊 y  𝕋 son subespacios de un 𝕂-espacio vectorial 𝕍, 
+entonces la intersección 𝕊∩𝕋≔{𝐯∈𝕍:𝐯∈𝕊 y 𝐯∈𝕋} es un 
+subespacio de 𝕍. 
+OBS: Si 𝕊 y  𝕋 son subespacios de un 𝕂-espacio vectorial 𝕍, entonces la 
+unión 𝕊∪𝕋≔{𝐯∈𝕍:𝐯∈𝕊 o 𝐯∈𝕋} no es necesariamente un 
+subespacio de 𝕍. 
+COMBINACIONES LINEALES 
+Sean 𝕍 un 𝕂-espacio vectorial y 𝐯1,…,𝐯𝑛 elementos de 𝕍; se dice que un 
+vector 𝐰 es combinación lineal de 𝐯1,…,𝐯𝑛 si se puede expresar en la 
+forma  𝐰=𝑘1𝐯1+⋯+𝑘𝑛𝐯𝑛, donde 𝑘1,…,𝑘𝑛 ∈𝕂. 
+Si todo elemento de 𝕍 es una combinación lineal de 𝐯1,…,𝐯𝑛 decimos 
+que {𝐯1,…,𝐯𝑛} genera 𝕍 o que {𝐯1,…,𝐯𝑛} es un conjunto de generadores 
+de 𝕍. 
+𝕊={∑ 𝑘𝑖𝐯𝑖𝑟𝑖=1 :𝑘𝑖 ∈𝕂} es un subespacio de 𝕍 que se denomina 
+subespacio generado por {𝐯1,…,𝐯𝑟} y se nota 𝕊=gen{𝐯1,…,𝐯𝑟}. 
+Propiedad: Si 𝕊 es un subespacio de 𝕍 y 𝐯1,…,𝐯𝑟, son vectores de 𝕊, 
+entonces gen{𝐯1,…,𝐯𝑟}⊆𝕊. O sea gen{𝐯1,…,𝐯𝑟} es un espacio de 𝕍 que 
+contiene a los vectores 𝐯1,…,𝐯𝑟. 
+DEPENDENCIA E INDEPENDENCIA LINEAL 
+Sea 𝕍 un 𝕂-espacio vectorial, y sean 𝐯1,…,𝐯𝑛 elementos de 𝕍; decimos 
+que {𝐯1,…,𝐯𝑛} es: 
+D1) linealmente dependiente (l.d.) si existen escalares 𝑎1,…,𝑎𝑛 ∈𝕂, no 
+todos iguales a cero, tales que 𝑎1𝐯1+⋯+𝑎𝑛𝐯𝑛=𝟎𝕍. 
+D2) linealmente independiente (l.i.) cuando la única manera de escribir al 
+vector 𝟎𝕍 como combinación lineal de los vectores 𝐯1,…,𝐯𝑛 es con todos 
+los escalares iguales a cero. Así, dados escalares 𝑎1,…,𝑎𝑛 ∈𝕂 tales que 
+𝑎1𝐯1+⋯+𝑎𝑛𝐯𝑛=𝟎𝕍, entonces, necesariamente, 𝑎1=⋯=𝑎𝑛 =0. 
+Propiedades: Sea 𝕍 un 𝕂-espacio vectorial y sean 𝐯1,𝐯2,𝐯3,𝐯4 vectores 
+de 𝕍; son equivalentes: 
+▪ {𝐯1,𝐯2,𝐯3,𝐯4} es linealmente independiente. 
+▪ {𝐯1,𝑘𝐯2,𝐯3,𝐯4} con 𝑘∈𝕂−{0}, es linealmente independiente. 
+▪ {𝐯1+𝑘𝐯2,𝐯2,𝐯3,𝐯4} con 𝑘∈𝕂, es linealmente independiente. 
+BASES 
+Una base de un 𝕂-espacio vectorial 𝕍 es una sucesión de elementos 
+𝐯1,…,𝐯𝑛 de 𝕍 tales que: 
+▪ {𝐯1,…,𝐯𝑛} genera 𝕍. 
+▪ {𝐯1,…,𝐯𝑛} es linealmente independiente. 
+Se dice que un 𝕂-espacio vectorial 𝕍, 𝕍≠{𝟎𝕍}, es de dimensión finita si 
+contiene una sucesión finita de vectores que forma una base de 𝕍. 
+Propiedad: Dos bases cualesquiera de un 𝕂-espacio vectorial 𝕍 de 
+dimensión finita tiene el mismo número de vectores. 
+Si 𝕍 es un 𝕂-espacio vectorial de dimensión finita, la dimensión de 𝕍 es el 
+número de vectores que tiene cualquier base de 𝕍. Si 𝕍={𝟎𝕍}, entonces 
+𝕍 no tiene base y se dice que su dimensión es cero. 
+Propiedad: Sea 𝕍 un 𝕂-espacio vectorial, y 𝐵={𝐯1,…,𝐯𝑛} una base de 
+𝕍. Entonces para cada 𝐯∈𝕍 existen únicos 𝑎1,…,𝑎𝑛 ∈𝕂 tales que 𝐯=
+𝑎1𝐯1+⋯+𝑎𝑛𝐯𝑛. 
+Sea 𝕍 un 𝕂-espacio vectorial, y 𝐵={𝐯1,…,𝐯𝑛} una base de 𝕍. Si 𝐯=
+𝑎1𝐯1+⋯+𝑎𝑛𝐯𝑛, entonces (𝑎1,…,𝑎𝑛)𝑇 son las coordenadas de 𝐯 con 
+respecto a la base 𝐵, y notamos [𝐯]𝐵=(𝑎1,…,𝑎𝑛)𝑇. 
+OBS: Las coordenadas de un vector dependen de la base. Cuando se da 
+una base {𝐯1,…,𝐯𝑛}, importa el orden en que se dan los vectores. 
+Propiedad: Sean 𝕊 y 𝕋 subespacios de un 𝕂-espacio vectorial 𝕍 de 
+dimensión finita. Entonces: 
+P1) 𝕊⊆𝕋⇒dim𝕊≤dim𝕋         P2) 𝕊⊆𝕋 y dim𝕊=dim𝕋⇒𝕊=𝕋 
+SUMA DE SUBESPACIOS 
+Sea 𝕍 un 𝕂-espacio vectorial, y sean 𝕊 y 𝕋 subespacios de 𝕍; se define la 
+suma de 𝕊 y 𝕋 como 𝕊+𝕋={𝐯∈𝕍:𝐯=𝐬+𝐭, con 𝐬∈𝕊 y 𝐭∈𝕋}. 
+Propiedades: 
+P1) 𝕊+𝕋 es un subespacio de 𝕍. 
+P2) Si dim𝕍=𝑛, entonces dim(𝕊+𝕋)=dim𝕊+dim𝕋−dim(𝕊∩𝕋). 
+Sea 𝕍 un 𝕂-espacio vectorial; si 𝕊 y 𝕋 son subespacios de 𝕍 que verifican 
+simultáneamente 𝕊+𝕋=𝕍 y 𝕊∩𝕋={𝟎𝕍}, entonces 𝕍 es la suma 
+directa de 𝕊 y 𝕋 y se notará 𝕎=𝕊⨁𝕋. 
+En general, si 𝕎⊆𝕍 verifica 𝕎=𝕊+𝕋 y 𝕊∩𝕋={𝟎𝕍}, se dirá que 𝕎 
+es la suma directa de 𝕊 y 𝕋, y se notará 𝕎=𝕊⨁𝕋. 
+ 
+MÁS RESÚMENES EN ProfeUniversitario.com 
+   ¡Mirá las Listas de Reproducción!             
+YouTube: @ProfeUniversitario 
+Descargá modelos de exámenes y otros materiales en: 
+algebraico.com 

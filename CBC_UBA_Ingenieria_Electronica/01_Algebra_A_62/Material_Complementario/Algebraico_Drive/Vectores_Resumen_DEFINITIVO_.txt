@@ -1,0 +1,117 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+VECTORES EN EL PLANO Y EL ESPACIO 
+SUMA Y PRODUCTO POR ESCALAR 
+Dados 𝐴=(𝑎1,…,𝑎𝑛),𝐵=(𝑏1,…,𝑏𝑛)∈ℝ𝑛 y 𝑘∈ℝ, definimos 
+𝐴+𝐵≔(𝑎1+𝑏1,𝑎2+𝑏2,…,𝑎𝑛+𝑏𝑛)∈ℝ𝑛 
+𝑘𝐴≔(𝑘𝑎1,…,𝑘𝑎𝑛)∈ℝ𝑛 
+Propiedades: Sean 𝐴,𝐵,𝐶∈ℝ𝑛 y 𝑘,𝑘1,𝑘2∈ℝ 
+P1) (𝐴+𝐵)+𝐶=𝐴+(𝐵+𝐶) (Asociatividad) 
+P2) ∃𝑂∈ℝ𝑛: 𝑂+𝐴=𝐴+𝑂=𝐴 (Existencia del neutro) 
+P3) ∀𝐴∈ℝ𝑛, ∃−𝐴∈ℝ𝑛: 𝐴+(−𝐴)=−𝐴+𝐴=𝑂 (Opuesto) 
+Notación: −𝐴=(−1)𝐴 P4) 𝐴+𝐵=𝐵+𝐴 (Conmutatividad) 
+P5) 𝑘(𝐴+𝐵)=𝑘𝐴+𝑘𝐵 P6) (𝑘1+𝑘2)𝐴=𝑘1𝐴+𝑘2𝐴 
+P7) (𝑘1𝑘2)𝐴=𝑘1(𝑘2𝐴) P8) 1𝐴=𝐴 (1∈ℝ) 
+Propiedades: 
+P1) ∀𝐴∈ℝ𝑛: 0𝐴=𝑂  P2) ∀𝑘∈ℝ: 𝑘𝑂=𝑂 
+P3) ∀𝐴∈ℝ𝑛: (−1)𝐴=−𝐴  Notación: 𝐴−𝐵=𝐴+(−𝐵) 
+P4) ∀𝐴,𝐵∈ℝ𝑛: −(𝐴+𝐵)=−𝐴−𝐵 
+P5) ∀𝐴∈ℝ𝑛, 𝑘∈ℝ: 𝑘(𝐴−𝐵)=𝑘𝐴−𝑘𝐵 
+P6) 𝑘𝐴=𝑂 si y solo si 𝑘=0 o 𝐴=𝑂 
+Decimos que 𝐴 y 𝐵 son paralelos si existe 𝑘≠0 tal que 𝐴=𝑘𝐵. Si 𝑘>0, 
+tienen igual sentido; si 𝑘<0, tienen sentidos opuestos 
+PRODUCTO INTERNO O ESCALAR 
+Dados 𝐴=(𝑎1,…,𝑎𝑛),𝐵=(𝑏1,…,𝑏𝑛)∈ℝ𝑛, definimos 
+〈𝐴,𝐵〉≔𝑎1𝑏1+𝑎2𝑏2+⋯+𝑎𝑛𝑏𝑛 ∈ℝ 
+Propiedades: Sean 𝐴,𝐵,𝐶∈ℝ𝑛 y 𝑘∈ℝ 
+P1) 〈𝐴,𝐵〉=〈𝐵,𝐴〉  P2) 〈𝐴,𝐴〉=‖𝐴‖2 
+P3) 〈𝐴,𝐵+𝐶〉=〈𝐴,𝐵〉+〈𝐴,𝐶〉 (Linealidad en segunda componente) 
+P4) 〈𝐴,𝑘𝐵〉=𝑘〈𝐴,𝐵〉 (Homogeneidad en segunda componente) 
+P5) Si 𝐴=𝑂, 〈𝐴,𝐴〉=𝑂; si 𝐴≠𝑂, 〈𝐴,𝐴〉>0 
+P6) |〈𝐴,𝐵〉|≤‖𝐴‖‖𝐵‖ (Desigualdad de Cauchy-Schwarz) 
+P7) 〈𝐴,𝐵〉= 12(‖𝐴‖2+‖𝐵‖2−‖𝐵−𝐴‖2) 
+P8) Teorema de Pitágoras: ‖𝐴+𝐵‖2=‖𝐴‖2+‖𝐵‖2⟺〈𝐴,𝐵〉=0 
+Consecuencias: Sean 𝐴,𝐵,𝐶∈ℝ𝑛 y 𝑘∈ℝ 
+P1) 〈𝐴+𝐵,𝐶〉=〈𝐴,𝐶〉+〈𝐵,𝐶〉 (Linealidad en primera componente) 
+P2) 〈𝑘𝐴,𝐵〉=𝑘〈𝐴,𝐵〉 (Homogeneidad en primera componente) 
+P3) 〈𝑎𝐴+𝑏𝐵,𝛼𝐶+𝛽𝐷〉=𝑎𝛼〈𝐴,𝐶〉+𝑎𝛽〈𝐴,𝐷〉+𝑏𝛼〈𝐵,𝐶〉+𝑏𝛽〈𝐵,𝐷〉 
+NORMA Y DISTANCIA 
+Dado 𝐴=(𝑎1,…,𝑎𝑛)∈ℝ𝑛, definimos su norma 
+‖𝐴‖≔√〈𝐴,𝐴〉=√𝑎12+⋯+𝑎𝑛2 ∈ℝ 
+Decimos que 𝐴 es unitario si ‖𝐴‖=1 
+Propiedades: Sean 𝐴,𝐵∈ℝ𝑛 y 𝑘∈ℝ 
+P1) Si 𝐴=𝑂, ‖𝐴‖=0; si 𝐴≠𝑂, ‖𝐴‖>0 
+P2) ‖𝑘𝐴‖=|𝑘|‖𝐴‖ (Homogénea) OBS: ‖−𝐴‖=‖𝐴‖ 
+P3) ‖𝐴+𝐵‖≤‖𝐴‖+‖𝐵‖ (Desigualdad triangular)       P4) ‖𝐴‖2=〈𝐴,𝐴〉 
+P5.1) |‖𝐴‖−‖𝐵‖|≤‖𝐴+𝐵‖  P5.2) |‖𝐴‖−‖𝐵‖|≤‖𝐴−𝐵‖ 
+Dados 𝐴=(𝑎1,…,𝑎𝑛),𝐵=(𝑏1,…,𝑏𝑛)∈ℝ𝑛, definimos la distancia 
+𝑑(𝐴,𝐵)≔‖𝐵−𝐴‖=√(𝑏1−𝑎1)2+(𝑏2−𝑎2)2+⋯+(𝑏𝑛−𝑎𝑛)2 
+Propiedades: Sean 𝐴,𝐵,𝐶∈ℝ𝑛 y 𝑘∈ℝ  
+P1) Si 𝐴=𝐵, 𝑑(𝐴,𝐵)=0; si 𝐴≠𝐵, 𝑑(𝐴,𝐵)>0 
+P2) 𝑑(𝐴,𝐵)=𝑑(𝐵,𝐴) (Simetría) P3) 𝑑(𝑘𝐴,𝑘𝐵)=|𝑘|𝑑(𝐵,𝐴) 
+P4) 𝑑(𝐴,𝐵)≤𝑑(𝐴,𝐶)+𝑑(𝐶,𝐵) (Desigualdad triangular) 
+P5) 𝑑(𝐴,𝐵)=𝑑(𝐴+𝐶,𝐵+𝐶) (Invariante por traslación) 
+ÁNGULO ENTRE VECTORES NO NULOS 
+Dados 𝐴=(𝑎1,…,𝑎𝑛),𝐵=(𝑏1,…,𝑏𝑛)∈ℝ𝑛−{0}, definimos 
+𝜃=𝜃(𝐴,𝐵)⟺0≤𝜃≤𝜋 y cos(𝜃)= 〈𝐴,𝐵〉‖𝐴‖‖𝐵‖ 
+Decimos que 𝐴 y 𝐵 son ortogonales si 〈𝐴,𝐵〉=0 
+PRODUCTO VECTORIAL 
+Dados 𝐴=(𝑎1,𝑎2,𝑎3),𝐵=(𝑏1,𝑏2,𝑏3)∈ℝ3, definimos 
+𝐴×𝐵≔(𝑎2𝑏3−𝑎3𝑏2,𝑎3𝑏1−𝑎1𝑏3,𝑎1𝑏2−𝑎2𝑏1)∈ℝ3 
+Propiedades: Sean 𝐴,𝐵,𝐶∈ℝ3 y 𝑘∈ℝ 
+P1) 𝐴×𝐵=−(𝐵×𝐴) (Anticonmutatividad) 
+P2) 𝐴×(𝐵+𝐶)=(𝐴×𝐵)+(𝐴×𝐶) (Distributividad derecha-izq) 
+       (𝐵+𝐶)×𝐴=(𝐵×𝐴)+(𝐶×𝐴) (Distributividad izq-derecha)  
+P3) (𝑘𝐴)×𝐵=𝑘(𝐴×𝐵)=𝐴×(𝑘𝐵) (Bihomogeneidad) 
+P4) 𝐴×𝐴=𝑂 (Nilpotencia) P5) 𝐴×𝐵 es perpendicular a 𝐴 y a 𝐵 
+P6) (𝐴×𝐵)×𝐶≠𝐴×(𝐵×𝐶)     P7) ‖𝐴×𝐵‖2=‖𝐴‖2‖𝐵‖2−〈𝐴,𝐵〉2 
+P8) ‖𝐴×𝐵‖=‖𝐴‖‖𝐵‖|sen(𝜃)| donde 𝜃=𝜃(𝐴,𝐵) 
+P9) ‖𝐴×𝐵‖ es el área del paralelogramo de vértices 𝑂,𝐴,𝐵,𝐴+𝐵 
+P10) 𝐴×(𝐵×𝐶)+𝐵×(𝐶×𝐴)+𝐶×(𝐴×𝐵)=𝑂 (Id. de Jacobi) 
+P11) 𝐴×(𝐵×𝐶)=〈𝐴,𝐶〉𝐵−〈𝐴,𝐵〉𝐶 (Regla de expulsión) 
+PRODUCTO MIXTO 
+Dados 𝐴,𝐵,𝐶∈ℝ3, definimos su producto mixto 
+[𝐴,𝐵,𝐶]≔〈𝐴,𝐵×𝐶〉=〈𝐵,𝐶×𝐴〉=〈𝐶,𝐴×𝐵〉 
+Propiedades: 
+P1) [𝐴,𝐵,𝐶]=−[𝐴,𝐶,𝐵]  P2) [𝐴,𝐵,𝐶]=[𝐵,𝐶,𝐴]=[𝐶,𝐴,𝐵] 
+P3) |[𝐴,𝐵,𝐶]| es el volumen del paralelepípedo definido por 𝐴, 𝐵 y 𝐶 
+RECTAS EN ℝ𝑛 
+Dados 𝐴,𝐷∈ℝ𝑛, 𝐷≠𝑂, la ecuación paramétrica de la recta 𝐿 que pasa 
+por 𝐴 en la dirección de 𝐷 es 𝐿:𝑋=𝑡𝐷+𝐴, donde 𝑡∈ℝ. 
+Ángulos entre dos rectas: Para definir al ángulo entre dos rectas usamos 
+sus vectores dirección, eligiendo entre los ángulos que estos forman, el 
+único 𝜃 tal que 0≤𝜃≤
+𝜋
+2. 
+Dos rectas en ℝ2 o en ℝ3 se dicen: 
+∎  Coincidentes si 𝐿=𝐿′ ∎  Transversales/Secantes si 𝐿∩𝐿′={𝑃} 
+∎  Paralelas si 𝐷∥𝐷′ ∎  Perpendiculares si 𝐷⊥𝐷′ 
+ 
+Dos rectas en ℝ3 se dicen alabeadas si no se cortan ni son paralelas. 
+La distancia de un punto 𝑃 a una recta 𝐿:𝑋=𝑡𝐷+𝐴 en ℝ2 es 
+𝑑(𝑃,𝐿)=|〈𝑃−𝐴,𝐷̃〉|‖𝐷̃‖    con 𝐷̃=(−𝑏,𝑎) o 𝐷̃=(𝑏,−𝑎), si 𝐷=(𝑎,𝑏) 
+La distancia de un punto 𝑃 a una recta 𝐿:𝑋=𝑡𝐷+𝐴 en ℝ3 es 
+𝑑(𝑃,𝐿)=‖(𝑃−𝐴)×𝐷‖‖𝐷‖  
+Distancia entre dos rectas alabeadas 𝐿𝑖:𝑋=𝑡𝐷𝑖+𝐴𝑖 con 𝑖=1,2 en ℝ3: 
+𝑑(𝐿1,𝐿2)=|〈𝐴1−𝐴2,𝐷1×𝐷2〉|‖𝐷1×𝐷2‖  
+PLANOS EN ℝ3 
+Dados 𝑄,𝑁∈ℝ3, 𝑁≠𝑂, la ecuación del plano que Π que pasa por 𝑄 y es 
+perpendicular a 𝑁 es Π:〈𝑋−𝑄,𝑁〉=0 
+Diremos que 𝑁 es un vector normal al plano. 
+OBS: El plano Π es el conjunto de todos los puntos 𝑋∈ℝ3: (𝑋−𝑄)⊥𝑁. 
+Dos planos en ℝ3 se dicen: 
+∎  Coincidentes si Π=Π′ ∎  Transversales/Secantes si Π∩Π′=𝐿 
+∎  Paralelas si 𝑁∥𝑁′ ∎  Perpendiculares si 𝑁⊥𝑁′ 
+ 
+Una recta y un plano en ℝ3 son: 
+∎  Paralelas si 𝐷⊥𝑁 ∎  Perpendiculares si 𝐷∥𝑁 
+ 
+La distancia de un punto 𝑃∈ℝ3 a un plano Π:〈𝑋−𝑄,𝑁〉=0 es 
+𝑑(𝑃,Π)=|〈𝑃−𝑄,𝑁〉|‖𝑁‖  
+DESCARGÁ MODELOS DE EXÁMENES EN algebraico.com 

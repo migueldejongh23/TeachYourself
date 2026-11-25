@@ -1,0 +1,27 @@
+﻿id_habilidad,habilidad,problemas_asociados,estado_cobertura,interpretacion
+al-conjuntos,Operaciones de conjuntos,0,Sin problemas candidatos en esta muestra,Vacío de evidencia en los 152 problemas analizados; no significa que el tema no pertenezca al programa.
+al-complejos-operaciones,Operaciones con complejos en forma binómica,7,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-complejos-modulo-conjugado,Módulo y conjugado,0,Sin problemas candidatos en esta muestra,Vacío de evidencia en los 152 problemas analizados; no significa que el tema no pertenezca al programa.
+al-complejos-polar,Forma polar y exponencial,7,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-complejos-ecuaciones,Ecuaciones y raíces en C,7,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-polinomios-division,División de polinomios y Ruffini,0,Sin problemas candidatos en esta muestra,Vacío de evidencia en los 152 problemas analizados; no significa que el tema no pertenezca al programa.
+al-polinomios-factorizacion,Raíces y descomposición factorial,14,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-polinomios-coeficientes,De las raíces a los coeficientes,2,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-vectores-combinaciones,Combinaciones lineales y dependencia,1,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-vectores-producto-escalar,"Producto escalar, norma y ángulo",27,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-vectores-rectas-planos,Rectas y planos,87,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-vectores-distancias-proyecciones,Distancias y proyecciones,23,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-vectores-producto-vectorial,Producto vectorial,25,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-matrices-operaciones,Operaciones con matrices,25,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-sistemas-gauss,Sistemas y Gauss-Jordan,24,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-determinantes,Determinantes,17,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-sistemas-parametro,Sistemas con parámetro,2,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-matrices-inversa,Matriz inversa,5,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-transformaciones-linealidad,Qué es una transformación lineal,20,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-transformaciones-nucleo-imagen,Núcleo e imagen,13,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-transformaciones-geometria,La matriz como movimiento,21,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-conicas-elementos,Identificar cónicas y leer sus elementos,0,Sin problemas candidatos en esta muestra,Vacío de evidencia en los 152 problemas analizados; no significa que el tema no pertenezca al programa.
+al-conicas-parabola,La parábola: foco y directriz,2,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-conicas-discriminante-rotacion,Clasificación por discriminante y rotación,0,Sin problemas candidatos en esta muestra,Vacío de evidencia en los 152 problemas analizados; no significa que el tema no pertenezca al programa.
+al-conicas-desplazadas,Cónicas desplazadas: completar cuadrados,10,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.
+al-conicas-intersecciones,Intersecciones de cónicas y rectas,1,Con problemas candidatos,Cobertura documental provisional; no demuestra dominio ni calibración.

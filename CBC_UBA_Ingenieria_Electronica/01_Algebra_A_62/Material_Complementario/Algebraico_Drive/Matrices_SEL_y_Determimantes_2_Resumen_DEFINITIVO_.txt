@@ -1,0 +1,138 @@
+«EXTRAÑO A MI EX…              
+A MI EX…CELENTE PROMEDIO QUE TENÍA EN LA SECUNDARIA»                            
+WhatsApp +54 9 11 7121 8501 
+ProfeUniversitario.com 
+Ig, YouTube y Kick: @ProfeUniversitario 
+CBC | UBA | UNC | UTN | UNSa UCASal | Clases para TODAS las universidades 
+Álgebra 1, 2, Lineal | Análisis 1, 2, 3 | Mate 1, 2, 3, 4 | CBC e Ingresos Universitarios 
+ 
+En lo que sigue 𝕂 significa ℚ, ℝ o ℂ. 
+SISTEMAS LINEALES (CONTINUACIÓN) 
+El sistema 𝑆 puede escribirse 𝐴𝐱 = 𝐛, con 
+𝐴 = (𝑎𝑖𝑗) ∈ 𝕂𝑚×𝑛, 𝐱 = (
+𝑥1
+⋮
+𝑥𝑛
+) ∈ 𝕂𝑛×1, 𝐛 = (
+𝑏1
+⋮
+𝑏𝑚
+) ∈ 𝕂𝑚×1 
+La matriz ampliada o matriz aumentada del sistema 𝑆 es  
+(𝐴|𝐛) = (
+𝑎11 𝑎12 … 𝑎1𝑛
+𝑎21 𝑎22 … 𝑎2𝑛
+⋮ ⋮ ⋱ ⋮
+𝑎𝑚1 𝑎𝑚2 … 𝑎𝑚𝑛
+|
+𝑏1
+𝑏2
+⋮
+𝑏𝑚
+) 
+Propiedades: Sean 𝐴 ∈ 𝕂𝑚×𝑛, 𝐛 ∈ 𝕂𝑚×1 − {0}, 𝑆0 = {𝐱 ∈ 𝕂𝑛×1: 𝐴𝐱 = 0} 
+y 𝑆𝐛 = {𝐱 ∈ 𝕂𝑛×1: 𝐴𝐱 = 𝐛} 
+P1.1) Si 𝐱, 𝐲 ∈ 𝑆0, entonces 𝐱 + 𝐲 ∈ 𝑆0 
+Esto dice que la suma de dos soluciones de un SH es también solución del 
+mismo 
+P1.2) Si 𝐱 ∈ 𝑆0 y 𝑘 ∈ 𝕂, entonces 𝑘𝐱 ∈ 𝑆0 
+Esto dice que los múltiplos de una solución de un SH son también 
+soluciones del mismo 
+P2) Si 𝐱, 𝐲 ∈ 𝑆𝐛, entonces 𝐱 − 𝐲 ∈ 𝑆0 
+Esto es, la diferencia de dos soluciones de un SNH es solución del SHA 
+P3) Si 𝐬 es una solución particular del sistema 𝐴𝐱 = 𝐛 (es decir, 𝐬 ∈ 𝑆𝐛), 
+entonces 𝑆𝐛 = 𝑆0 + 𝐬 = {𝐲 ∈ 𝕂𝑛×1: 𝐲 = 𝐱 + 𝐬, con 𝐱 ∈ 𝑆0} 
+Esto significa que cualquier solución del SNH puede obtenerse sumando 
+una solución particular del SNH con una solución del SHA 
+SISTEMAS EQUIVALENTES 
+Decimos que dos sistemas de ecuaciones son equivalentes cuando tienen 
+el mismo conjunto de soluciones. 
+Propiedad: Las siguientes operaciones sobre las ecuaciones de un sistema 
+dan lugar a un sistema equivalente al dado: 
+• Multiplicar una de las ecuaciones por una constante no nula 
+• Intercambiar dos de las ecuaciones 
+• Sumar un múltiplo de una de las ecuaciones a otra ecuación 
+MÉTODO DE ELIMINACIÓN DE GAUSS-JORDAN Y RANGO DE UNA MATRIZ 
+(Operaciones elementales sobre filas) Las anteriores operaciones sobre 
+las ecuaciones se corresponden con las siguientes operaciones sobre las 
+filas de la matriz ampliada del sistema 
+• Multiplicar una de las filas por una constante no nula 
+• Intercambiar dos de las filas 
+• Sumar un múltiplo de una de las filas a otra fila 
+MATRIZ ESCALONADA EN LAS FILAS REDUCIDAS, EQUIVALENTES Y RANGO 
+Se dice que una matriz se encuentra en la forma escalonada en las filas 
+reducidas, si se cumplen las siguientes condiciones: 
+• Si una fila no consta únicamente de ceros, entonces su primer 
+coeficiente no nulo es un 1 (a este 1 se lo denomina 1 principal) 
+• Si existen filas que constan solo de ceros (filas nulas), se 
+agrupan en la parte inferior de la matriz 
+• Si dos filas son no nulas, el 1 principal de la fila inferior se 
+presenta más a la derecha que el 1 principal de la fila superior 
+• Cada columna que contenga un 1 principal tiene ceros en todas 
+las demás posiciones 
+Si una matriz tiene solo las primeras tres propiedades se dice que está en 
+la forma escalonada en filas. 
+Decimos que dos matrices son equivalentes por filas si se puede obtener 
+una de la otra por medio de finitas operaciones elementales sobre filas. 
+Llamaremos rango fila (o rango) de la matriz 𝐴 al número de filas no nulas 
+que tiene la matriz escalonada en las filas equivalentes a 𝐴. 
+Propiedades: Sean 𝐴 ∈ 𝕂𝑚×𝑛, 𝐵 ∈ ℝ𝑛×𝑠 y 𝑘 ∈ 𝕂 − {0}  
+P1) rg(𝐴) ≥ 0 
+OBS 1: rg(𝐴) = 0 si y solo si 𝐴 = 0𝑚×𝑛 
+OBS 2: rg(𝐴) > 0 si y solo si 𝐴 ≠ 0𝑚×𝑛 
+P2) rg(𝐴) ≤ mín{𝑚, 𝑛}       P3) rg(𝑘𝐴) = rg(𝐴)       P4) rg(𝐴) = rg(𝐴𝑡) 
+P5) rg(𝐴𝐵) ≤ mín{rg(𝐴) , rg(𝐵)} = mín{𝑚, 𝑛, 𝑠} 
+P6.1) Si 𝐴 es inversible, entonces rg(𝐴𝐵) = rg(𝐵) 
+P6.2) Si 𝐵 es inversible, entonces rg(𝐴𝐵) = rg(𝐴) 
+TEOREMA DE ROUCHÉ-FROBENIUS 
+El sistema de matriz ampliada (𝐴|𝐛) es compatible si y solo si rg(𝐴) =
+rg(𝐴|𝐛) 
+TEOREMA DE LA DIMENSIÓN (PARA MATRICES) 
+Sea 𝐴 ∈ 𝕂𝑚×𝑛. Entonces 
+𝑛 = rg(𝐴) + dim(Nul(𝐴)) 
+donde Nul(𝐴) ≔ 𝑆0 = {𝐱 ∈ 𝕂𝑛×1: 𝐴𝐱 = 0} se llama núcleo de la matriz 𝐴 
+DETERMINANTES 
+El determinante de 𝐴 ∈ 𝕂𝑛×𝑛 es un número en 𝕂. Lo notamos det(𝐴). 
+det (𝑎11 𝑎12𝑎21 𝑎22) = 𝑎11𝑎22 − 𝑎12𝑎21 
+det (
+𝑎11 𝑎12 𝑎13
+𝑎21 𝑎22 𝑎23
+𝑎31 𝑎32 𝑎33
+) = 𝑎11 det(𝐶11) − 𝑎12 det(𝐶12) + 𝑎13 det(𝐶13) 
+donde 𝐶11 = (𝑎22 𝑎23𝑎32 𝑎33), 𝐶12 = (𝑎21 𝑎23𝑎31 𝑎33) y 𝐶13 = (𝑎21 𝑎22𝑎31 𝑎32)  
+Propiedades: Sea 𝐴 ∈ 𝕂𝑛×𝑛 y 𝑘 ∈ 𝕂 
+P1) Si 𝐴 contiene una fila (o columna) de ceros, entonces det(𝐴) = 0 
+P2) Si 𝐴 es una matriz triangular, entonces det(𝐴) = 𝑎11𝑎22 … 𝑎𝑛𝑛 
+P3) Si 𝐴′ es la matriz que se obtiene cuando una sola fila (o columna) de 𝐴 
+se multiplica por una constante 𝑘, entonces det(𝐴′) = 𝑘 det(𝐴) 
+P4) Si 𝐴′ es la matriz que se obtiene al intercambiar dos filas (o columnas) 
+de 𝐴, entonces det(𝐴′) = − det(𝐴) 
+P5.1) Si 𝐴′ es la matriz que se obtiene al sumar un múltiplo de una fila de 
+𝐴 a otra fila, entonces det(𝐴′) = det(𝐴) 
+P5.2) Si 𝐴′ es la matriz que se obtiene al sumar un múltiplo de una 
+columna de 𝐴 a otra columna, entonces det(𝐴′) = det(𝐴) 
+Propiedades: Sean 𝐴, 𝐵 ∈ 𝕂𝑛×𝑛 y 𝑘 ∈ 𝕂 
+P1) det(𝐼𝑛) = 1 donde 𝐼𝑛 es la matriz identidad de 𝑛 × 𝑛 
+P2) det(𝐴𝑡) = det(𝐴) donde 𝐴𝑡 es la matriz transpuesta de 𝐴 
+P3) det(𝑘𝐴) = 𝑘𝑛 det(𝐴) P4) det(𝐴𝐵) = det(𝐴) det(𝐵) 
+P5) 𝐴 es inversible ⟺ det(𝐴) ≠ 0. En tal caso, det(𝐴−1) = 1det(𝐴) 
+Def: 𝐴 ∈ 𝕂𝑛×𝑛 se dice singular, degenerada o no regular si det(𝐴) = 0 
+Def: 𝐴 ∈ 𝕂𝑛×𝑛 se dice no singular, no degenerada o regular si det(𝐴) ≠ 0 
+REGLA DE CRAMER 
+Si 𝐴𝐱 = 𝐛 es un sistema de 𝑛 ecuaciones con 𝑛 incógnitas tal que 
+det(𝐴) ≠ 0, entonces la única solución del sistema es 𝐱 = (𝑥1, 𝑥2, … , 𝑥𝑛)𝑡 
+con 𝑥𝑖 =
+det(𝐴𝑖)
+det(𝐴) para cada 𝑖 = 1,2, … , 𝑛 donde 𝐴𝑖 es la matriz que se 
+obtiene al reemplazar la 𝑖-ésima columna de 𝐴 por 𝐛. 
+INTERPRETACIÓN GEOMÉTRICA DEL DETERMINANTE 
+Si 𝑂 = (0,0), 𝑃 = (𝑝1, 𝑝2), 𝑄 = (𝑞1, 𝑞2) son 3 puntos en ℝ2, el área del 
+paralelogramo determinado por 𝑂𝑃⃗⃗⃗⃗⃗  y 𝑂𝑄⃗⃗⃗⃗⃗⃗  es |det (𝑝1 𝑞1𝑝2 𝑞2)| 
+Si 𝑂 = (0,0,0), 𝑃 = (𝑝1, 𝑝2, 𝑝3), 𝑄 = (𝑞1, 𝑞2, 𝑞3), 𝑅 = (𝑟1, 𝑟2, 𝑟3) son 4 
+puntos en ℝ3, el volumen del paralelepípedo determinado por 𝑂𝑃⃗⃗⃗⃗⃗ , 𝑂𝑄⃗⃗⃗⃗⃗⃗  y 
+𝑂𝑅⃗⃗⃗⃗⃗  es |det (
+𝑝1 𝑞1 𝑟1
+𝑝2 𝑞2 𝑟2
+𝑝3 𝑞2 𝑟3
+)| = |(𝑂𝑃⃗⃗⃗⃗⃗ × 𝑂𝑄⃗⃗⃗⃗⃗⃗ ). 𝑂𝑅⃗⃗⃗⃗⃗ | 
+DESCARGÁ MODELOS DE EXÁMENES EN algebraico.com 

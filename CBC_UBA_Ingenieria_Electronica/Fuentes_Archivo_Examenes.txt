@@ -1,0 +1,34 @@
+ARCHIVO DE EXAMENES Y MATERIAL CBC/UBA - TEACHYOURSELF
+
+NUEVO MATERIAL LOCAL DE ALGEBRA A (62), FUENTE ALGEBRAICO.COM / GOOGLE DRIVE
+Se descargaron y validaron 4 compilaciones de parciales (1ros 2026, 1ros 2025-2026, 2dos 2025, 3ros 2025), además de 2 cuadernillos de prácticas 2026 (Cátedra Única y Palacios-Puebla). También se descargaron 13 fichas-resumen temáticas de Álgebra/Análisis desde la carpeta complementaria. Los PDF originales se conservaron y se generaron versiones TXT extraídas para búsqueda; las figuras deben consultarse en el PDF original.
+Carpeta de exámenes: 01_Algebra_A_62/Evaluaciones/Algebraico_Drive
+Carpeta de material: 01_Algebra_A_62/Material_Complementario/Algebraico_Drive
+Índices: Indice_Examenes_Authenticos.csv e Indice_Material_Algebraico_Drive.csv
+Fuente: https://algebraico.com/cbc/alg62/ y carpetas Google Drive enlazadas desde esa página.
+
+ARCHIVO UBA XXI / ARRIMO WIKI
+Se catalogaron 43 finales de Álgebra A (62) y 22 de Física (03), sesiones 2023-2026. Se guardaron las páginas índice HTML y todos los enlaces individuales en Indice_Examenes_Authenticos.csv. La descarga de los PDF individuales devolvió HTTP 403; no se contabilizan como archivos locales. Se clasifican como UBA XXI y no se mezclan automáticamente con CBC presencial.
+Fuentes: https://arrimo.com.ar/wiki/p/uba/uba-xxi/algebra-a-62/examenes/finales
+https://arrimo.com.ar/wiki/p/uba/uba-xxi/fisica-03/examenes/finales
+
+ARCHIVOS CBC LOCALES PREVIOS
+Se mantienen 4 exámenes de Física CBC 2024-2025 y 4 enunciados de Álgebra CBC 2025-2026, ya guardados en sus carpetas Evaluaciones.
+
+IMPORTANTE: los compendios Algebraico contienen varios temas/modelos en un mismo PDF; cada examen individual debe separarse y conservar su tema, fecha y formato antes de usarlo como evaluación final. No se deben contar las compilaciones como si fueran exámenes individuales.
+
+CATALOGOS HISTORICOS ADICIONALES (ENLACES DE REFERENCIA)
+Altillo Física CBC: https://www.altillo.com/examenes/uba/cbc/fis/index.asp (catálogo histórico con parciales y finales 2018-2026; acceso automatizado devolvió 403).
+Altillo Álgebra CBC Ingeniería: https://www.altillo.com/examenes/uba/cbc/algparaing/index.asp (catálogo de parciales y finales 2016-2026; acceso automatizado devolvió 403).
+Campus Virtual CBC Física 03, 1er parcial 24/05/2025 Tema 1: enlace oficial catalogado arriba; requiere sesión del Campus, por eso no se descargó.
+Algebraico.com informa un archivo de Álgebra A 62 con 24 primeros parciales, 17 segundos parciales, 5 finales y 3 libres (incluye recuperatorios/diferidos); el contenido está enlazado desde https://algebraico.com/cbc/alg62/.
+
+ACTUALIZACION ARRIMO — 24/11/2026
+Se amplió la captura de los índices públicos de Arrimo y se guardaron 11 páginas fuente HTML en sus carpetas de archivo. Nuevo catálogo: Indice_Examenes_Arrimo_Ampliado.csv, con 485 enlaces individuales únicos, separados por programa, materia y tipo de evaluación:
+- UBA XXI — Álgebra A (62): 149 primeros parciales, 121 segundos parciales y 43 finales.
+- UBA XXI — Física (03): 75 primeros parciales, 59 segundos parciales y 22 finales.
+- CBC — Álgebra A (62): 9 primeros parciales y 3 segundos parciales.
+- CBC — Física (03): 2 primeros parciales y 2 finales/libres.
+Los 485 registros son enlaces catalogados, NO 485 archivos descargados. Se verificó de nuevo que los enlaces directos a PDF de Arrimo responden HTTP 403 desde el acceso automatizado. Las páginas índice sí son accesibles y quedaron guardadas como HTML. No se intentó eludir el control de acceso.
+Carpetas: 01_Algebra_A_62/Evaluaciones/UBA_XXI_Archivo y CBC_Arrimo_Archivo; 03_Fisica_03/Evaluaciones/UBA_XXI_Archivo y CBC_Arrimo_Archivo.
+Los datos UBA XXI y CBC permanecen separados. Los índices reflejan lo que Arrimo publica actualmente y pueden cambiar; conviene revalidarlos antes de usar un examen como evaluación oficial.
