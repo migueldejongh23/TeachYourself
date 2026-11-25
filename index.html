@@ -20608,12 +20608,33 @@ function startLessonExercises(l, mount){
       el.className = res[i] === true ? "ok" : res[i] === false ? "bad" : (i === idx ? "cur" : "");
     });
   }
-  function attachReteachAfter(anchor, ex){
-    if(!anchor || !ex || !ex.reteach || !anchor.parentNode) return;
+  /* Reenseñanza universal: ningún ejercicio ni etapa deja al alumno
+     únicamente con un "revisa". Prioriza la explicación alternativa
+     escrita por el autor; si falta, construye una guía con la consigna y
+     los pasos reales de la solución, sin inventar una regla. */
+  function textoReensenanza(obj, padre){
+    if(obj && typeof obj.reteach === "string" && obj.reteach.trim()) return obj.reteach.trim();
+    var pasos = obj && Array.isArray(obj.sol) ? obj.sol : (padre && Array.isArray(padre.sol) ? padre.sol : []);
+    var consigna = obj && obj.prompt ? obj.prompt : (padre && padre.prompt ? padre.prompt : "");
+    var lineas = ["Vamos a desarmar el ejercicio, sin saltar directamente al resultado."];
+    if(consigna) lineas.push("\n¿Qué te están pidiendo?\n" + consigna);
+    var utiles = pasos.filter(function(x){ return typeof x === "string" && x.trim(); }).map(function(x){ return x.trim(); });
+    if(utiles.length){
+      lineas.push("\nPista: empieza por este primer paso:\n" + utiles[0]);
+      if(utiles.length > 1) lineas.push("\nDespués, el razonamiento continúa así:");
+      utiles.slice(1).forEach(function(x,i){ lineas.push((i+2)+". "+x); });
+    } else {
+      lineas.push("\nNo hay una explicación alternativa escrita para este ejercicio. La solución disponible no alcanza para diagnosticar qué parte no se entendió.");
+    }
+    lineas.push("\nNo memorices el resultado: identifica qué dato usaste y por qué ese paso permite avanzar.");
+    return lineas.join("\n");
+  }
+  function attachReteachAfter(anchor, ex, padre){
+    if(!anchor || !ex || !anchor.parentNode) return;
     var help=document.createElement("div"); help.className="lex-reteach"; help.style.marginTop="12px";
-    var btn=document.createElement("button"); btn.type="button"; btn.className="btn"; btn.textContent="No lo entiendo: explícamelo de otra manera";
+    var btn=document.createElement("button"); btn.type="button"; btn.className="btn"; btn.textContent="No lo entiendo: guíame paso a paso";
     var panel=document.createElement("div"); panel.className="feedback"; panel.style.whiteSpace="pre-wrap"; panel.style.display="none";
-    btn.addEventListener("click",function(){panel.textContent=ex.reteach;panel.style.display="block";btn.textContent="Explicación alternativa abierta";btn.disabled=true;});
+    btn.addEventListener("click",function(){panel.textContent=textoReensenanza(ex,padre);panel.style.display="block";btn.textContent="Guía paso a paso abierta";btn.disabled=true;});
     help.appendChild(btn); help.appendChild(panel); anchor.parentNode.insertBefore(help,anchor.nextSibling);
   }
   function finish(ok, gr, dada, pasosDetalle){
@@ -20749,7 +20770,7 @@ function startLessonExercises(l, mount){
         stepFb("bad", gr.notSimple
           ? "El valor está bien, pero tiene que ir simplificado. Escríbelo en su forma más simple para seguir."
           : (mensajeErrorCat(clasificarError(st, raw)) || "Todavía no: esta etapa no da eso. Revisa la cuenta y prueba de nuevo; hasta que salga, no se sigue."));
-        attachReteachAfter($("#lex-step-fb", mount), ex);
+        attachReteachAfter($("#lex-step-fb", mount), st, ex);
         return;
       }
       busy = true;
