@@ -20612,29 +20612,35 @@ function startLessonExercises(l, mount){
      únicamente con un "revisa". Prioriza la explicación alternativa
      escrita por el autor; si falta, construye una guía con la consigna y
      los pasos reales de la solución, sin inventar una regla. */
-  function textoReensenanza(obj, padre){
+  function textoReensenanza(obj, padre, dada){
     if(obj && typeof obj.reteach === "string" && obj.reteach.trim()) return obj.reteach.trim();
     var pasos = obj && Array.isArray(obj.sol) ? obj.sol : (padre && Array.isArray(padre.sol) ? padre.sol : []);
     var consigna = obj && obj.prompt ? obj.prompt : (padre && padre.prompt ? padre.prompt : "");
-    var lineas = ["Vamos a desarmar el ejercicio, sin saltar directamente al resultado."];
+    var lineas = ["Vamos a revisar el razonamiento, no solo cambiar la respuesta."];
+    var cat = dada !== undefined && dada !== null ? clasificarError(obj, dada) : null;
+    if(cat === "signo") lineas.push("\nTu resultado tiene el mismo valor pero el signo contrario. Eso apunta a un error de signos: vuelve a mirar qué signos tienen los números y qué operación los relaciona antes de calcular.");
+    else if(cat === "invertida") lineas.push("\nTu resultado coincide con el recíproco: parece que se intercambiaron numerador y denominador. En una división de fracciones, solo se invierte la segunda fracción; en otras operaciones no se invierten automáticamente.");
+    else if(cat === "decimal") lineas.push("\nTu resultado quedó diez veces mayor o diez veces menor. Revisa el valor posicional de la coma: ¿cuántas décimas, centésimas o unidades representa tu resultado?");
+    else if(cat === "no-simplificada") lineas.push("\nEl valor de tu fracción es correcto, pero todavía se puede simplificar. Busca un divisor común del numerador y del denominador y divide ambos por el mismo número.");
+    else if(dada !== undefined && dada !== null) lineas.push("\nCon esta respuesta no puedo identificar con seguridad qué error cometiste. No voy a inventar un diagnóstico: comparemos la consigna con el primer paso del modelo.");
     if(consigna) lineas.push("\n¿Qué te están pidiendo?\n" + consigna);
     var utiles = pasos.filter(function(x){ return typeof x === "string" && x.trim(); }).map(function(x){ return x.trim(); });
     if(utiles.length){
-      lineas.push("\nPista: empieza por este primer paso:\n" + utiles[0]);
-      if(utiles.length > 1) lineas.push("\nDespués, el razonamiento continúa así:");
+      lineas.push("\nPrimer paso del desarrollo:\n" + utiles[0]);
+      if(utiles.length > 1) lineas.push("\nLuego, el modelo continúa así:");
       utiles.slice(1).forEach(function(x,i){ lineas.push((i+2)+". "+x); });
     } else {
-      lineas.push("\nNo hay una explicación alternativa escrita para este ejercicio. La solución disponible no alcanza para diagnosticar qué parte no se entendió.");
+      lineas.push("\nNo hay pasos escritos suficientes para reconstruir el procedimiento. La respuesta correcta por sí sola no explica por qué se obtiene.");
     }
-    lineas.push("\nNo memorices el resultado: identifica qué dato usaste y por qué ese paso permite avanzar.");
+    lineas.push("\nAntes de volver a responder, explica con tus palabras qué representa el primer paso y por qué corresponde hacerlo.");
     return lineas.join("\n");
   }
-  function attachReteachAfter(anchor, ex, padre){
+  function attachReteachAfter(anchor, ex, padre, dada){
     if(!anchor || !ex || !anchor.parentNode) return;
     var help=document.createElement("div"); help.className="lex-reteach"; help.style.marginTop="12px";
     var btn=document.createElement("button"); btn.type="button"; btn.className="btn"; btn.textContent="No lo entiendo: guíame paso a paso";
     var panel=document.createElement("div"); panel.className="feedback"; panel.style.whiteSpace="pre-wrap"; panel.style.display="none";
-    btn.addEventListener("click",function(){panel.textContent=textoReensenanza(ex,padre);panel.style.display="block";btn.textContent="Guía paso a paso abierta";btn.disabled=true;});
+    btn.addEventListener("click",function(){panel.textContent=textoReensenanza(ex,padre,dada);panel.style.display="block";btn.textContent="Guía paso a paso abierta";btn.disabled=true;});
     help.appendChild(btn); help.appendChild(panel); anchor.parentNode.insertBefore(help,anchor.nextSibling);
   }
   function finish(ok, gr, dada, pasosDetalle){
@@ -20686,7 +20692,7 @@ function startLessonExercises(l, mount){
     var inp = $("#lex-in", mount); if(inp) inp.disabled = true;
     var chk = $("#lex-check", mount); if(chk) chk.disabled = true;
     showLexSolution(mount, ex.sol);
-    attachReteachAfter($("#lex-sol", mount), ex);
+    attachReteachAfter($("#lex-sol", mount), ex, null, dada);
     $("#lex-next", mount).style.display = "inline-flex";
     paintDots();
   }
@@ -20770,7 +20776,7 @@ function startLessonExercises(l, mount){
         stepFb("bad", gr.notSimple
           ? "El valor está bien, pero tiene que ir simplificado. Escríbelo en su forma más simple para seguir."
           : (mensajeErrorCat(clasificarError(st, raw)) || "Todavía no: esta etapa no da eso. Revisa la cuenta y prueba de nuevo; hasta que salga, no se sigue."));
-        attachReteachAfter($("#lex-step-fb", mount), st, ex);
+        attachReteachAfter($("#lex-step-fb", mount), st, ex, raw);
         return;
       }
       busy = true;
