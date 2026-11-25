@@ -15640,9 +15640,34 @@ LESSON_EXERCISES["s2-fraccion"] = [
     e.ansText = String(p[0] / p[1]).replace(".", ","); e.dificultad = 1;
     e.reteach="Una fracción es una división. Para " + p[0] + " ÷ " + p[1] + ", primero miro cuántas veces cabe " + p[1] + " en " + p[0] + ": cero veces completas. Escribo 0 y la coma. Luego convierto " + p[0] + " unidades en " + (p[0]*10) + " décimos y reparto: " + (p[0]*10) + " ÷ " + p[1] + " = " + (p[0]*10/p[1]) + " décimos. Resultado: " + (p[0]/p[1]).toString().replace(".",",") + ".";
     return e; },
-  function(){ var d = pick([2, 3, 4, 5, 6]), whole = ri(0, 5), extra = ri(1, d - 1), n = whole * d + extra; return exDif(exChoice("En la recta", "¿Entre qué dos enteros está " + n + "/" + d + "?",
-    "entre " + whole + " y " + (whole + 1), "entre " + Math.max(0, whole - 1) + " y " + whole, "entre " + (whole + 1) + " y " + (whole + 2),
-    [n + "/" + d + " = " + whole + " + " + extra + "/" + d + ". Como " + extra + "/" + d + " es mayor que 0 y menor que 1, queda entre " + whole + " y " + (whole + 1) + "."]), 2); },
+  function(){
+    var d = pick([2, 3, 4, 5, 6]), whole = ri(0, 5), extra = ri(1, d - 1), n = whole * d + extra;
+    var valor = whole + extra / d;
+    var enterosTexto = whole + (whole === 1 ? " entero" : " enteros");
+    var partesTexto = extra + (extra === 1 ? " parte" : " partes");
+    var totalPartesTexto = n + (n === 1 ? " parte" : " partes");
+    var ex = exSteps("Ubicar una fracción entre enteros",
+      "La pregunta «¿entre qué dos enteros está " + n + "/" + d + "?» pide ubicar esa cantidad en la recta numérica: encontrar el entero que queda justo por debajo y el que queda justo por encima. Vamos a construirlo, no a adivinarlo.",
+      [
+        exNum("Formar enteros completos", "" + n + "/" + d + " significa " + totalPartesTexto + " de tamaño 1/" + d + ". Un grupo de " + d + " de esas partes forma 1 entero. ¿Cuántos enteros completos puedo formar?", whole,
+          ["Agrupo " + totalPartesTexto + " en grupos de " + d + ": cada grupo forma un entero. Se forman " + enterosTexto + " completos."]),
+        exNum("Contar lo que sobra", "Usé " + (whole * d) + " partes para formar " + enterosTexto + ". De un total de " + totalPartesTexto + ", ¿cuántas quedan?", extra,
+          ["Resto las partes usadas: " + n + " − " + (whole * d) + " = " + extra + ". " + (extra === 1 ? "Queda " : "Quedan ") + partesTexto + ", cada una de tamaño 1/" + d + "."]),
+        exFrac("Interpretar la parte sobrante", (extra === 1 ? "La parte que queda es 1 de un total de " + d + " partes que forman un entero. ¿Qué fracción representa?" : "Las " + extra + " partes que quedan son de un total de " + d + " partes que forman un entero. ¿Qué fracción representan?"), extra, d,
+          ["Cada parte vale 1/" + d + ". Entonces " + partesTexto + " valen " + extra + "/" + d + " de un entero."]),
+        exChoice("Ubicar en la recta", "Ahora sabemos que " + n + "/" + d + " = " + whole + " + " + extra + "/" + d + " = " + String(valor).replace(".", ",") + ". Como la parte sobrante es mayor que 0 y menor que 1, ¿entre qué enteros consecutivos queda?",
+          "entre " + whole + " y " + (whole + 1), "entre " + Math.max(0, whole - 1) + " y " + whole, "entre " + (whole + 1) + " y " + (whole + 2),
+          ["En la recta numérica, " + whole + " + una parte menor que 1 queda después de " + whole + " pero antes de llegar a " + (whole + 1) + ". Por eso está entre " + whole + " y " + (whole + 1) + "."])
+      ],
+      ["Una fracción n/d representa n partes, cada una de tamaño 1/d.",
+       "Cada grupo de " + d + " partes forma un entero: con " + totalPartesTexto + " se forman " + enterosTexto + " y sobran " + partesTexto + ".",
+       "La parte sobrante es " + extra + "/" + d + ", que es mayor que 0 y menor que 1.",
+       "Por tanto: " + n + "/" + d + " = " + whole + " + " + extra + "/" + d + " = " + String(valor).replace(".", ",") + ". Está entre " + whole + " y " + (whole + 1) + ".",
+       "En general, «entre qué dos enteros» significa buscar los dos enteros consecutivos que encierran el número en la recta numérica."]);
+    ex.dificultad = 2;
+    ex.reteach = "Piensa en piezas: el denominador dice cuántas piezas de ese tamaño completan una unidad. Agrupa las piezas del numerador de " + d + " en " + d + ". Cada grupo es un entero. Las piezas que no completan otro entero forman la fracción que sobra. Esa sobra te dice cuánto avanzas desde el entero completo en la recta numérica.";
+    return ex;
+  },
   function(){ var pares = [[3,4,20],[1,2,18],[2,3,12],[3,5,20],[1,4,16],[5,6,24]]; var p = pick(pares); var ans = p[2] * p[0] / p[1];
     var e=exNum("Problema real", "¿Cuánto es " + p[0] + "/" + p[1] + " de " + p[2] + "?", ans, fracOfSteps(p[0], p[1], p[2]));
     e.reteach="Imagina "+p[2]+" objetos. El denominador "+p[1]+" indica en cuántos grupos iguales los reparto: "+p[2]+" ÷ "+p[1]+" = "+(p[2]/p[1])+" por grupo. El numerador "+p[0]+" indica cuántos grupos tomo: "+p[0]+" × "+(p[2]/p[1])+" = "+ans+".";
