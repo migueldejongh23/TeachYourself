@@ -20622,6 +20622,9 @@ function startLessonExercises(l, mount){
     else if(cat === "invertida") lineas.push("\nTu resultado coincide con el recíproco: parece que se intercambiaron numerador y denominador. En una división de fracciones, solo se invierte la segunda fracción; en otras operaciones no se invierten automáticamente.");
     else if(cat === "decimal") lineas.push("\nTu resultado quedó diez veces mayor o diez veces menor. Revisa el valor posicional de la coma: ¿cuántas décimas, centésimas o unidades representa tu resultado?");
     else if(cat === "no-simplificada") lineas.push("\nEl valor de tu fracción es correcto, pero todavía se puede simplificar. Busca un divisor común del numerador y del denominador y divide ambos por el mismo número.");
+    else if(obj && obj.kind === "choice" && dada !== undefined && dada !== null){
+      lineas.push("\nElegiste: " + dada + ". La opción correcta es: " + obj.options[obj.correct] + ". No alcanza con ver cuál era la correcta: revisemos qué condición de la consigna debe cumplir y cómo lo muestra el desarrollo.");
+    }
     else if(dada !== undefined && dada !== null) lineas.push("\nCon esta respuesta no puedo identificar con seguridad qué error cometiste. No voy a inventar un diagnóstico: comparemos la consigna con el primer paso del modelo.");
     if(consigna) lineas.push("\n¿Qué te están pidiendo?\n" + consigna);
     var utiles = pasos.filter(function(x){ return typeof x === "string" && x.trim(); }).map(function(x){ return x.trim(); });
@@ -20776,7 +20779,7 @@ function startLessonExercises(l, mount){
         stepFb("bad", gr.notSimple
           ? "El valor está bien, pero tiene que ir simplificado. Escríbelo en su forma más simple para seguir."
           : (mensajeErrorCat(clasificarError(st, raw)) || "Todavía no: esta etapa no da eso. Revisa la cuenta y prueba de nuevo; hasta que salga, no se sigue."));
-        attachReteachAfter($("#lex-step-fb", mount), st, ex, raw);
+        attachReteachAfter($("#lex-step-fb", mount), st, ex, st.kind === "choice" ? st.options[selIdx] : raw);
         return;
       }
       busy = true;
